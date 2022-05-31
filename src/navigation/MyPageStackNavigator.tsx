@@ -6,7 +6,7 @@ const Stack = createStackNavigator()
 
 const MyPageStackNavigator = () => {
   return (
-    <Stack.Navigator screenOptions={{headerShown: true}}>
+    <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen name="MyPage" component={MyPage} />
     </Stack.Navigator>
   )

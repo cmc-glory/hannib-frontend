@@ -3,16 +3,16 @@ import {View, StyleSheet, Text, TextInput, TouchableOpacity} from 'react-native'
 import BouncyCheckbox from 'react-native-bouncy-checkbox'
 import {useNavigation} from '@react-navigation/native'
 import {Input, Label, InputContainer, Button, black, white, gray} from '../../theme'
-// import {
-//   KakaoOAuthToken,
-//   KakaoProfile,
-//   KakaoProfileNoneAgreement,
-//   getProfile as getKakaoProfile,
-//   login,
-//   logout,
-//   unlink,
-//   loginWithKakaoAccount,
-// } from '@react-native-seoul/kakao-login'
+import {
+  KakaoOAuthToken,
+  KakaoProfile,
+  KakaoProfileNoneAgreement,
+  getProfile as getKakaoProfile,
+  login,
+  logout,
+  unlink,
+  loginWithKakaoAccount,
+} from '@react-native-seoul/kakao-login'
 import {useEffect} from 'react'
 const Login = () => {
   const navigation = useNavigation()
@@ -46,19 +46,19 @@ const Login = () => {
     // do something
   }, [])
 
-  // const signInWithKakao = async (): Promise<void> => {
-  //   console.log('kakao login ~~ ')
-  //   const token: KakaoOAuthToken = await login()
-  //   const profile: KakaoProfile | KakaoProfileNoneAgreement = await getKakaoProfile()
-  //   console.log('token : ', JSON.stringify(token))
-  //   console.log('profile : ', JSON.stringify(profile))
+  const signInWithKakao = async (): Promise<void> => {
+    console.log('kakao login ~~ ')
+    const token: KakaoOAuthToken = await login()
+    const profile: KakaoProfile | KakaoProfileNoneAgreement = await getKakaoProfile()
+    console.log('token : ', JSON.stringify(token))
+    console.log('profile : ', JSON.stringify(profile))
 
-  //   // login()
-  //   //   .then(res => console.log('성공', res))
-  //   //   .catch(error => console.log(error))
+    // login()
+    //   .then(res => console.log('성공', res))
+    //   .catch(error => console.log(error))
 
-  //   setResult(JSON.stringify(token))
-  // }
+    setResult(JSON.stringify(token))
+  }
 
   useEffect(() => {
     console.log(result)
@@ -112,7 +112,7 @@ const Login = () => {
           <Text style={[styles.socialLoginText]}>트위터 로그인</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={[styles.socialLoginButton]}>
+        <TouchableOpacity style={[styles.socialLoginButton]} onPress={() => signInWithKakao()}>
           <Text style={[styles.socialLoginText]}>카카오 로그인</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.socialLoginButton]} onPress={onPressNaverLogin}>
