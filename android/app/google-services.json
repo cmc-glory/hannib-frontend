@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "10776992039",
+    "project_id": "hannib-7b6f4",
+    "storage_bucket": "hannib-7b6f4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:10776992039:android:dd18c1e4b50f3db3ffb102",
+        "android_client_info": {
+          "package_name": "com.hannib"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "10776992039-a2u306icmbug1iivc4p3nekco3055rjf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCj5HCjbS4NpyDzfjeBEyfTNKNDY7vBdfQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "10776992039-a2u306icmbug1iivc4p3nekco3055rjf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
