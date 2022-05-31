@@ -1,0 +1,47 @@
+import React from 'react'
+import {View, Text, TouchableOpacity, StyleSheet} from 'react-native'
+import Dropdown from '../utils/Dropdown'
+// 사용밥 : <StackHeader title="상단 제목 이름" onPressTitle="상단 제목 눌렀을 때 수행할 일">{오른쪽에 들어갈 아이콘 컴포넌트}</StackHeader>
+
+type StackHeaderParams = {
+  title: string // 상단 제목
+  onPressTitle?: () => void // 상단 제목을 눌렀을 때
+  dropdown?: boolean
+  children?: React.ReactNode | React.ReactNode[] // 오른쪽에 띄울 아이콘
+}
+
+const StackHeader = ({title, onPressTitle, dropdown, children}: StackHeaderParams) => {
+  return (
+    <View style={[styles.container]}>
+      {dropdown ? (
+        <TouchableOpacity onPress={onPressTitle} style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Text style={[styles.title]}>{title}</Text>
+          <Dropdown />
+        </TouchableOpacity>
+      ) : (
+        <Text style={[styles.title]}>{title}</Text>
+      )}
+
+      <View>{children}</View>
+    </View>
+  )
+}
+export default StackHeader
+
+const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+    backgroundColor: 'white',
+    flexDirection: 'row',
+    paddingHorizontal: 15,
+    height: 45,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  title: {
+    fontWeight: '700',
+    fontSize: 20,
+    color: '#000',
+  },
+  iconContainer: {},
+})
