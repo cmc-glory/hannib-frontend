@@ -20,7 +20,11 @@
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
+            <data android:host="oauth"
+                android:scheme="kakaob6cb366c397c0e5774dd5e284391ff22" />
         </intent-filter>
       </activity>
+      
+      
     </application>
 </manifest>
