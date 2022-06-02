@@ -23,7 +23,7 @@ const screenHeight = Dimensions.get('window').height
 const GoodsDetail = () => {
   return (
     <SafeAreaView style={{flex: 1}}>
-      <StackHeader title="상세 페이지" />
+      <StackHeader goBack={false} title="상세 페이지" />
       <ScrollView style={[styles.container]}>
         <View style={[styles.tagContainer]}>
           <Tag label="나눔" />

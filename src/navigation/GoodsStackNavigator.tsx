@@ -1,16 +1,15 @@
 import React from 'react'
 import {createStackNavigator} from '@react-navigation/stack'
-import {Lists, ListDetail} from '../screens/ListsStack'
+import {GoodsDetail} from '../screens/GoodsStack'
 
 const Stack = createStackNavigator()
 
-const ListsStackNavigator = () => {
+const GoodsStackNavigator = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false, cardStyle: {backgroundColor: 'white'}}}>
-      <Stack.Screen name="Lists" component={Lists} />
-      <Stack.Screen name="ListDetail" component={ListDetail} />
+      <Stack.Screen name="GoodsDetail" component={GoodsDetail} />
     </Stack.Navigator>
   )
 }
 
-export default ListsStackNavigator
+export default GoodsStackNavigator
