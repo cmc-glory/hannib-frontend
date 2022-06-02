@@ -24,11 +24,11 @@ type ImageModalProps = {
   onCameraPress: () => void
 }
 
-const ImagePreview = ({uri}: {uri: string | undefined}) => {
+export const ImagePreview = ({uri}: {uri: string | undefined}) => {
   return <FastImage source={{uri: uri}} style={styles.image}></FastImage>
 }
 
-const ImagePickerModal = ({isVisible, onClose, onImageLibraryPress, onCameraPress}: ImageModalProps) => {
+export const ImagePickerModal = ({isVisible, onClose, onImageLibraryPress, onCameraPress}: ImageModalProps) => {
   return (
     <Modal isVisible={isVisible} onBackButtonPress={onClose} onBackdropPress={onClose} style={styles.modal}>
       <TouchableOpacity onPress={onCameraPress} style={styles.buttonView}>
@@ -41,7 +41,7 @@ const ImagePickerModal = ({isVisible, onClose, onImageLibraryPress, onCameraPres
   )
 }
 
-const ImagePicker = ({images, setImages}: ImagePickerProps) => {
+export const ImagePicker = ({images, setImages}: ImagePickerProps) => {
   const [pickerResponse, setPickerResponse] = useState(null)
   const [visible, setVisible] = useState<boolean>(false)
 

@@ -9,7 +9,7 @@ type stepIndicatorProps = {
   step: number
 }
 
-const StepIndicator = ({step}: stepIndicatorProps) => {
+export const StepIndicator = ({step}: stepIndicatorProps) => {
   return (
     <View style={[styles.container]}>
       <Text style={{color: step == 1 ? black : gray300, fontFamily: 'Pretendard-SemiBold'}}>단계 1 : 기본 정보 </Text>
@@ -18,8 +18,6 @@ const StepIndicator = ({step}: stepIndicatorProps) => {
     </View>
   )
 }
-
-export default StepIndicator
 
 const styles = StyleSheet.create({
   container: {

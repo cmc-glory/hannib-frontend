@@ -4,14 +4,10 @@ import {useNavigation} from '@react-navigation/native'
 import {black, white, gray300} from '../../theme'
 
 type NextButtonProps = {
-  to: 'WriteGoodsOffline' | 'WriteGoodsOnline'
+  onPressNext: () => void
 }
 
-export const NextButton = ({to}: NextButtonProps) => {
-  const navigation = useNavigation()
-  const onPressNext = useCallback(() => {
-    navigation.navigate(to)
-  }, [])
+export const NextButton = ({onPressNext}: NextButtonProps) => {
   return (
     <View style={styles.container}>
       <Pressable style={[styles.button]} onPress={onPressNext}>
@@ -28,7 +24,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    paddingVertical: 10,
+    marginVertical: 10,
   },
   button: {
     padding: 15,

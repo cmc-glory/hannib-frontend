@@ -1,17 +1,25 @@
-import React, {useState} from 'react'
+import React, {useState, useCallback} from 'react'
 import {View, ScrollView, Text, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import type {Asset} from 'react-native-image-picker'
+import { useNavigation } from '@react-navigation/native'
 
 import StackHeader from '../../components/utils/StackHeader'
-import StepIndicator from '../../components/WriteGoodsStack/StepIndicator'
-import ImagePicker from '../../components/WriteGoodsStack/ImagePicker'
-import {NextButton, SelectCategory} from '../../components/WriteGoodsStack'
-import {InputContainer, Label, Input, Button, black} from '../../theme'
+import {NextButton, SelectCategory, ImagePicker, StepIndicator} from '../../components/WriteGoodsStack'
+import {InputContainer, Label, Input, Button, black, white} from '../../theme'
 
 export const WriteGoodsDefault = () => {
+  const navigation = useNavigation()
   const [images, setImages] = useState<Asset[]>([])
-  const [type, setType] = useState('')
+  const [type, setType] = useState<'WriteGoodsOffline' | 'WriteGoodsOnline' | ''>('')
+
+  const onPressOffline = useCallback(()=>{
+    navigation.navigate('WriteGoodsOffline')
+  }, [])
+  const onPressOnline = useCallback(() => {
+    navigation.navigate('WriteGoodsOnline')
+  }, [])
+
   return (
     <SafeAreaView edges={['top', 'bottom']} style={{backgroundColor: '#fff', flex: 1}}>
       <StackHeader goBack title="모집폼 작성" />
@@ -34,16 +42,16 @@ export const WriteGoodsDefault = () => {
         <InputContainer>
           <Label>나눔 방식</Label>
           <View style={styles.buttons}>
-            <Button style={styles.button} onPress={() => setType('online')}>
-              <Text style={{color: black}}>우편</Text>
+            <Button style={[styles.button, {backgroundColor: type == 'WriteGoodsOnline' ? black : white}]} onPress={() => setType('WriteGoodsOnline')}>
+              <Text style={{color: type == 'WriteGoodsOnline' ? white : black}}>우편</Text>
             </Button>
-            <Button style={styles.button} onPress={() => setType('offline')}>
-              <Text style={{color: black}}>오프라인</Text>
+            <Button style={[styles.button, , {backgroundColor: type == 'WriteGoodsOffline' ? black : white}]} onPress={() => setType('WriteGoodsOffline')}>
+              <Text style={{color: type == 'WriteGoodsOffline' ? white : black}}>오프라인</Text>
             </Button>
           </View>
         </InputContainer>
       </ScrollView>
-      <NextButton to={type == 'online' ? 'WriteGoodsOnline' : 'WriteGoodsOffline'} />
+      <NextButton onPressNext={type=='WriteGoodsOffline' ? onPressOffline : onPressOnline} />
     </SafeAreaView>
   )
 }
