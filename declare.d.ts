@@ -14,5 +14,7 @@ declare namespace ReactNavigation {
     MainTabNavigator: undefined
     GoodsDetail: undefined
     WriteGoodsStackNavigator: undefined
+    WriteGoodsOnline: undefined
+    WriteGoodsOffline: undefined
   }
 }

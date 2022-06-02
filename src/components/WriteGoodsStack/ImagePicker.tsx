@@ -70,15 +70,14 @@ const ImagePicker = ({images, setImages}: ImagePickerProps) => {
     <View style={[styles.contianer]}>
       <Text style={[styles.title]}>이미지 선택</Text>
       <View style={[styles.imageContainer]}>
+        {images.map(image => (
+          <ImagePreview key={image.uri} uri={image.uri} />
+        ))}
         <TouchableOpacity onPress={showModal}>
           <View style={[styles.addImage]}>
             <AddIcon width={IMAGE_SIZE * 0.3} height={IMAGE_SIZE * 0.3} fill={black} />
           </View>
         </TouchableOpacity>
-
-        {images.map(image => (
-          <ImagePreview key={image.uri} uri={image.uri} />
-        ))}
 
         <ImagePickerModal isVisible={visible} onClose={() => setVisible(false)} onImageLibraryPress={onImageLibraryPress} onCameraPress={onCameraPress} />
       </View>
@@ -93,7 +92,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   title: {
-    fontFamily: 'Pretendard-Bold',
+    fontFamily: 'Pretendard-SemiBold',
     fontSize: 18,
     color: black,
     marginBottom: 10,
@@ -102,11 +101,12 @@ const styles = StyleSheet.create({
     width: IMAGE_SIZE,
     height: IMAGE_SIZE,
     borderRadius: 8,
-    marginRight: 15,
+    marginRight: 5,
   },
   imageContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    flexWrap: 'wrap',
   },
   addImage: {
     width: IMAGE_SIZE,
