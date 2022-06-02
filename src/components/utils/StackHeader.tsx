@@ -1,26 +1,40 @@
-import React from 'react'
+import React, {useCallback} from 'react'
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native'
+import {useNavigation} from '@react-navigation/native'
 import Dropdown from '../utils/Dropdown'
+import GoBack from '../utils/GoBack'
 // 사용밥 : <StackHeader title="상단 제목 이름" onPressTitle="상단 제목 눌렀을 때 수행할 일">{오른쪽에 들어갈 아이콘 컴포넌트}</StackHeader>
 
 type StackHeaderParams = {
+  goBack: boolean // 뒤로가기 버튼 띄울지.
   title: string // 상단 제목
   onPressTitle?: () => void // 상단 제목을 눌렀을 때
   dropdown?: boolean
   children?: React.ReactNode | React.ReactNode[] // 오른쪽에 띄울 아이콘
 }
 
-const StackHeader = ({title, onPressTitle, dropdown, children}: StackHeaderParams) => {
+const StackHeader = ({goBack, title, onPressTitle, dropdown, children}: StackHeaderParams) => {
+  const navigation = useNavigation()
+  const onPressGoback = useCallback(() => {
+    navigation.goBack()
+  }, [])
   return (
     <View style={[styles.container]}>
-      {dropdown ? (
-        <TouchableOpacity onPress={onPressTitle} style={{flexDirection: 'row', alignItems: 'center'}}>
+      <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        {goBack && navigation.canGoBack && (
+          <TouchableOpacity onPress={onPressGoback} style={{marginRight: 10}}>
+            <GoBack />
+          </TouchableOpacity>
+        )}
+        {dropdown ? (
+          <TouchableOpacity onPress={onPressTitle} style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Text style={[styles.title]}>{title}</Text>
+            <Dropdown />
+          </TouchableOpacity>
+        ) : (
           <Text style={[styles.title]}>{title}</Text>
-          <Dropdown />
-        </TouchableOpacity>
-      ) : (
-        <Text style={[styles.title]}>{title}</Text>
-      )}
+        )}
+      </View>
 
       <View>{children}</View>
     </View>
