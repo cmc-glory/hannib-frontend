@@ -5,14 +5,18 @@ import {black, white, Button} from '../theme'
 
 const ICON_SIZE = 20
 
-const ListDetailFooter = () => {
+type ListDetailFooterProps = {
+  onPressRequest: () => void
+}
+
+const ListDetailFooter = ({onPressRequest}: ListDetailFooterProps) => {
   return (
     <View style={styles.container}>
       <Button style={styles.bookmarkButton}>
         <BookmarkIcon width={ICON_SIZE} height={ICON_SIZE} fill="#000" />
         <Text style={{color: black, marginLeft: 10}}>1234</Text>
       </Button>
-      <Button style={styles.registerButton}>
+      <Button style={styles.registerButton} onPress={onPressRequest}>
         <Text style={{color: white}}>신청하기</Text>
       </Button>
     </View>

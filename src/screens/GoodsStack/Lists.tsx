@@ -6,7 +6,7 @@ import {white, black} from '../../theme'
 import StackHeader from '../../components/utils/StackHeader'
 import Notification from '../../components/utils/Notification'
 import {createListItem} from '../../data/createListItem'
-import ListItem from '../../components/ListsStack/ListItem'
+import GoodsListItem from '../../components/GoodsListItem'
 import FloatingButton from '../../components/utils/FloatingButton'
 import AddIcon from '../../assets/icons/add.svg'
 
@@ -25,11 +25,15 @@ export const Lists = () => {
   return (
     <SafeAreaView>
       <View style={[styles.container]}>
-        <StackHeader dropdown title="카테고리">
+        <StackHeader goBack={false} dropdown title="카테고리">
           <Notification />
         </StackHeader>
         <View style={{paddingHorizontal: 15}}>
-          <FlatList data={listItems} renderItem={({item}) => <ListItem item={item}></ListItem>} refreshing={refreshing} onRefresh={onRefresh}></FlatList>
+          <FlatList
+            data={listItems}
+            renderItem={({item}) => <GoodsListItem item={item}></GoodsListItem>}
+            refreshing={refreshing}
+            onRefresh={onRefresh}></FlatList>
           <FloatingButton onPress={() => {}}>
             <AddIcon width={24} height={24} fill="#fff" />
           </FloatingButton>

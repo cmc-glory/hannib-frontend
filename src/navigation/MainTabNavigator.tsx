@@ -4,7 +4,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 
 import GoodsList from '../screens/MainTab/GoodsList'
 
-import ListsStackNavigator from './ListsStackNavigator'
+import GoodsStackNavigator from './GoodsStackNavigator'
 import CommunityStackNavigator from './CommunityStackNavigator'
 import ChattingStackNavigator from './ChattingStackNavigator'
 import CalendarStackNavigator from './CalendarStackNavigator'

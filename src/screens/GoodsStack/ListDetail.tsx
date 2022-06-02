@@ -6,8 +6,8 @@ import ListDetailDescription from './ListDetailTab/ListDetailDescription'
 import StackHeader from '../../components/utils/StackHeader'
 import Tag from '../../components/utils/Tag'
 import Carousel from '../../components/utils/Carousel'
-import RelatedSharing from '../../components/ListsStack/RelatedSharing'
-import ListDetailFooter from '../../components/ListsStack/ListDetailFooter'
+import RelatedSharing from '../../components/RelatedSharing'
+import ListDetailFooter from '../../components/ListDetailFooter'
 import {black, white} from '../../theme'
 
 const images = [
@@ -23,7 +23,7 @@ const screenHeight = Dimensions.get('window').height
 export const ListDetail = () => {
   return (
     <SafeAreaView style={{flex: 1}}>
-      <StackHeader title="상세 페이지" />
+      <StackHeader goBack={false} title="상세 페이지" />
 
       <ScrollView style={[styles.container]}>
         <View style={[styles.tagContainer]}>
