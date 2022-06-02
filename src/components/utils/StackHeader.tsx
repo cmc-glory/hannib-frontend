@@ -6,7 +6,7 @@ import GoBack from '../utils/GoBack'
 // 사용밥 : <StackHeader title="상단 제목 이름" onPressTitle="상단 제목 눌렀을 때 수행할 일">{오른쪽에 들어갈 아이콘 컴포넌트}</StackHeader>
 
 type StackHeaderParams = {
-  goBack: boolean // 뒤로가기 버튼 띄울지.
+  goBack?: boolean // 뒤로가기 버튼 띄울지.
   title: string // 상단 제목
   onPressTitle?: () => void // 상단 제목을 눌렀을 때
   dropdown?: boolean

@@ -2,10 +2,11 @@ import React, {useState, useCallback} from 'react'
 import {View, ScrollView, Text, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import type {Asset} from 'react-native-image-picker'
-import { useNavigation } from '@react-navigation/native'
+import {useNavigation} from '@react-navigation/native'
 
 import StackHeader from '../../components/utils/StackHeader'
-import {NextButton, SelectCategory, ImagePicker, StepIndicator} from '../../components/WriteGoodsStack'
+import {SelectCategory, ImagePicker, StepIndicator} from '../../components/WriteGoodsStack'
+import {NextButton} from '../../components/utils/NextButton'
 import {InputContainer, Label, Input, Button, black, white} from '../../theme'
 
 export const WriteGoodsDefault = () => {
@@ -13,7 +14,7 @@ export const WriteGoodsDefault = () => {
   const [images, setImages] = useState<Asset[]>([])
   const [type, setType] = useState<'WriteGoodsOffline' | 'WriteGoodsOnline' | ''>('')
 
-  const onPressOffline = useCallback(()=>{
+  const onPressOffline = useCallback(() => {
     navigation.navigate('WriteGoodsOffline')
   }, [])
   const onPressOnline = useCallback(() => {
@@ -51,7 +52,7 @@ export const WriteGoodsDefault = () => {
           </View>
         </InputContainer>
       </ScrollView>
-      <NextButton onPressNext={type=='WriteGoodsOffline' ? onPressOffline : onPressOnline} />
+      <NextButton text="다음" onPressNext={type == 'WriteGoodsOffline' ? onPressOffline : onPressOnline} />
     </SafeAreaView>
   )
 }

@@ -4,7 +4,8 @@ import {SafeAreaView} from 'react-native-safe-area-context'
 import {Switch} from 'react-native-paper'
 import StackHeader from '../../components/utils/StackHeader'
 
-import {StepIndicator, NextButton, DatePicker, GoodsInput, AdditionalQuestions} from '../../components/WriteGoodsStack'
+import {StepIndicator, DatePicker, GoodsInput, AdditionalQuestions} from '../../components/WriteGoodsStack'
+import {NextButton} from '../../components/utils/NextButton'
 import {styles as s, black} from '../../theme'
 
 export const WriteGoodsOnline = () => {
@@ -41,7 +42,7 @@ export const WriteGoodsOnline = () => {
           <TextInput style={s.input} />
         </View>
       </ScrollView>
-      <NextButton onPressNext={onPressNext} />
+      <NextButton text="다음" onPressNext={onPressNext} />
     </SafeAreaView>
   )
 }

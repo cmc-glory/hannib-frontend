@@ -5,13 +5,14 @@ import {black, white, gray300} from '../../theme'
 
 type NextButtonProps = {
   onPressNext: () => void
+  text: string
 }
 
-export const NextButton = ({onPressNext}: NextButtonProps) => {
+export const NextButton = ({text, onPressNext}: NextButtonProps) => {
   return (
     <View style={styles.container}>
       <Pressable style={[styles.button]} onPress={onPressNext}>
-        <Text style={styles.buttonText}>다음</Text>
+        <Text style={styles.buttonText}>{text}</Text>
       </Pressable>
     </View>
   )
