@@ -24,5 +24,7 @@
                 android:scheme="kakaof2e70f2fa6b42f1af84ee7a0850f3cd6" />
         </intent-filter>
       </activity>
+      
+      
     </application>
 </manifest>
