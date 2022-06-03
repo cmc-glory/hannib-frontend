@@ -3,6 +3,8 @@ import {RefreshControl, View, Text, FlatList, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation} from '@react-navigation/native'
 
+import Icon from 'react-native-vector-icons/Ionicons'
+
 import {white, black} from '../../theme'
 import StackHeader from '../../components/utils/StackHeader'
 import Notification from '../../components/utils/Notification'
@@ -11,6 +13,7 @@ import GoodsListItem from '../../components/GoodsListItem'
 import FloatingButton from '../../components/utils/FloatingButton'
 import AddIcon from '../../assets/icons/add.svg'
 import {NavigationRouteContext} from '@react-navigation/native'
+import {TouchableOpacity} from 'react-native-gesture-handler'
 
 const wait = (timeout: any) => {
   return new Promise(resolve => setTimeout(resolve, timeout))
@@ -33,7 +36,12 @@ const GoodsLists = () => {
   return (
     <SafeAreaView style={[styles.container]}>
       <StackHeader goBack={false} dropdown title="카테고리">
-        <Notification />
+        <View style={{flexDirection: 'row', alignItems: 'center', width: 65, justifyContent: 'space-between'}}>
+          <TouchableOpacity>
+            <Icon name="search-outline" size={24} color={black} />
+          </TouchableOpacity>
+          <Notification />
+        </View>
       </StackHeader>
 
       <FlatList data={listItems} renderItem={({item}) => <GoodsListItem item={item}></GoodsListItem>} refreshing={refreshing} onRefresh={onRefresh}></FlatList>

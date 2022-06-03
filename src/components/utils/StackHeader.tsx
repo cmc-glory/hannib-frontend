@@ -1,7 +1,8 @@
 import React, {useCallback} from 'react'
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native'
 import {useNavigation} from '@react-navigation/native'
-import Dropdown from '../utils/Dropdown'
+import Icon from 'react-native-vector-icons/FontAwesome5'
+import {main} from '../../theme'
 import GoBack from '../utils/GoBack'
 // 사용밥 : <StackHeader title="상단 제목 이름" onPressTitle="상단 제목 눌렀을 때 수행할 일">{오른쪽에 들어갈 아이콘 컴포넌트}</StackHeader>
 
@@ -12,6 +13,8 @@ type StackHeaderParams = {
   dropdown?: boolean
   children?: React.ReactNode | React.ReactNode[] // 오른쪽에 띄울 아이콘
 }
+
+const ICON_SIZE = 12
 
 const StackHeader = ({goBack, title, onPressTitle, dropdown, children}: StackHeaderParams) => {
   const navigation = useNavigation()
@@ -29,7 +32,7 @@ const StackHeader = ({goBack, title, onPressTitle, dropdown, children}: StackHea
         {dropdown ? (
           <TouchableOpacity onPress={onPressTitle} style={{flexDirection: 'row', alignItems: 'center'}}>
             <Text style={[styles.title]}>{title}</Text>
-            <Dropdown />
+            <Icon name="chevron-down" size={ICON_SIZE} color={main} style={{marginLeft: 10}} />
           </TouchableOpacity>
         ) : (
           <Text style={[styles.title]}>{title}</Text>
@@ -53,9 +56,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   title: {
-    fontWeight: '700',
+    fontFamily: 'Pretendard-Bold',
     fontSize: 20,
-    color: '#000',
+    color: main,
   },
-  iconContainer: {},
 })
