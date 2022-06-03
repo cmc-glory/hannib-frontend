@@ -15,7 +15,7 @@ const ListItem = ({item}: IListItem) => {
 
   // 상세 페이지로 이동
   const onPressItem = useCallback(() => {
-    navigation.navigate('GoodsDetail')
+    navigation.navigate('GoodsStackNavigator')
   }, [])
 
   return (

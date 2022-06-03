@@ -13,5 +13,10 @@ declare namespace ReactNavigation {
     CreateAccount: undefined
     MainTabNavigator: undefined
     GoodsDetail: undefined
+    WriteGoodsStackNavigator: undefined
+    WriteGoodsOnline: undefined
+    WriteGoodsOffline: undefined
+    GoodsRequest: undefined
+    GoodsStackNavigator: undefined
   }
 }

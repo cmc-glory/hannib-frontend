@@ -1,6 +1,9 @@
 import React, {useState, useCallback} from 'react'
 import {RefreshControl, View, Text, FlatList, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
+import {useNavigation} from '@react-navigation/native'
+
+import Icon from 'react-native-vector-icons/Ionicons'
 
 import {white, black} from '../../theme'
 import StackHeader from '../../components/utils/StackHeader'
@@ -9,6 +12,8 @@ import {createListItem} from '../../data/createListItem'
 import GoodsListItem from '../../components/GoodsListItem'
 import FloatingButton from '../../components/utils/FloatingButton'
 import AddIcon from '../../assets/icons/add.svg'
+import {NavigationRouteContext} from '@react-navigation/native'
+import {TouchableOpacity} from 'react-native-gesture-handler'
 
 const wait = (timeout: any) => {
   return new Promise(resolve => setTimeout(resolve, timeout))
@@ -17,19 +22,30 @@ const wait = (timeout: any) => {
 const listItems = new Array(50).fill(null).map(createListItem)
 
 const GoodsLists = () => {
+  const navigation = useNavigation()
   const [refreshing, setRefreshing] = useState<boolean>(false)
   const onRefresh = useCallback(() => {
     setRefreshing(true)
     wait(2000).then(() => setRefreshing(false))
   }, [])
+
+  const onPressWrite = useCallback(() => {
+    navigation.navigate('WriteGoodsStackNavigator')
+  }, [])
+
   return (
     <SafeAreaView style={[styles.container]}>
-      <StackHeader dropdown title="카테고리">
-        <Notification />
+      <StackHeader goBack={false} dropdown title="카테고리">
+        <View style={{flexDirection: 'row', alignItems: 'center', width: 65, justifyContent: 'space-between'}}>
+          <TouchableOpacity>
+            <Icon name="search-outline" size={24} color={black} />
+          </TouchableOpacity>
+          <Notification />
+        </View>
       </StackHeader>
 
       <FlatList data={listItems} renderItem={({item}) => <GoodsListItem item={item}></GoodsListItem>} refreshing={refreshing} onRefresh={onRefresh}></FlatList>
-      <FloatingButton onPress={() => {}}>
+      <FloatingButton onPress={onPressWrite}>
         <AddIcon width={24} height={24} fill="#fff" />
       </FloatingButton>
     </SafeAreaView>

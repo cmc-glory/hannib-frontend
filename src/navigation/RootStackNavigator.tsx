@@ -2,10 +2,12 @@ import React from 'react'
 import {createStackNavigator} from '@react-navigation/stack'
 import Login from '../screens/RootStack/Login'
 import MainTabNavigator from './MainTabNavigator'
+import WriteGoodsStackNavigator from './WriteGoodsStackNavigator'
 import FindId from '../screens/RootStack/FindId'
 import FindPassword from '../screens/RootStack/FindPassword'
 import CreateAccount from '../screens/RootStack/CreateAccount'
-import GoodsDetail from '../screens/RootStack/GoodsDetail'
+import GoodsDetail from '../screens/GoodsStack/GoodsDetail'
+import GoodsStackNavigator from './GoodsStackNavigator'
 
 const Stack = createStackNavigator()
 
@@ -17,7 +19,8 @@ const RootStackNavigator = () => {
       <Stack.Screen name="FindPassword" component={FindPassword} />
       <Stack.Screen name="CreateAccount" options={{cardStyle: {backgroundColor: '#fff'}}} component={CreateAccount} /> */}
       <Stack.Screen name="MainTabNavigator" options={{gestureEnabled: false}} component={MainTabNavigator} />
-      <Stack.Screen name="GoodsDetail" component={GoodsDetail}></Stack.Screen>
+      <Stack.Screen name="GoodsStackNavigator" component={GoodsStackNavigator}></Stack.Screen>
+      <Stack.Screen name="WriteGoodsStackNavigator" component={WriteGoodsStackNavigator}></Stack.Screen>
     </Stack.Navigator>
   )
 }

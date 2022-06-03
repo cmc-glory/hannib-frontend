@@ -1,10 +1,10 @@
 import React from 'react'
-import {View} from 'react-native'
+import {View, Text, StyleSheet, Platform} from 'react-native'
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 
 import GoodsList from '../screens/MainTab/GoodsList'
 
-import ListsStackNavigator from './ListsStackNavigator'
+import GoodsStackNavigator from './GoodsStackNavigator'
 import CommunityStackNavigator from './CommunityStackNavigator'
 import ChattingStackNavigator from './ChattingStackNavigator'
 import CalendarStackNavigator from './CalendarStackNavigator'
@@ -20,20 +20,32 @@ import CalendarOutlined from '../assets/icons/calendar_outlined.svg'
 import MyPageFilled from '../assets/icons/user_filled.svg'
 import MyPageOutlined from '../assets/icons/user_outlined.svg'
 
+import {main, black, white} from '../theme'
+import {NOT_INITIALIZED_ERROR} from '@react-navigation/core/lib/typescript/src/createNavigationContainerRef'
+
 const Tab = createBottomTabNavigator()
 
 function BottomTab() {
   return (
     <Tab.Navigator
       screenOptions={{
-        tabBarShowLabel: false,
-        tabBarActiveTintColor: '#000',
+        tabBarShowLabel: true,
+        tabBarActiveTintColor: main,
         tabBarInactiveTintColor: '#000',
         headerShown: false,
+        tabBarStyle: {
+          borderTopWidth: 0,
+          height: Platform.OS == 'android' ? 60 : 80,
+        },
+        tabBarItemStyle: {
+          marginTop: 5,
+          marginBottom: Platform.OS == 'android' ? 10 : 0,
+        },
       }}>
       <Tab.Screen
         name="GoodsList"
         options={{
+          title: '리스트',
           tabBarIcon: ({color, size, focused}) =>
             focused ? <HomeFilled fill={color} width={size} height={size} /> : <HomeOutlined fill={color} width={size} height={size} />,
         }}
@@ -42,6 +54,7 @@ function BottomTab() {
       <Tab.Screen
         name="CommunityStackNavigator"
         options={{
+          title: '커뮤니티',
           tabBarIcon: ({color, size, focused}) =>
             focused ? <CommunityFilled fill={color} width={size} height={size} /> : <CommunityOutlined fill={color} width={size} height={size} />,
         }}
@@ -50,6 +63,7 @@ function BottomTab() {
       <Tab.Screen
         name="ChattingStackNavigator"
         options={{
+          title: '채팅',
           tabBarIcon: ({color, size, focused}) =>
             focused ? <ChattingFilled fill={color} width={size} height={size} /> : <ChattingOutlined fill={color} width={size} height={size} />,
         }}
@@ -58,6 +72,7 @@ function BottomTab() {
       <Tab.Screen
         name="CalendarStackNavigator"
         options={{
+          title: '일정',
           tabBarIcon: ({color, size, focused}) => <CalendarOutlined fill={color} width={size} height={size}></CalendarOutlined>,
         }}
         component={CalendarStackNavigator}
@@ -65,6 +80,7 @@ function BottomTab() {
       <Tab.Screen
         name="MyPageStackNavigator"
         options={{
+          title: '마이페이지',
           tabBarIcon: ({color, size, focused}) =>
             focused ? <MyPageFilled fill={color} width={size} height={size} /> : <MyPageOutlined fill={color} width={size} height={size} />,
         }}
@@ -75,3 +91,10 @@ function BottomTab() {
 }
 
 export default BottomTab
+
+const styles = StyleSheet.create({
+  tabBarLabel: {
+    fontSize: 12,
+    color: black,
+  },
+})

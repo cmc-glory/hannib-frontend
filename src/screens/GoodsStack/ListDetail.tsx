@@ -2,7 +2,7 @@ import React, {useMemo, useState} from 'react'
 import {View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, Dimensions, Platform} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import ListDetailTabNavigator from '../../navigation/ListDetailTabNavigator'
-import GoodsDetailDescription from '../../components/GoodsDetailDescription'
+import ListDetailDescription from './ListDetailTab/ListDetailDescription'
 import StackHeader from '../../components/utils/StackHeader'
 import Tag from '../../components/utils/Tag'
 import Carousel from '../../components/utils/Carousel'
@@ -20,10 +20,11 @@ const images = [
 const padding = 15
 const screenHeight = Dimensions.get('window').height
 
-const GoodsDetail = () => {
+export const ListDetail = () => {
   return (
     <SafeAreaView style={{flex: 1}}>
-      <StackHeader title="상세 페이지" />
+      <StackHeader goBack={false} title="상세 페이지" />
+
       <ScrollView style={[styles.container]}>
         <View style={[styles.tagContainer]}>
           <Tag label="나눔" />
@@ -35,7 +36,7 @@ const GoodsDetail = () => {
           <Text style={{color: black}}>나눔 진행자</Text>
           <Text style={{color: black}}>나눔 오픈일</Text>
         </View>
-        <GoodsDetailDescription></GoodsDetailDescription>
+        <ListDetailDescription></ListDetailDescription>
         {/* <ListDetailTabNavigator></ListDetailTabNavigator> */}
         <View style={[styles.writerContainer]}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -54,8 +55,6 @@ const GoodsDetail = () => {
     </SafeAreaView>
   )
 }
-
-export default GoodsDetail
 
 const styles = StyleSheet.create({
   writerText: {

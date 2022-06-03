@@ -4,6 +4,7 @@ import {Alert} from 'react-native'
 import {SafeAreaProvider} from 'react-native-safe-area-context'
 import {NavigationContainer} from '@react-navigation/native'
 import messaging from '@react-native-firebase/messaging'
+import {setCustomText} from 'react-native-global-props'
 
 import MainTabNavigator from './src/navigation/MainTabNavigator'
 import RootStackNavigtor from './src/navigation/RootStackNavigator'
@@ -20,8 +21,16 @@ async function requestUserPermission() {
   }
 }
 
+const customTextProps = {
+  style: {
+    fontFamily: 'Pretendard-Regular',
+  },
+}
+
 const App = () => {
   useEffect(() => {
+    setCustomText(customTextProps)
+
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage))
     })
