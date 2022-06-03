@@ -4,7 +4,6 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 
 import GoodsList from '../screens/MainTab/GoodsList'
 
-import GoodsStackNavigator from './GoodsStackNavigator'
 import CommunityStackNavigator from './CommunityStackNavigator'
 import ChattingStackNavigator from './ChattingStackNavigator'
 import CalendarStackNavigator from './CalendarStackNavigator'
@@ -21,7 +20,6 @@ import MyPageFilled from '../assets/icons/user_filled.svg'
 import MyPageOutlined from '../assets/icons/user_outlined.svg'
 
 import {main, black, white} from '../theme'
-import {NOT_INITIALIZED_ERROR} from '@react-navigation/core/lib/typescript/src/createNavigationContainerRef'
 
 const Tab = createBottomTabNavigator()
 
@@ -35,6 +33,7 @@ function BottomTab() {
         headerShown: false,
         tabBarStyle: {
           borderTopWidth: 0,
+          borderColor: '#fff',
           height: Platform.OS == 'android' ? 60 : 80,
         },
         tabBarItemStyle: {

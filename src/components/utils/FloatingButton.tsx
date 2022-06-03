@@ -1,5 +1,5 @@
 import React from 'react'
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native'
+import {View, Text, Platform, TouchableOpacity, StyleSheet} from 'react-native'
 import {main} from '../../theme'
 
 type FloatingButtonProps = {
@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     backgroundColor: main,
     position: 'absolute',
-    bottom: 55,
+    bottom: 10,
     right: 10,
     alignItems: 'center',
     justifyContent: 'center',

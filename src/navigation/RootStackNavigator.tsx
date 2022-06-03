@@ -1,12 +1,12 @@
 import React from 'react'
 import {createStackNavigator} from '@react-navigation/stack'
-import Login from '../screens/RootStack/Login'
+//import Login from '../screens/RootStack/Login'
 import MainTabNavigator from './MainTabNavigator'
 import WriteGoodsStackNavigator from './WriteGoodsStackNavigator'
-import FindId from '../screens/RootStack/FindId'
-import FindPassword from '../screens/RootStack/FindPassword'
-import CreateAccount from '../screens/RootStack/CreateAccount'
-import GoodsDetail from '../screens/GoodsStack/GoodsDetail'
+//import FindId from '../screens/RootStack/FindId'
+//import FindPassword from '../screens/RootStack/FindPassword'
+//import CreateAccount from '../screens/RootStack/CreateAccount'
+//import GoodsDetail from '../screens/GoodsStack/GoodsDetail'
 import GoodsStackNavigator from './GoodsStackNavigator'
 
 const Stack = createStackNavigator()

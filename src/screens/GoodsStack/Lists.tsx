@@ -6,7 +6,7 @@ import {white, black} from '../../theme'
 import StackHeader from '../../components/utils/StackHeader'
 import Notification from '../../components/utils/Notification'
 import {createListItem} from '../../data/createListItem'
-import GoodsListItem from '../../components/GoodsListItem'
+import GoodsListItem from '../../components/MainTab/GoodsListItem'
 import FloatingButton from '../../components/utils/FloatingButton'
 import AddIcon from '../../assets/icons/add.svg'
 
