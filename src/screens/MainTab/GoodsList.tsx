@@ -8,7 +8,7 @@ import {white, black, styles as s} from '../../theme'
 import StackHeader from '../../components/utils/StackHeader'
 import Notification from '../../components/utils/Notification'
 import {createListItem} from '../../data/createListItem'
-import {GoodsListItem, GoodsFilterTab} from '../../components/MainTab'
+import {GoodsListItem, GoodsFilterTab, GoodsListItemVer2} from '../../components/MainTab'
 import FloatingButton from '../../components/utils/FloatingButton'
 import AddIcon from '../../assets/icons/add.svg'
 
@@ -49,9 +49,12 @@ const GoodsLists = () => {
         <GoodsFilterTab locationFilter={locationFilter} setLocationFilter={setLocationFilter} />
         <FlatList
           data={listItems}
-          renderItem={({item}) => <GoodsListItem item={item}></GoodsListItem>}
+          renderItem={({item}) => <GoodsListItemVer2 item={item}></GoodsListItemVer2>}
           refreshing={refreshing}
+          numColumns={2}
+          columnWrapperStyle={{justifyContent: 'space-between'}}
           onRefresh={onRefresh}></FlatList>
+
         <FloatingButton onPress={onPressWrite}>
           <AddIcon width={24} height={24} fill="#fff" />
         </FloatingButton>
