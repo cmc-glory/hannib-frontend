@@ -10,6 +10,8 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
+    "@babel/preset-env": "^7.18.2",
+    "@babel/preset-typescript": "^7.17.12",
     "@faker-js/faker": "^7.1.0",
     "@react-native-community/checkbox": "^0.5.12",
     "@react-native-firebase/app": "^14.11.0",

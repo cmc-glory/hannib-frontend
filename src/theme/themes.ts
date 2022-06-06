@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native'
-import {black, gray500, gray300, white} from './colors'
+import {black, gray500, gray300, white, main} from './colors'
 
 export const styles = StyleSheet.create({
   label: {
@@ -22,5 +22,9 @@ export const styles = StyleSheet.create({
   safeareaview: {
     backgroundColor: white,
     flex: 1,
+  },
+  button: {
+    backgroundColor: main,
+    borderRadius: 24,
   },
 })
