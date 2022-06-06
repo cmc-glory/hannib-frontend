@@ -2,7 +2,7 @@ import React, {useCallback} from 'react'
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native'
 import {useNavigation} from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
-import {main} from '../../theme'
+import {black, main} from '../../theme'
 import GoBack from '../utils/GoBack'
 // 사용밥 : <StackHeader title="상단 제목 이름" onPressTitle="상단 제목 눌렀을 때 수행할 일">{오른쪽에 들어갈 아이콘 컴포넌트}</StackHeader>
 
@@ -35,7 +35,7 @@ const StackHeader = ({goBack, title, onPressTitle, dropdown, children}: StackHea
             <Icon name="chevron-down" size={ICON_SIZE} color={main} style={{marginLeft: 10}} />
           </TouchableOpacity>
         ) : (
-          <Text style={[styles.title]}>{title}</Text>
+          <Text style={title == '마이페이지' ? [styles.blackTitle] : [styles.title]}>{title}</Text>
         )}
       </View>
 
@@ -59,5 +59,10 @@ const styles = StyleSheet.create({
     fontFamily: 'Pretendard-Bold',
     fontSize: 20,
     color: main,
+  },
+  blackTitle: {
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 20,
+    color: black,
   },
 })
