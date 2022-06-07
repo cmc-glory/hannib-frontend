@@ -1,6 +1,6 @@
 import React, {useState, useCallback, useMemo, useRef} from 'react'
 import {View, Text, ScrollView, StyleSheet, Animated, Dimensions} from 'react-native'
-import {HeaderImage, Content} from '../../components/GoodsStack'
+import {HeaderImage, Content, GoodsDetailHeader} from '../../components/GoodsStack'
 import {SafeAreaView} from 'react-native-safe-area-context'
 
 export const GoodsDetail = () => {
@@ -19,6 +19,7 @@ export const GoodsDetail = () => {
 
   return (
     <SafeAreaView edges={['bottom']} style={{flex: 1}}>
+      <GoodsDetailHeader />
       {headerHeight > 0 ? <Content headerHeight={headerHeight} scrollY={scrollY} /> : null}
       <Animated.View style={{...styles.headerContainer, transform: [{translateY: headerTranslateY}]}} onLayout={headerOnLayout} pointerEvents="box-none">
         <HeaderImage />

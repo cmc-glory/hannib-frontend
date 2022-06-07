@@ -3,6 +3,8 @@ import {View, StyleSheet, Text, Animated, Pressable, Dimensions} from 'react-nat
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5'
 import {useNavigation} from '@react-navigation/native'
 import FastImage from 'react-native-fast-image'
+import {getStatusBarHeight} from 'react-native-status-bar-height'
+
 import {Tag, ProductTag} from '../utils'
 import {NoticeBanner, RelatedSharing} from './'
 import {FloatingBottomButton} from '../utils/FloatingBottomButton'
@@ -21,7 +23,7 @@ export function Content(props: any) {
     <View style={styles.rootContainer}>
       <Animated.ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={[styles.container, {marginTop: headerHeight - 24, minHeight: window.height + headerHeight}]}
+        contentContainerStyle={[styles.container, {marginTop: headerHeight - 72 - getStatusBarHeight(), minHeight: window.height + headerHeight}]}
         scrollEventThrottle={16}
         onScroll={Animated.event([{nativeEvent: {contentOffset: {y: props.scrollY}}}], {useNativeDriver: true})}
         bounces={false}>

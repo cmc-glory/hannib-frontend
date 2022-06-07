@@ -4,8 +4,6 @@ import {main} from '../../theme'
 
 const ICON_SIZE = 24
 
-const Dropdown = () => {
+export const Dropdown = () => {
   return <DropdownIcon width={ICON_SIZE} height={ICON_SIZE} fill={main} />
 }
-
-export default Dropdown
