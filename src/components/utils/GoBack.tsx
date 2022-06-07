@@ -3,8 +3,6 @@ import GoBackIcon from '../../assets/icons/goBack.svg'
 
 const ICON_SIZE = 24
 
-const Dropdown = () => {
+export const GoBack = () => {
   return <GoBackIcon width={ICON_SIZE} height={ICON_SIZE} />
 }
-
-export default Dropdown

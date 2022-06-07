@@ -3,16 +3,14 @@ import {View, StyleSheet, Text, Animated, Pressable, Dimensions} from 'react-nat
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5'
 import {useNavigation} from '@react-navigation/native'
 import FastImage from 'react-native-fast-image'
-import Tag from '../utils/Tag'
-import ProductTag from '../utils/ProductTag'
-import {NoticeBanner} from './NoticeBanner'
-import RelatedSharing from './RelatedSharing'
+import {Tag, ProductTag} from '../utils'
+import {NoticeBanner, RelatedSharing} from './'
 import {FloatingBottomButton} from '../utils/FloatingBottomButton'
 import {main, gray800, gray500, gray700, secondary, styles as s, white} from '../../theme'
 
 const window = Dimensions.get('window')
 
-function CollapsibleFlatList(props: any) {
+export function Content(props: any) {
   const {headerHeight} = props
   const navigation = useNavigation()
   const onPressRequest = useCallback(() => {
@@ -42,13 +40,17 @@ function CollapsibleFlatList(props: any) {
             </View>
           </View>
           <Text style={[styles.date]}>2022.06.07</Text>
-          <View style={[styles.tagContainer, {marginTop: 15}]}>
-            <View style={[styles.tagContainer]}>
-              <ProductTag label="제품1" />
+          <View style={[{marginTop: 15}]}>
+            <View style={[styles.tagContainer, {marginBottom: 10}]}>
+              <ProductTag label="BTS 진 컨셉의 하트 키링" />
               <Text style={[styles.quantityText]}>30개</Text>
             </View>
-            <View style={[styles.tagContainer]}>
-              <ProductTag label="제품2" />
+            <View style={[styles.tagContainer, {marginBottom: 10}]}>
+              <ProductTag label="BTS 지민 컨셉의 스페이드 키링" />
+              <Text style={[styles.quantityText]}>30개</Text>
+            </View>
+            <View style={[styles.tagContainer, {marginBottom: 10}]}>
+              <ProductTag label="BTS 뷔 컨셉의 클로버 키링" />
               <Text style={[styles.quantityText]}>30개</Text>
             </View>
           </View>
@@ -139,5 +141,3 @@ const styles = StyleSheet.create({
   },
   padding: {padding: 20},
 })
-
-export default CollapsibleFlatList

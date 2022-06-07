@@ -3,8 +3,7 @@ import {View, ScrollView, Text, StyleSheet, Image, FlatList, TouchableOpacity} f
 import {SafeAreaView} from 'react-native-safe-area-context'
 import MyPageListItem from '../../components/MyPageListItem'
 import {white, black, Button} from '../../theme'
-import StackHeader from '../../components/utils/StackHeader'
-import Notification from '../../components/utils/Notification'
+import {Notification, StackHeader} from '../../components/utils'
 import {
   KakaoOAuthToken,
   KakaoProfile,

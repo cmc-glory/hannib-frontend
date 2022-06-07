@@ -4,9 +4,8 @@ import {SafeAreaView} from 'react-native-safe-area-context'
 
 import AddIcon from '../../assets/icons/add.svg'
 import RemoveIcon from '../../assets/icons/minus-svgrepo-com.svg'
-import StackHeader from '../../components/utils/StackHeader'
+import {StackHeader, NextButton} from '../../components/utils'
 import {black, gray200, styles as s} from '../../theme'
-import {NextButton} from '../../components/utils/NextButton'
 
 const ICON_SIZE = 16
 const BUTTON_SIZE = 24

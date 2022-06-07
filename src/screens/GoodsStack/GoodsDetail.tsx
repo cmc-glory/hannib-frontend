@@ -1,7 +1,6 @@
 import React, {useState, useCallback, useMemo, useRef} from 'react'
 import {View, Text, ScrollView, StyleSheet, Animated, Dimensions} from 'react-native'
-import {HeaderImage} from '../../components/GoodsStack'
-import Content from '../../components/GoodsStack/Content'
+import {HeaderImage, Content} from '../../components/GoodsStack'
 import {SafeAreaView} from 'react-native-safe-area-context'
 
 export const GoodsDetail = () => {

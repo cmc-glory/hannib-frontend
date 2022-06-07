@@ -8,15 +8,13 @@ type FloatingButtonProps = {
   color?: string
 }
 
-const FloatingButton = ({onPress, children}: FloatingButtonProps) => {
+export const FloatingButton = ({onPress, children}: FloatingButtonProps) => {
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
       {children}
     </TouchableOpacity>
   )
 }
-
-export default FloatingButton
 
 const styles = StyleSheet.create({
   container: {

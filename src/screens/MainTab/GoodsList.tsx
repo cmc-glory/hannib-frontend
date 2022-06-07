@@ -6,10 +6,9 @@ import Icon from 'react-native-vector-icons/Ionicons'
 
 import {white, black, styles as s} from '../../theme'
 import StackHeader from '../../components/utils/StackHeader'
-import Notification from '../../components/utils/Notification'
+import {Notification, FloatingButton} from '../../components/utils'
 import {createListItem} from '../../data/createListItem'
 import {GoodsListItem, GoodsFilterTab, GoodsListItemVer2} from '../../components/MainTab'
-import FloatingButton from '../../components/utils/FloatingButton'
 import AddIcon from '../../assets/icons/add.svg'
 
 const wait = (timeout: any) => {

@@ -7,7 +7,7 @@ const padding = 15 // 화면 좌 우 패딩
 const margin = 15 // 각 이미지 사이 간격
 const imageSize = (width - (padding * 2 + margin * 2)) / 3 // 세 개의 이미지가 들어가므로 3으로 나눔
 
-const RelatedSharing = () => {
+export const RelatedSharing = () => {
   return (
     <View style={[styles.relatedSharingContainer]}>
       <Text style={[styles.header]}>관련 인기 나눔</Text>
@@ -32,8 +32,6 @@ const RelatedSharing = () => {
     </View>
   )
 }
-
-export default RelatedSharing
 
 const styles = StyleSheet.create({
   container: {

@@ -3,9 +3,8 @@ import {View, Text, TextInput, ScrollView, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {Switch} from 'react-native-paper'
 
-import StackHeader from '../../components/utils/StackHeader'
+import {StackHeader, NextButton} from '../../components/utils'
 import {StepIndicator, DatePicker, GoodsInput, AdditionalQuestions} from '../../components/WriteGoodsStack'
-import {NextButton} from '../../components/utils/NextButton'
 import {styles as s, black} from '../../theme'
 
 export const WriteGoodsOffline = () => {
