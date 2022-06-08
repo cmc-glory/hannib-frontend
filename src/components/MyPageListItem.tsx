@@ -58,6 +58,7 @@ const styles = StyleSheet.create({
   container: {
     marginVertical: 15,
     marginRight: 12,
+    width: '50%',
   },
   image: {
     borderRadius: 8,
