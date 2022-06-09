@@ -1,12 +1,26 @@
-import React, {useState, useMemo} from 'react'
-import {View, ScrollView, Text, StyleSheet, Image, FlatList, TouchableOpacity, Pressable, useWindowDimensions, Dimensions, Animated} from 'react-native'
+import React, {useState, useMemo, useCallback} from 'react'
+import {
+  View,
+  ScrollView,
+  Text,
+  StyleSheet,
+  Image,
+  FlatList,
+  TouchableOpacity,
+  Pressable,
+  useWindowDimensions,
+  Dimensions,
+  Animated,
+  RefreshControl,
+} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
-import {TabView, SceneMap} from 'react-native-tab-view'
+import {TabView, SceneMap, TabBar} from 'react-native-tab-view'
 import MyPageListItem from '../../components/MyPageListItem'
-import {white, black, main, gray50, gray700} from '../../theme'
+import {white, black, main, gray50, gray700, gray500} from '../../theme'
 import StackHeader from '../../components/utils/StackHeader'
 import Icon from 'react-native-vector-icons/Ionicons'
 import Notification from '../../components/utils/Notification'
+import styled from 'styled-components/native'
 import {
   KakaoOAuthToken,
   KakaoProfile,
@@ -17,6 +31,10 @@ import {
   unlink,
   loginWithKakaoAccount,
 } from '@react-native-seoul/kakao-login'
+
+const wait = (timeout: any) => {
+  return new Promise(resolve => setTimeout(resolve, timeout))
+}
 
 const {width} = Dimensions.get('window')
 const padding = 15
@@ -44,18 +62,23 @@ const participating = [
 ]
 
 export const MyPage = () => {
-  const layout = useWindowDimensions()
+  const [refreshing, setRefreshing] = useState<boolean>(false)
+  const onRefresh = useCallback(() => {
+    setRefreshing(true)
+    wait(2000).then(() => setRefreshing(false))
+  }, [])
+
   const [result, setResult] = useState<string>('')
   CONTAINER_SIZE = useMemo(() => {
     return width - padding - margin
   }, [])
   ONPRGRS_CONTAINER_HEIGHT = useMemo(() => {
-    return 200 * Math.ceil(onPrgrs.length / 2)
+    return 200 * Math.ceil(onPrgrs.length / 2) + 50
   }, [])
   PRTCPT_CONTAINER_HEIGHT = useMemo(() => {
-    return 200 * Math.ceil(participating.length / 2)
+    return 200 * Math.ceil(participating.length / 2) + 50
   }, [])
-  MAX_HEIGHT = Math.max(ONPRGRS_CONTAINER_HEIGHT, PRTCPT_CONTAINER_HEIGHT) + 50
+  MAX_HEIGHT = Math.max(ONPRGRS_CONTAINER_HEIGHT, PRTCPT_CONTAINER_HEIGHT)
 
   const signInWithKakao = async (): Promise<void> => {
     console.log('kakao login ~~ ')
@@ -71,7 +94,10 @@ export const MyPage = () => {
     setResult(JSON.stringify(token))
   }
 
-  const FirstRoute = () => {
+  const FirstRoute = ({isActiveTab}: any) => {
+    if (!isActiveTab) {
+      return <View />
+    }
     return (
       <View style={[styles.tabViewContainer]}>
         {onPrgrs.map((item, idx) => (
@@ -81,7 +107,10 @@ export const MyPage = () => {
     )
   }
 
-  const SecondRoute = () => {
+  const SecondRoute = ({isActiveTab}: any) => {
+    if (!isActiveTab) {
+      return <View />
+    }
     return (
       <View style={[styles.tabViewContainer]}>
         {participating.map((item, idx) => (
@@ -96,31 +125,10 @@ export const MyPage = () => {
     second: SecondRoute,
   })
   const [index, setIndex] = useState<any>(0)
-  const [routes] = useState<Array<object>>([
+  const [routes] = useState<Array<any>>([
     {key: 'first', title: '진행중인 나눔'},
     {key: 'second', title: '참여중인 나눔'},
   ])
-
-  const renderTabBar = (props: any) => {
-    const inputRange = props.navigationState.routes.map((x: any, i: any) => i)
-
-    return (
-      <View style={styles.tabBar}>
-        {props.navigationState.routes.map((route: any, i: any) => {
-          const opacity = props.position.interpolate({
-            inputRange,
-            outputRange: inputRange.map((inputIndex: any) => (inputIndex === i ? 1 : 0.5)),
-          })
-
-          return (
-            <TouchableOpacity style={styles.tabItem} onPress={() => setIndex(i)}>
-              <Animated.Text style={[{opacity, fontSize: 16, fontWeight: '700'}]}>{route.title}</Animated.Text>
-            </TouchableOpacity>
-          )
-        })}
-      </View>
-    )
-  }
 
   return (
     <SafeAreaView>
@@ -138,7 +146,7 @@ export const MyPage = () => {
             <Text style={{color: '#fff'}}>Sign in with Kakao</Text>
           </TouchableOpacity>
         ) : (
-          <ScrollView style={styles.contentsContainer}>
+          <ScrollView style={styles.contentsContainer} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
             <View style={styles.profileContainer}>
               <Image source={require(imgSrc)} style={styles.profileImg} />
               <Text style={[styles.description]}>춤추는 고양이</Text>
@@ -147,7 +155,35 @@ export const MyPage = () => {
               </Pressable>
             </View>
             <View style={[styles.shareInfoContainer, {width: CONTAINER_SIZE, height: MAX_HEIGHT}]}>
-              <TabView navigationState={{index, routes}} renderScene={renderScene} onIndexChange={setIndex} renderTabBar={renderTabBar} />
+              <TabView
+                navigationState={{index, routes}}
+                renderScene={({route}) => {
+                  switch (route.key) {
+                    case 'first':
+                      return FirstRoute({isActiveTab: index === 0})
+                    case 'second':
+                      return SecondRoute({isActiveTab: index === 1})
+                    default:
+                      return null
+                  }
+                }}
+                onIndexChange={setIndex}
+                renderTabBar={props => (
+                  <TabBar
+                    {...props}
+                    indicatorStyle={{
+                      backgroundColor: 'rgb(240, 80, 20)',
+                    }}
+                    style={{
+                      backgroundColor: 'white',
+                      shadowOffset: {height: 0, width: 0},
+                      shadowColor: 'transparent',
+                    }}
+                    pressColor={'transparent'}
+                    renderLabel={({route, focused}) => <TabLabel focused={focused}>{route.title}</TabLabel>}
+                  />
+                )}
+              />
             </View>
           </ScrollView>
         )}
@@ -155,6 +191,12 @@ export const MyPage = () => {
     </SafeAreaView>
   )
 }
+
+const TabLabel = styled.Text`
+  color: ${props => (props.focused ? black : gray500)};
+  font-size: 16px;
+  font-weight: 700;
+`
 
 const styles = StyleSheet.create({
   container: {
