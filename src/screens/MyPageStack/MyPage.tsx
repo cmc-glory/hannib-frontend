@@ -1,6 +1,8 @@
 import React, {useState} from 'react'
 import {View, ScrollView, Text, StyleSheet, Image, FlatList, TouchableOpacity} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
+import {GoogleSignin, GoogleSigninButton} from '@react-native-google-signin/google-signin'
+import auth from '@react-native-firebase/auth'
 import MyPageListItem from '../../components/MyPageListItem'
 import {white, black, Button} from '../../theme'
 import {Notification, StackHeader} from '../../components/utils'
@@ -38,23 +40,31 @@ export const MyPage = () => {
     console.log('token : ', JSON.stringify(token))
     console.log('profile : ', JSON.stringify(profile))
 
-    // login()
-    //   .then(res => console.log('성공', res))
-    //   .catch(error => console.log(error))
-
     setResult(JSON.stringify(token))
   }
 
-  return (
+  const SignInWithGoogle = async () => {
+    const {idToken} = await GoogleSignin.signIn()
+    const googleCredential = auth.GoogleAuthProvider.credential(idToken)
+    console.log(googleCredential)
+    return auth().signInWithCredential(googleCredential)
+  }
+
+  https: return (
     <SafeAreaView>
       <View style={[styles.container]}>
         <StackHeader title="마이페이지">
           <Notification />
         </StackHeader>
         {result == '' ? (
-          <TouchableOpacity style={[styles.button]} onPress={() => signInWithKakao()}>
-            <Text style={{color: '#fff'}}>Sign in with Kakao</Text>
-          </TouchableOpacity>
+          <View style={{alignSelf: 'center', width: '100%'}}>
+            <TouchableOpacity style={[styles.button]} onPress={() => signInWithKakao()}>
+              <Text style={{color: '#fff'}}>Sign in with Kakao</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.button]} onPress={() => SignInWithGoogle()}>
+              <Text style={{color: '#fff'}}>Sign in with Google</Text>
+            </TouchableOpacity>
+          </View>
         ) : (
           <ScrollView style={styles.contentsContainer}>
             <View style={styles.profileContainer}>
@@ -91,6 +101,7 @@ export const MyPage = () => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
+    flex: 1,
   },
   contentsContainer: {
     backgroundColor: '#fff',
@@ -104,7 +115,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 8,
     height: 50,
-    marginVertical: 200,
+    marginVertical: 50,
     marginHorizontal: 20,
   },
   profileContainer: {

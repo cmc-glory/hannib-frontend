@@ -1122,7 +1122,7 @@
     "minimatch" "^3.0.4"
     "strip-json-comments" "^3.1.1"
 
-"@expo/config-plugins@^4.1.5":
+"@expo/config-plugins@^4.1.0", "@expo/config-plugins@^4.1.5":
   "integrity" "sha512-RVvU40RtZt12HavuDAe+LDIq9lHj7sheOfMEHdmpJ/uTA8pgvkbc56XF6JHQD+yRr6+uhhb+JnAasGq49dsQbw=="
   "resolved" "https://registry.npmjs.org/@expo/config-plugins/-/config-plugins-4.1.5.tgz"
   "version" "4.1.5"
@@ -1675,10 +1675,20 @@
     "opencollective-postinstall" "^2.0.1"
     "superstruct" "^0.6.2"
 
+"@react-native-firebase/auth@^14.11.0":
+  "integrity" "sha512-h4JJI3DKKpiVLX+FDiFNprUHquoBkZUZA+bpIZoRGHOr9V8GzcD4IGBs2biWOYYGfEvGZvTVlHXlZOo4rmWEuA=="
+  "resolved" "https://registry.npmjs.org/@react-native-firebase/auth/-/auth-14.11.0.tgz"
+  "version" "14.11.0"
+
 "@react-native-firebase/messaging@^14.11.0":
   "integrity" "sha512-9d3fMXlz+J8mHJk1ouipSGpeH2YeSYYITKnp0WjtrT1VYm/pdW8bVydmfTNigpXw9enUmRoErbzKd+6VlSnvmw=="
   "resolved" "https://registry.npmjs.org/@react-native-firebase/messaging/-/messaging-14.11.0.tgz"
   "version" "14.11.0"
+
+"@react-native-google-signin/google-signin@^7.2.2":
+  "integrity" "sha512-FqSJAEYz+SNeIOyokFX3e7nbBgK0js/Hye0YNY+cV0Qf1NxKw1vRt2MQB3kfuVWFCb+OSovgQCl6W8dhYvsblw=="
+  "resolved" "https://registry.npmjs.org/@react-native-google-signin/google-signin/-/google-signin-7.2.2.tgz"
+  "version" "7.2.2"
 
 "@react-native-seoul/kakao-login@^4.1.0":
   "integrity" "sha512-UY8hsmae3rem1Ra+mGBTJEipRXh/eY8ZKer9eW0ktOTBWp4kvJjgonL059p6OWUGkPWVX4NqpD9fB0eYKBYOsw=="

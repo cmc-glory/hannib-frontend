@@ -1,10 +1,11 @@
 import 'react-native-gesture-handler'
-import React, {useEffect} from 'react'
+import React, {useEffect, useCallback} from 'react'
 import {Alert} from 'react-native'
 import {SafeAreaProvider} from 'react-native-safe-area-context'
 import {NavigationContainer} from '@react-navigation/native'
 import messaging from '@react-native-firebase/messaging'
 import {setCustomText} from 'react-native-global-props'
+import {GoogleSignin} from '@react-native-google-signin/google-signin'
 
 import MainTabNavigator from './src/navigation/MainTabNavigator'
 import RootStackNavigtor from './src/navigation/RootStackNavigator'
@@ -28,13 +29,22 @@ const customTextProps = {
 }
 
 const App = () => {
+  const googleSigninConfigure = useCallback(() => {
+    GoogleSignin.configure({
+      webClientId: '10776992039-a2u306icmbug1iivc4p3nekco3055rjf.apps.googleusercontent.com',
+    })
+  }, [])
   useEffect(() => {
+    // 기본 폰트를 pretendard로 지정
     setCustomText(customTextProps)
 
+    // 구글 로그인 설정
+    googleSigninConfigure()
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage))
     })
 
+    // 알림 허용 설정 요청
     requestUserPermission()
     return unsubscribe
   }, [])
