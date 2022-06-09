@@ -29,6 +29,13 @@
             {
               "client_id": "10776992039-a2u306icmbug1iivc4p3nekco3055rjf.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "10776992039-sktfc4fij3bhjmr5ij8apd3efu4s8v8j.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.cmc.hannib"
+              }
             }
           ]
         }
