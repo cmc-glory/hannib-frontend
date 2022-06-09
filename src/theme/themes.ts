@@ -15,8 +15,8 @@ export const styles = StyleSheet.create({
   input: {
     borderColor: gray300,
     borderWidth: 1,
-    borderRadius: 8,
-    height: 40,
+    borderRadius: 4,
+    height: 48,
     paddingHorizontal: 15,
   },
   safeareaview: {
