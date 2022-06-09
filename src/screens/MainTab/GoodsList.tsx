@@ -44,7 +44,7 @@ const GoodsLists = () => {
           <Notification />
         </View>
       </StackHeader>
-      <View style={[{flex: 1}, s.wrapper]}>
+      <View style={[s.wrapper]}>
         <GoodsFilterTab locationFilter={locationFilter} setLocationFilter={setLocationFilter} />
         <FlatList
           data={listItems}

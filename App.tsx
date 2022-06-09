@@ -6,7 +6,7 @@ import {NavigationContainer} from '@react-navigation/native'
 import messaging from '@react-native-firebase/messaging'
 import {setCustomText} from 'react-native-global-props'
 import {GoogleSignin} from '@react-native-google-signin/google-signin'
-
+import {gray800} from './src/theme'
 import MainTabNavigator from './src/navigation/MainTabNavigator'
 import RootStackNavigtor from './src/navigation/RootStackNavigator'
 
@@ -25,6 +25,7 @@ async function requestUserPermission() {
 const customTextProps = {
   style: {
     fontFamily: 'Pretendard-Regular',
+    color: gray800,
   },
 }
 

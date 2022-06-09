@@ -16,7 +16,7 @@ export function Content(props: any) {
   const {headerHeight} = props
   const navigation = useNavigation()
   const onPressRequest = useCallback(() => {
-    navigation.navigate('WriteGoodsStackNavigator')
+    navigation.navigate('GoodsRequest')
   }, [])
 
   return (

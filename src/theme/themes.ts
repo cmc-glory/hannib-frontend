@@ -27,4 +27,12 @@ export const styles = StyleSheet.create({
     backgroundColor: main,
     borderRadius: 24,
   },
+  bold16: {
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 16,
+  },
+  bold20: {
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 20,
+  },
 })
