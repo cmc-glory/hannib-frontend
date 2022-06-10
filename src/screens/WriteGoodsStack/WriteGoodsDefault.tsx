@@ -9,9 +9,11 @@ import {SelectCategory, ImagePicker, StepIndicator, HashTag, SetSharingType} fro
 import {NextButton, FloatingBottomButton} from '../../components/utils'
 import type {IHashtag, ISharingType} from '../../types'
 import {InputContainer, Label, Input, Button, black, white, styles as s} from '../../theme'
+import {useAutoFocus, AutoFocusProvider} from '../../contexts'
 
 export const WriteGoodsDefault = () => {
   const navigation = useNavigation()
+  const focus = useAutoFocus()
   const [images, setImages] = useState<Asset[]>([])
   const [type, setType] = useState<ISharingType>('online')
   const [hashtags, setHashtags] = useState<IHashtag[]>([])
@@ -26,17 +28,19 @@ export const WriteGoodsDefault = () => {
   return (
     <SafeAreaView edges={['top', 'bottom']} style={{backgroundColor: '#fff', flex: 1}}>
       <StackHeader goBack title="모집폼 작성" />
-      <ScrollView style={[styles.container]}>
+      {/* <ScrollView style={[styles.container]}> */}
+      <AutoFocusProvider contentContainerStyle={[styles.keyboardAwareFocus]}>
         <StepIndicator step={1} />
+
         <ImagePicker images={images} setImages={setImages} />
         <SelectCategory />
         <InputContainer>
           <Text style={[s.bold16, styles.label]}>제목</Text>
-          <TextInput style={s.input} />
+          <TextInput style={s.input} onFocus={focus} />
         </InputContainer>
         <InputContainer>
           <Text style={[s.bold16, styles.label]}>내용</Text>
-          <TextInput multiline={true} style={[s.input, {height: 100}]} />
+          <TextInput multiline={true} onFocus={focus} style={[s.input, {height: 100}]} />
         </InputContainer>
         <InputContainer>
           <Text style={[s.bold16, styles.label]}>해시태그</Text>
@@ -54,13 +58,19 @@ export const WriteGoodsDefault = () => {
             </Button>
           </View> */}
         </InputContainer>
-      </ScrollView>
-      <FloatingBottomButton label="다음" onPress={type == 'offline' ? onPressOffline : onPressOnline} />
+        {/* </ScrollView> */}
+        <FloatingBottomButton label="다음" onPress={type == 'offline' ? onPressOffline : onPressOnline} />
+      </AutoFocusProvider>
     </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
+  keyboardAwareFocus: {
+    //flex: 1,
+    backgroundColor: '#fff',
+    paddingHorizontal: 15,
+  },
   label: {
     marginBottom: 10,
   },

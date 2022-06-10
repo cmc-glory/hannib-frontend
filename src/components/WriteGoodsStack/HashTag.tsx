@@ -4,6 +4,7 @@ import uuid from 'react-native-uuid'
 import IonicIcons from 'react-native-vector-icons/Ionicons'
 import type {IHashtag} from '../../types'
 import {styles as s, gray300, gray500} from '../../theme'
+import {useAutoFocus} from '../../contexts'
 
 type HashTagProps = {
   hashtags: IHashtag[]
@@ -28,9 +29,13 @@ const HashTagItem = ({item, onPressX}: HashtagItemProps) => {
 }
 
 export const HashTag = ({hashtags, setHashtags}: HashTagProps) => {
+  const focus = useAutoFocus()
   const [content, setContent] = useState<string>('')
   const endEditing = useCallback(() => {
     const tempContent = content
+
+    // do not create hashtag when content is empty
+    if (tempContent == '') return
     setContent('')
     setHashtags(hashtags =>
       hashtags.concat({
@@ -46,7 +51,7 @@ export const HashTag = ({hashtags, setHashtags}: HashTagProps) => {
 
   return (
     <View>
-      <TextInput style={s.input} onChangeText={setContent} value={content} onEndEditing={endEditing} />
+      <TextInput style={s.input} onChangeText={setContent} value={content} onFocus={focus} onEndEditing={endEditing} />
       <View style={[styles.hashtagWrapper]}>
         {hashtags?.map(hashtag => (
           <HashTagItem key={hashtag.id} item={hashtag} onPressX={onPressX} />

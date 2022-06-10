@@ -48,8 +48,10 @@ const GoodsLists = () => {
         <GoodsFilterTab locationFilter={locationFilter} setLocationFilter={setLocationFilter} />
         <FlatList
           data={listItems}
-          renderItem={({item}) => <GoodsListItem item={item}></GoodsListItem>}
+          renderItem={({item}) => <GoodsListItemVer2 item={item}></GoodsListItemVer2>}
           refreshing={refreshing}
+          numColumns={2}
+          columnWrapperStyle={{justifyContent: 'space-between'}}
           onRefresh={onRefresh}></FlatList>
 
         <FloatingButton onPress={onPressWrite}>
