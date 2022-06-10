@@ -16,6 +16,8 @@ import {
   unlink,
   loginWithKakaoAccount,
 } from '@react-native-seoul/kakao-login'
+import {useAppSelector, useAppDispatch} from '../../hooks'
+import {login as ReduxLogin} from '../../redux/slices'
 
 const imgSrc = '../../assets/images/image1.jpeg'
 const onPrgrs = [
@@ -32,25 +34,32 @@ const participating = [
 
 export const MyPage = () => {
   const [result, setResult] = useState<string>('')
+  const dispatch = useAppDispatch()
 
   const signInWithKakao = async (): Promise<void> => {
-    console.log('kakao login ~~ ')
     const token: KakaoOAuthToken = await login()
     const profile: KakaoProfile | KakaoProfileNoneAgreement = await getKakaoProfile()
-    console.log('token : ', JSON.stringify(token))
-    console.log('profile : ', JSON.stringify(profile))
+    console.log('kakao token : ', JSON.stringify(token))
+    console.log('kakao profile : ', JSON.stringify(profile))
 
+    dispatch(ReduxLogin)
     setResult(JSON.stringify(token))
   }
 
   const SignInWithGoogle = async () => {
-    const {idToken} = await GoogleSignin.signIn()
+    const {idToken, user} = await GoogleSignin.signIn()
+
     const googleCredential = auth.GoogleAuthProvider.credential(idToken)
-    console.log(googleCredential)
+    //console.log(googleCredential)
+    dispatch(ReduxLogin)
     return auth().signInWithCredential(googleCredential)
   }
+  //console.log(result)
 
-  https: return (
+  const count = useAppSelector(state => state.auth.isLoggedIn)
+  console.log(count)
+
+  return (
     <SafeAreaView>
       <View style={[styles.container]}>
         <StackHeader title="마이페이지">
@@ -63,6 +72,10 @@ export const MyPage = () => {
             </TouchableOpacity>
             <TouchableOpacity style={[styles.button]} onPress={() => SignInWithGoogle()}>
               <Text style={{color: '#fff'}}>Sign in with Google</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={[styles.button]}>
+              <Text style={{color: '#fff'}}>Sign in with Apple</Text>
             </TouchableOpacity>
           </View>
         ) : (
@@ -105,6 +118,7 @@ const styles = StyleSheet.create({
   },
   contentsContainer: {
     backgroundColor: '#fff',
+    height: 800,
   },
   button: {
     width: '90%',

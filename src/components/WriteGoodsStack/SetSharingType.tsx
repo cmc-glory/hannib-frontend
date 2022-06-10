@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react'
+import React, {useCallback, useEffect} from 'react'
 import {View, Text, Pressable, StyleSheet, Dimensions} from 'react-native'
 import type {ISharingType} from '../../types'
 import {styles as s, white, gray500, gray200, main} from '../../theme'
@@ -40,6 +40,11 @@ export const SetSharingType = ({type, setType}: SetSharingTypeProps) => {
   const onPressOnline = useCallback(() => {
     setType('online')
   }, [])
+
+  useEffect(() => {
+    console.log(type)
+  }, [type])
+
   return (
     <>
       {type == 'online' ? (

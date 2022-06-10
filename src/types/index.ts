@@ -7,3 +7,9 @@ export type IHashtag = {
 }
 
 export type ISharingType = 'offline' | 'online' | ''
+
+export type IProductInfo = {
+  name: string
+  quantity: number
+  id: string
+}

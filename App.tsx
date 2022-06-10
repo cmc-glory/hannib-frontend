@@ -9,6 +9,9 @@ import {GoogleSignin} from '@react-native-google-signin/google-signin'
 import {gray800} from './src/theme'
 import MainTabNavigator from './src/navigation/MainTabNavigator'
 import RootStackNavigtor from './src/navigation/RootStackNavigator'
+import {store} from './src/redux/store'
+import {Provider as ReduxProvider} from 'react-redux'
+import {name as appName} from './app.json'
 
 // 권한 설정이 필요한 곳에 넣으면 됨.
 // 현재는 테스트를 위해 첫 페이지에 넣음.
@@ -51,11 +54,13 @@ const App = () => {
   }, [])
 
   return (
-    <SafeAreaProvider style={{flex: 1, backgroundColor: 'white'}}>
-      <NavigationContainer>
-        <RootStackNavigtor />
-      </NavigationContainer>
-    </SafeAreaProvider>
+    <ReduxProvider store={store}>
+      <SafeAreaProvider style={{flex: 1, backgroundColor: 'white'}}>
+        <NavigationContainer>
+          <RootStackNavigtor />
+        </NavigationContainer>
+      </SafeAreaProvider>
+    </ReduxProvider>
   )
 }
 

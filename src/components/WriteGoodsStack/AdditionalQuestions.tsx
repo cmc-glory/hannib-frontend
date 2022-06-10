@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
   wrapper: {
     flexDirection: 'row',
     width: '100%',
+    marginTop: 7.5,
   },
   input: {
     marginRight: 10,
