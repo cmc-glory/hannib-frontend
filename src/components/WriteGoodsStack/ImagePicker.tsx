@@ -49,7 +49,7 @@ export const ImagePicker = ({images, setImages}: ImagePickerProps) => {
   }, [])
 
   React.useEffect(() => {
-    console.log(images)
+    console.log('images : ', images)
   }, [images])
 
   const onImageLibraryPress = useCallback(() => {
