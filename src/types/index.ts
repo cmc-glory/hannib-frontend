@@ -12,4 +12,5 @@ export type IProductInfo = {
   name: string
   quantity: number
   id: string
+  productLimit?: number
 }

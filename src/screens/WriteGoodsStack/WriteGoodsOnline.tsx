@@ -3,23 +3,20 @@ import {View, Text, TextInput, ScrollView, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {Switch} from 'react-native-paper'
 import {StackHeader, FloatingBottomButton} from '../../components/utils'
-import {StepIndicator, GoodsInput, AdditionalQuestions} from '../../components/WriteGoodsStack'
+import {StepIndicator, GoodsInput, AdditionalQuestions, ProductInfo} from '../../components/WriteGoodsStack'
 import {styles as s, black, white} from '../../theme'
 import {useToggle} from '../../hooks/useToggle'
+import {IProductInfo} from '../../types'
 
 export const WriteGoodsOnline = () => {
   const onPressNext = useCallback(() => {}, [])
-  const [addressEditable, toggleAddressEditable] = useToggle(false)
-  const [secretForm, toggleSecretForm] = useToggle(false)
-  //const [secretForm, setSecretForm] = useState(false)
+  const [addressEditable, toggleAddressEditable] = useToggle(false) // 주소 정보 수정 여부
+  const [quantityLimit, setQuantityLimit] = useToggle(false) // 인당 수량 제한 여부
+  const [secretForm, toggleSecretForm] = useToggle(false) // 시크릿 폼 여부
 
-  // const toggleAddressEditable = useCallback(() => {
-  //   setAddressEditable(addressEditable => !addressEditable)
-  // }, [])
-
-  // const toggleSecretForm = useCallback(() => {
-  //   setSecretForm(secretForm => !secretForm)
-  // }, [])
+  const [productInfos, setProductInfos] = useState<IProductInfo[]>([]) // 상품 정보 state
+  const [addtionalQuestions, setAdditionalQuestions] = useState<string[]>([]) // 추가 질문 사항 state
+  const [secretPassword, setSecretPassword] = useState('')
 
   return (
     <SafeAreaView style={{backgroundColor: '#fff', flex: 1}}>
@@ -35,8 +32,7 @@ export const WriteGoodsOnline = () => {
           </View>
         </View>
         <View style={[s.wrapper]}>
-          <Text style={[s.bold16]}>상품 정보</Text>
-          <GoodsInput />
+          <ProductInfo productInfos={productInfos} setProductInfos={setProductInfos} quantityLimit={quantityLimit} setQuantityLimit={setQuantityLimit} />
         </View>
         <View style={[s.wrapper]}>
           <Text style={[s.bold16]}>추가 질문 사항</Text>
@@ -48,7 +44,7 @@ export const WriteGoodsOnline = () => {
             <Text style={[s.bold16]}>시크릿 폼</Text>
             <Switch color={black} onValueChange={toggleSecretForm} value={secretForm} style={styles.switch} />
           </View>
-          <TextInput style={[s.input, styles.input]} />
+          <TextInput style={[s.input, styles.input]} value={secretPassword} onChangeText={setSecretPassword} />
         </View>
       </ScrollView>
       <FloatingBottomButton label="다음" onPress={onPressNext} />
