@@ -10,6 +10,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
+    "@actbase/react-daum-postcode": "^1.0.4",
     "@babel/preset-env": "^7.18.2",
     "@babel/preset-typescript": "^7.17.12",
     "@faker-js/faker": "^7.1.0",
@@ -54,6 +55,7 @@
     "react-native-tab-view": "^3.1.1",
     "react-native-uuid": "^2.0.1",
     "react-native-vector-icons": "^9.1.0",
+    "react-native-webview": "^11.22.1",
     "react-redux": "^8.0.2",
     "styled-components": "^5.3.5"
   },

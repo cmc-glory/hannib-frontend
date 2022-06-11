@@ -14,3 +14,11 @@ export type IProductInfo = {
   id: string
   productLimit?: number
 }
+
+export type IRequestForm = {
+  recieveDate: string
+  name: string
+  twitterid: string
+  address: {postcode: string; roadAddress: string; fullAddress: string}
+  phonenumber: string
+}

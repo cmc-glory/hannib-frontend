@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@actbase/react-daum-postcode@^1.0.4":
+  "integrity" "sha512-cTUnwfnKLM9LMh4dBPxbfGeCjpbJQcq/R6oW2aEJO20qz4i8cA7sPf0HkUyYqENfuGFU+vbsSJ8LJwNhTYoFLQ=="
+  "resolved" "https://registry.npmjs.org/@actbase/react-daum-postcode/-/react-daum-postcode-1.0.4.tgz"
+  "version" "1.0.4"
+
 "@ampproject/remapping@^2.1.0":
   "integrity" "sha512-qRmjj8nj9qmLTQXXmaR1cck3UXSRMPrbsLJAasZpF+t3riI71BXed5ebIOYwQntykeZuhjsdweEc9BxH5Jc26w=="
   "resolved" "https://registry.npmjs.org/@ampproject/remapping/-/remapping-2.2.0.tgz"
@@ -3693,6 +3698,11 @@
   "resolved" "https://registry.npmjs.org/escape-string-regexp/-/escape-string-regexp-4.0.0.tgz"
   "version" "4.0.0"
 
+"escape-string-regexp@2.0.0":
+  "integrity" "sha512-UpzcLCXolUWcNu5HtVMHYdXJjArjsF9C0aNnquZYY4uW/Vu0miy5YoWvbV345HauVvcAUnpRuhMMcqTcGOY2+w=="
+  "resolved" "https://registry.npmjs.org/escape-string-regexp/-/escape-string-regexp-2.0.0.tgz"
+  "version" "2.0.0"
+
 "escodegen@^2.0.0":
   "integrity" "sha512-mmHKys/C8BFUGI+MAWNcSYoORYLMdPzjrknd2Vc+bUsjN5bXcr8EhrNB+UTqfL1y3I9c4fw2ihgtMPQLBRiQxw=="
   "resolved" "https://registry.npmjs.org/escodegen/-/escodegen-2.0.0.tgz"
@@ -4649,7 +4659,7 @@
     "has" "^1.0.3"
     "side-channel" "^1.0.4"
 
-"invariant@*", "invariant@^2.2.4":
+"invariant@*", "invariant@^2.2.4", "invariant@2.2.4":
   "integrity" "sha512-phJfQVBuaJM5raOpJjSfkiD6BpbCE4Ns//LaXl6wGYtUBY83nWS6Rf9tXm2e8VaK60JEjYldbPif/A2B1C2gNA=="
   "resolved" "https://registry.npmjs.org/invariant/-/invariant-2.2.4.tgz"
   "version" "2.2.4"
@@ -7050,6 +7060,14 @@
   dependencies:
     "prop-types" "^15.7.2"
     "yargs" "^16.1.1"
+
+"react-native-webview@^11.22.1":
+  "integrity" "sha512-tO0okHgNo5r3XKlem5UHJ/4UOxXbwcvLxFiaDaBba0PhAZFyfOx1ku4WsHv91+aSO6iNJFnPULVMawQemI8/DA=="
+  "resolved" "https://registry.npmjs.org/react-native-webview/-/react-native-webview-11.22.1.tgz"
+  "version" "11.22.1"
+  dependencies:
+    "escape-string-regexp" "2.0.0"
+    "invariant" "2.2.4"
 
 "react-native@*", "react-native@>= 0.55.x", "react-native@>= 0.62", "react-native@>=0.42.0", "react-native@>=0.48.4", "react-native@>=0.50.0", "react-native@>=0.59", "react-native@>=0.59.0", "react-native@>=0.60.0", "react-native@>=0.65.0", "react-native@0.68.2":
   "integrity" "sha512-qNMz+mdIirCEmlrhapAtAG+SWVx6MAiSfCbFNhfHqiqu1xw1OKXdzIrjaBEPihRC2pcORCoCHduHGQe/Pz9Yuw=="

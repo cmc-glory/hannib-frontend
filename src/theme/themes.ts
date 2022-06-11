@@ -1,6 +1,9 @@
 import {StyleSheet} from 'react-native'
 import {black, gray500, gray300, white, main} from './colors'
 
+export const PADDING_SIZE = 15
+export const INPUT_HEIGHT = 40
+
 export const styles = StyleSheet.create({
   label: {
     fontFamily: 'Pretendard-SemiBold',
@@ -9,14 +12,14 @@ export const styles = StyleSheet.create({
     marginBottom: 10,
   },
   wrapper: {
-    marginHorizontal: 15,
+    marginHorizontal: PADDING_SIZE,
     marginVertical: 10,
   },
   input: {
     borderColor: gray300,
     borderWidth: 1,
     borderRadius: 4,
-    height: 48,
+    height: INPUT_HEIGHT,
     paddingHorizontal: 15,
   },
   safeareaview: {

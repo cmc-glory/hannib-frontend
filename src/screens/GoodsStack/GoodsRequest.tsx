@@ -1,12 +1,14 @@
-import React, {useCallback} from 'react'
+import React, {useCallback, useState} from 'react'
 import {View, Text, ScrollView, TextInput, TouchableOpacity, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 
 import AddIcon from '../../assets/icons/add.svg'
 import RemoveIcon from '../../assets/icons/minus-svgrepo-com.svg'
 import {StackHeader, NextButton, FloatingBottomButton} from '../../components/utils'
+import {FindAddress} from '../../components/GoodsStack'
 import {black, white, gray200, gray500, main, gray700, styles as s} from '../../theme'
 import {useAutoFocus, AutoFocusProvider} from '../../contexts'
+import {IRequestForm} from '../../types'
 
 const ICON_SIZE = 16
 const BUTTON_SIZE = 24
@@ -35,6 +37,20 @@ const ItemQuantity = () => {
 }
 
 export const GoodsRequest = () => {
+  const [requestForm, setRequestForm] = useState<IRequestForm>({
+    recieveDate: '',
+    twitterid: '',
+    name: '',
+    address: {
+      postcode: '',
+      roadAddress: '',
+      detailedAddress: '',
+    },
+    phonenumber: '',
+  })
+
+  const onChangeText = useCallback(() => {}, [])
+
   const onPressRequest = useCallback(() => {}, [])
   const focus = useAutoFocus()
   return (
@@ -55,27 +71,54 @@ export const GoodsRequest = () => {
 
         <View style={[s.wrapper]}>
           <Text style={s.bold16}>나눔 수령일</Text>
-          <TextInput style={[s.input, styles.input]} placeholder="나눔 수령일 선택" onFocus={focus} placeholderTextColor={gray200} />
+          <TextInput
+            value={requestForm.recieveDate}
+            onChange={(e: any) => setRequestForm({...requestForm, recieveDate: e.nativeEvent.text})}
+            style={[s.input, styles.input]}
+            placeholder="나눔 수령일 선택"
+            onFocus={focus}
+            placeholderTextColor={gray200}
+          />
         </View>
         <View style={[s.wrapper]}>
           <Text style={s.bold16}>이름</Text>
-          <TextInput style={[s.input, styles.input]} placeholder="이름" onFocus={focus} placeholderTextColor={gray200} />
+          <TextInput
+            value={requestForm.name}
+            onChange={(e: any) => setRequestForm({...requestForm, name: e.nativeEvent.text})}
+            style={[s.input, styles.input]}
+            placeholder="이름"
+            onFocus={focus}
+            placeholderTextColor={gray200}
+          />
         </View>
         <View style={[s.wrapper]}>
           <Text style={s.bold16}>트위터 아이디</Text>
-          <TextInput style={[s.input, styles.input]} placeholder="트위터 아이디" onFocus={focus} placeholderTextColor={gray200} />
+          <TextInput
+            value={requestForm.twitterid}
+            onChange={(e: any) => setRequestForm({...requestForm, twitterid: e.nativeEvent.text})}
+            style={[s.input, styles.input]}
+            placeholder="트위터 아이디"
+            onFocus={focus}
+            placeholderTextColor={gray200}
+          />
         </View>
         <View style={[s.wrapper]}>
           <Text style={s.bold16}>주소</Text>
-          <TextInput style={[s.input, styles.input]} placeholder="주소" onFocus={focus} placeholderTextColor={gray200} />
+          <FindAddress requestForm={requestForm} setRequestForm={setRequestForm} />
         </View>
 
         <View style={[s.wrapper, {marginBottom: 80}]}>
           <Text style={s.bold16}>전화번호</Text>
-          <TextInput style={[s.input, styles.input]} placeholder="전화번호" onFocus={focus} placeholderTextColor={gray200} />
+          <TextInput
+            value={requestForm.phonenumber}
+            onChange={(e: any) => setRequestForm({...requestForm, phonenumber: e.nativeEvent.text})}
+            style={[s.input, styles.input]}
+            placeholder="전화번호"
+            onFocus={focus}
+            placeholderTextColor={gray200}
+          />
         </View>
       </AutoFocusProvider>
-      {/* <NextButton text="신청하기" onPressNext={onPressRequest} /> */}
       <FloatingBottomButton label="제출하기" />
     </SafeAreaView>
   )
