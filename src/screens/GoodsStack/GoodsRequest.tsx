@@ -6,6 +6,7 @@ import AddIcon from '../../assets/icons/add.svg'
 import RemoveIcon from '../../assets/icons/minus-svgrepo-com.svg'
 import {StackHeader, NextButton, FloatingBottomButton} from '../../components/utils'
 import {black, white, gray200, gray500, main, gray700, styles as s} from '../../theme'
+import {useAutoFocus, AutoFocusProvider} from '../../contexts'
 
 const ICON_SIZE = 16
 const BUTTON_SIZE = 24
@@ -35,10 +36,11 @@ const ItemQuantity = () => {
 
 export const GoodsRequest = () => {
   const onPressRequest = useCallback(() => {}, [])
+  const focus = useAutoFocus()
   return (
     <SafeAreaView style={s.safeareaview}>
       <StackHeader title="신청하기" goBack />
-      <ScrollView>
+      <AutoFocusProvider>
         <Text style={[s.wrapper, styles.title]}>Lorem ipsum dolor sit amet, consectetur </Text>
 
         <View style={[s.wrapper]}>
@@ -53,26 +55,26 @@ export const GoodsRequest = () => {
 
         <View style={[s.wrapper]}>
           <Text style={s.bold16}>나눔 수령일</Text>
-          <TextInput style={[s.input, styles.input]} placeholder="나눔 수령일 선택" placeholderTextColor={gray200} />
+          <TextInput style={[s.input, styles.input]} placeholder="나눔 수령일 선택" onFocus={focus} placeholderTextColor={gray200} />
         </View>
         <View style={[s.wrapper]}>
           <Text style={s.bold16}>이름</Text>
-          <TextInput style={[s.input, styles.input]} placeholder="이름" placeholderTextColor={gray200} />
+          <TextInput style={[s.input, styles.input]} placeholder="이름" onFocus={focus} placeholderTextColor={gray200} />
         </View>
         <View style={[s.wrapper]}>
           <Text style={s.bold16}>트위터 아이디</Text>
-          <TextInput style={[s.input, styles.input]} placeholder="트위터 아이디" placeholderTextColor={gray200} />
+          <TextInput style={[s.input, styles.input]} placeholder="트위터 아이디" onFocus={focus} placeholderTextColor={gray200} />
         </View>
         <View style={[s.wrapper]}>
           <Text style={s.bold16}>주소</Text>
-          <TextInput style={[s.input, styles.input]} placeholder="주소" placeholderTextColor={gray200} />
+          <TextInput style={[s.input, styles.input]} placeholder="주소" onFocus={focus} placeholderTextColor={gray200} />
         </View>
 
         <View style={[s.wrapper, {marginBottom: 80}]}>
           <Text style={s.bold16}>전화번호</Text>
-          <TextInput style={[s.input, styles.input]} placeholder="전화번호" placeholderTextColor={gray200} />
+          <TextInput style={[s.input, styles.input]} placeholder="전화번호" onFocus={focus} placeholderTextColor={gray200} />
         </View>
-      </ScrollView>
+      </AutoFocusProvider>
       {/* <NextButton text="신청하기" onPressNext={onPressRequest} /> */}
       <FloatingBottomButton label="제출하기" />
     </SafeAreaView>
