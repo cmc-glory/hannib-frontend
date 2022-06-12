@@ -1,11 +1,24 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useCallback} from 'react'
 import {View, Text, TextInput, StyleSheet} from 'react-native'
 import FastImage from 'react-native-fast-image'
 import axios from 'axios'
 import * as theme from '../../theme'
+import {IStar} from '../../types'
 
-export const SearchStar = () => {
+type SearchStarProps = {
+  setStars: React.Dispatch<React.SetStateAction<IStar[]>>
+  starsAll: IStar[]
+}
+
+export const SearchStar = ({setStars, starsAll}: SearchStarProps) => {
   const [keyword, setKeyword] = useState<string>('') // 검색 키워드
+
+  const searchKeyword = useCallback(() => {
+    // 입력 값이 없을 때는 리턴
+    if (keyword == '') return
+    setStars(starsAll.filter(star => star.name.includes(keyword)))
+    setKeyword('')
+  }, [keyword])
 
   return (
     <View style={styles.container}>
@@ -17,6 +30,7 @@ export const SearchStar = () => {
           value={keyword}
           onChangeText={setKeyword}
           placeholder="검색어를 입력해 주세요."
+          onEndEditing={searchKeyword}
           placeholderTextColor={theme.gray300}></TextInput>
       </View>
     </View>

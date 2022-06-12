@@ -24,10 +24,11 @@ export const SelectCategory = () => {
       .then(res => res.json())
       .then(result => {
         result.forEach((item: any) => (item.selected = false)) // selected 초기화
-
+        setStarsAll(result)
         const singers = result.filter((item: any) => item.maincategory == 'singer') // 가수만 골라서
         setSingers(singers) // singer에 저장
         setActors(result.filter((item: any) => item.maincategory == 'actor')) // 배우만 골라서 actors에 저장
+
         setStars(singers) // 초기 보여줄 화면은 singers
         setSelectedStars([])
       })
@@ -42,17 +43,16 @@ export const SelectCategory = () => {
     setStars(actors)
   }, [actors])
 
-  useEffect(() => {
-    console.log(selectedStars)
-  }, [selectedStars])
   const onPressCategory = useCallback(
     (category: IStar) => {
       const {id} = category
 
+      // 최대 선택 개수 초과
       if (selectedStars.length == 5) {
-        const found = selectedStars.filter(star => star.id == id)
+        const found = selectedStars.filter(star => star.id == id) // 5개 중 하나 선택 해제하는 경우
 
         if (found.length == 0) {
+          // 선택된 5개 외에 다른 걸 선택한 경우
           Alert.alert('최대 5명까지 선택 가능합니다')
           return
         }
@@ -91,7 +91,7 @@ export const SelectCategory = () => {
           <Button selected={singerSelected} label="가수" style={{width: BUTTON_WIDTH}} onPress={onPressSinger} />
           <Button selected={!singerSelected} label="배우" style={{width: BUTTON_WIDTH}} onPress={onPressActor} />
         </View>
-        <SearchStar />
+        <SearchStar starsAll={starsAll} setStars={setStars} />
         <FlatList
           data={stars}
           renderItem={({item}) => <CategoryItem category={item} onPress={onPressCategory} />}
