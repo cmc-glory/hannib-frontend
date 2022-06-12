@@ -1,0 +1,8 @@
+[
+  {"id": "0", "maincategory": "singer", "name": "aespa", "uri": "http://localhost:8081/src/assets/images/aespa.jpeg"},
+  {"id": "1", "maincategory": "singer", "name": "IU", "uri": "http://localhost:8081/src/assets/images/iu.jpeg"},
+  {"id": "2", "maincategory": "singer", "name": "BTS", "uri": "http://localhost:8081/src/assets/images/bts.jpeg"},
+  {"id": "3", "maincategory": "actor", "name": "주우재", "uri": "http://localhost:8081/src/assets/images/joowoojae.jpeg"},
+  {"id": "4", "maincategory": "actor", "name": "박진영", "uri": "http://localhost:8081/src/assets/images/parkjinyoung.jpeg"},
+  {"id": "5", "maincategory": "actor", "name": "이도현", "uri": "http://localhost:8081/src/assets/images/leedohyeon.png"}
+]

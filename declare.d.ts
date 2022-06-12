@@ -20,5 +20,9 @@ declare namespace ReactNavigation {
     GoodsStackNavigator: undefined
     SplashScreen: undefined
     LoginStackNavigator: undefined
+    SelectCategory: {
+      email: string
+      name: string
+    }
   }
 }

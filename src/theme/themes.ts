@@ -2,7 +2,7 @@ import {StyleSheet} from 'react-native'
 import {black, gray500, gray300, white, main} from './colors'
 
 export const PADDING_SIZE = 15
-export const INPUT_HEIGHT = 40
+export const INPUT_HEIGHT = 48
 
 export const styles = StyleSheet.create({
   label: {

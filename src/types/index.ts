@@ -22,3 +22,11 @@ export type IRequestForm = {
   address: {postcode: string; roadAddress: string; detailedAddress: string}
   phonenumber: string
 }
+
+export type IStar = {
+  id: string
+  maincategory: 'singer' | 'actor'
+  name: 'string'
+  uri: string
+  selected: boolean
+}
