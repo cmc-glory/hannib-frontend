@@ -12,11 +12,11 @@ const Check = () => {
   )
 }
 
-export const CategoryItem = ({category, onPress}: {category: IStar; onPress?: () => void}) => {
+export const CategoryItem = ({category, onPress}: {category: IStar; onPress: (category: IStar) => void}) => {
   const {name, uri, selected} = category
 
   return (
-    <Pressable style={[styles.container]}>
+    <Pressable style={[styles.container]} onPress={() => onPress(category)}>
       {selected && <Check />}
       <FastImage style={[styles.image, selected && styles.selectedImage]} source={{uri: uri}}></FastImage>
       <Text style={[styles.artistname]}>{name}</Text>

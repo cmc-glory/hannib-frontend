@@ -23,23 +23,65 @@ export const SelectCategory = () => {
     })
       .then(res => res.json())
       .then(result => {
-        result.forEach((item: any) => (item.selected = true)) // selected 초기화
+        result.forEach((item: any) => (item.selected = false)) // selected 초기화
 
         const singers = result.filter((item: any) => item.maincategory == 'singer') // 가수만 골라서
         setSingers(singers) // singer에 저장
         setActors(result.filter((item: any) => item.maincategory == 'actor')) // 배우만 골라서 actors에 저장
         setStars(singers) // 초기 보여줄 화면은 singers
+        setSelectedStars([])
       })
   }, [])
 
   const onPressSinger = useCallback(() => {
     setSingerSelected(true)
     setStars(singers)
-  }, [])
+  }, [singers])
   const onPressActor = useCallback(() => {
     setSingerSelected(false)
     setStars(actors)
-  }, [])
+  }, [actors])
+
+  useEffect(() => {
+    console.log(selectedStars)
+  }, [selectedStars])
+  const onPressCategory = useCallback(
+    (category: IStar) => {
+      const {id} = category
+
+      if (selectedStars.length == 5) {
+        const found = selectedStars.filter(star => star.id == id)
+
+        if (found.length == 0) {
+          Alert.alert('최대 5명까지 선택 가능합니다')
+          return
+        }
+      }
+
+      if (singerSelected) {
+        const tempSinger = singers.map(star => {
+          if (star.id == id) {
+            star.selected = !star.selected
+            star.selected ? setSelectedStars([...selectedStars, category]) : setSelectedStars(selectedStars.filter(selectedStar => selectedStar.id !== id))
+          }
+          return star
+        })
+        setSingers(tempSinger)
+        setStars(tempSinger)
+      } else {
+        const tempActor = actors.map(star => {
+          if (star.id == id) {
+            star.selected = !star.selected
+            star.selected ? setSelectedStars([...selectedStars, category]) : setSelectedStars(selectedStars.filter(selectedStar => selectedStar.id !== id))
+          }
+          return star
+        })
+        setActors(tempActor)
+        setStars(tempActor)
+      }
+    },
+    [stars],
+  )
 
   return (
     <SafeAreaView style={styles.rootContainer}>
@@ -52,7 +94,7 @@ export const SelectCategory = () => {
         <SearchStar />
         <FlatList
           data={stars}
-          renderItem={({item}) => <CategoryItem category={item} />}
+          renderItem={({item}) => <CategoryItem category={item} onPress={onPressCategory} />}
           numColumns={3}
           columnWrapperStyle={{justifyContent: 'space-between', marginVertical: 10}}
         />
