@@ -1,14 +1,17 @@
 import React, {useMemo, useState, useEffect, useCallback} from 'react'
-import {View, Text, ScrollView, StyleSheet, Dimensions, FlatList, Alert} from 'react-native'
+import {View, StyleSheet, Dimensions, FlatList, Alert} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
+import {useNavigation} from '@react-navigation/native'
 import {StackHeader, Button, CategoryItem, FloatingBottomButton} from '../../components/utils'
-import {SearchStar} from '../../components/LoginStack'
+import {SearchStar, EmptyResult} from '../../components/LoginStack'
 import * as theme from '../../theme'
 import {IStar} from '../../types'
 
 const BUTTON_GAP = 10
 
 export const SelectCategory = () => {
+  const navigation = useNavigation()
+
   const BUTTON_WIDTH = useMemo(() => (Dimensions.get('window').width - theme.PADDING_SIZE * 2 - BUTTON_GAP) / 2, [])
   const [singerSelected, setSingerSelected] = useState(true) // 가수, 배우 대분류 선택
   const [starsAll, setStarsAll] = useState<IStar[]>([]) // 서버에서 받아온 연예인 데이터 전부
@@ -42,6 +45,11 @@ export const SelectCategory = () => {
     setSingerSelected(false)
     setStars(actors)
   }, [actors])
+
+  const onPressSelectCompletion = useCallback(() => {
+    if (selectedStars.length == 0) return
+    navigation.navigate('MainTabNavigator')
+  }, [selectedStars])
 
   const onPressCategory = useCallback(
     (category: IStar) => {
@@ -92,14 +100,18 @@ export const SelectCategory = () => {
           <Button selected={!singerSelected} label="배우" style={{width: BUTTON_WIDTH}} onPress={onPressActor} />
         </View>
         <SearchStar starsAll={starsAll} setStars={setStars} />
-        <FlatList
-          data={stars}
-          renderItem={({item}) => <CategoryItem category={item} onPress={onPressCategory} />}
-          numColumns={3}
-          columnWrapperStyle={{justifyContent: 'space-between', marginVertical: 10}}
-        />
+        {stars.length == 0 ? (
+          <EmptyResult />
+        ) : (
+          <FlatList
+            data={stars}
+            renderItem={({item}) => <CategoryItem category={item} onPress={onPressCategory} />}
+            numColumns={3}
+            columnWrapperStyle={{justifyContent: 'space-between', marginVertical: 10}}
+          />
+        )}
       </View>
-      <FloatingBottomButton label="선택 완료" enabled={selectedStars.length != 0} />
+      <FloatingBottomButton label="선택 완료" enabled={selectedStars.length != 0} onPress={onPressSelectCompletion} />
     </SafeAreaView>
   )
 }

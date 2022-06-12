@@ -76,7 +76,7 @@ export function Content(props: any) {
           <RelatedSharing />
         </View>
       </Animated.ScrollView>
-      <FloatingBottomButton label="신청하기" onPress={onPressRequest} />
+      <FloatingBottomButton label="신청하기" onPress={onPressRequest} enabled />
     </View>
   )
 }
