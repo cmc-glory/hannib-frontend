@@ -30,6 +30,10 @@ export const styles = StyleSheet.create({
     backgroundColor: main,
     borderRadius: 24,
   },
+  disabledButton: {
+    backgroundColor: gray300,
+    borderRadius: 24,
+  },
   bold16: {
     fontFamily: 'Pretendard-Bold',
     fontSize: 16,

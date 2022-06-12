@@ -5,11 +5,12 @@ import {main, white, styles as s} from '../../theme'
 type FloatingBottoButtonProps = {
   label: string
   onPress?: () => void
+  enabled?: boolean
 }
 
-export const FloatingBottomButton = ({label, onPress}: FloatingBottoButtonProps) => {
+export const FloatingBottomButton = ({label, onPress, enabled = false}: FloatingBottoButtonProps) => {
   return (
-    <Pressable onPress={onPress} style={[s.wrapper, styles.container, s.button]}>
+    <Pressable onPress={onPress} style={[s.wrapper, styles.container, enabled ? s.button : s.disabledButton]}>
       <Text style={styles.label}>{label}</Text>
     </Pressable>
   )

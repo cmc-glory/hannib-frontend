@@ -99,7 +99,7 @@ export const SelectCategory = () => {
           columnWrapperStyle={{justifyContent: 'space-between', marginVertical: 10}}
         />
       </View>
-      <FloatingBottomButton label="선택 완료" />
+      <FloatingBottomButton label="선택 완료" enabled={selectedStars.length != 0} />
     </SafeAreaView>
   )
 }
