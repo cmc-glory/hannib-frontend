@@ -4,10 +4,8 @@ import FastImage from 'react-native-fast-image'
 import Modal from 'react-native-modal'
 import type {Asset} from 'react-native-image-picker'
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker'
-import {black, white} from '../../theme'
+import {black, white, gray300, gray700, gray800, styles as s} from '../../theme'
 import AddIcon from '../../assets/icons/add_light.svg'
-import {Touchable} from 'react-native'
-import {useEffect} from 'react'
 
 const IMAGE_SIZE = 70
 const BORDER_SIZE = IMAGE_SIZE / 2
@@ -51,7 +49,7 @@ export const ImagePicker = ({images, setImages}: ImagePickerProps) => {
   }, [])
 
   React.useEffect(() => {
-    console.log(images)
+    console.log('images : ', images)
   }, [images])
 
   const onImageLibraryPress = useCallback(() => {
@@ -68,14 +66,14 @@ export const ImagePicker = ({images, setImages}: ImagePickerProps) => {
 
   return (
     <View style={[styles.contianer]}>
-      <Text style={[styles.title]}>이미지 선택</Text>
+      <Text style={[s.bold16, {marginBottom: 10}]}>대표 이미지 등록</Text>
       <View style={[styles.imageContainer]}>
         {images.map(image => (
           <ImagePreview key={image.uri} uri={image.uri} />
         ))}
         <TouchableOpacity onPress={showModal}>
           <View style={[styles.addImage]}>
-            <AddIcon width={IMAGE_SIZE * 0.3} height={IMAGE_SIZE * 0.3} fill={black} />
+            <AddIcon width={IMAGE_SIZE * 0.3} height={IMAGE_SIZE * 0.3} fill={gray700} />
           </View>
         </TouchableOpacity>
 
@@ -91,17 +89,12 @@ const styles = StyleSheet.create({
   contianer: {
     marginVertical: 10,
   },
-  title: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 18,
-    color: black,
-    marginBottom: 10,
-  },
+
   image: {
     width: IMAGE_SIZE,
     height: IMAGE_SIZE,
     borderRadius: 8,
-    marginRight: 5,
+    marginRight: 10,
   },
   imageContainer: {
     flexDirection: 'row',
@@ -113,7 +106,7 @@ const styles = StyleSheet.create({
     height: IMAGE_SIZE,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: black,
+    borderColor: gray300,
     justifyContent: 'center',
     alignItems: 'center',
   },

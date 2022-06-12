@@ -2,8 +2,8 @@ import React, {useCallback} from 'react'
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native'
 import {useNavigation} from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
-import {black, main} from '../../theme'
-import GoBack from '../utils/GoBack'
+import {main, black} from '../../theme'
+import {GoBack} from './GoBack'
 // 사용밥 : <StackHeader title="상단 제목 이름" onPressTitle="상단 제목 눌렀을 때 수행할 일">{오른쪽에 들어갈 아이콘 컴포넌트}</StackHeader>
 
 type StackHeaderParams = {
@@ -16,7 +16,7 @@ type StackHeaderParams = {
 
 const ICON_SIZE = 12
 
-const StackHeader = ({goBack, title, onPressTitle, dropdown, children}: StackHeaderParams) => {
+export const StackHeader = ({goBack, title, onPressTitle, dropdown, children}: StackHeaderParams) => {
   const navigation = useNavigation()
   const onPressGoback = useCallback(() => {
     navigation.goBack()
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: 'Pretendard-Bold',
     fontSize: 20,
-    color: main,
+    color: black,
   },
   blackTitle: {
     fontFamily: 'Pretendard-Bold',

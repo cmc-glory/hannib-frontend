@@ -3,9 +3,8 @@ import {View, Text, TextInput, ScrollView, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {Switch} from 'react-native-paper'
 
-import StackHeader from '../../components/utils/StackHeader'
+import {StackHeader, FloatingBottomButton} from '../../components/utils'
 import {StepIndicator, DatePicker, GoodsInput, AdditionalQuestions} from '../../components/WriteGoodsStack'
-import {NextButton} from '../../components/utils/NextButton'
 import {styles as s, black} from '../../theme'
 
 export const WriteGoodsOffline = () => {
@@ -41,7 +40,7 @@ export const WriteGoodsOffline = () => {
           <TextInput style={s.input} />
         </View>
       </ScrollView>
-      <NextButton text="다음" onPressNext={onPressNext} />
+      <FloatingBottomButton label="다음" onPress={onPressNext} />
     </SafeAreaView>
   )
 }

@@ -17,10 +17,11 @@ import {SafeAreaView} from 'react-native-safe-area-context'
 import {TabView, SceneMap, TabBar} from 'react-native-tab-view'
 import MyPageListItem from '../../components/MyPageListItem'
 import {white, black, main, gray50, gray700, gray500} from '../../theme'
-import StackHeader from '../../components/utils/StackHeader'
 import Icon from 'react-native-vector-icons/Ionicons'
-import Notification from '../../components/utils/Notification'
 import styled from 'styled-components/native'
+import {GoogleSignin, GoogleSigninButton} from '@react-native-google-signin/google-signin'
+import auth from '@react-native-firebase/auth'
+import {Notification, StackHeader} from '../../components/utils'
 import {
   KakaoOAuthToken,
   KakaoProfile,
@@ -31,6 +32,8 @@ import {
   unlink,
   loginWithKakaoAccount,
 } from '@react-native-seoul/kakao-login'
+import {useAppSelector, useAppDispatch} from '../../hooks'
+import {login as ReduxLogin} from '../../redux/slices'
 
 const wait = (timeout: any) => {
   return new Promise(resolve => setTimeout(resolve, timeout))
@@ -79,18 +82,15 @@ export const MyPage = () => {
     return 200 * Math.ceil(participating.length / 2) + 50
   }, [])
   MAX_HEIGHT = Math.max(ONPRGRS_CONTAINER_HEIGHT, PRTCPT_CONTAINER_HEIGHT)
+  const dispatch = useAppDispatch()
 
   const signInWithKakao = async (): Promise<void> => {
-    console.log('kakao login ~~ ')
     const token: KakaoOAuthToken = await login()
     const profile: KakaoProfile | KakaoProfileNoneAgreement = await getKakaoProfile()
-    console.log('token : ', JSON.stringify(token))
-    console.log('profile : ', JSON.stringify(profile))
+    console.log('kakao token : ', JSON.stringify(token))
+    console.log('kakao profile : ', JSON.stringify(profile))
 
-    // login()
-    //   .then(res => console.log('성공', res))
-    //   .catch(error => console.log(error))
-
+    dispatch(ReduxLogin)
     setResult(JSON.stringify(token))
   }
 
@@ -129,6 +129,18 @@ export const MyPage = () => {
     {key: 'first', title: '진행중인 나눔'},
     {key: 'second', title: '참여중인 나눔'},
   ])
+  const SignInWithGoogle = async () => {
+    const {idToken, user} = await GoogleSignin.signIn()
+
+    const googleCredential = auth.GoogleAuthProvider.credential(idToken)
+    //console.log(googleCredential)
+    dispatch(ReduxLogin)
+    return auth().signInWithCredential(googleCredential)
+  }
+  //console.log(result)
+
+  const count = useAppSelector(state => state.auth.isLoggedIn)
+  console.log(count)
 
   return (
     <SafeAreaView>
@@ -142,9 +154,18 @@ export const MyPage = () => {
           </View>
         </StackHeader>
         {result == '' ? (
-          <TouchableOpacity style={[styles.button]} onPress={() => signInWithKakao()}>
-            <Text style={{color: '#fff'}}>Sign in with Kakao</Text>
-          </TouchableOpacity>
+          <View style={{alignSelf: 'center', width: '100%'}}>
+            <TouchableOpacity style={[styles.button]} onPress={() => signInWithKakao()}>
+              <Text style={{color: '#fff'}}>Sign in with Kakao</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.button]} onPress={() => SignInWithGoogle()}>
+              <Text style={{color: '#fff'}}>Sign in with Google</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={[styles.button]}>
+              <Text style={{color: '#fff'}}>Sign in with Apple</Text>
+            </TouchableOpacity>
+          </View>
         ) : (
           <ScrollView style={styles.contentsContainer} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
             <View style={styles.profileContainer}>
@@ -201,9 +222,11 @@ const TabLabel = styled.Text`
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
+    flex: 1,
   },
   contentsContainer: {
     backgroundColor: '#fff',
+    height: 800,
   },
   button: {
     width: '90%',
@@ -214,7 +237,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 8,
     height: 50,
-    marginVertical: 200,
+    marginVertical: 50,
     marginHorizontal: 20,
   },
   profileContainer: {

@@ -1,18 +1,22 @@
 import React, {useState, useCallback} from 'react'
-import {View, ScrollView, Text, StyleSheet} from 'react-native'
+import {View, ScrollView, Text, TextInput, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import type {Asset} from 'react-native-image-picker'
 import {useNavigation} from '@react-navigation/native'
 
 import StackHeader from '../../components/utils/StackHeader'
-import {SelectCategory, ImagePicker, StepIndicator} from '../../components/WriteGoodsStack'
-import {NextButton} from '../../components/utils/NextButton'
-import {InputContainer, Label, Input, Button, black, white} from '../../theme'
+import {SelectCategory, ImagePicker, StepIndicator, HashTag, SetSharingType} from '../../components/WriteGoodsStack'
+import {NextButton, FloatingBottomButton} from '../../components/utils'
+import type {IHashtag, ISharingType} from '../../types'
+import {InputContainer, Label, Input, Button, black, white, styles as s} from '../../theme'
+import {useAutoFocus, AutoFocusProvider} from '../../contexts'
 
 export const WriteGoodsDefault = () => {
   const navigation = useNavigation()
+  const focus = useAutoFocus()
   const [images, setImages] = useState<Asset[]>([])
-  const [type, setType] = useState<'WriteGoodsOffline' | 'WriteGoodsOnline' | ''>('')
+  const [type, setType] = useState<ISharingType>('online')
+  const [hashtags, setHashtags] = useState<IHashtag[]>([])
 
   const onPressOffline = useCallback(() => {
     navigation.navigate('WriteGoodsOffline')
@@ -24,40 +28,52 @@ export const WriteGoodsDefault = () => {
   return (
     <SafeAreaView edges={['top', 'bottom']} style={{backgroundColor: '#fff', flex: 1}}>
       <StackHeader goBack title="모집폼 작성" />
-      <ScrollView style={[styles.container]}>
+      {/* <ScrollView style={[styles.container]}> */}
+      <AutoFocusProvider contentContainerStyle={[styles.keyboardAwareFocus]}>
         <StepIndicator step={1} />
+
         <ImagePicker images={images} setImages={setImages} />
         <SelectCategory />
         <InputContainer>
-          <Label>제목</Label>
-          <Input />
+          <Text style={[s.bold16, styles.label]}>제목</Text>
+          <TextInput style={s.input} onFocus={focus} />
         </InputContainer>
         <InputContainer>
-          <Label>내용</Label>
-          <Input />
+          <Text style={[s.bold16, styles.label]}>내용</Text>
+          <TextInput multiline={true} onFocus={focus} style={[s.input, {height: 100}]} />
         </InputContainer>
         <InputContainer>
-          <Label>해시태그</Label>
-          <Input />
+          <Text style={[s.bold16, styles.label]}>해시태그</Text>
+          <HashTag hashtags={hashtags} setHashtags={setHashtags} />
         </InputContainer>
         <InputContainer>
-          <Label>나눔 방식</Label>
-          <View style={styles.buttons}>
+          <Text style={[s.bold16, styles.label]}>나눔 방식</Text>
+          <SetSharingType type={type} setType={setType} />
+          {/* <View style={styles.buttons}>
             <Button style={[styles.button, {backgroundColor: type == 'WriteGoodsOnline' ? black : white}]} onPress={() => setType('WriteGoodsOnline')}>
               <Text style={{color: type == 'WriteGoodsOnline' ? white : black}}>우편</Text>
             </Button>
             <Button style={[styles.button, , {backgroundColor: type == 'WriteGoodsOffline' ? black : white}]} onPress={() => setType('WriteGoodsOffline')}>
               <Text style={{color: type == 'WriteGoodsOffline' ? white : black}}>오프라인</Text>
             </Button>
-          </View>
+          </View> */}
         </InputContainer>
-      </ScrollView>
-      <NextButton text="다음" onPressNext={type == 'WriteGoodsOffline' ? onPressOffline : onPressOnline} />
+        {/* </ScrollView> */}
+        <FloatingBottomButton label="다음" onPress={type == 'offline' ? onPressOffline : onPressOnline} />
+      </AutoFocusProvider>
     </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
+  keyboardAwareFocus: {
+    //flex: 1,
+    backgroundColor: '#fff',
+    paddingHorizontal: 15,
+  },
+  label: {
+    marginBottom: 10,
+  },
   container: {
     backgroundColor: '#fff',
     paddingHorizontal: 15,

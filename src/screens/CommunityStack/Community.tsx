@@ -1,6 +1,6 @@
 import React from 'react'
 import {View, Text, StyleSheet} from 'react-native'
-import StackHeader from '../../components/utils/StackHeader'
+import {StackHeader} from '../../components/utils'
 
 export const Community = () => {
   return (

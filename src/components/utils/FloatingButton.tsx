@@ -1,5 +1,6 @@
 import React from 'react'
 import {View, Text, Platform, TouchableOpacity, StyleSheet} from 'react-native'
+import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs'
 import {main} from '../../theme'
 
 type FloatingButtonProps = {
@@ -8,15 +9,14 @@ type FloatingButtonProps = {
   color?: string
 }
 
-const FloatingButton = ({onPress, children}: FloatingButtonProps) => {
+export const FloatingButton = ({onPress, children}: FloatingButtonProps) => {
+  const tabBarHeight = useBottomTabBarHeight()
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
+    <TouchableOpacity style={[styles.container, {marginBottom: tabBarHeight}]} onPress={onPress}>
       {children}
     </TouchableOpacity>
   )
 }
-
-export default FloatingButton
 
 const styles = StyleSheet.create({
   container: {
@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     backgroundColor: main,
     position: 'absolute',
-    bottom: 10,
+    bottom: Platform.OS == 'ios' ? 0 : 20,
     right: 10,
     alignItems: 'center',
     justifyContent: 'center',

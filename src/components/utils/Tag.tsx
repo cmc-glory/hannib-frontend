@@ -1,12 +1,12 @@
 import React from 'react'
 import {View, Text, StyleSheet} from 'react-native'
-import {black, white} from '../../theme'
+import {black, main, white} from '../../theme'
 
 type TagProps = {
   label: string
 }
 
-const Tag = ({label}: TagProps) => {
+export const Tag = ({label}: TagProps) => {
   return (
     <View style={[styles.tagView]}>
       <Text style={[styles.tagText]}>{label}</Text>
@@ -14,9 +14,7 @@ const Tag = ({label}: TagProps) => {
   )
 }
 
-export default Tag
-
 const styles = StyleSheet.create({
-  tagView: {backgroundColor: black, paddingHorizontal: 8, paddingVertical: 4, borderRadius: 3, marginRight: 7.5},
-  tagText: {color: white, fontWeight: '600'},
+  tagView: {backgroundColor: main, paddingHorizontal: 8, paddingVertical: 4, borderRadius: 4, marginRight: 7.5},
+  tagText: {color: white, fontFamily: 'Pretendard-Medium'},
 })
