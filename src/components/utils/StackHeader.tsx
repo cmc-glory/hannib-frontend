@@ -35,7 +35,7 @@ export const StackHeader = ({goBack, title, onPressTitle, dropdown, children}: S
             <Icon name="chevron-down" size={ICON_SIZE} color={main} style={{marginLeft: 10}} />
           </TouchableOpacity>
         ) : (
-          <Text style={[styles.title]}>{title}</Text>
+          <Text style={title == '마이페이지' ? [styles.blackTitle] : [styles.title]}>{title}</Text>
         )}
       </View>
 
@@ -56,6 +56,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   title: {
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 20,
+    color: black,
+  },
+  blackTitle: {
     fontFamily: 'Pretendard-Bold',
     fontSize: 20,
     color: black,

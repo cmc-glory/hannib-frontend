@@ -412,7 +412,7 @@ PODS:
     - React-Core
   - react-native-pager-view (5.4.24):
     - React-Core
-  - react-native-safe-area-context (4.2.5):
+  - react-native-safe-area-context (4.3.1):
     - RCT-Folly
     - RCTRequired
     - RCTTypeSafety
