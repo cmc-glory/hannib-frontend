@@ -31,7 +31,10 @@ export const authSlice = createSlice({
       console.log('redux state : ', state)
       state.isLoggedIn = true
     },
+    storeAccessToken: (state, action: PayloadAction<string>) => {
+      state.accessToken = action.payload
+    },
   },
 })
 export default authSlice.reducer
-export const {login} = authSlice.actions
+export const {login, storeAccessToken} = authSlice.actions

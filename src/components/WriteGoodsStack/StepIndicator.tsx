@@ -2,7 +2,6 @@ import React from 'react'
 import {View, Text, StyleSheet} from 'react-native'
 
 import {StepDots} from '../utils'
-import RightArrowIcon from '../../assets/icons/right-arrow-next-svgrepo-com.svg'
 import {black, white, gray300, gray700} from '../../theme'
 
 const ICON_SIZE = 9

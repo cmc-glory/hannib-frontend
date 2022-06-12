@@ -19,6 +19,6 @@ export type IRequestForm = {
   recieveDate: string
   name: string
   twitterid: string
-  address: {postcode: string; roadAddress: string; fullAddress: string}
+  address: {postcode: string; roadAddress: string; detailedAddress: string}
   phonenumber: string
 }

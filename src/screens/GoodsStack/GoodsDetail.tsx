@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useMemo, useRef} from 'react'
+import React, {useState, useCallback, useMemo, useEffect, useRef} from 'react'
 import {View, Text, ScrollView, StyleSheet, Animated, Dimensions} from 'react-native'
 import {HeaderImage, Content, GoodsDetailHeader} from '../../components/GoodsStack'
 import {SafeAreaView} from 'react-native-safe-area-context'
@@ -14,8 +14,13 @@ export const GoodsDetail = () => {
   })
   const headerOnLayout = useCallback((event: any) => {
     const {height} = event.nativeEvent.layout
+
     setHeaderHeight(height)
   }, [])
+
+  useEffect(() => {
+    console.log('headerHeight: ', headerTranslateY)
+  }, [headerTranslateY])
 
   return (
     <SafeAreaView edges={['bottom']} style={{flex: 1}}>

@@ -18,5 +18,7 @@ declare namespace ReactNavigation {
     WriteGoodsOffline: undefined
     GoodsRequest: undefined
     GoodsStackNavigator: undefined
+    SplashScreen: undefined
+    LoginStackNavigator: undefined
   }
 }

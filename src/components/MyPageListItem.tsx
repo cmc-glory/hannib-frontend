@@ -2,7 +2,7 @@ import React, {useCallback} from 'react'
 import {View, Text, TouchableOpacity, Image, StyleSheet, ImageBackground, Pressable} from 'react-native'
 import {useNavigation} from '@react-navigation/native'
 import moment from 'moment'
-import {white, black} from '../theme/index'
+import {white, black} from '../theme'
 import Dots from '../assets/icons/dots_filled.svg'
 
 type ItemType = {

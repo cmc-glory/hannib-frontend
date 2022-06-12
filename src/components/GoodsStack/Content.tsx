@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react'
+import React, {useCallback, useEffect} from 'react'
 import {View, StyleSheet, Text, Animated, Pressable, Dimensions} from 'react-native'
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5'
 import {useNavigation} from '@react-navigation/native'
@@ -6,7 +6,8 @@ import FastImage from 'react-native-fast-image'
 import {getStatusBarHeight} from 'react-native-status-bar-height'
 
 import {Tag, ProductTag} from '../utils'
-import {NoticeBanner, RelatedSharing} from './'
+import {NoticeBanner} from './NoticeBanner'
+import {RelatedSharing} from './RelatedSharing'
 import {FloatingBottomButton} from '../utils/FloatingBottomButton'
 import {main, gray800, gray500, gray700, secondary, styles as s, white} from '../../theme'
 
@@ -18,6 +19,10 @@ export function Content(props: any) {
   const onPressRequest = useCallback(() => {
     navigation.navigate('GoodsRequest')
   }, [])
+
+  useEffect(() => {
+    console.log('scrollY:', props.scrollY)
+  }, [props.scrollY])
 
   return (
     <View style={styles.rootContainer}>
