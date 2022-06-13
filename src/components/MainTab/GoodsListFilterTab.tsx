@@ -1,8 +1,8 @@
 import React, {useMemo} from 'react'
 import {useCallback} from 'react'
 import {View, Text, Pressable, StyleSheet} from 'react-native'
-import FontAwesome from 'react-native-vector-icons/FontAwesome5'
-import {gray50, gray300, gray700, white, gray800, styles as s} from '../../theme'
+import FastImage from 'react-native-fast-image'
+import * as theme from '../../theme'
 
 type GoodsFilterTabProps = {
   locationFilter: 0 | 1 | 2
@@ -17,15 +17,8 @@ type ButtonProps = {
 }
 
 const Button = ({text, locationFilter, setLocationFilter, index}: ButtonProps) => {
-  const buttonStyle = useMemo(() => {
-    return {
-      backgroundColor: index == locationFilter ? gray800 : white,
-      borderColor: index == locationFilter ? gray800 : gray300,
-    }
-  }, [locationFilter])
-  const textStyle = useMemo(() => {
-    return {color: index == locationFilter ? gray50 : gray700}
-  }, [locationFilter])
+  const buttonStyle = useMemo(() => (index == locationFilter ? styles.selectedButton : styles.unselectedButton), [locationFilter])
+  const textStyle = useMemo(() => (index == locationFilter ? styles.selectedText : styles.unselectedText), [locationFilter])
 
   const onPressButton = useCallback(() => {
     setLocationFilter(index)
@@ -33,7 +26,7 @@ const Button = ({text, locationFilter, setLocationFilter, index}: ButtonProps) =
 
   return (
     <Pressable style={[styles.button, buttonStyle]} onPress={onPressButton}>
-      <Text style={[textStyle, {fontFamily: 'Pretendard-Medium'}]}>{text}</Text>
+      <Text style={[textStyle]}>{text}</Text>
     </Pressable>
   )
 }
@@ -50,7 +43,9 @@ export const GoodsFilterTab = ({locationFilter, setLocationFilter}: GoodsFilterT
       <View>
         <Pressable style={[styles.sortButton]}>
           <Text style={[styles.sortText]}>최신순</Text>
-          <FontAwesome name="chevron-down" size={12} color={gray800}></FontAwesome>
+          <View style={[styles.iconContainer]}>
+            <FastImage source={{uri: 'http://localhost:8081/src/assets/Icon/Bottom_arrow.png'}} style={[styles.icon]} />
+          </View>
         </Pressable>
       </View>
     </View>
@@ -58,25 +53,54 @@ export const GoodsFilterTab = ({locationFilter, setLocationFilter}: GoodsFilterT
 }
 
 const styles = StyleSheet.create({
+  icon: {
+    width: 16,
+    height: 16,
+  },
+  iconContainer: {
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  selectedButton: {
+    backgroundColor: theme.gray700,
+    borderColor: theme.gray700,
+  },
+  unselectedButton: {
+    backgroundColor: theme.white,
+    borderColor: theme.gray300,
+  },
+  selectedText: {
+    fontFamily: 'Pretendard-Bold',
+    color: theme.white,
+  },
+  unselectedText: {
+    fontFamily: 'Pretendard-Regular',
+    color: theme.gray300,
+  },
   container: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    marginBottom: 10,
+    paddingHorizontal: theme.PADDING_SIZE,
   },
   button: {
     paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 18,
+    height: 32,
+    borderRadius: 5,
     borderWidth: 1,
     marginRight: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   sortButton: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   sortText: {
-    color: gray800,
+    color: theme.gray800,
     fontFamily: 'Pretendard-Medium',
-    marginRight: 15,
   },
 })

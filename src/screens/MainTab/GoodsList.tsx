@@ -1,15 +1,15 @@
 import React, {useState, useCallback} from 'react'
-import {RefreshControl, View, Text, FlatList, TouchableOpacity, StyleSheet} from 'react-native'
+import {RefreshControl, View, Text, FlatList, Pressable, TouchableOpacity, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation} from '@react-navigation/native'
-import Icon from 'react-native-vector-icons/Ionicons'
+import IconIcons from 'react-native-vector-icons/Ionicons'
 
-import {white, black, styles as s} from '../../theme'
+import * as theme from '../../theme'
 import StackHeader from '../../components/utils/StackHeader'
-import {Notification, FloatingButton} from '../../components/utils'
+import {FloatingButton} from '../../components/utils'
 import {createListItem} from '../../data/createListItem'
 import {GoodsListItem, GoodsFilterTab, GoodsListItemVer2} from '../../components/MainTab'
-import AddIcon from '../../assets/icons/add.svg'
+import {Icon} from '../../components/utils/Icon'
 
 const wait = (timeout: any) => {
   return new Promise(resolve => setTimeout(resolve, timeout))
@@ -37,16 +37,19 @@ const GoodsLists = () => {
   return (
     <SafeAreaView style={[styles.container]} edges={['top', 'left', 'right']}>
       <StackHeader goBack={false} dropdown title="카테고리">
-        <View style={{flexDirection: 'row', alignItems: 'center', width: 65, justifyContent: 'space-between'}}>
-          <TouchableOpacity>
-            <Icon name="search-outline" size={24} color={black} />
-          </TouchableOpacity>
-          <Notification />
+        <View style={{flexDirection: 'row', alignItems: 'center', width: 64, justifyContent: 'space-between'}}>
+          <Pressable>
+            <Icon uri="http://localhost:8081/src/assets/Icon/Magnifier.png" />
+          </Pressable>
+          <Pressable>
+            <Icon uri="http://localhost:8081/src/assets/Icon/Bell.png" />
+          </Pressable>
         </View>
       </StackHeader>
-      <View style={[s.wrapper]}>
+      <View>
         <GoodsFilterTab locationFilter={locationFilter} setLocationFilter={setLocationFilter} />
         <FlatList
+          contentContainerStyle={{paddingHorizontal: theme.PADDING_SIZE}}
           data={listItems}
           renderItem={({item}) => <GoodsListItemVer2 item={item}></GoodsListItemVer2>}
           refreshing={refreshing}
@@ -55,7 +58,7 @@ const GoodsLists = () => {
           onRefresh={onRefresh}></FlatList>
 
         <FloatingButton onPress={onPressWrite}>
-          <AddIcon width={24} height={24} fill="#fff" />
+          <IconIcons name="add-outline" color={theme.white} size={32} />
         </FloatingButton>
       </View>
     </SafeAreaView>
@@ -66,7 +69,7 @@ export default GoodsLists
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: white,
+    backgroundColor: theme.white,
     flex: 1,
   },
 })

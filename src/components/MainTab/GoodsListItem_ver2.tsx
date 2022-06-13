@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   container: {
-    marginVertical: 15,
+    marginBottom: 20,
   },
   image: {
     borderRadius: 24,

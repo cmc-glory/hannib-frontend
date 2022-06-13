@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     backgroundColor: main,
     position: 'absolute',
-    bottom: Platform.OS == 'ios' ? 0 : 20,
+    bottom: Platform.OS == 'ios' ? 25 : 45,
     right: 10,
     alignItems: 'center',
     justifyContent: 'center',
