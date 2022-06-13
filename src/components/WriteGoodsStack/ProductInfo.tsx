@@ -69,11 +69,11 @@ export const ProductInfo = ({productInfos, setProductInfos, quantityLimit, setQu
   return (
     <View>
       <View style={[styles.header]}>
-        <Text style={[theme.styles.bold16]}>상품 정보</Text>
-        <View style={[styles.checkboxWrapper]}>
+        <Text>상품 정보</Text>
+        {/* <View style={[styles.checkboxWrapper]}>
           <BouncyCheckbox size={20} onPress={setQuantityLimit} iconStyle={{borderRadius: 2, borderColor: theme.gray500}} fillColor={theme.gray800} />
           <Text style={{color: theme.gray500}}>인당 수량 제한 여부</Text>
-        </View>
+        </View> */}
       </View>
       <View style={[styles.productInfoItemWrapper]}>
         <TextInput
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: 8,
   },
   input: {
     marginRight: 10,

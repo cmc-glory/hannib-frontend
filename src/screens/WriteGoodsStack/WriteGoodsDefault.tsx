@@ -1,14 +1,14 @@
 import React, {useState, useCallback} from 'react'
-import {View, ScrollView, Text, TextInput, StyleSheet} from 'react-native'
+import {View, Text, TextInput, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import type {Asset} from 'react-native-image-picker'
 import {useNavigation} from '@react-navigation/native'
 
 import StackHeader from '../../components/utils/StackHeader'
 import {SelectCategory, ImagePicker, StepIndicator, HashTag, SetSharingType} from '../../components/WriteGoodsStack'
-import {NextButton, FloatingBottomButton} from '../../components/utils'
+import {FloatingBottomButton} from '../../components/utils'
 import type {IHashtag, ISharingType} from '../../types'
-import {InputContainer, Label, Input, Button, black, white, styles as s} from '../../theme'
+import * as theme from '../../theme'
 import {useAutoFocus, AutoFocusProvider} from '../../contexts'
 
 export const WriteGoodsDefault = () => {
@@ -29,57 +29,58 @@ export const WriteGoodsDefault = () => {
     <SafeAreaView edges={['top', 'bottom']} style={{backgroundColor: '#fff', flex: 1}}>
       <StackHeader goBack title="모집폼 작성" />
       {/* <ScrollView style={[styles.container]}> */}
-      <AutoFocusProvider contentContainerStyle={[styles.keyboardAwareFocus]}>
+      <AutoFocusProvider contentContainerStyle={[theme.styles.wrapper]}>
         <StepIndicator step={1} />
 
         <ImagePicker images={images} setImages={setImages} />
         <SelectCategory />
-        <InputContainer>
-          <Text style={[s.bold16, styles.label]}>제목</Text>
-          <TextInput style={s.input} onFocus={focus} />
-        </InputContainer>
-        <InputContainer>
-          <Text style={[s.bold16, styles.label]}>내용</Text>
-          <TextInput multiline={true} onFocus={focus} style={[s.input, {height: 100}]} />
-        </InputContainer>
-        <InputContainer>
-          <Text style={[s.bold16, styles.label]}>해시태그</Text>
+        <View style={[styles.itemWrapper]}>
+          <Text style={[styles.label]}>제목</Text>
+          <TextInput style={theme.styles.input} onFocus={focus} placeholder="제목 입력" placeholderTextColor={theme.gray300} />
+        </View>
+        <View style={[styles.itemWrapper]}>
+          <Text style={[styles.label]}>내용</Text>
+          <TextInput
+            multiline={true}
+            onFocus={focus}
+            style={[theme.styles.input, {height: 150}]}
+            placeholder="내용 입력"
+            placeholderTextColor={theme.gray300}
+          />
+        </View>
+        <View style={[styles.itemWrapper]}>
+          <Text style={[styles.label]}>해시태그</Text>
           <HashTag hashtags={hashtags} setHashtags={setHashtags} />
-        </InputContainer>
-        <InputContainer>
-          <Text style={[s.bold16, styles.label]}>나눔 방식</Text>
+        </View>
+        <View style={[styles.itemWrapper]}>
+          <Text style={[styles.label]}>나눔 방식</Text>
           <SetSharingType type={type} setType={setType} />
-          {/* <View style={styles.buttons}>
-            <Button style={[styles.button, {backgroundColor: type == 'WriteGoodsOnline' ? black : white}]} onPress={() => setType('WriteGoodsOnline')}>
-              <Text style={{color: type == 'WriteGoodsOnline' ? white : black}}>우편</Text>
-            </Button>
-            <Button style={[styles.button, , {backgroundColor: type == 'WriteGoodsOffline' ? black : white}]} onPress={() => setType('WriteGoodsOffline')}>
-              <Text style={{color: type == 'WriteGoodsOffline' ? white : black}}>오프라인</Text>
-            </Button>
-          </View> */}
-        </InputContainer>
+        </View>
         {/* </ScrollView> */}
-        <FloatingBottomButton label="다음" onPress={type == 'offline' ? onPressOffline : onPressOnline} />
       </AutoFocusProvider>
+      <FloatingBottomButton label="다음" onPress={type == 'offline' ? onPressOffline : onPressOnline} />
     </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
+  itemWrapper: {
+    marginBottom: 16,
+  },
   keyboardAwareFocus: {
     //flex: 1,
     backgroundColor: '#fff',
     paddingHorizontal: 15,
   },
   label: {
-    marginBottom: 10,
+    marginBottom: 8,
   },
   container: {
     backgroundColor: '#fff',
     paddingHorizontal: 15,
   },
   button: {
-    borderColor: black,
+    borderColor: theme.black,
     borderWidth: 0.75,
     height: 40,
     width: '49%',

@@ -1,6 +1,6 @@
 import React from 'react'
-import {Pressable, Text, StyleSheet} from 'react-native'
-import {main, white, styles as s} from '../../theme'
+import {Pressable, Text, StyleSheet, Platform} from 'react-native'
+import * as theme from '../../theme'
 
 type FloatingBottoButtonProps = {
   label: string
@@ -10,7 +10,7 @@ type FloatingBottoButtonProps = {
 
 export const FloatingBottomButton = ({label, onPress, enabled = false}: FloatingBottoButtonProps) => {
   return (
-    <Pressable onPress={onPress} style={[s.wrapper, styles.container, enabled ? s.button : s.disabledButton]}>
+    <Pressable onPress={onPress} style={[theme.styles.wrapper, styles.container, enabled ? theme.styles.button : theme.styles.disabledButton]}>
       <Text style={styles.label}>{label}</Text>
     </Pressable>
   )
@@ -21,9 +21,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 14,
+    marginTop: 10,
+    marginBottom: Platform.OS == 'android' ? 10 : 0,
   },
   label: {
-    color: white,
+    color: theme.white,
     fontFamily: 'Pretendard-SemiBold',
   },
 })

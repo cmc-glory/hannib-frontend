@@ -24,5 +24,6 @@ declare namespace ReactNavigation {
       email: string
       name: string
     }
+    WriteGoodsComplete: undefined
   }
 }

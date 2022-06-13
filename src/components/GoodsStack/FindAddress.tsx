@@ -32,9 +32,9 @@ export const FindAddress = ({requestForm, setRequestForm}: FindAddressProps) => 
     <View>
       <Modal isVisible={modalVisible} onBackdropPress={() => setModalVisible(false)}>
         <SafeAreaView>
-          <ScrollView contentContainerStyle={{alignItems: 'center', justifyContent: 'center'}}>
+          <ScrollView contentContainerStyle={{alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff'}}>
             <DaumPostcode
-              style={{width: WINDOW_WIDTH, height: 600, paddingHorizontal: 15}}
+              style={{width: WINDOW_WIDTH, height: 600, paddingHorizontal: 25, paddingTop: 15}}
               jsOptions={{animation: true, hideMapBtn: true}}
               onError={err => {
                 console.log(err)

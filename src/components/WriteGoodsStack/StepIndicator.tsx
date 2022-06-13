@@ -25,6 +25,13 @@ export const StepIndicator = ({step}: stepIndicatorProps) => {
         </View>
         <Text style={[{fontFamily: 'Pretendard-Bold'}, step == 2 ? styles.selectedText : styles.unselectedText]}>입력폼</Text>
       </View>
+      <StepDots />
+      <View style={[styles.itemContainer]}>
+        <View style={[styles.circle, step == 3 ? styles.selectedCircle : styles.unselectedCircle]}>
+          <Text style={{color: step == 3 ? white : gray300}}>3</Text>
+        </View>
+        <Text style={[{fontFamily: 'Pretendard-Bold'}, step == 3 ? styles.selectedText : styles.unselectedText]}>완료</Text>
+      </View>
     </View>
   )
 }
@@ -57,7 +64,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginVertical: 10,
+    marginVertical: 16,
   },
   itemContainer: {
     flexDirection: 'row',

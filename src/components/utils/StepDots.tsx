@@ -2,7 +2,7 @@ import React, {useMemo, useEffect} from 'react'
 import {View, StyleSheet} from 'react-native'
 import {gray300} from '../../theme'
 
-const NUM_OF_DOTS = 15
+const NUM_OF_DOTS = 5
 const CIRCLE_SIZE = 2
 
 export const StepDots = () => {

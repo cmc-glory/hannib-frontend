@@ -1,7 +1,7 @@
 import {StyleSheet} from 'react-native'
 import {black, gray500, gray300, white, main} from './colors'
 
-export const PADDING_SIZE = 15
+export const PADDING_SIZE = 20
 export const INPUT_HEIGHT = 48
 
 export const styles = StyleSheet.create({
@@ -13,7 +13,6 @@ export const styles = StyleSheet.create({
   },
   wrapper: {
     marginHorizontal: PADDING_SIZE,
-    marginVertical: 10,
   },
   input: {
     borderColor: gray300,

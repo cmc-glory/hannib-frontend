@@ -51,7 +51,7 @@ export const GoodsListItemVer2 = ({item}: {item: ISharingInfo}) => {
         <FastImage style={[styles.image, {width: IMAGE_SIZE, height: IMAGE_SIZE}]} source={{uri: imageUri}}></FastImage>
       </View>
       <View style={{marginTop: 10}}>
-        <Tag label="우편" />
+        <Tag label={type == 'offline' ? '블루스퀘어' : '우편'} />
         <Text style={[styles.title, {width: IMAGE_SIZE}]}>{title}</Text>
         <Text style={[styles.writerName]}>{writer}</Text>
       </View>

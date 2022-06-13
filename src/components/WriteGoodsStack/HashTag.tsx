@@ -3,7 +3,7 @@ import {View, Text, TextInput, StyleSheet} from 'react-native'
 import uuid from 'react-native-uuid'
 import IonicIcons from 'react-native-vector-icons/Ionicons'
 import type {IHashtag} from '../../types'
-import {styles as s, gray300, gray500} from '../../theme'
+import * as theme from '../../theme'
 import {useAutoFocus} from '../../contexts'
 
 type HashTagProps = {
@@ -23,7 +23,7 @@ const HashTagItem = ({item, onPressX}: HashtagItemProps) => {
     <View style={[styles.hashtagContainer]}>
       <Text style={[styles.hashtagText]}>#</Text>
       <Text style={styles.hashtagText}>{content}</Text>
-      <IonicIcons name="close-outline" size={14} onPress={() => onPressX(id)} />
+      <IonicIcons name="close-outline" size={14} color={theme.gray500} onPress={() => onPressX(id)} />
     </View>
   )
 }
@@ -51,7 +51,15 @@ export const HashTag = ({hashtags, setHashtags}: HashTagProps) => {
 
   return (
     <View>
-      <TextInput style={s.input} onChangeText={setContent} value={content} onFocus={focus} onEndEditing={endEditing} />
+      <TextInput
+        style={theme.styles.input}
+        onChangeText={setContent}
+        value={content}
+        onFocus={focus}
+        onEndEditing={endEditing}
+        placeholder="해시태그 입력"
+        placeholderTextColor={theme.gray300}
+      />
       <View style={[styles.hashtagWrapper]}>
         {hashtags?.map(hashtag => (
           <HashTagItem key={hashtag.id} item={hashtag} onPressX={onPressX} />
@@ -63,7 +71,7 @@ export const HashTag = ({hashtags, setHashtags}: HashTagProps) => {
 
 const styles = StyleSheet.create({
   hashtagText: {
-    color: gray500,
+    color: theme.gray500,
     marginRight: 3,
   },
   hashtagWrapper: {
@@ -77,7 +85,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#f6f6f9',
     borderRadius: 4,
-    borderColor: gray300,
+    borderColor: theme.gray300,
     paddingVertical: 5,
     paddingHorizontal: 10,
     marginRight: 10,

@@ -1,6 +1,6 @@
 import React from 'react'
 import {createStackNavigator} from '@react-navigation/stack'
-import {WriteGoodsDefault, WriteGoodsOffline, WriteGoodsOnline} from '../screens/WriteGoodsStack'
+import {WriteGoodsDefault, WriteGoodsOffline, WriteGoodsOnline, WriteGoodsComplete} from '../screens/WriteGoodsStack'
 
 const Stack = createStackNavigator()
 
@@ -10,6 +10,7 @@ const WriteGoodsStackNavigator = () => {
       <Stack.Screen name="WriteGoodsDefault" component={WriteGoodsDefault} />
       <Stack.Screen name="WriteGoodsOffline" component={WriteGoodsOffline} />
       <Stack.Screen name="WriteGoodsOnline" component={WriteGoodsOnline} />
+      <Stack.Screen name="WriteGoodsComplete" component={WriteGoodsComplete} />
     </Stack.Navigator>
   )
 }

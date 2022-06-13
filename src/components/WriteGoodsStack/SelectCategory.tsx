@@ -8,7 +8,7 @@ const ICON_SIZE = 10
 export const SelectCategory = () => {
   return (
     <View style={[styles.container]}>
-      <Text style={[s.bold16]}>카테고리</Text>
+      <Text>카테고리</Text>
       <TouchableOpacity style={styles.selectContainer}>
         <RightIcon width={ICON_SIZE} height={ICON_SIZE} fill={black} />
       </TouchableOpacity>
@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginVertical: 10,
+    marginBottom: 16,
 
     //width: '100%',
   },

@@ -4,10 +4,10 @@ import FastImage from 'react-native-fast-image'
 import Modal from 'react-native-modal'
 import type {Asset} from 'react-native-image-picker'
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker'
-import {black, white, gray300, gray700, gray800, styles as s} from '../../theme'
+import * as theme from '../../theme'
 import AddIcon from '../../assets/icons/add_light.svg'
 
-const IMAGE_SIZE = 70
+const IMAGE_SIZE = 63
 const BORDER_SIZE = IMAGE_SIZE / 2
 
 type ImagePickerProps = {
@@ -43,10 +43,16 @@ export const ImagePicker = ({images, setImages}: ImagePickerProps) => {
   const [pickerResponse, setPickerResponse] = useState(null)
   const [visible, setVisible] = useState<boolean>(false)
 
-  const imageCallback = useCallback((res: any) => {
-    setImages([...images, res.assets[0]])
-    setVisible(false)
-  }, [])
+  const imageCallback = useCallback(
+    (res: any) => {
+      if (res) {
+        setImages([...images, res.assets[0]])
+      }
+
+      setVisible(false)
+    },
+    [images],
+  )
 
   React.useEffect(() => {
     console.log('images : ', images)
@@ -66,14 +72,14 @@ export const ImagePicker = ({images, setImages}: ImagePickerProps) => {
 
   return (
     <View style={[styles.contianer]}>
-      <Text style={[s.bold16, {marginBottom: 10}]}>대표 이미지 등록</Text>
+      <Text style={[{marginBottom: 8}]}>대표 이미지 등록</Text>
       <View style={[styles.imageContainer]}>
-        {images.map(image => (
+        {images?.map(image => (
           <ImagePreview key={image.uri} uri={image.uri} />
         ))}
         <TouchableOpacity onPress={showModal}>
           <View style={[styles.addImage]}>
-            <AddIcon width={IMAGE_SIZE * 0.3} height={IMAGE_SIZE * 0.3} fill={gray700} />
+            <AddIcon width={IMAGE_SIZE * 0.3} height={IMAGE_SIZE * 0.3} fill={theme.gray700} />
           </View>
         </TouchableOpacity>
 
@@ -87,14 +93,14 @@ export default ImagePicker
 
 const styles = StyleSheet.create({
   contianer: {
-    marginVertical: 10,
+    marginBottom: 16,
   },
 
   image: {
     width: IMAGE_SIZE,
     height: IMAGE_SIZE,
-    borderRadius: 8,
-    marginRight: 10,
+    borderRadius: 5,
+    marginRight: 8,
   },
   imageContainer: {
     flexDirection: 'row',
@@ -106,12 +112,12 @@ const styles = StyleSheet.create({
     height: IMAGE_SIZE,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: gray300,
+    borderColor: theme.gray300,
     justifyContent: 'center',
     alignItems: 'center',
   },
   modal: {
-    backgroundColor: white,
+    backgroundColor: theme.white,
     width: '80%',
     justifyContent: 'center',
     alignSelf: 'center',
@@ -125,12 +131,12 @@ const styles = StyleSheet.create({
     height: 50,
     borderWidth: 1,
     borderRadius: 8,
-    borderColor: black,
+    borderColor: theme.black,
     marginBottom: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
   buttonText: {
-    color: black,
+    color: theme.black,
   },
 })
