@@ -9,17 +9,20 @@ import ChattingStackNavigator from './ChattingStackNavigator'
 import CalendarStackNavigator from './CalendarStackNavigator'
 import MyPageStackNavigator from './MyPageStackNavigator'
 
-import HomeOutlined from '../assets/icons/home_outlined.svg'
-import HomeFilled from '../assets/icons/home_filled.svg'
-import CommunityOutlined from '../assets/icons/community_outlined.svg'
-import CommunityFilled from '../assets/icons/community_filled.svg'
-import ChattingOutlined from '../assets/icons/chatting_outlined.svg'
-import ChattingFilled from '../assets/icons/chatting_filled.svg'
-import CalendarOutlined from '../assets/icons/calendar_outlined.svg'
-import MyPageFilled from '../assets/icons/user_filled.svg'
-import MyPageOutlined from '../assets/icons/user_outlined.svg'
+import {
+  HomeIcon,
+  HomeIconFocused,
+  CommunityIcon,
+  CommunityIconFocused,
+  ChattingIcon,
+  ChattingIconFocused,
+  CalendarIcon,
+  CalendarIconFocused,
+  AccountIcon,
+  AccountIconFocused,
+} from '../components/utils'
 
-import {main, black, white} from '../theme'
+import * as theme from '../theme'
 
 const Tab = createBottomTabNavigator()
 
@@ -28,25 +31,24 @@ function BottomTab() {
     <Tab.Navigator
       screenOptions={{
         tabBarShowLabel: true,
-        tabBarActiveTintColor: main,
-        tabBarInactiveTintColor: '#000',
+        tabBarActiveTintColor: theme.main,
+        tabBarInactiveTintColor: theme.gray800,
         headerShown: false,
         tabBarStyle: {
           borderTopWidth: 0,
           borderColor: '#fff',
-          height: Platform.OS == 'android' ? 60 : 80,
+          //height: Platform.OS == 'android' ? 60 : 80,
         },
         tabBarItemStyle: {
           marginTop: 5,
-          marginBottom: Platform.OS == 'android' ? 10 : 0,
+          marginBottom: Platform.OS == 'android' ? 5 : 0,
         },
       }}>
       <Tab.Screen
         name="GoodsList"
         options={{
           title: '리스트',
-          tabBarIcon: ({color, size, focused}) =>
-            focused ? <HomeFilled fill={color} width={size} height={size} /> : <HomeOutlined fill={color} width={size} height={size} />,
+          tabBarIcon: ({focused}) => (focused ? <HomeIconFocused /> : <HomeIcon />),
         }}
         component={GoodsList}
       />
@@ -54,8 +56,7 @@ function BottomTab() {
         name="CommunityStackNavigator"
         options={{
           title: '커뮤니티',
-          tabBarIcon: ({color, size, focused}) =>
-            focused ? <CommunityFilled fill={color} width={size} height={size} /> : <CommunityOutlined fill={color} width={size} height={size} />,
+          tabBarIcon: ({focused}) => (focused ? <CommunityIconFocused /> : <CommunityIcon />),
         }}
         component={CommunityStackNavigator}
       />
@@ -63,8 +64,7 @@ function BottomTab() {
         name="ChattingStackNavigator"
         options={{
           title: '채팅',
-          tabBarIcon: ({color, size, focused}) =>
-            focused ? <ChattingFilled fill={color} width={size} height={size} /> : <ChattingOutlined fill={color} width={size} height={size} />,
+          tabBarIcon: ({focused}) => (focused ? <ChattingIconFocused /> : <ChattingIcon />),
         }}
         component={ChattingStackNavigator}
       />
@@ -72,16 +72,15 @@ function BottomTab() {
         name="CalendarStackNavigator"
         options={{
           title: '일정',
-          tabBarIcon: ({color, size, focused}) => <CalendarOutlined fill={color} width={size} height={size}></CalendarOutlined>,
+          tabBarIcon: ({focused}) => (focused ? <CalendarIconFocused /> : <CalendarIcon />),
         }}
         component={CalendarStackNavigator}
       />
       <Tab.Screen
         name="MyPageStackNavigator"
         options={{
-          title: '마이페이지',
-          tabBarIcon: ({color, size, focused}) =>
-            focused ? <MyPageFilled fill={color} width={size} height={size} /> : <MyPageOutlined fill={color} width={size} height={size} />,
+          title: 'MY',
+          tabBarIcon: ({focused}) => (focused ? <AccountIconFocused /> : <AccountIcon />),
         }}
         component={MyPageStackNavigator}
       />
@@ -90,10 +89,3 @@ function BottomTab() {
 }
 
 export default BottomTab
-
-const styles = StyleSheet.create({
-  tabBarLabel: {
-    fontSize: 12,
-    color: black,
-  },
-})

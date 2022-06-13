@@ -40,7 +40,7 @@ export const GoodsListItemVer2 = ({item}: {item: ISharingInfo}) => {
     <Pressable onPress={onPressItem} style={[styles.container]}>
       {isBefore && (
         <View style={styles.overlay}>
-          <Text style={styles.overlayText}>{openDate.format('YY/MM/DD HH:MM')}</Text>
+          <Text style={[styles.overlayText, {marginBottom: 2.5}]}>{openDate.format('YY/MM/DD HH:MM')}</Text>
           <Text style={styles.overlayText}>오픈 예정</Text>
         </View>
       )}
