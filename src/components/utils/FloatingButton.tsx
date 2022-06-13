@@ -12,7 +12,7 @@ type FloatingButtonProps = {
 export const FloatingButton = ({onPress, children}: FloatingButtonProps) => {
   const tabBarHeight = useBottomTabBarHeight()
   return (
-    <TouchableOpacity style={[styles.container, {marginBottom: tabBarHeight}]} onPress={onPress}>
+    <TouchableOpacity style={[styles.container]} onPress={onPress}>
       {children}
     </TouchableOpacity>
   )
@@ -25,7 +25,8 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     backgroundColor: main,
     position: 'absolute',
-    bottom: Platform.OS == 'ios' ? 25 : 45,
+    //bottom: Platform.OS == 'ios' ? 25 : 45,
+    bottom: 10,
     right: 10,
     alignItems: 'center',
     justifyContent: 'center',

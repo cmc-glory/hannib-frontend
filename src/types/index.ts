@@ -1,6 +1,3 @@
-export type IListItem = {
-  item: {imageUri?: string | null; type: string; description: string; writer: string; openDate: Date}
-}
 export type IHashtag = {
   id: string
   content: string
@@ -29,4 +26,13 @@ export type IStar = {
   name: 'string'
   uri: string
   selected: boolean
+}
+
+export type ISharingInfo = {
+  id: string
+  uri: string | null
+  type: ISharingType
+  title: string
+  writer: string
+  openDate: Date
 }

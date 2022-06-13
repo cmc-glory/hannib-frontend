@@ -1,6 +1,6 @@
 import React from 'react'
 import {View, Text, StyleSheet} from 'react-native'
-import {black, main, white} from '../../theme'
+import * as theme from '../../theme'
 
 type TagProps = {
   label: string
@@ -15,6 +15,15 @@ export const Tag = ({label}: TagProps) => {
 }
 
 const styles = StyleSheet.create({
-  tagView: {backgroundColor: main, paddingHorizontal: 8, paddingVertical: 4, borderRadius: 4, marginRight: 7.5},
-  tagText: {color: white, fontFamily: 'Pretendard-Medium'},
+  tagView: {
+    backgroundColor: theme.main,
+    height: 24,
+    paddingHorizontal: 8,
+    borderRadius: 4,
+    marginRight: 7.5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+  },
+  tagText: {color: theme.white, fontFamily: 'Pretendard-Regular', fontSize: 12},
 })

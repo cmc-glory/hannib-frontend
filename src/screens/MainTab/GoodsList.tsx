@@ -1,15 +1,14 @@
-import React, {useState, useCallback} from 'react'
+import React, {useState, useCallback, useEffect} from 'react'
 import {RefreshControl, View, Text, FlatList, Pressable, TouchableOpacity, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation} from '@react-navigation/native'
 import IconIcons from 'react-native-vector-icons/Ionicons'
 
 import * as theme from '../../theme'
-import StackHeader from '../../components/utils/StackHeader'
-import {FloatingButton} from '../../components/utils'
+import {FloatingButton, StackHeader, Icon} from '../../components/utils'
 import {createListItem} from '../../data/createListItem'
 import {GoodsListItem, GoodsFilterTab, GoodsListItemVer2} from '../../components/MainTab'
-import {Icon} from '../../components/utils/Icon'
+import {ISharingInfo} from '../../types'
 
 const wait = (timeout: any) => {
   return new Promise(resolve => setTimeout(resolve, timeout))
@@ -21,17 +20,31 @@ const GoodsLists = () => {
   const navigation = useNavigation()
 
   // states
+  const [sharings, setSharins] = useState<ISharingInfo[]>([])
   const [refreshing, setRefreshing] = useState<boolean>(false) // 새로고침 state
   const [locationFilter, setLocationFilter] = useState<0 | 1 | 2>(0) // 전체(0), 우편(1), 오프라인(2)
 
   // callbacks
   const onRefresh = useCallback(() => {
     setRefreshing(true)
-    wait(2000).then(() => setRefreshing(false))
+    fetch('http://localhost:8081/src/data/dummySharings.json')
+      .then(res => res.json())
+      .then(result => {
+        setSharins(result)
+        setRefreshing(false)
+      })
   }, [])
 
   const onPressWrite = useCallback(() => {
     navigation.navigate('WriteGoodsStackNavigator')
+  }, [])
+
+  useEffect(() => {
+    fetch('http://localhost:8081/src/data/dummySharings.json')
+      .then(res => res.json())
+      .then(result => {
+        setSharins(result)
+      })
   }, [])
 
   return (
@@ -46,21 +59,21 @@ const GoodsLists = () => {
           </Pressable>
         </View>
       </StackHeader>
-      <View>
+      <View style={{flex: 1}}>
         <GoodsFilterTab locationFilter={locationFilter} setLocationFilter={setLocationFilter} />
         <FlatList
           contentContainerStyle={{paddingHorizontal: theme.PADDING_SIZE}}
-          data={listItems}
+          data={sharings}
           renderItem={({item}) => <GoodsListItemVer2 item={item}></GoodsListItemVer2>}
           refreshing={refreshing}
           numColumns={2}
-          columnWrapperStyle={{justifyContent: 'space-between'}}
-          onRefresh={onRefresh}></FlatList>
-
-        <FloatingButton onPress={onPressWrite}>
-          <IconIcons name="add-outline" color={theme.white} size={32} />
-        </FloatingButton>
+          columnWrapperStyle={{justifyContent: 'space-between', marginBottom: 20}}
+          onRefresh={onRefresh}
+        />
       </View>
+      <FloatingButton onPress={onPressWrite}>
+        <IconIcons name="add-outline" color={theme.white} size={32} />
+      </FloatingButton>
     </SafeAreaView>
   )
 }

@@ -17,11 +17,12 @@ import {SafeAreaView} from 'react-native-safe-area-context'
 import {TabView, SceneMap, TabBar} from 'react-native-tab-view'
 import MyPageListItem from '../../components/MyPageListItem'
 import {white, black, main, gray50, gray700, gray500} from '../../theme'
-import Icon from 'react-native-vector-icons/Ionicons'
+import IonIcons from 'react-native-vector-icons/Ionicons'
 import styled from 'styled-components/native'
 import {GoogleSignin, GoogleSigninButton} from '@react-native-google-signin/google-signin'
 import auth from '@react-native-firebase/auth'
-import {Notification, StackHeader} from '../../components/utils'
+import {Icon} from '../../components/utils'
+import {StackHeader} from '../../components/utils'
 import {
   KakaoOAuthToken,
   KakaoProfile,
@@ -147,9 +148,11 @@ export const MyPage = () => {
       <View style={[styles.container]}>
         <StackHeader title="마이페이지">
           <View style={{flexDirection: 'row', alignItems: 'center', width: 65, justifyContent: 'space-between'}}>
-            <Notification />
+            <Pressable>
+              <Icon uri="http://localhost:8081/src/assets/Icon/Bell.png" />
+            </Pressable>
             <TouchableOpacity>
-              <Icon name="settings-outline" size={24} color={black} />
+              <IonIcons name="settings-outline" size={24} color={black} />
             </TouchableOpacity>
           </View>
         </StackHeader>
