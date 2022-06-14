@@ -50,7 +50,7 @@ var MAX_HEIGHT: number
 const imgSrc = '../../assets/images/image1.jpeg'
 const onPrgrs = [
   {imageUri: require('../../assets/images/detail_image_example.png'), state: 'D-7'},
-  {imageUri: require('../../assets/images/detail_image_example2.png'), state: 'D-3'},
+  {imageUri: require('../../assets/images/image2.jpeg'), state: 'D-3'},
   {imageUri: require('../../assets/images/image4.jpeg'), state: 'D-1'},
   {imageUri: require('../../assets/images/image1.jpeg'), state: '우편시작'},
   {imageUri: require('../../assets/images/image3.jpeg'), state: 'D-3'},
