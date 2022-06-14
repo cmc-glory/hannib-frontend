@@ -49,8 +49,8 @@ var PRTCPT_CONTAINER_HEIGHT: number
 var MAX_HEIGHT: number
 const imgSrc = '../../assets/images/image1.jpeg'
 const onPrgrs = [
-  {imageUri: require('../../assets/images/image2.jpeg'), state: 'D-7'},
-  {imageUri: require('../../assets/images/image3.jpeg'), state: 'D-3'},
+  {imageUri: require('../../assets/images/detail_image_example.png'), state: 'D-7'},
+  {imageUri: require('../../assets/images/detail_image_example2.png'), state: 'D-3'},
   {imageUri: require('../../assets/images/image4.jpeg'), state: 'D-1'},
   {imageUri: require('../../assets/images/image1.jpeg'), state: '우편시작'},
   {imageUri: require('../../assets/images/image3.jpeg'), state: 'D-3'},
@@ -138,10 +138,10 @@ export const MyPage = () => {
     dispatch(ReduxLogin)
     return auth().signInWithCredential(googleCredential)
   }
-  //console.log(result)
+  console.log('result : ', result)
 
   const count = useAppSelector(state => state.auth.isLoggedIn)
-  console.log(count)
+  console.log('count : ', count)
 
   return (
     <SafeAreaView>
@@ -170,12 +170,29 @@ export const MyPage = () => {
             </TouchableOpacity>
           </View>
         ) : (
+          // <View>
           <ScrollView style={styles.contentsContainer} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
             <View style={styles.profileContainer}>
-              <Image source={require(imgSrc)} style={styles.profileImg} />
               <Text style={[styles.description]}>춤추는 고양이</Text>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Image source={require(imgSrc)} style={styles.profileImg} />
+                <View style={[styles.profileInfoContainer]}>
+                  <View style={[styles.profileInfo]}>
+                    <Text style={{marginBottom: 2}}>팔로잉</Text>
+                    <Text style={{fontWeight: '700'}}>23</Text>
+                  </View>
+                  <View style={[styles.profileInfo]}>
+                    <Text style={{marginBottom: 2}}>팔로워</Text>
+                    <Text style={{fontWeight: '700'}}>456</Text>
+                  </View>
+                  <View style={[styles.profileInfo]}>
+                    <Text style={{marginBottom: 2}}>후기</Text>
+                    <Text style={{fontWeight: '700'}}>72</Text>
+                  </View>
+                </View>
+              </View>
               <Pressable style={[styles.myInfoBtn]}>
-                <Text style={[styles.myInfoBtnTxt]}>내 정보</Text>
+                <Text style={[styles.myInfoBtnTxt]}>프로필 편집</Text>
               </Pressable>
             </View>
             <View style={[styles.shareInfoContainer, {width: CONTAINER_SIZE, height: MAX_HEIGHT}]}>
@@ -225,11 +242,11 @@ const TabLabel = styled.Text`
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
-    flex: 1,
+    //flex: 1,
   },
   contentsContainer: {
     backgroundColor: '#fff',
-    height: 800,
+    //height: 1000,
   },
   button: {
     width: '90%',
@@ -247,34 +264,47 @@ const styles = StyleSheet.create({
     backgroundColor: gray50,
     alignContent: 'center',
     marginHorizontal: 20,
-    marginVertical: 20,
+    marginTop: 31,
+    marginBottom: 10,
     borderRadius: 15,
-    alignItems: 'center',
+    paddingHorizontal: 22,
+    paddingVertical: 17,
   },
   profileImg: {
-    height: 80,
-    width: 80,
-    marginTop: 25,
-    marginBottom: 9,
+    height: 66,
+    width: 66,
+    marginTop: 11,
+    marginBottom: 15,
     borderRadius: 40,
   },
+  profileInfoContainer: {
+    marginLeft: 34,
+    flexDirection: 'row',
+    width: 171,
+    justifyContent: 'space-between',
+  },
+  profileInfo: {
+    alignItems: 'center',
+  },
   description: {
-    fontSize: 14,
+    fontSize: 16,
     color: black,
     fontWeight: '700',
-    marginBottom: 13,
   },
   myInfoBtn: {
-    backgroundColor: gray700,
+    borderColor: gray500,
+    borderWidth: 1,
+    backgroundColor: white,
     borderRadius: 4,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    marginBottom: 16,
+    paddingVertical: 7,
+    marginBottom: 2,
+    marginHorizontal: 6,
+    alignItems: 'center',
   },
   myInfoBtnTxt: {
     fontWeight: '400',
-    fontSize: 12,
-    color: white,
+    fontSize: 14,
+    color: gray500,
   },
   shareInfoContainer: {
     marginHorizontal: 16,
