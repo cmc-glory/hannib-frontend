@@ -32,7 +32,7 @@ export const ImagePickerModal = ({isVisible, onClose, onImageLibraryPress, onCam
       <TouchableOpacity onPress={onCameraPress} style={styles.buttonView}>
         <Text style={styles.buttonText}>camera</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={onImageLibraryPress} style={styles.buttonView}>
+      <TouchableOpacity onPress={onImageLibraryPress} style={styles.buttonView}>ㅗㅁㄴ
         <Text style={styles.buttonText}>Library</Text>
       </TouchableOpacity>
     </Modal>

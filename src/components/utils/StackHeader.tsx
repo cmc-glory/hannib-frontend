@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: 'white',
     flexDirection: 'row',
-    paddingHorizontal: 15,
+    paddingHorizontal: theme.PADDING_SIZE,
     height: 56,
     alignItems: 'center',
     justifyContent: 'space-between',

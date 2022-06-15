@@ -27,9 +27,11 @@ export const authSlice = createSlice({
     refreshToken: '',
   },
   reducers: {
-    login: state => {
+    login: (state, action: PayloadAction<User>) => {
       console.log('redux state : ', state)
       state.isLoggedIn = true
+      state.user.id = action.payload.id
+      state.user.name = action.payload.name
     },
     storeAccessToken: (state, action: PayloadAction<string>) => {
       state.accessToken = action.payload

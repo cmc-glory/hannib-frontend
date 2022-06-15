@@ -49,7 +49,7 @@ const GoodsLists = () => {
 
   return (
     <SafeAreaView style={[styles.container]} edges={['top', 'left', 'right']}>
-      <StackHeader goBack={false} dropdown title="카테고리">
+      <StackHeader dropdown title="카테고리">
         <View style={{flexDirection: 'row', alignItems: 'center', width: 64, justifyContent: 'space-between'}}>
           <Pressable>
             <Icon uri="http://localhost:8081/src/assets/Icon/Magnifier.png" />

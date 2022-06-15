@@ -7,11 +7,10 @@ import messaging from '@react-native-firebase/messaging'
 import {setCustomText} from 'react-native-global-props'
 import {GoogleSignin} from '@react-native-google-signin/google-signin'
 import {gray800} from './src/theme'
-import MainTabNavigator from './src/navigation/MainTabNavigator'
 import RootStackNavigtor from './src/navigation/RootStackNavigator'
 import {store} from './src/redux/store'
 import {Provider as ReduxProvider} from 'react-redux'
-import {name as appName} from './app.json'
+import NetInfo from '@react-native-community/netinfo'
 
 // 권한 설정이 필요한 곳에 넣으면 됨.
 // 현재는 테스트를 위해 첫 페이지에 넣음.
@@ -33,6 +32,17 @@ const customTextProps = {
 }
 
 const App = () => {
+  // internet checking
+  const unsubscribe = useCallback(
+    () =>
+      NetInfo.addEventListener(state => {
+        if (!state.isConnected) {
+          Alert.alert('인터넷을 확인해주세요')
+        }
+      }),
+    [],
+  )
+
   const googleSigninConfigure = useCallback(() => {
     GoogleSignin.configure({
       webClientId: '10776992039-a2u306icmbug1iivc4p3nekco3055rjf.apps.googleusercontent.com',
@@ -52,6 +62,8 @@ const App = () => {
     requestUserPermission()
     return unsubscribe
   }, [])
+
+  unsubscribe()
 
   return (
     <ReduxProvider store={store}>

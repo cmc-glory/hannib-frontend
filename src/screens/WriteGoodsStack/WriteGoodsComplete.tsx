@@ -1,6 +1,7 @@
-import React from 'react'
+import React, {useCallback} from 'react'
 import {View, Text, Pressable, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
+import {useNavigation} from '@react-navigation/native'
 
 import {StackHeader} from '../../components/utils'
 import {StepIndicator} from '../../components/WriteGoodsStack'
@@ -21,6 +22,10 @@ export const Button = ({label, onPress, enabled = false}: ButtonProps) => {
 }
 
 export const WriteGoodsComplete = () => {
+  const navigation = useNavigation()
+  const onPressButton = useCallback(() => {
+    navigation.navigate('MainTabNavigator')
+  }, [])
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
       <StackHeader title="모집폼 작성" goBack />
@@ -29,7 +34,7 @@ export const WriteGoodsComplete = () => {
         <View style={styles.container}>
           <View style={styles.illustration}></View>
           <Text style={[styles.text, theme.styles.bold20]}>모집글 등록이 완료되었습니다.</Text>
-          <Button label="게시글 보기" enabled />
+          <Button label="게시글 보기" enabled onPress={onPressButton} />
         </View>
       </View>
     </SafeAreaView>
