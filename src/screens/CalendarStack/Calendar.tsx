@@ -1,18 +1,22 @@
 import React from 'react'
-import {View, Text, StyleSheet} from 'react-native'
+import {View, Text, ScrollView, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
-import {WixCalendar} from '../../components/CalendarStack'
+import {WixCalendar, CalendarItem} from '../../components/CalendarStack'
 
-import {StackHeader} from '../../components/utils'
+import {StackHeader, Bell} from '../../components/utils'
 import * as theme from '../../theme'
 
 export const Calendar = () => {
   return (
     <SafeAreaView style={styles.rootContainer}>
-      <StackHeader title="일정" />
-      <View style={{paddingHorizontal: 10}}>
+      <StackHeader title="일정">
+        <Bell />
+      </StackHeader>
+      <ScrollView style={{paddingHorizontal: 10}}>
         <WixCalendar />
-      </View>
+        <CalendarItem />
+        <CalendarItem />
+      </ScrollView>
     </SafeAreaView>
   )
 }

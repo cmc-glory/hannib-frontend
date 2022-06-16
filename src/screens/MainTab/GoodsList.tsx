@@ -5,7 +5,7 @@ import {useNavigation} from '@react-navigation/native'
 import IconIcons from 'react-native-vector-icons/Ionicons'
 
 import * as theme from '../../theme'
-import {FloatingButton, StackHeader, Icon} from '../../components/utils'
+import {FloatingButton, StackHeader, Icon, Bell} from '../../components/utils'
 import {createListItem} from '../../data/createListItem'
 import {GoodsListItem, GoodsFilterTab, GoodsListItemVer2} from '../../components/MainTab'
 import {ISharingInfo} from '../../types'
@@ -54,9 +54,10 @@ const GoodsLists = () => {
           <Pressable>
             <Icon uri="http://localhost:8081/src/assets/Icon/Magnifier.png" />
           </Pressable>
-          <Pressable>
+          {/* <Pressable>
             <Icon uri="http://localhost:8081/src/assets/Icon/Bell.png" />
-          </Pressable>
+          </Pressable> */}
+          <Bell onPress={() => {}} />
         </View>
       </StackHeader>
       <View style={{flex: 1}}>

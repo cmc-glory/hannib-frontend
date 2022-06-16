@@ -70,7 +70,7 @@ const App = () => {
     <ReduxProvider store={store}>
       <SafeAreaProvider style={{flex: 1, backgroundColor: 'white'}}>
         <NavigationContainer>
-          <MainTabNavigator />
+          <RootStackNavigtor />
         </NavigationContainer>
       </SafeAreaProvider>
     </ReduxProvider>
