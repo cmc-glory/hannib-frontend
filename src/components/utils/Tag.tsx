@@ -16,7 +16,9 @@ export const Tag = ({label}: TagProps) => {
 
 const styles = StyleSheet.create({
   tagView: {
-    backgroundColor: theme.main,
+    backgroundColor: theme.white,
+    borderColor: theme.main,
+    borderWidth: 1,
     height: 24,
     paddingHorizontal: 8,
     borderRadius: 4,
@@ -25,5 +27,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignSelf: 'flex-start',
   },
-  tagText: {color: theme.white, fontFamily: 'Pretendard-Regular', fontSize: 12},
+  tagText: {color: theme.main, fontFamily: 'Pretendard-Regular', fontSize: 12},
 })

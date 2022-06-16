@@ -72,7 +72,8 @@ export const MyPage = () => {
     wait(2000).then(() => setRefreshing(false))
   }, [])
 
-  const [result, setResult] = useState<string>('')
+  // 로그인 창 안 보이게 하려고 일부러 result에 값 넣음!!!@!!!
+  const [result, setResult] = useState<string>('aa')
   CONTAINER_SIZE = useMemo(() => {
     return width - padding - margin
   }, [])

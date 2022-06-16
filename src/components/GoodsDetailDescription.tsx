@@ -31,8 +31,8 @@ const RenderItem = ({item}: {item: ItemType}) => {
 
 // 나눔 장소, 시간 렌더링
 const RenderSchedule = ({item}: {item: ItemType}) => {
-  const startDate = moment(item.startDate).format('YYYY.MM.DD HH:mm')
-  var endDate = moment(item.endDate).format('YYYY.MM.DD HH:mm')
+  const startDate = moment(item.startDate, 'YYYYMMDDHHmmss').format('YYYY.MM.DD HH:mm')
+  var endDate = moment(item.endDate, 'YYYYMMDDHHmmss').format('YYYY.MM.DD HH:mm')
 
   // 시작 날짜와 끝 날짜가 같은 경우에는 시간만 나오도록
   if (startDate.slice(0, 10) == endDate.slice(0, 10)) {

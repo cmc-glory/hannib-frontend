@@ -16,7 +16,7 @@ export const GoodsListItemVer2 = ({item}: {item: ISharingInfo}) => {
   // 나눔 게시글 아이템 구조분해 할당
   const {type, title, writer, uri} = item
   const now = moment()
-  const openDate = moment(item.openDate)
+  const openDate = moment(item.openDate, 'YYYYMMDDHHmmss')
 
   // 이미지가 존재하면 이미지의 uri로, 없으면 기본 이미지로
   const imageUri = uri ? uri : 'http://localhost:8081/src/assets/images/no-image.jpeg'
@@ -40,7 +40,7 @@ export const GoodsListItemVer2 = ({item}: {item: ISharingInfo}) => {
     <Pressable onPress={onPressItem} style={[styles.container]}>
       {isBefore && (
         <View style={styles.overlay}>
-          <Text style={[styles.overlayText, {marginBottom: 2.5}]}>{openDate.format('YY/MM/DD HH:MM')}</Text>
+          <Text style={[styles.overlayText, {marginBottom: 2.5}]}>{openDate.format('YYYY MM')}</Text>
           <Text style={styles.overlayText}>오픈 예정</Text>
         </View>
       )}

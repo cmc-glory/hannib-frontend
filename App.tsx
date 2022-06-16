@@ -8,6 +8,7 @@ import {setCustomText} from 'react-native-global-props'
 import {GoogleSignin} from '@react-native-google-signin/google-signin'
 import {gray800} from './src/theme'
 import RootStackNavigtor from './src/navigation/RootStackNavigator'
+import MainTabNavigator from './src/navigation/MainTabNavigator'
 import {store} from './src/redux/store'
 import {Provider as ReduxProvider} from 'react-redux'
 import NetInfo from '@react-native-community/netinfo'
@@ -69,7 +70,7 @@ const App = () => {
     <ReduxProvider store={store}>
       <SafeAreaProvider style={{flex: 1, backgroundColor: 'white'}}>
         <NavigationContainer>
-          <RootStackNavigtor />
+          <MainTabNavigator />
         </NavigationContainer>
       </SafeAreaProvider>
     </ReduxProvider>

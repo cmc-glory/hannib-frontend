@@ -6,7 +6,7 @@ export const HomeIcon = () => {
 }
 
 export const HomeIconFocused = () => {
-  return <Icon uri="http://localhost:8081/src/assets/Icon/HouseFilled.png"></Icon>
+  return <Icon uri="http://localhost:8081/src/assets/Icon/HouseFilled2.png"></Icon>
 }
 
 export const CommunityIcon = () => {
@@ -14,7 +14,7 @@ export const CommunityIcon = () => {
 }
 
 export const CommunityIconFocused = () => {
-  return <Icon uri="http://localhost:8081/src/assets/Icon/usersFilled.png"></Icon>
+  return <Icon uri="http://localhost:8081/src/assets/Icon/usersFilled2.png"></Icon>
 }
 
 export const ChattingIcon = () => {
@@ -22,7 +22,7 @@ export const ChattingIcon = () => {
 }
 
 export const ChattingIconFocused = () => {
-  return <Icon uri="http://localhost:8081/src/assets/Icon/ChatFilled.png"></Icon>
+  return <Icon uri="http://localhost:8081/src/assets/Icon/ChatFilled2.png"></Icon>
 }
 
 export const CalendarIcon = () => {
@@ -30,7 +30,7 @@ export const CalendarIcon = () => {
 }
 
 export const CalendarIconFocused = () => {
-  return <Icon uri="http://localhost:8081/src/assets/Icon/CalenderFilled.png"></Icon>
+  return <Icon uri="http://localhost:8081/src/assets/Icon/CalenderFilled2.png"></Icon>
 }
 
 export const AccountIcon = () => {
@@ -38,5 +38,5 @@ export const AccountIcon = () => {
 }
 
 export const AccountIconFocused = () => {
-  return <Icon uri="http://localhost:8081/src/assets/Icon/accountFilled.png"></Icon>
+  return <Icon uri="http://localhost:8081/src/assets/Icon/accountFilled2.png"></Icon>
 }
