@@ -27,5 +27,8 @@ declare namespace ReactNavigation {
     WriteGoodsComplete: undefined
     NotificationStackNavigator: undefined
     NotificationContent: undefined
+    SearchStackNavigator: undefined
+    Search: undefined
+    SearchContent: undefined
   }
 }

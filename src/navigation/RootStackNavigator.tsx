@@ -10,6 +10,7 @@ import WriteGoodsStackNavigator from './WriteGoodsStackNavigator'
 import GoodsStackNavigator from './GoodsStackNavigator'
 import LoginStackNavigator from './LoginStackNavigator'
 import NotificationStackNavigator from './NotificationStackNavigator'
+import SearchStackNavigator from './SearchStackNavigator'
 import {SplashScreen} from '../screens/RootStack'
 
 const Stack = createStackNavigator()
@@ -27,6 +28,7 @@ const RootStackNavigator = () => {
       <Stack.Screen name="GoodsStackNavigator" component={GoodsStackNavigator}></Stack.Screen>
       <Stack.Screen name="WriteGoodsStackNavigator" component={WriteGoodsStackNavigator}></Stack.Screen>
       <Stack.Screen name="NotificationStackNavigator" component={NotificationStackNavigator}></Stack.Screen>
+      <Stack.Screen name="SearchStackNavigator" component={SearchStackNavigator}></Stack.Screen>
     </Stack.Navigator>
   )
 }

@@ -1,6 +1,7 @@
 import React from 'react'
 import {View, Text, StyleSheet, ImageSourcePropType, Pressable} from 'react-native'
 import FastImage from 'react-native-fast-image'
+import LinearGradient from 'react-native-linear-gradient'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {GoogleSignin, GoogleSigninButton} from '@react-native-google-signin/google-signin'
 import auth from '@react-native-firebase/auth'
@@ -53,31 +54,47 @@ export const Login = () => {
   }
 
   return (
-    <SafeAreaView style={[styles.container]}>
-      <View style={[theme.styles.wrapper]}>
+    <LinearGradient
+      start={{x: 1, y: 0}}
+      end={{x: 0, y: 1}}
+      colors={['rgba(141, 91, 255, 0.5)', 'rgba(255, 173, 193, 0.5)', 'rgba(255, 255, 255, 0.5)']}
+      style={{flex: 1}}>
+      <SafeAreaView style={[theme.styles.wrapper, styles.rootContainer]}>
         <View style={[styles.titleContainer]}>
-          <Text style={[styles.title]}>한입과 함께 즐겁게 굿즈를 나눔하세요</Text>
+          <FastImage source={{uri: 'http://localhost:8081/src/assets/logo_white.png'}} style={styles.logoWhite} />
+          <Text style={[styles.title, theme.styles.bold16]}>한입과 함께 즐겁게 굿즈를 나눔하세요</Text>
         </View>
         <View style={[styles.loginButtonContainer]}>
           <LoginButton label="카카오 아이디로 로그인" source={require('../../assets/images/kakao_logo.png')} onPress={signInWithKakao} />
           <LoginButton label="애플 아이디로 로그인" source={require('../../assets/images/apple_logo.png')} onPress={SignInWithGoogle} />
           <LoginButton label="구글 아이디로 로그인" source={require('../../assets/images/google_logo.png')} />
         </View>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </LinearGradient>
   )
 }
 const styles = StyleSheet.create({
+  logoWhite: {
+    width: 79.33,
+    height: 85,
+    resizeMode: 'cover',
+  },
   title: {
-    fontSize: 16,
+    marginTop: 30,
+    marginBottom: 60,
+    color: theme.white,
   },
   titleContainer: {
-    position: 'absolute',
-    top: -100,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   container: {
     flex: 1,
     backgroundColor: theme.white,
+    justifyContent: 'center',
+  },
+  rootContainer: {
+    flex: 1,
     justifyContent: 'center',
   },
   loginButtonContainer: {

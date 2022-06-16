@@ -42,4 +42,14 @@ export const styles = StyleSheet.create({
     fontFamily: 'Pretendard-Bold',
     fontSize: 20,
   },
+  rowSpaceBetween: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  rowFlexStart: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+  },
 })

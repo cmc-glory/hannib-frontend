@@ -5,7 +5,7 @@ import {useNavigation} from '@react-navigation/native'
 import IconIcons from 'react-native-vector-icons/Ionicons'
 
 import * as theme from '../../theme'
-import {FloatingButton, StackHeader, Icon, Bell} from '../../components/utils'
+import {FloatingButton, StackHeader, Icon, Bell, Magnifier} from '../../components/utils'
 import {createListItem} from '../../data/createListItem'
 import {GoodsListItem, GoodsFilterTab, GoodsListItemVer2} from '../../components/MainTab'
 import {ISharingInfo} from '../../types'
@@ -39,6 +39,10 @@ const GoodsLists = () => {
     navigation.navigate('WriteGoodsStackNavigator')
   }, [])
 
+  const onPressMagnifier = useCallback(() => {
+    navigation.navigate('SearchStackNavigator')
+  }, [])
+
   useEffect(() => {
     fetch('http://localhost:8081/src/data/dummySharings.json')
       .then(res => res.json())
@@ -51,9 +55,10 @@ const GoodsLists = () => {
     <SafeAreaView style={[styles.container]} edges={['top', 'left', 'right']}>
       <StackHeader dropdown title="카테고리">
         <View style={{flexDirection: 'row', alignItems: 'center', width: 64, justifyContent: 'space-between'}}>
-          <Pressable>
+          {/* <Pressable>
             <Icon uri="http://localhost:8081/src/assets/Icon/Magnifier.png" />
-          </Pressable>
+          </Pressable> */}
+          <Magnifier onPress={onPressMagnifier} />
           {/* <Pressable>
             <Icon uri="http://localhost:8081/src/assets/Icon/Bell.png" />
           </Pressable> */}
