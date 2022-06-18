@@ -35,8 +35,9 @@ function BottomTab() {
         tabBarInactiveTintColor: theme.gray800,
         headerShown: false,
         tabBarStyle: {
-          borderTopWidth: 0,
-          borderColor: '#fff',
+          //borderTopWidth: 0,
+          //borderColor: '#fff',
+          borderTopColor: theme.gray500,
           //height: Platform.OS == 'android' ? 60 : 80,
         },
         tabBarItemStyle: {

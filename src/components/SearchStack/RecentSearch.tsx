@@ -1,5 +1,6 @@
 import React, {useCallback} from 'react'
 import {View, Text, Pressable, StyleSheet} from 'react-native'
+import {HashTag} from '../utils'
 import * as theme from '../../theme'
 
 export const RecentSearch = () => {
@@ -12,6 +13,12 @@ export const RecentSearch = () => {
         <Pressable onPress={onPressDeleteAll}>
           <Text style={{color: theme.secondary}}>전체 삭제</Text>
         </Pressable>
+      </View>
+      <View style={[theme.styles.rowFlexStart, {marginTop: 15}]}>
+        <HashTag label="검색어" />
+        <HashTag label="검색어" />
+        <HashTag label="검색어" />
+        <HashTag label="검색어" />
       </View>
     </View>
   )

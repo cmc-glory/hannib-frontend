@@ -6,6 +6,9 @@ import BellIcon from '../../assets/Icon/Bell.svg'
 import ClockIcon from '../../assets/Icon/watch.svg'
 import LocationIcon from '../../assets/Icon/Location.svg'
 import MagnifierIcon from '../../assets/Icon/Magnifier.svg'
+import SettingIcon from '../../assets/Icon/Setting.svg'
+import MenuWhiteIcon from '../../assets/Icon/Menu_white.svg'
+
 import * as theme from '../../theme'
 
 type IconProps = {
@@ -47,6 +50,22 @@ export const Magnifier = ({onPress}: {onPress?: () => void}) => {
   return (
     <Pressable onPress={onPress}>
       <MagnifierIcon width={theme.ICON_SIZE} height={theme.ICON_SIZE} />
+    </Pressable>
+  )
+}
+
+export const Setting = ({onPress}: {onPress?: () => void}) => {
+  return (
+    <Pressable onPress={onPress}>
+      <SettingIcon width={theme.ICON_SIZE} height={theme.ICON_SIZE} />
+    </Pressable>
+  )
+}
+
+export const MenuWhite = ({onPress}: {onPress?: () => void}) => {
+  return (
+    <Pressable onPress={onPress}>
+      <MenuWhiteIcon width={theme.ICON_SIZE} height={theme.ICON_SIZE} />
     </Pressable>
   )
 }

@@ -25,10 +25,11 @@ export const GoodsDetail = () => {
   return (
     <SafeAreaView edges={['bottom']} style={{flex: 1}}>
       <GoodsDetailHeader />
-      {headerHeight > 0 ? <Content headerHeight={headerHeight} scrollY={scrollY} /> : null}
+      {/* {headerHeight > 0 ? : null} */}
       <Animated.View style={{...styles.headerContainer, transform: [{translateY: headerTranslateY}]}} onLayout={headerOnLayout} pointerEvents="box-none">
         <HeaderImage />
       </Animated.View>
+      <Content headerHeight={headerHeight} scrollY={scrollY} />
     </SafeAreaView>
   )
 }

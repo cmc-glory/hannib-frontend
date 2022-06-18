@@ -12,7 +12,7 @@ export const Search = () => {
       <StackHeader title="검색" goBack />
       <View style={[theme.styles.wrapper]}>
         <TextInput
-          style={[theme.styles.input, {marginBottom: 20}]}
+          style={[theme.styles.input, {marginBottom: 20, color: theme.gray800}]}
           placeholder="검색어를 입력해 주세요"
           placeholderTextColor={theme.gray300}
           value={keyword}

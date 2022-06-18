@@ -9,6 +9,7 @@ import {Tag, ProductTag} from '../utils'
 import {NoticeBanner} from './NoticeBanner'
 import {RelatedSharing} from './RelatedSharing'
 import {FloatingBottomButton} from '../utils/FloatingBottomButton'
+import {useLayout} from '../../hooks'
 import {main, gray800, gray500, gray700, secondary, styles as s, white} from '../../theme'
 
 const window = Dimensions.get('window')
@@ -16,17 +17,23 @@ const window = Dimensions.get('window')
 export function Content(props: any) {
   const {headerHeight} = props
   const navigation = useNavigation()
+  const [layout, onLayout] = useLayout()
   const onPressRequest = useCallback(() => {
     navigation.navigate('GoodsRequest')
   }, [])
 
+  // useEffect(() => {
+  //   console.log('scrollY:', props.scrollY)
+  // }, [props.scrollY])
+
   useEffect(() => {
-    console.log('scrollY:', props.scrollY)
-  }, [props.scrollY])
+    console.log('scrollViewLayout:', layout)
+  }, [layout])
 
   return (
     <View style={styles.rootContainer}>
       <Animated.ScrollView
+        onLayout={e => onLayout(e)}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={[styles.container, {marginTop: headerHeight - 72 - getStatusBarHeight(), minHeight: window.height + headerHeight}]}
         scrollEventThrottle={16}

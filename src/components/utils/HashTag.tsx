@@ -1,17 +1,14 @@
-import React, {useState, useCallback, useEffect} from 'react'
-import {View, Text, TextInput, StyleSheet} from 'react-native'
-import uuid from 'react-native-uuid'
+import React from 'react'
+import {View, Text, StyleSheet} from 'react-native'
 import IonicIcons from 'react-native-vector-icons/Ionicons'
-import type {IHashtag} from '../../types'
 import * as theme from '../../theme'
-import {useAutoFocus} from '../../contexts'
 
 type HashtagProps = {
   label: string
   onPressX?: () => void
 }
 
-const HashTag = ({label, onPressX}: HashtagProps) => {
+export const HashTag = ({label, onPressX}: HashtagProps) => {
   return (
     <View style={[styles.hashtagContainer]}>
       <Text style={styles.hashtagText}>{label}</Text>
