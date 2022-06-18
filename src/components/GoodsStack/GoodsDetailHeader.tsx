@@ -5,7 +5,7 @@ import {useNavigation} from '@react-navigation/native'
 import {getStatusBarHeight} from 'react-native-status-bar-height'
 import Icon from 'react-native-vector-icons/Ionicons'
 import {main, black} from '../../theme'
-import {GoBack} from '../utils'
+import {LeftArrowIcon, ShareIcon, MenuIcon} from '../utils'
 
 type StackHeaderParams = {}
 
@@ -18,16 +18,10 @@ export const GoodsDetailHeader = ({}: StackHeaderParams) => {
   }, [])
   return (
     <View style={[styles.container]}>
-      <TouchableOpacity onPress={onPressGoback} style={{marginRight: 10}}>
-        <GoBack />
-      </TouchableOpacity>
+      <LeftArrowIcon onPress={onPressGoback} style={{marginRight: 10}} />
       <View style={{flexDirection: 'row', alignItems: 'center', width: 65, justifyContent: 'space-between'}}>
-        <TouchableOpacity>
-          <Icon name="share-social-outline" size={24} color={black}></Icon>
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Icon name="ellipsis-vertical-outline" size={24} color={black}></Icon>
-        </TouchableOpacity>
+        <ShareIcon />
+        <MenuIcon />
       </View>
     </View>
   )

@@ -1,5 +1,5 @@
 import React from 'react'
-import {View, Text, FlatList, Pressable, StyleSheet, Dimensions, LayoutChangeEvent} from 'react-native'
+import {View, Text, ScrollView, FlatList, Pressable, StyleSheet, Dimensions, LayoutChangeEvent} from 'react-native'
 import FastImage from 'react-native-fast-image'
 import * as theme from '../../theme'
 import {Tag, MenuWhite} from '../../components/utils'
@@ -52,12 +52,12 @@ export const HoldingSharing = ({setTabViewHeight}: HoldingSharingProps) => {
     setTabViewHeight(height + 100)
   }
   return (
-    <View style={styles.container} onLayout={onLayout}>
+    <ScrollView contentContainerStyle={styles.container} onLayout={onLayout}>
       {/* {images.map((image, index) => (
         <HoldingSharingItem uri={image} key={image + String(index)} />
       ))} */}
       <FlatList data={images} renderItem={({item}) => <HoldingSharingItem uri={item} />} numColumns={2} />
-    </View>
+    </ScrollView>
   )
 }
 

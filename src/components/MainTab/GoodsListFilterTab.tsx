@@ -3,6 +3,7 @@ import {useCallback} from 'react'
 import {View, Text, Pressable, StyleSheet} from 'react-native'
 import FastImage from 'react-native-fast-image'
 import * as theme from '../../theme'
+import {DownArrowIcon} from '../../components/utils'
 
 type GoodsFilterTabProps = {
   locationFilter: 0 | 1 | 2
@@ -43,9 +44,7 @@ export const GoodsFilterTab = ({locationFilter, setLocationFilter}: GoodsFilterT
       <View>
         <Pressable style={[styles.sortButton]}>
           <Text style={[styles.sortText]}>최신순</Text>
-          <View style={[styles.iconContainer]}>
-            <FastImage source={{uri: 'http://localhost:8081/src/assets/Icon/Bottom_arrow.png'}} style={[styles.icon]} />
-          </View>
+          <DownArrowIcon size={16} style={{marginLeft: 5}} />
         </Pressable>
       </View>
     </View>
@@ -64,12 +63,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   selectedButton: {
-    backgroundColor: theme.gray700,
-    borderColor: theme.gray700,
+    backgroundColor: theme.secondary,
+    borderColor: theme.secondary,
   },
   unselectedButton: {
     backgroundColor: theme.white,
-    borderColor: theme.gray300,
+    borderColor: theme.gray500,
   },
   selectedText: {
     fontFamily: 'Pretendard-Bold',
@@ -77,7 +76,7 @@ const styles = StyleSheet.create({
   },
   unselectedText: {
     fontFamily: 'Pretendard-Regular',
-    color: theme.gray300,
+    color: theme.gray500,
   },
   container: {
     flexDirection: 'row',
