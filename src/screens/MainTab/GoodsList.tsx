@@ -5,9 +5,9 @@ import {useNavigation} from '@react-navigation/native'
 import IconIcons from 'react-native-vector-icons/Ionicons'
 
 import * as theme from '../../theme'
-import {FloatingButton, StackHeader, Icon, Bell, Magnifier} from '../../components/utils'
+import {FloatingButton, StackHeader, Icon, Bell, Magnifier, BottomSheet} from '../../components/utils'
 import {createListItem} from '../../data/createListItem'
-import {GoodsListItem, GoodsFilterTab, GoodsListItemVer2} from '../../components/MainTab'
+import {GoodsListItem, GoodsFilterTab, GoodsListItemVer2, GoodsListBottomSheetContent} from '../../components/MainTab'
 import {ISharingInfo} from '../../types'
 
 const wait = (timeout: any) => {
@@ -23,6 +23,12 @@ const GoodsLists = () => {
   const [sharings, setSharins] = useState<ISharingInfo[]>([])
   const [refreshing, setRefreshing] = useState<boolean>(false) // 새로고침 state
   const [locationFilter, setLocationFilter] = useState<0 | 1 | 2>(0) // 전체(0), 우편(1), 오프라인(2)
+  const [itemFilter, setItemFilter] = useState<'최신순' | '인기순' | '추천순'>('최신순')
+  const [showItemFilterBottomShet, setShowItemFilterBottomSheet] = useState<boolean>(false)
+
+  React.useEffect(() => {
+    console.log(showItemFilterBottomShet)
+  }, [showItemFilterBottomShet])
 
   // callbacks
   const onRefresh = useCallback(() => {
@@ -55,18 +61,20 @@ const GoodsLists = () => {
     <SafeAreaView style={[styles.container]} edges={['top', 'left', 'right']}>
       <StackHeader dropdown title="카테고리">
         <View style={{flexDirection: 'row', alignItems: 'center', width: 64, justifyContent: 'space-between'}}>
-          {/* <Pressable>
-            <Icon uri="http://localhost:8081/src/assets/Icon/Magnifier.png" />
-          </Pressable> */}
           <Magnifier onPress={onPressMagnifier} />
-          {/* <Pressable>
-            <Icon uri="http://localhost:8081/src/assets/Icon/Bell.png" />
-          </Pressable> */}
+
           <Bell onPress={() => {}} />
         </View>
       </StackHeader>
       <View style={{flex: 1}}>
-        <GoodsFilterTab locationFilter={locationFilter} setLocationFilter={setLocationFilter} />
+        <GoodsFilterTab
+          locationFilter={locationFilter}
+          setLocationFilter={setLocationFilter}
+          itemFilter={itemFilter}
+          setItemFilter={setItemFilter}
+          showItemFilterBottomSheet={showItemFilterBottomShet}
+          setShowItemFilterBottomSheet={setShowItemFilterBottomSheet}
+        />
         <FlatList
           contentContainerStyle={{paddingHorizontal: theme.PADDING_SIZE}}
           data={sharings}
@@ -80,6 +88,9 @@ const GoodsLists = () => {
       <FloatingButton onPress={onPressWrite}>
         <IconIcons name="add-outline" color={theme.white} size={32} />
       </FloatingButton>
+      <BottomSheet modalVisible={showItemFilterBottomShet} setModalVisible={setShowItemFilterBottomSheet}>
+        <GoodsListBottomSheetContent itemFilter={itemFilter} setItemFilter={setItemFilter} />
+      </BottomSheet>
     </SafeAreaView>
   )
 }

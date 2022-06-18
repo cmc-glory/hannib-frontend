@@ -1,13 +1,16 @@
 import React, {useMemo} from 'react'
 import {useCallback} from 'react'
 import {View, Text, Pressable, StyleSheet} from 'react-native'
-import FastImage from 'react-native-fast-image'
 import * as theme from '../../theme'
 import {DownArrowIcon} from '../../components/utils'
 
 type GoodsFilterTabProps = {
   locationFilter: 0 | 1 | 2
   setLocationFilter: React.Dispatch<React.SetStateAction<0 | 1 | 2>>
+  itemFilter: '최신순' | '인기순' | '추천순'
+  setItemFilter: React.Dispatch<React.SetStateAction<'최신순' | '인기순' | '추천순'>>
+  showItemFilterBottomSheet: boolean
+  setShowItemFilterBottomSheet: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 type ButtonProps = {
@@ -32,7 +35,17 @@ const Button = ({text, locationFilter, setLocationFilter, index}: ButtonProps) =
   )
 }
 
-export const GoodsFilterTab = ({locationFilter, setLocationFilter}: GoodsFilterTabProps) => {
+export const GoodsFilterTab = ({
+  locationFilter,
+  setLocationFilter,
+  itemFilter,
+  setItemFilter,
+  showItemFilterBottomSheet,
+  setShowItemFilterBottomSheet,
+}: GoodsFilterTabProps) => {
+  const onPressItemFilter = useCallback(() => {
+    setShowItemFilterBottomSheet(showItemFilterBottomSheet => !showItemFilterBottomSheet)
+  }, [])
   return (
     <View style={[styles.container]}>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -42,8 +55,8 @@ export const GoodsFilterTab = ({locationFilter, setLocationFilter}: GoodsFilterT
       </View>
 
       <View>
-        <Pressable style={[styles.sortButton]}>
-          <Text style={[styles.sortText]}>최신순</Text>
+        <Pressable style={[styles.sortButton]} onPress={onPressItemFilter}>
+          <Text style={[styles.sortText]}>{itemFilter}</Text>
           <DownArrowIcon size={16} style={{marginLeft: 5}} />
         </Pressable>
       </View>
