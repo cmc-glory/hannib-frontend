@@ -26,6 +26,7 @@ import CommunitySelectedSvg from '../../assets/Icon/selected/usersFilled.svg'
 import ChattingSelectedSvg from '../../assets/Icon/selected/ChatFilled.svg'
 import CalendarSelectedSvg from '../../assets/Icon/selected/CalenderFilled.svg'
 import MyPageSelectedSvg from '../../assets/Icon/selected/accountFilled.svg'
+import XSvg from '../../assets/Icon/Close.svg'
 
 import * as theme from '../../theme'
 
@@ -43,6 +44,13 @@ type IconPropss = {
 
 export const Icon = ({uri, style, size = 24}: IconProps) => {
   return <FastImage source={{uri: uri}} style={[style, {width: size, height: size}]} />
+}
+export const XIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
+  return (
+    <Pressable onPress={onPress} style={style}>
+      <XSvg width={size} height={size} />
+    </Pressable>
+  )
 }
 
 export const Bell = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {

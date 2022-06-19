@@ -31,13 +31,13 @@ export const BottomSheet = ({children, modalVisible, setModalVisible}: BottomShe
 
   const resetBottomSheet = Animated.timing(panY, {
     toValue: 0,
-    duration: 400,
+    duration: 350,
     useNativeDriver: true,
   })
 
   const closeBottomSheet = Animated.timing(panY, {
     toValue: screenHeight,
-    duration: 400,
+    duration: 350,
     useNativeDriver: true,
   })
 

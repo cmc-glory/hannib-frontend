@@ -62,7 +62,6 @@ const GoodsLists = () => {
       <StackHeader dropdown title="카테고리">
         <View style={{flexDirection: 'row', alignItems: 'center', width: 64, justifyContent: 'space-between'}}>
           <Magnifier onPress={onPressMagnifier} />
-
           <Bell onPress={() => {}} />
         </View>
       </StackHeader>

@@ -48,7 +48,7 @@ export function Content(props: any) {
             <Text style={[styles.title]}>Lorem ipsum dolor sit amet, consectetur</Text>
             <View>
               <Pressable>
-                <FontAwesome5Icon name="star" size={24} color={secondary} solid></FontAwesome5Icon>
+                <FontAwesome5Icon name="star" size={24} color={'#FFD84D'} solid></FontAwesome5Icon>
                 <Text style={[styles.starText]}>456</Text>
               </Pressable>
             </View>
