@@ -1,0 +1,106 @@
+import React, {useCallback} from 'react'
+import {View, Pressable, ScrollView, Text, StyleSheet} from 'react-native'
+import FastImage from 'react-native-fast-image'
+import {SafeAreaView} from 'react-native-safe-area-context'
+import {StackHeader, FloatingBottomButton} from '../../components/utils'
+import BouncyCheckbox from 'react-native-bouncy-checkbox'
+import {DownArrowIcon, RightArrowIcon} from '../../components/utils'
+import * as theme from '../../theme'
+import {useNavigation} from '@react-navigation/native'
+
+const GoodsListItem = () => {
+  return (
+    <View style={[theme.styles.rowFlexStart, {marginBottom: 16}]}>
+      <Text style={{flex: 1, color: theme.gray700, fontSize: 16}}>BTS 뷔 컨셉의 하트 키링</Text>
+      <View style={theme.styles.rowFlexStart}>
+        <Text style={{color: theme.gray500, marginRight: 5}}>잔여 수량</Text>
+        <Text style={{color: theme.secondary}}>30</Text>
+      </View>
+    </View>
+  )
+}
+type ReceiverListItem = {
+  onPressViewDetail: () => void
+}
+
+const ReceiverListItem = ({onPressViewDetail}: ReceiverListItem) => {
+  return (
+    <View style={[theme.styles.rowFlexStart, {paddingVertical: 16, borderBottomWidth: 1, borderBottomColor: theme.gray200}]}>
+      <BouncyCheckbox size={20} fillColor={theme.secondary} />
+      <View style={{alignSelf: 'stretch', justifyContent: 'space-between', flex: 1}}>
+        <Text style={{fontSize: 12, marginBottom: 8}}>수령자명</Text>
+        <Text style={{color: theme.gray700, fontSize: 16}}>BTS 뷔 컨셉의 하트 키링</Text>
+      </View>
+      <Pressable style={[theme.styles.rowFlexStart]} onPress={onPressViewDetail}>
+        <Text style={{color: theme.gray500}}>상세보기</Text>
+        <RightArrowIcon />
+      </Pressable>
+    </View>
+  )
+}
+
+export const HoldingSharing = () => {
+  const navigation = useNavigation()
+  const onPressViewDetail = useCallback(() => {
+    navigation.navigate('HoldingSharingDetail')
+  }, [])
+  return (
+    <SafeAreaView style={{flex: 1}}>
+      <StackHeader goBack title="진행한 나눔"></StackHeader>
+      <ScrollView contentContainerStyle={[theme.styles.wrapper]}>
+        <FastImage source={{uri: 'http://localhost:8081/src/assets/images/detail_image_example.png'}} style={styles.thumbnailImage}>
+          <View style={styles.thumbnailImageOverlay} />
+          <View style={{padding: theme.PADDING_SIZE, alignSelf: 'stretch', justifyContent: 'space-between', zIndex: 1}}>
+            <Text style={{color: theme.white, marginBottom: 5}}>BTS</Text>
+            <Text style={[theme.styles.bold16, {color: theme.white}]}>BTS 키링 나눔</Text>
+          </View>
+        </FastImage>
+
+        <View style={{marginTop: 16}}>
+          <GoodsListItem />
+          <GoodsListItem />
+          <GoodsListItem />
+        </View>
+        <View style={{width: '100%', height: 1, backgroundColor: theme.gray200, marginVertical: 10}} />
+        <View style={[theme.styles.rowSpaceBetween, {marginVertical: 16}]}>
+          <Text>전체 선택 해제</Text>
+          <View style={[theme.styles.rowFlexStart]}>
+            <Text>전체 보기</Text>
+            <DownArrowIcon />
+          </View>
+        </View>
+        <View>
+          <ReceiverListItem onPressViewDetail={onPressViewDetail} />
+          <ReceiverListItem onPressViewDetail={onPressViewDetail} />
+        </View>
+      </ScrollView>
+      <FloatingBottomButton
+        label="공지 보내기"
+        enabled
+        onPress={() => {
+          navigation.navigate('SendNotice')
+        }}
+      />
+    </SafeAreaView>
+  )
+}
+
+const styles = StyleSheet.create({
+  thumbnailImage: {
+    leftQuantity: {
+      color: theme.gray700,
+    },
+    height: 84,
+    width: '100%',
+    borderRadius: 10,
+  },
+  thumbnailImageOverlay: {
+    backgroundColor: 'rgba(32,32,33,0.4)',
+    //backgroundColor: 'red',
+    width: '100%',
+    height: 84,
+    borderRadius: 10,
+    position: 'absolute',
+    zIndex: 1,
+  },
+})

@@ -50,7 +50,7 @@ type HoldingSharingProps = {
 export const HoldingSharingTab = () => {
   const navigation = useNavigation()
   const onPress = useCallback(() => {
-    navigation.navigate('HoldingSharing')
+    navigation.navigate('HoldingSharingStackNavigator')
   }, [])
   return (
     <ScrollView contentContainerStyle={styles.container}>

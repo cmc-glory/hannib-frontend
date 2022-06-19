@@ -1,7 +1,7 @@
 import React, {useCallback} from 'react'
 import {View, Text, Pressable, StyleSheet} from 'react-native'
 import {useNavigation} from '@react-navigation/native'
-import {Icon} from './Icon'
+import {LeftArrowIcon, Icon} from './Icon'
 import * as theme from '../../theme'
 
 // 사용밥 : <StackHeader title="상단 제목 이름" onPressTitle="상단 제목 눌렀을 때 수행할 일">{오른쪽에 들어갈 아이콘 컴포넌트}</StackHeader>
@@ -21,9 +21,10 @@ export const StackHeader = ({goBack = false, title, onPressTitle, dropdown = fal
   return (
     <View style={[styles.container]}>
       {goBack && navigation.canGoBack() && (
-        <Pressable onPress={onPressGoback} style={{marginRight: 10}}>
-          <Icon uri="http://localhost:8081/src/assets/Icon/Left arrow.png" />
-        </Pressable>
+        <LeftArrowIcon onPress={onPressGoback} style={{marginRight: 10}} />
+        // <Pressable onPress={onPressGoback} style={{marginRight: 10}}>
+        //   <Icon uri="http://localhost:8081/src/assets/Icon/Left arrow.png" />
+        // </Pressable>
       )}
       <Pressable style={[styles.titleContainer]}>
         <Text style={styles.title}>{title}</Text>

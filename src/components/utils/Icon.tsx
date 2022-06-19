@@ -10,6 +10,7 @@ import SettingIcon from '../../assets/Icon/Setting.svg'
 import CheckIcon from '../../assets/Icon/check.svg'
 import MenuWhiteIcon from '../../assets/Icon/Menu_white.svg'
 import DownArrowSvg from '../../assets/Icon/Bottom arrow.svg'
+import RightArrowSvg from '../../assets/Icon/Right arrow.svg'
 
 import LeftArrowSvg from '../../assets/Icon/Left arrow.svg'
 import ShareSvg from '../../assets/Icon/Share.svg'
@@ -113,6 +114,14 @@ export const LeftArrowIcon = ({onPress, style, size = theme.ICON_SIZE}: IconProp
   return (
     <Pressable onPress={onPress} style={style}>
       <LeftArrowSvg width={size} height={size} />
+    </Pressable>
+  )
+}
+
+export const RightArrowIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
+  return (
+    <Pressable onPress={onPress} style={style}>
+      <RightArrowSvg width={size} height={size} />
     </Pressable>
   )
 }

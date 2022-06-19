@@ -7,7 +7,8 @@ import GoodsList from '../screens/MainTab/GoodsList'
 import CommunityStackNavigator from './CommunityStackNavigator'
 import ChattingStackNavigator from './ChattingStackNavigator'
 import CalendarStackNavigator from './CalendarStackNavigator'
-import MyPageStackNavigator from './MyPageStackNavigator'
+import {MyPage} from '../screens/MainTab/MyPage'
+//import MyPageStackNavigator from './MyPageStackNavigator'
 
 import {
   HomeIcon,
@@ -29,6 +30,9 @@ const Tab = createBottomTabNavigator()
 function BottomTab() {
   return (
     <Tab.Navigator
+      sceneContainerStyle={{
+        backgroundColor: theme.white,
+      }}
       screenOptions={{
         tabBarShowLabel: true,
         tabBarActiveTintColor: theme.main,
@@ -78,12 +82,12 @@ function BottomTab() {
         component={CalendarStackNavigator}
       />
       <Tab.Screen
-        name="MyPageStackNavigator"
+        name="MyPage"
         options={{
           title: 'MY',
           tabBarIcon: ({focused}) => (focused ? <AccountIconFocused /> : <AccountIcon />),
         }}
-        component={MyPageStackNavigator}
+        component={MyPage}
       />
     </Tab.Navigator>
   )
