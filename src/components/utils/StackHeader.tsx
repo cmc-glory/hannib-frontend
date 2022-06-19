@@ -50,6 +50,7 @@ const styles = StyleSheet.create({
     height: 56,
     alignItems: 'center',
     justifyContent: 'space-between',
+    zIndex: 99,
   },
   title: {
     fontFamily: 'Pretendard-Bold',

@@ -30,5 +30,6 @@ declare namespace ReactNavigation {
     SearchStackNavigator: undefined
     Search: undefined
     SearchContent: undefined
+    HoldingSharing: undefined
   }
 }
