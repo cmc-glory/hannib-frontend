@@ -7,7 +7,7 @@ import * as theme from '../../theme'
 export const ParticipatingSharingOnline = () => {
   return (
     <SafeAreaView>
-      <Text>ParticipaingSharing</Text>
+      <StackHeader title="참여한 나눔" goBack />
     </SafeAreaView>
   )
 }

@@ -22,13 +22,15 @@ type LoginButtonProps = {
   label: string
   source: object
   onPress?: () => void
+  style?: any
+  textStyle?: any
 }
 
-const LoginButton = ({label, source, onPress}: LoginButtonProps) => {
+const LoginButton = ({label, source, onPress, style, textStyle}: LoginButtonProps) => {
   return (
-    <Pressable style={styles.loginButtonWrapper} onPress={onPress}>
+    <Pressable style={[styles.loginButtonWrapper, style]} onPress={onPress}>
       <FastImage style={styles.logo} source={source}></FastImage>
-      <Text style={[styles.label]}>{label}</Text>
+      <Text style={[styles.label, textStyle]}>{label}</Text>
     </Pressable>
   )
 }
@@ -65,9 +67,20 @@ export const Login = () => {
           <Text style={[styles.title, theme.styles.bold16]}>한입과 함께 즐겁게 굿즈를 나눔하세요</Text>
         </View>
         <View style={[styles.loginButtonContainer]}>
-          <LoginButton label="카카오 아이디로 로그인" source={require('../../assets/images/kakao_logo.png')} onPress={signInWithKakao} />
-          <LoginButton label="애플 아이디로 로그인" source={require('../../assets/images/apple_logo.png')} onPress={SignInWithGoogle} />
-          <LoginButton label="구글 아이디로 로그인" source={require('../../assets/images/google_logo.png')} />
+          <LoginButton
+            label="Kakao로 로그인"
+            style={{backgroundColor: '#fddc3f'}}
+            source={require('../../assets/images/kakao_logo.png')}
+            onPress={signInWithKakao}
+          />
+          <LoginButton
+            label="Apple로 로그인"
+            style={{backgroundColor: theme.black}}
+            textStyle={{color: theme.white}}
+            source={require('../../assets/images/apple_logo.png')}
+            onPress={SignInWithGoogle}
+          />
+          <LoginButton style={{backgroundColor: theme.white}} label="Google로 로그인" source={require('../../assets/images/google_logo.png')} />
         </View>
       </SafeAreaView>
     </LinearGradient>
