@@ -20,13 +20,23 @@ export const CategoryItem = ({category, onPress}: {category: IStar; onPress: (ca
   return (
     <Pressable style={[styles.container]} onPress={() => onPress(category)}>
       {selected && <Check />}
-      <FastImage style={[styles.image, selected && styles.selectedImage]} source={{uri: uri}}></FastImage>
+      <View style={[styles.selectedCircle, selected && {backgroundColor: theme.main}]}>
+        <FastImage style={[styles.image]} source={{uri: uri}}></FastImage>
+      </View>
+
       <Text style={[styles.artistname]}>{name}</Text>
     </Pressable>
   )
 }
 
 const styles = StyleSheet.create({
+  selectedCircle: {
+    width: 104,
+    height: 104,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 52,
+  },
   checkImage: {
     width: 8,
     height: 8,
@@ -40,12 +50,15 @@ const styles = StyleSheet.create({
     right: 4,
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 1,
+    zIndex: 6,
   },
   image: {
     width: 100,
     height: 100,
     borderRadius: 50,
+    overflow: 'hidden',
+    zIndex: 5,
+    position: 'absolute',
   },
   container: {
     alignItems: 'center',
@@ -57,5 +70,7 @@ const styles = StyleSheet.create({
   selectedImage: {
     borderWidth: 2,
     borderColor: theme.main,
+    width: 100,
+    height: 100,
   },
 })

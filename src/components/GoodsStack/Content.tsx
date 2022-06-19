@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
   followButton: {
-    paddingHorizontal: 12,
+    paddingHorizontal: 16,
     paddingVertical: 6,
   },
   followText: {

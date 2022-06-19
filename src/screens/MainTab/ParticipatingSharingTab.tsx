@@ -50,6 +50,7 @@ type HoldingSharingProps = {
 export const ParticipatingSharingTab = () => {
   const navigation = useNavigation()
   const onPress = useCallback((index: number) => {
+    // 일단은 나눔 index가 짝수면 오프라인, 홀수면 온라인으로 이동하도록
     if (index % 2 == 0) {
       navigation.navigate('ParticipatingSharingStackNavigator', {screen: 'ParticipatingSharingOffline'})
     } else {

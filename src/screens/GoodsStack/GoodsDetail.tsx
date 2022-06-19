@@ -6,8 +6,6 @@ import {SafeAreaView} from 'react-native-safe-area-context'
 
 export const GoodsDetail = () => {
   const [headerHeight, setHeaderHeight] = useState(0)
-  const [shareVisible, toggleShareVisible] = useToggle() // 공유 모달창 띄울지
-  const [moreVisible, toggleMoreVisible] = useToggle() // 메뉴 모달창 띄울지
 
   const scrollY = useRef(new Animated.Value(0)).current
   const headerTranslateY = scrollY.interpolate({
@@ -27,7 +25,7 @@ export const GoodsDetail = () => {
 
   return (
     <SafeAreaView edges={['bottom']} style={{flex: 1}}>
-      <GoodsDetailHeader moreVisible={moreVisible} toggleMoreVisible={toggleMoreVisible} shareVisible={shareVisible} toggleShareVisible={toggleShareVisible} />
+      <GoodsDetailHeader />
       {/* {headerHeight > 0 ? : null} */}
       <Animated.View style={{...styles.headerContainer, transform: [{translateY: headerTranslateY}]}} onLayout={headerOnLayout} pointerEvents="box-none">
         <HeaderImage />
