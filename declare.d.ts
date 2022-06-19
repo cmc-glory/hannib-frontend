@@ -34,7 +34,9 @@ declare namespace ReactNavigation {
     HoldingSharingStackNavigator: undefined
     HoldingSharingDetail: undefined
     SendNotice: undefined
-    ParticipatingSharingStackNavigator: undefined
+    ParticipatingSharingStackNavigator: {
+      screen: string
+    }
     ParticipatingSharingOnline: undefined
     ParticipatingSharingOffline: undefined
   }

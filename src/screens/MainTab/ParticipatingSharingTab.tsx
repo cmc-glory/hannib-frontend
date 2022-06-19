@@ -49,13 +49,17 @@ type HoldingSharingProps = {
 
 export const ParticipatingSharingTab = () => {
   const navigation = useNavigation()
-  const onPress = useCallback(() => {
-    navigation.navigate('ParticipatingSharingStackNavigator')
+  const onPress = useCallback((index: number) => {
+    if (index % 2 == 0) {
+      navigation.navigate('ParticipatingSharingStackNavigator', {screen: 'ParticipatingSharingOffline'})
+    } else {
+      navigation.navigate('ParticipatingSharingStackNavigator', {screen: 'ParticipatingSharingOnline'})
+    }
   }, [])
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {images.map((image, index) => (
-        <HoldingSharingItem uri={image} key={image + String(index)} onPress={onPress} />
+        <HoldingSharingItem uri={image} key={image + String(index)} onPress={() => onPress(index)} />
       ))}
       {/* <FlatList data={images} renderItem={({item}) => <HoldingSharingItem uri={item} />} numColumns={2} /> */}
     </ScrollView>

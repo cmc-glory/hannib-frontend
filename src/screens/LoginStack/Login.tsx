@@ -1,5 +1,5 @@
 import React from 'react'
-import {View, Text, StyleSheet, ImageSourcePropType, Pressable} from 'react-native'
+import {View, Text, StyleSheet, Platform, Pressable} from 'react-native'
 import FastImage from 'react-native-fast-image'
 import LinearGradient from 'react-native-linear-gradient'
 import {SafeAreaView} from 'react-native-safe-area-context'
@@ -35,10 +35,13 @@ const LoginButton = ({label, source, onPress, style, textStyle}: LoginButtonProp
   )
 }
 
+const ios = Platform.OS == 'ios'
+
 export const Login = () => {
   const navigation = useNavigation()
 
   const signInWithKakao = async (): Promise<void> => {
+    console.log('clicked')
     const token: KakaoOAuthToken = await login()
     const profile: KakaoProfile = await getKakaoProfile()
 
@@ -73,14 +76,16 @@ export const Login = () => {
             source={require('../../assets/images/kakao_logo.png')}
             onPress={signInWithKakao}
           />
-          <LoginButton
-            label="Apple로 로그인"
-            style={{backgroundColor: theme.black}}
-            textStyle={{color: theme.white}}
-            source={require('../../assets/images/apple_logo.png')}
-            onPress={SignInWithGoogle}
-          />
-          <LoginButton style={{backgroundColor: theme.white}} label="Google로 로그인" source={require('../../assets/images/google_logo.png')} />
+          {ios && (
+            <LoginButton
+              label="Apple로 로그인"
+              style={{backgroundColor: theme.black}}
+              textStyle={{color: theme.white}}
+              source={require('../../assets/images/apple_logo.png')}
+              onPress={SignInWithGoogle}
+            />
+          )}
+          {!ios && <LoginButton style={{backgroundColor: theme.white}} label="Google로 로그인" source={require('../../assets/images/google_logo.png')} />}
         </View>
       </SafeAreaView>
     </LinearGradient>
@@ -111,7 +116,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   loginButtonContainer: {
-    height: 200,
     justifyContent: 'space-between',
   },
   loginButtonWrapper: {
@@ -120,6 +124,7 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: theme.gray50,
     borderRadius: 4,
+    marginBottom: 16,
   },
   logo: {
     width: 24,
