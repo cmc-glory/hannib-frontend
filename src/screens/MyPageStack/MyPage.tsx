@@ -63,7 +63,6 @@ export const MyPage = () => {
       <ScrollView contentContainerStyle={[theme.styles.wrapper]} stickyHeaderIndices={[1]} showsVerticalScrollIndicator={false}>
         <View style={{marginVertical: 15}}>
           <Profile />
-          <Follow />
         </View>
         <View style={{height: tabViewHeight}}>
           <TabView

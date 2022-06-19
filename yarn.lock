@@ -3506,6 +3506,11 @@
     "invariant" "*"
     "prop-types" "*"
 
+"dequal@1.0.0":
+  "integrity" "sha512-/Nd1EQbQbI9UbSHrMiKZjFLrXSnU328iQdZKPQf78XQI6C+gutkFUeoHpG5J08Ioa6HeRbRNFpSIclh1xyG0mw=="
+  "resolved" "https://registry.npmjs.org/dequal/-/dequal-1.0.0.tgz"
+  "version" "1.0.0"
+
 "destroy@1.2.0":
   "integrity" "sha512-2sJGJTaXIIaR1w4iJSNoN0hnMY7Gpc/n8D4qSCJw8QqFWXf7cuAgnEHxBpweaVcPevC2l3KpjYCx3NypQQgaJg=="
   "resolved" "https://registry.npmjs.org/destroy/-/destroy-1.2.0.tgz"
@@ -7036,6 +7041,13 @@
     "jscodeshift" "^0.13.1"
     "nullthrows" "^1.1.1"
 
+"react-native-collapsible-tab-view@^4.5.2":
+  "integrity" "sha512-QXj4bMqfD+erREZNS51mqyPxJ8Xid4Kef/vqu1PqExNCAo30WjSKOpeNVHmXt4vcs/6ln+qFzLby4cbJ5AkoBw=="
+  "resolved" "https://registry.npmjs.org/react-native-collapsible-tab-view/-/react-native-collapsible-tab-view-4.5.2.tgz"
+  "version" "4.5.2"
+  dependencies:
+    "use-deep-compare" "^1.1.0"
+
 "react-native-fast-image@^8.5.11":
   "integrity" "sha512-cNW4bIJg3nvKaheG8vGMfqCt5LMWX9MS5+wMudgKIHbGO51spRr4sgnlhVgwHLcZ5aeNOVJ8CPRxDIWKRq/0QA=="
   "resolved" "https://registry.npmjs.org/react-native-fast-image/-/react-native-fast-image-8.5.11.tgz"
@@ -7119,7 +7131,7 @@
   "resolved" "https://registry.npmjs.org/react-native-reanimated-carousel/-/react-native-reanimated-carousel-3.0.0.tgz"
   "version" "3.0.0"
 
-"react-native-reanimated@^2.8.0", "react-native-reanimated@>=2.7.0":
+"react-native-reanimated@^2.8.0", "react-native-reanimated@>=2.1.0", "react-native-reanimated@>=2.7.0":
   "integrity" "sha512-kJvf/UWLBMaGCs9X66MKq5zdFMgwx8D0nHnolbHR7s8ZnbLdb7TlQ/yuzIXqn/9wABfnwtNRI3CyaP1aHWMmZg=="
   "resolved" "https://registry.npmjs.org/react-native-reanimated/-/react-native-reanimated-2.8.0.tgz"
   "version" "2.8.0"
@@ -8515,6 +8527,13 @@
   "integrity" "sha1-2pN/emLiH+wf0Y1Js1wpNQZ6bHI="
   "resolved" "https://registry.npmjs.org/urix/-/urix-0.1.0.tgz"
   "version" "0.1.0"
+
+"use-deep-compare@^1.1.0":
+  "integrity" "sha512-6yY3zmKNCJ1jjIivfZMZMReZjr8e6iC6Uqtp701jvWJ6ejC/usXD+JjmslZDPJQgX8P4B1Oi5XSLHkOLeYSJsA=="
+  "resolved" "https://registry.npmjs.org/use-deep-compare/-/use-deep-compare-1.1.0.tgz"
+  "version" "1.1.0"
+  dependencies:
+    "dequal" "1.0.0"
 
 "use-subscription@>=1.0.0 <1.6.0":
   "integrity" "sha512-Xv2a1P/yReAjAbhylMfFplFKj9GssgTwN7RlcTxBujFQcloStWNDQdc4g4NRWH9xS4i/FDk04vQBptAXoF3VcA=="
