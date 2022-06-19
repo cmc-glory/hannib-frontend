@@ -1,20 +1,78 @@
 import React, {useCallback, useEffect, useState} from 'react'
-import {View, Text, Pressable, Image, StyleSheet, Dimensions} from 'react-native'
+import {View, Text, Pressable, TextInput, Image, StyleSheet, Dimensions} from 'react-native'
 import FastImage from 'react-native-fast-image'
 import {useNavigation} from '@react-navigation/native'
+import Modal from 'react-native-modal'
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5'
 import moment from 'moment'
 import * as theme from '../../theme'
 import type {ISharingInfo} from '../../types'
-import {Tag} from '../utils'
+import {Tag, XIcon} from '../utils'
 
 const {width} = Dimensions.get('window')
 
 var IMAGE_SIZE = (width - theme.PADDING_SIZE * 3) / 2
 
+type SecretModalProps = {
+  secretModalVisible: boolean
+  setSecretModalVisible: React.Dispatch<React.SetStateAction<boolean>>
+
+  secretKey: string | undefined
+}
+
+const SecretModal = ({secretModalVisible, setSecretModalVisible, secretKey}: SecretModalProps) => {
+  const [secretSuccess, setSecretSuccess] = useState<boolean | null>()
+  const [secretInput, setSecretInput] = useState<string>('')
+  const navigation = useNavigation()
+  const onPressCheck = () => {
+    if (secretInput == secretKey) {
+      setSecretInput('')
+      navigation.navigate('GoodsStackNavigator')
+      setSecretSuccess(true)
+      setSecretModalVisible(false)
+    } else {
+      setSecretSuccess(false)
+    }
+  }
+
+  return (
+    <Modal isVisible={secretModalVisible} backdropColor={theme.gray800} backdropOpacity={0.6} onBackdropPress={() => setSecretModalVisible(false)}>
+      <View style={styles.secretModalContainer}>
+        <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+          <XIcon onPress={() => setSecretModalVisible(false)} />
+        </View>
+        <View style={{marginTop: theme.PADDING_SIZE, alignItems: 'center'}}>
+          <Text style={[{fontFamily: 'Pretendard-Bold', fontSize: 18, marginBottom: 8}]}>해당 게시물은 비밀번호가 걸려있습니다.</Text>
+          <Text style={{color: theme.gray500, fontSize: 14}}>게시자에게 공유받은 비밀번호를 입력해주세요.</Text>
+        </View>
+        <View style={{marginVertical: 16, height: 68, justifyContent: 'space-between'}}>
+          <TextInput
+            style={[theme.styles.input, {color: theme.gray800}, secretSuccess == false && {borderColor: '#FF6060'}]}
+            placeholder="시크릿 코드를 입력해 주세요"
+            placeholderTextColor={theme.gray300}
+            value={secretInput}
+            onChangeText={text => {
+              setSecretInput(text)
+              setSecretSuccess(null)
+            }}
+          />
+          {secretSuccess == false && <Text style={{color: '#FF6060', fontSize: 12}}>비밀번호가 맞지 않습니다</Text>}
+        </View>
+
+        <Pressable
+          style={[secretInput == '' ? theme.styles.disabledButton : theme.styles.button, {justifyContent: 'center', alignItems: 'center', paddingVertical: 14}]}
+          onPress={onPressCheck}>
+          <Text style={[theme.styles.bold16, {color: theme.white}]}>확인</Text>
+        </Pressable>
+      </View>
+    </Modal>
+  )
+}
+
 export const GoodsListItemVer2 = ({item}: {item: ISharingInfo}) => {
   // 나눔 게시글 아이템 구조분해 할당
-  const {type, title, writer, uri} = item
+  const {type, title, writer, uri, isSecret, secretKey} = item
+
   const now = moment()
   const openDate = moment(item.openDate, 'YYYYMMDDHHmmss')
 
@@ -23,43 +81,54 @@ export const GoodsListItemVer2 = ({item}: {item: ISharingInfo}) => {
   const navigation = useNavigation()
 
   const [isBefore, setIsBefore] = useState(false)
+
+  const [secretModalVisible, setSecretModalVisible] = useState(false)
+
   useEffect(() => {
     setIsBefore(now < openDate ? true : false)
   }, [])
 
-  useEffect(() => {
-    console.log(isBefore)
-  }, [isBefore])
-
   // 상세 페이지로 이동
   const onPressItem = useCallback(() => {
-    navigation.navigate('GoodsStackNavigator')
+    if (isSecret == true) {
+      setSecretModalVisible(true)
+    } else {
+      navigation.navigate('GoodsStackNavigator')
+    }
   }, [])
 
   return (
-    <Pressable onPress={onPressItem} style={[styles.container]}>
-      {isBefore && (
-        <View style={styles.overlay}>
-          <Text style={[styles.overlayText, {marginBottom: 2.5}]}>{openDate.format('YYYY MM')}</Text>
-          <Text style={styles.overlayText}>오픈 예정</Text>
+    <>
+      <SecretModal secretModalVisible={secretModalVisible} setSecretModalVisible={setSecretModalVisible} secretKey={secretKey} />
+      <Pressable onPress={onPressItem} style={[styles.container]}>
+        {isBefore && (
+          <View style={styles.overlay}>
+            <Text style={[styles.overlayText, {marginBottom: 2.5}]}>{openDate.format('YYYY MM')}</Text>
+            <Text style={styles.overlayText}>오픈 예정</Text>
+          </View>
+        )}
+        <View style={{width: IMAGE_SIZE}}>
+          <View style={[styles.imageHeader, {width: IMAGE_SIZE}]}>
+            <FontAwesome5Icon name="star" size={18} color={theme.gray500} />
+          </View>
+          <FastImage style={[styles.image, {width: IMAGE_SIZE, height: IMAGE_SIZE}]} source={{uri: imageUri}}></FastImage>
         </View>
-      )}
-      <View style={{width: IMAGE_SIZE}}>
-        <View style={[styles.imageHeader, {width: IMAGE_SIZE}]}>
-          <FontAwesome5Icon name="star" size={18} color={theme.gray500} />
+        <View style={{marginTop: 10}}>
+          <Tag label={type == 'offline' ? '블루스퀘어' : '우편'} />
+          <Text style={[styles.title, {width: IMAGE_SIZE}]}>{title}</Text>
+          <Text style={[styles.writerName]}>{writer}</Text>
         </View>
-        <FastImage style={[styles.image, {width: IMAGE_SIZE, height: IMAGE_SIZE}]} source={{uri: imageUri}}></FastImage>
-      </View>
-      <View style={{marginTop: 10}}>
-        <Tag label={type == 'offline' ? '블루스퀘어' : '우편'} />
-        <Text style={[styles.title, {width: IMAGE_SIZE}]}>{title}</Text>
-        <Text style={[styles.writerName]}>{writer}</Text>
-      </View>
-    </Pressable>
+      </Pressable>
+    </>
   )
 }
 
 const styles = StyleSheet.create({
+  secretModalContainer: {
+    padding: 24,
+    backgroundColor: theme.white,
+    borderRadius: 8,
+  },
   overlayText: {
     color: theme.white,
     fontFamily: 'Pretendard-SemiBold',

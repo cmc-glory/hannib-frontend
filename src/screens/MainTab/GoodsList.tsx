@@ -20,14 +20,14 @@ const GoodsLists = () => {
   const navigation = useNavigation()
 
   // states
-  const [sharings, setSharins] = useState<ISharingInfo[]>([])
+  const [sharings, setSharings] = useState<ISharingInfo[]>([])
   const [refreshing, setRefreshing] = useState<boolean>(false) // 새로고침 state
   const [locationFilter, setLocationFilter] = useState<0 | 1 | 2>(0) // 전체(0), 우편(1), 오프라인(2)
   const [itemFilter, setItemFilter] = useState<'최신순' | '인기순' | '추천순'>('최신순')
   const [showItemFilterBottomShet, setShowItemFilterBottomSheet] = useState<boolean>(false)
 
   React.useEffect(() => {
-    console.log(showItemFilterBottomShet)
+    //console.log(showItemFilterBottomShet)
   }, [showItemFilterBottomShet])
 
   // callbacks
@@ -36,7 +36,7 @@ const GoodsLists = () => {
     fetch('http://localhost:8081/src/data/dummySharings.json')
       .then(res => res.json())
       .then(result => {
-        setSharins(result)
+        setSharings(result)
         setRefreshing(false)
       })
   }, [])
@@ -53,7 +53,7 @@ const GoodsLists = () => {
     fetch('http://localhost:8081/src/data/dummySharings.json')
       .then(res => res.json())
       .then(result => {
-        setSharins(result)
+        setSharings(result)
       })
   }, [])
 

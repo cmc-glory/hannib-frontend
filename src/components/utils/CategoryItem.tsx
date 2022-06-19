@@ -36,6 +36,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 52,
+    //overflow: 'hidden',
   },
   checkImage: {
     width: 8,

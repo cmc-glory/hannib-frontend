@@ -35,4 +35,6 @@ export type ISharingInfo = {
   title: string
   writer: string
   openDate: Date
+  isSecret: boolean
+  secretKey?: string
 }
