@@ -5,6 +5,7 @@ import * as theme from '../../theme'
 type GoodsListBottomSheetContentProps = {
   itemFilter: '최신순' | '인기순' | '추천순'
   setItemFilter: React.Dispatch<React.SetStateAction<'최신순' | '인기순' | '추천순'>>
+  close?: () => void
 }
 
 type GoodsListBottomSheetContentItemProps = {
@@ -21,9 +22,12 @@ const GoodsListBottomSheetContentItem = ({label, selected, onPress}: GoodsListBo
   )
 }
 
-export const GoodsListBottomSheetContent = ({itemFilter, setItemFilter}: GoodsListBottomSheetContentProps) => {
+export const GoodsListBottomSheetContent = ({itemFilter, setItemFilter, close}: GoodsListBottomSheetContentProps) => {
   const onPress = useCallback((label: '최신순' | '인기순' | '추천순') => {
     setItemFilter(label)
+    if (close) {
+      close()
+    }
   }, [])
   return (
     <View style={[styles.rootContainer, theme.styles.wrapper]}>
@@ -42,6 +46,7 @@ const styles = StyleSheet.create({
     borderBottomColor: theme.gray200,
     borderBottomWidth: 1,
     marginBottom: 20,
+    width: '100%',
   },
   label: {
     marginBottom: 14,

@@ -1,11 +1,11 @@
-import React, {useEffect, useMemo} from 'react'
+import React, {useEffect, cloneElement, useMemo} from 'react'
 import {View, Text, StyleSheet, Modal, Animated, TouchableWithoutFeedback, Dimensions} from 'react-native'
 import type {GestureResponderEvent, PanResponderGestureState} from 'react-native'
 import {useAnimatedValue, usePanResponder} from '../../hooks'
 import {getBottomSpace, isIphoneX} from 'react-native-iphone-x-helper'
 
 type BottomSheetProps = {
-  children?: React.ReactNode
+  children: React.ReactElement
   modalVisible: boolean
   setModalVisible: React.Dispatch<React.SetStateAction<boolean>>
 }
@@ -31,13 +31,13 @@ export const BottomSheet = ({children, modalVisible, setModalVisible}: BottomShe
 
   const resetBottomSheet = Animated.timing(panY, {
     toValue: 0,
-    duration: 300,
+    duration: 400,
     useNativeDriver: true,
   })
 
   const closeBottomSheet = Animated.timing(panY, {
     toValue: screenHeight,
-    duration: 300,
+    duration: 400,
     useNativeDriver: true,
   })
 
@@ -75,7 +75,9 @@ export const BottomSheet = ({children, modalVisible, setModalVisible}: BottomShe
           style={{...styles.bottomSheetContainer, paddingBottom: iosX ? bottomSpaceHeight : 10, transform: [{translateY: translateY}]}}
           {...panResponders.panHandlers}>
           <View style={styles.bar} />
-          {children}
+          {cloneElement(children, {
+            close: closeModal,
+          })}
         </Animated.View>
       </View>
     </Modal>
