@@ -1,5 +1,5 @@
 import React, {useCallback, useState} from 'react'
-import {View, Text, Pressable, TouchableOpacity, Animated, Modal as RNModal, StyleSheet} from 'react-native'
+import {View, Text, Pressable, TouchableOpacity, Animated, Alert, Modal as RNModal, StyleSheet} from 'react-native'
 import Modal from 'react-native-modal'
 import {useNavigation} from '@react-navigation/native'
 import {getStatusBarHeight} from 'react-native-status-bar-height'
@@ -25,6 +25,7 @@ const ShareModal = ({shareVisible, toggleShareVisible}: ShareModalProps) => {
   const link = '링크 자동 생성'
   const copyToClipboard = () => {
     Clipboard.setString(link)
+    Alert.alert('복사가 완료되었습니다', '', [{text : '확인'}])
   }
   return (
     <Modal isVisible={shareVisible} onBackdropPress={toggleShareVisible} backdropColor={theme.gray800} backdropOpacity={0.6}>
@@ -40,9 +41,7 @@ const ShareModal = ({shareVisible, toggleShareVisible}: ShareModalProps) => {
             <View style={[theme.styles.input, {flex: 1, justifyContent: 'center'}]}>
               <Text style={{color: theme.gray700}}>{link}</Text>
             </View>
-            <Pressable
-              onPress={copyToClipboard}
-              style={{width: 60, height: 48, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.black, borderRadius: 4, marginLeft: 8}}>
+            <Pressable onPress={copyToClipboard} style={styles.copyButton}>
               <Text style={{fontSize: 16, color: theme.white}}>복사</Text>
             </Pressable>
           </View>
@@ -87,6 +86,15 @@ export const GoodsDetailHeader = () => {
 }
 
 const styles = StyleSheet.create({
+  copyButton: {
+    width: 60,
+    height: 48,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: theme.secondary,
+    borderRadius: 4,
+    marginLeft: 8,
+  },
   shareModal: {
     backgroundColor: theme.white,
     borderRadius: 4,
