@@ -1,10 +1,11 @@
 import React, {useState, useCallback, useMemo, useEffect, useRef} from 'react'
 import {View, Text, ScrollView, Pressable, StyleSheet, Animated, Dimensions, Platform, DynamicColorIOS} from 'react-native'
 import {getStatusBarHeight} from 'react-native-status-bar-height'
-import {isIphoneX} from 'react-native-iphone-x-helper'
-import {HeaderImage, Content, GoodsDetailHeader} from '../../components/GoodsStack'
+import {useNavigation} from '@react-navigation/native'
+import {HeaderImage, GoodsDetailContent, GoodsDetailHeader} from '../../components/GoodsStack'
 import {useAnimatedValue, useMonitorAnimatedValue, useAnimatedStyle, usePanResponder} from '../../hooks'
 import {ScrollEnabledProvider, useScrollEnabled} from '../../contexts'
+import {FloatingBottomButton} from '../../components/utils'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import * as theme from '../../theme'
 
@@ -19,6 +20,7 @@ type Event = GestureResponderEvent
 type State = PanResponderGestureState
 
 export const GoodsDetail = () => {
+  const navigation = useNavigation()
   const [headerHeight, setHeaderHeight] = useState(0)
 
   const scrollY = useAnimatedValue(0)
@@ -29,7 +31,7 @@ export const GoodsDetail = () => {
     setAnimStarted(true)
     Animated.timing(fadeValue, {
       toValue: 1,
-      duration: 100,
+      duration: 50,
       useNativeDriver: true,
     }).start(() => setAnimStarted(false))
   }
@@ -38,7 +40,7 @@ export const GoodsDetail = () => {
     setAnimStarted(true)
     Animated.timing(fadeValue, {
       toValue: 0,
-      duration: 100,
+      duration: 50,
       useNativeDriver: true,
     }).start(() => setAnimStarted(false))
   }
@@ -80,6 +82,10 @@ export const GoodsDetail = () => {
     }
   }, [realScrollY])
 
+  const onPressRequest = useCallback(() => {
+    navigation.navigate('GoodsRequest')
+  }, [])
+
   return (
     <ScrollEnabledProvider>
       <SafeAreaView edges={['bottom']} style={{flex: 1}}>
@@ -89,16 +95,8 @@ export const GoodsDetail = () => {
         <Animated.View style={[styles.headerContainer, {transform: [{translateY: headerTranslateY}]}]} onLayout={headerOnLayout} pointerEvents="box-none">
           <HeaderImage imageHeight={IMAGE_HEIGHT} />
         </Animated.View>
-        <Content
-          //toMove={TO_MOVE}
-          //topMargin={TOP_MARGIN}
-          //scrollEnabled={scrollEnabled}
-          //realScrollY={realScrollY}
-          headerHeight={headerHeight}
-          scrollY={scrollY}
-          animatedBorder={animatedBorder}
-          //translateEnabled={translateEnabled}
-        />
+        <GoodsDetailContent headerHeight={headerHeight} scrollY={scrollY} animatedBorder={animatedBorder} />
+        <FloatingBottomButton label="신청하기" onPress={onPressRequest} enabled />
       </SafeAreaView>
     </ScrollEnabledProvider>
   )

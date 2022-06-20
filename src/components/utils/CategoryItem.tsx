@@ -31,12 +31,12 @@ export const CategoryItem = ({category, onPress}: {category: IStar; onPress: (ca
 
 const styles = StyleSheet.create({
   selectedCircle: {
-    width: 104,
-    height: 104,
+    borderRadius: 53,
+    width: 106,
+    height: 106,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 52,
-    //overflow: 'hidden',
+    overflow: 'hidden',
   },
   checkImage: {
     width: 8,

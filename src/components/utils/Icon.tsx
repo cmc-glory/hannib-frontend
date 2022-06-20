@@ -4,14 +4,13 @@ import {useNavigation} from '@react-navigation/native'
 import FastImage from 'react-native-fast-image'
 import BellIcon from '../../assets/Icon/Bell.svg'
 import ClockIcon from '../../assets/Icon/Time.svg'
-import LocationIcon from '../../assets/Icon/Location.svg'
+import LocationSvg from '../../assets/Icon/Location.svg'
 import MagnifierIcon from '../../assets/Icon/Magnifier.svg'
 import SettingIcon from '../../assets/Icon/Setting.svg'
 import CheckIcon from '../../assets/Icon/check.svg'
 import MenuWhiteIcon from '../../assets/Icon/Menu_white.svg'
 import DownArrowSvg from '../../assets/Icon/Bottom arrow.svg'
 import RightArrowSvg from '../../assets/Icon/Right arrow.svg'
-
 import LeftArrowSvg from '../../assets/Icon/Left arrow.svg'
 import ShareSvg from '../../assets/Icon/Share.svg'
 import MenuSvg from '../../assets/Icon/Menu.svg'
@@ -20,6 +19,10 @@ import CommunityUnselectedSvg from '../../assets/Icon/unselected/usersFilled.svg
 import ChattingUnselectedSvg from '../../assets/Icon/unselected/ChatFilled.svg'
 import CalendarUnselectedSvg from '../../assets/Icon/unselected/CalenderFilled.svg'
 import MyPageUnselectedSvg from '../../assets/Icon/unselected/accountFilled.svg'
+import StarUnfilledSvg from '../../assets/Icon/starUnfilled.svg'
+import StarFilledSvg from '../../assets/Icon/starFilled.svg'
+import CommunicationSvg from '../../assets/Icon/Communication.svg'
+import CommunicationWhiteSvg from '../../assets/Icon/CommunicationWhite.svg'
 
 import HomeSelectedSvg from '../../assets/Icon/selected/HouseFilled.svg'
 import CommunitySelectedSvg from '../../assets/Icon/selected/usersFilled.svg'
@@ -40,6 +43,38 @@ type IconPropss = {
   onPress?: () => void
   style?: any
   size?: number
+}
+
+export const CommunicationIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
+  return (
+    <Pressable onPress={onPress} style={style}>
+      <CommunicationSvg width={size} height={size} />
+    </Pressable>
+  )
+}
+
+export const CommunicationWhiteIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
+  return (
+    <Pressable onPress={onPress} style={style}>
+      <CommunicationWhiteSvg width={size} height={size} />
+    </Pressable>
+  )
+}
+
+export const StarFilledIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
+  return (
+    <Pressable onPress={onPress} style={style}>
+      <StarFilledSvg width={size} height={size} />
+    </Pressable>
+  )
+}
+
+export const StarUnfilledIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
+  return (
+    <Pressable onPress={onPress} style={style}>
+      <StarUnfilledSvg width={size} height={size} />
+    </Pressable>
+  )
 }
 
 export const Icon = ({uri, style, size = 24}: IconProps) => {
@@ -70,10 +105,10 @@ export const Clock = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
   )
 }
 
-export const Location = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
+export const LocationIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
   return (
     <Pressable onPress={onPress} style={style}>
-      <LocationIcon width={size} height={size} />
+      <LocationSvg width={size} height={size} />
     </Pressable>
   )
 }
