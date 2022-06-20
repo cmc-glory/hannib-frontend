@@ -83,7 +83,7 @@ export const GoodsDetail = () => {
   }, [realScrollY])
 
   const onPressRequest = useCallback(() => {
-    navigation.navigate('GoodsRequest')
+    navigation.navigate('GoodsRequestOnline')
   }, [])
 
   return (

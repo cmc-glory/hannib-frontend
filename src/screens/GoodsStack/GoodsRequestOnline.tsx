@@ -42,7 +42,7 @@ const ItemQuantity = ({item, index, selectedItems, setSelectedItems}: ItemQuanti
   )
 }
 
-export const GoodsRequest = () => {
+export const GoodsReqeustOnline = () => {
   const [requestForm, setRequestForm] = useState<IRequestForm>({
     recieveDate: '',
     twitterid: '',
@@ -95,30 +95,7 @@ export const GoodsRequest = () => {
 
         <View style={[{padding: theme.PADDING_SIZE}]}>
           <Text style={[theme.styles.bold16]}>정보 입력</Text>
-          <View style={[styles.spacing]}>
-            <Text style={styles.inputLabel}>나눔 수령일</Text>
-            <DateTimePickerModal
-              isVisible={isDatePickerVisible}
-              mode="datetime"
-              onConfirm={handleConfirm}
-              onCancel={hideDatePicker}
-              display={Platform.OS == 'ios' ? 'inline' : 'default'}
-            />
 
-            <Pressable onPress={showDatePicker}>
-              {requestForm.recieveDate == '' && <DownArrowIcon style={{position: 'absolute', right: 16, top: 12}} />}
-              <TextInput
-                onPressIn={() => Platform.OS == 'ios' && showDatePicker()}
-                editable={false}
-                underlineColorAndroid="transparent"
-                value={requestForm.recieveDate}
-                onChange={(e: any) => setRequestForm({...requestForm, recieveDate: e.nativeEvent.text})}
-                style={[theme.styles.input, styles.input]}
-                placeholder="나눔 수령일 선택"
-                onFocus={focus}
-                placeholderTextColor={theme.gray200}></TextInput>
-            </Pressable>
-          </View>
           <View style={[styles.spacing]}>
             <Text style={styles.inputLabel}>이름</Text>
             <TextInput
