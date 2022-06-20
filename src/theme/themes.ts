@@ -20,8 +20,10 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 4,
     height: INPUT_HEIGHT,
-    paddingHorizontal: 15,
+    paddingHorizontal: 16,
     color: gray800,
+    //paddingHorizontal : 16,
+    paddingVertical: 12,
   },
   safeareaview: {
     backgroundColor: white,

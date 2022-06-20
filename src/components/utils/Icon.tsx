@@ -1,5 +1,5 @@
 import React from 'react'
-import {StyleProp, ImageStyle, Pressable} from 'react-native'
+import {StyleProp, ImageStyle, TouchableOpacity, Pressable} from 'react-native'
 import {useNavigation} from '@react-navigation/native'
 import FastImage from 'react-native-fast-image'
 import BellIcon from '../../assets/Icon/Bell.svg'
@@ -23,6 +23,7 @@ import StarUnfilledSvg from '../../assets/Icon/starUnfilled.svg'
 import StarFilledSvg from '../../assets/Icon/starFilled.svg'
 import CommunicationSvg from '../../assets/Icon/Communication.svg'
 import CommunicationWhiteSvg from '../../assets/Icon/CommunicationWhite.svg'
+import CheckboxSvg from '../../assets/Icon/Checkbox.svg'
 
 import HomeSelectedSvg from '../../assets/Icon/selected/HouseFilled.svg'
 import CommunitySelectedSvg from '../../assets/Icon/selected/usersFilled.svg'
@@ -43,6 +44,14 @@ type IconPropss = {
   onPress?: () => void
   style?: any
   size?: number
+}
+
+export const CheckboxIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
+  return (
+    <TouchableOpacity onPress={onPress} style={style}>
+      <CheckboxSvg width={size} height={size} />
+    </TouchableOpacity>
+  )
 }
 
 export const CommunicationIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
