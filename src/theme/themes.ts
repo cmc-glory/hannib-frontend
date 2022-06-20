@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native'
-import {black, gray500, gray300, white, main} from './colors'
+import {black, gray500, gray800, gray300, white, main} from './colors'
 
 export const PADDING_SIZE = 20
 export const INPUT_HEIGHT = 48
@@ -21,6 +21,7 @@ export const styles = StyleSheet.create({
     borderRadius: 4,
     height: INPUT_HEIGHT,
     paddingHorizontal: 15,
+    color: gray800,
   },
   safeareaview: {
     backgroundColor: white,
