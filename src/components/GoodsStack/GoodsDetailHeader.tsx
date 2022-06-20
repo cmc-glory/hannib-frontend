@@ -6,14 +6,15 @@ import {getStatusBarHeight} from 'react-native-status-bar-height'
 import Clipboard from '@react-native-clipboard/clipboard'
 
 import * as theme from '../../theme'
-import {useToggle} from '../../hooks'
+import {useToggle, useAsyncState} from '../../hooks'
 import {LeftArrowIcon, ShareIcon, XIcon, MenuIcon} from '../utils'
 
 const STATUSBAR_HEIGHT = getStatusBarHeight()
 
 type MenuModalProps = {
   moreVisible: boolean
-  toggleMoreVisible: () => void
+  setMoreVisible: (x: any) => Promise<any>
+  onPressReportIssue: () => void
 }
 
 type ShareModalProps = {
@@ -25,7 +26,7 @@ const ShareModal = ({shareVisible, toggleShareVisible}: ShareModalProps) => {
   const link = '링크 자동 생성'
   const copyToClipboard = () => {
     Clipboard.setString(link)
-    Alert.alert('복사가 완료되었습니다', '', [{text : '확인'}])
+    Alert.alert('복사가 완료되었습니다', '', [{text: '확인'}])
   }
   return (
     <Modal isVisible={shareVisible} onBackdropPress={toggleShareVisible} backdropColor={theme.gray800} backdropOpacity={0.6}>
@@ -51,13 +52,13 @@ const ShareModal = ({shareVisible, toggleShareVisible}: ShareModalProps) => {
   )
 }
 
-const MenuModal = ({moreVisible, toggleMoreVisible}: MenuModalProps) => {
+const MenuModal = ({moreVisible, setMoreVisible, onPressReportIssue}: MenuModalProps) => {
   return (
     <RNModal transparent={true} visible={moreVisible}>
-      <Pressable style={{flex: 1, justifyContent: 'center'}} onPress={toggleMoreVisible} />
-      <View style={styles.menuModal}>
-        <Text style={{color: theme.gray700}}>신고하기</Text>
-      </View>
+      <Pressable style={{flex: 1, justifyContent: 'center'}} onPress={() => setMoreVisible(false)} />
+      <Pressable style={styles.menuModal} onPress={onPressReportIssue}>
+        <Text style={{color: theme.gray800}}>신고하기</Text>
+      </Pressable>
     </RNModal>
   )
 }
@@ -65,10 +66,16 @@ const MenuModal = ({moreVisible, toggleMoreVisible}: MenuModalProps) => {
 export const GoodsDetailHeader = () => {
   const navigation = useNavigation()
   const [shareVisible, toggleShareVisible] = useToggle() // 공유 모달창 띄울지
-  const [moreVisible, toggleMoreVisible] = useToggle() // 메뉴 모달창 띄울지
+  //const [moreVisible, toggleMoreVisible] = useToggle() // 메뉴 모달창 띄울지
+  const [moreVisible, setMoreVisible] = useAsyncState(false)
 
   const onPressGoback = useCallback(() => {
     navigation.goBack()
+  }, [])
+
+  const onPressReportIssue = useCallback(async () => {
+    await setMoreVisible(false)
+    navigation.navigate('ReportIssueStackNavigator')
   }, [])
 
   return (
@@ -76,10 +83,10 @@ export const GoodsDetailHeader = () => {
       <LeftArrowIcon onPress={onPressGoback} style={{marginRight: 10}} />
       <ShareModal shareVisible={shareVisible} toggleShareVisible={toggleShareVisible} />
       <View style={{flexDirection: 'row', alignItems: 'center', width: 65, justifyContent: 'space-between'}}>
-        <MenuModal moreVisible={moreVisible} toggleMoreVisible={toggleMoreVisible} />
+        <MenuModal moreVisible={moreVisible} setMoreVisible={setMoreVisible} onPressReportIssue={onPressReportIssue} />
 
         <ShareIcon onPress={toggleShareVisible} />
-        <MenuIcon onPress={toggleMoreVisible} />
+        <MenuIcon onPress={() => setMoreVisible(true)} />
       </View>
     </View>
   )
@@ -101,7 +108,8 @@ const styles = StyleSheet.create({
     padding: theme.PADDING_SIZE,
   },
   menuModal: {
-    backgroundColor: theme.white,
+    //backgroundColor: theme.white,
+    backgroundColor: 'rgba(255,255,255,0.95)',
     position: 'absolute',
     width: 144,
     height: 40,

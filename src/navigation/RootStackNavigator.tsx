@@ -14,6 +14,7 @@ import SearchStackNavigator from './SearchStackNavigator'
 import {SplashScreen} from '../screens/RootStack'
 import HoldingSharingStackNavigator from './HoldingSharingStackNavigator'
 import ParticipatingSharingStackNavigator from './ParticipatingSharingStackNavigator'
+import ReportIssueStackNavigator from './ReportIssueStackNavigator'
 
 const Stack = createStackNavigator()
 
@@ -33,6 +34,7 @@ const RootStackNavigator = () => {
       <Stack.Screen name="SearchStackNavigator" component={SearchStackNavigator}></Stack.Screen>
       <Stack.Screen name="HoldingSharingStackNavigator" component={HoldingSharingStackNavigator}></Stack.Screen>
       <Stack.Screen name="ParticipatingSharingStackNavigator" component={ParticipatingSharingStackNavigator}></Stack.Screen>
+      <Stack.Screen name="ReportIssueStackNavigator" component={ReportIssueStackNavigator}></Stack.Screen>
     </Stack.Navigator>
   )
 }

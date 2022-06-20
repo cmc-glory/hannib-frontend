@@ -39,5 +39,6 @@ declare namespace ReactNavigation {
     }
     ParticipatingSharingOnline: undefined
     ParticipatingSharingOffline: undefined
+    ReportIssueStackNavigator: undefined
   }
 }
