@@ -43,6 +43,10 @@ declare namespace ReactNavigation {
     ReportIssueStep2: {
       issue: string
       reason?: string
+      userName: string
+    }
+    ReportIssueStep3: {
+      userName: stirng
     }
   }
 }

@@ -1,7 +1,22 @@
 import React from 'react'
 import {createStackNavigator} from '@react-navigation/stack'
 import {ReportIssueStep1, ReportIssueStep2, ReportIssueStep3} from '../screens/ReportIssueStack'
-const Stack = createStackNavigator()
+import type {NativeStackScreenProps} from '@react-navigation/native-stack'
+const Stack = createStackNavigator<ReportIssueStackNavigatorParamList>()
+
+type ReportIssueStackNavigatorParamList = {
+  ReportIssueStep1: undefined
+  ReportIssueStep2: {issue: string; reason?: string; userName: string}
+  ReportIssueStep3: {issue: string; reason?: string; userName: string}
+}
+
+type Props2 = NativeStackScreenProps<ReportIssueStackNavigatorParamList, 'ReportIssueStep2'>
+export type ReportIssueStep2NavigationProp = Props2['navigation']
+export type ReportIssueStep2RouteProp = Props2['route']
+
+type Props3 = NativeStackScreenProps<ReportIssueStackNavigatorParamList, 'ReportIssueStep3'>
+export type ReportIssueStep3NavigationProp = Props3['navigation']
+export type ReportIssueStep3RouteProp = Props3['route']
 
 const ReportIssueStackNavigator = () => {
   return (

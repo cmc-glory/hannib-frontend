@@ -55,6 +55,8 @@ export const ReportIssueStep1 = () => {
   const onPressSelect = useCallback(() => {
     navigation.navigate('ReportIssueStep2', {
       issue: selectedIssue,
+      reason: reasonEtc,
+      userName: '춤추는 고양이',
     })
   }, [])
 
