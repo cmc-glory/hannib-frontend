@@ -10,6 +10,7 @@ import {NoticeBanner} from './NoticeBanner'
 import {RelatedSharing} from './RelatedSharing'
 import {FloatingBottomButton} from '../utils/FloatingBottomButton'
 import {useLayout} from '../../hooks'
+import {ScrollEnabledProvider} from '../../contexts'
 import {main, gray800, gray500, gray700, secondary, styles as s, white} from '../../theme'
 
 const window = Dimensions.get('window')
@@ -22,21 +23,23 @@ export function Content(props: any) {
     navigation.navigate('GoodsRequest')
   }, [])
 
-  // useEffect(() => {
-  //   console.log('scrollY:', props.scrollY)
-  // }, [props.scrollY])
-
-  useEffect(() => {
-    console.log('scrollViewLayout:', layout)
-  }, [layout])
-
   return (
     <View style={styles.rootContainer}>
       <Animated.ScrollView
         onLayout={e => onLayout(e)}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={[styles.container, {marginTop: headerHeight - 72 - getStatusBarHeight(), minHeight: window.height + headerHeight}]}
-        scrollEventThrottle={16}
+        contentContainerStyle={[
+          styles.container,
+          {
+            marginTop: headerHeight - 72 - getStatusBarHeight(),
+            minHeight: window.height + headerHeight,
+            borderTopLeftRadius: 24,
+            borderTopRightRadius: 24,
+          },
+        ]}
+        scrollEventThrottle={1}
+        scrollEnabled
+        //scrollEnabled={props.scrollEnabled}
         onScroll={Animated.event([{nativeEvent: {contentOffset: {y: props.scrollY}}}], {useNativeDriver: true})}
         bounces={false}>
         <View style={styles.padding}>
@@ -139,8 +142,8 @@ const styles = StyleSheet.create({
     zIndex: 99,
   },
   container: {
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
+    //borderTopLeftRadius: 24,
+    //borderTopRightRadius: 24,
     backgroundColor: 'white',
   },
   itemContainer: {

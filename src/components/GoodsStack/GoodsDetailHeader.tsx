@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
     height: 45,
     alignItems: 'center',
     justifyContent: 'space-between',
-    zIndex: 1,
+    zIndex: 99,
     marginTop: STATUSBAR_HEIGHT,
   },
 })
