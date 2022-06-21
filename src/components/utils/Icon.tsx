@@ -33,6 +33,7 @@ import ChattingSelectedSvg from '../../assets/Icon/selected/ChatFilled.svg'
 import CalendarSelectedSvg from '../../assets/Icon/selected/CalenderFilled.svg'
 import MyPageSelectedSvg from '../../assets/Icon/selected/accountFilled.svg'
 import XSvg from '../../assets/Icon/Close.svg'
+import UpArrowSvg from '../../assets/Icon/UpArrow.svg'
 
 import * as theme from '../../theme'
 
@@ -46,6 +47,14 @@ type IconPropss = {
   onPress?: () => void
   style?: any
   size?: number
+}
+
+export const UpArrowIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
+  return (
+    <Pressable onPress={onPress} style={style}>
+      <UpArrowSvg width={size} height={size} />
+    </Pressable>
+  )
 }
 
 export const MinusIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {

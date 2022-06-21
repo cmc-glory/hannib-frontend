@@ -40,8 +40,8 @@ declare namespace ReactNavigation {
     SplashScreen: undefined
     LoginStackNavigator: undefined
     SelectCategory: {
-      email: string
-      name: string
+      email?: string
+      name?: string
     }
     WriteGoodsComplete: {
       id: string // 작성한 게시글의 id. "등록한 게시글로 이동"에서 사용한다.
@@ -69,5 +69,7 @@ declare namespace ReactNavigation {
     ReportIssueStep3: {
       userName: stirng
     }
+    AskAddStar: undefined
+    AskAddStarComplete: undefined
   }
 }

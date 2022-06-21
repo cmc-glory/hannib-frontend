@@ -2,7 +2,7 @@ import React, {useCallback, useState} from 'react'
 import {View, Text, Pressable, StyleSheet, TouchableOpacity} from 'react-native'
 import FastImage from 'react-native-fast-image'
 import type {Asset} from 'react-native-image-picker'
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker'
+import {launchImageLibrary} from 'react-native-image-picker'
 import * as theme from '../../theme'
 import {PlusIcon} from '../utils'
 
