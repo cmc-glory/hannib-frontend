@@ -26,7 +26,7 @@ import CommunicationWhiteSvg from '../../assets/Icon/CommunicationWhite.svg'
 import CheckboxSvg from '../../assets/Icon/Checkbox.svg'
 import PlusSvg from '../../assets/Icon/Plus.svg'
 import CalendarSvg from '../../assets/Icon/Calender.svg'
-
+import MinusSvg from '../../assets/Icon/Remove.svg'
 import HomeSelectedSvg from '../../assets/Icon/selected/HouseFilled.svg'
 import CommunitySelectedSvg from '../../assets/Icon/selected/usersFilled.svg'
 import ChattingSelectedSvg from '../../assets/Icon/selected/ChatFilled.svg'
@@ -46,6 +46,14 @@ type IconPropss = {
   onPress?: () => void
   style?: any
   size?: number
+}
+
+export const MinusIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
+  return (
+    <Pressable onPress={onPress} style={style}>
+      <MinusSvg width={size} height={size} />
+    </Pressable>
+  )
 }
 
 export const CalendarIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {

@@ -1,5 +1,5 @@
 import React, {useCallback, useState} from 'react'
-import {View, Text, Pressable, TextInput, TouchableOpacity, Platform, StyleSheet} from 'react-native'
+import {View, Text, Pressable, TextInput, TouchableOpacity, NativeSyntheticEvent, TextInputChangeEventData, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import moment from 'moment'
 import DateTimePickerModal from 'react-native-modal-datetime-picker'
@@ -100,7 +100,7 @@ export const GoodsReqeustOnline = () => {
             <Text style={styles.inputLabel}>이름</Text>
             <TextInput
               value={requestForm.name}
-              onChange={(e: any) => setRequestForm({...requestForm, name: e.nativeEvent.text})}
+              onChange={(e: NativeSyntheticEvent<TextInputChangeEventData>) => setRequestForm({...requestForm, name: e.nativeEvent.text})}
               style={[theme.styles.input, styles.input]}
               placeholder="이름"
               onFocus={focus}

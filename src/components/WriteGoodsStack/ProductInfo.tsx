@@ -1,10 +1,12 @@
 import React, {useState, useCallback} from 'react'
-import {View, Text, TextInput, Pressable, StyleSheet} from 'react-native'
-import BouncyCheckbox from 'react-native-bouncy-checkbox' // checkbox
+import {View, Text, TextInput, Pressable, TouchableWithoutFeedback, StyleSheet, Dimensions, Touchable} from 'react-native'
 import uuid from 'react-native-uuid' // uuid
+import {PlusIcon, MinusIcon} from '../utils'
 import Icons from 'react-native-vector-icons/Ionicons'
 import {IProductInfo} from '../../types'
 import * as theme from '../../theme'
+
+const STOCK_WIDTH = Dimensions.get('window').width - theme.PADDING_SIZE * 2 - 8 * 2 - 200 - 48
 
 type ProductInfoProps = {
   productInfos: IProductInfo[]
@@ -24,15 +26,15 @@ const ProductInfoItem = ({productInfo, onPress, quantityLimit}: ProductInfoItemP
   const {id, name, quantity} = productInfo
   return (
     <View style={styles.productInfoItemWrapper}>
-      <View style={[theme.styles.input, styles.itemView, {flex: 2}]}>
+      <View style={[theme.styles.input, styles.itemView, {width: 200}]}>
         <Text>{name}</Text>
       </View>
-      <View style={[theme.styles.input, styles.itemView, {flex: 1}]}>
+      <View style={[theme.styles.input, styles.itemView, {width: STOCK_WIDTH}]}>
         <Text>{quantity}</Text>
       </View>
       {quantityLimit && productInfo.productLimit && <View style={[theme.styles.input, {flex: 1}, styles.itemView]}>{productInfo.productLimit}</View>}
-      <Pressable onPress={() => onPress(id)} style={[theme.styles.input, {alignItems: 'center', justifyContent: 'center'}]}>
-        <Icons name="remove-outline" color={theme.gray800} size={20} />
+      <Pressable onPress={() => onPress(id)} style={[styles.button]}>
+        <MinusIcon onPress={() => onPress(id)} />
       </Pressable>
     </View>
   )
@@ -43,6 +45,7 @@ export const ProductInfo = ({productInfos, setProductInfos, quantityLimit, setQu
   const [quantity, setQuantity] = useState<number>()
   const [limit, setLimit] = useState<number>()
   const onPressAdd = () => {
+    console.log('clicked')
     // 이름이나 수량 중 하나만 값이 없어도 추가하지 않음
     if (name == '' || quantity == 0 || quantity == undefined) return
     // 인당 수량 제한 여부가 체크돼 있고, 그 값이 없어도 추가하지 않음
@@ -69,22 +72,18 @@ export const ProductInfo = ({productInfos, setProductInfos, quantityLimit, setQu
   return (
     <View>
       <View style={[styles.header]}>
-        <Text>상품 정보</Text>
-        {/* <View style={[styles.checkboxWrapper]}>
-          <BouncyCheckbox size={20} onPress={setQuantityLimit} iconStyle={{borderRadius: 2, borderColor: theme.gray500}} fillColor={theme.gray800} />
-          <Text style={{color: theme.gray500}}>인당 수량 제한 여부</Text>
-        </View> */}
+        <Text style={[theme.styles.label]}>상품 정보</Text>
       </View>
       <View style={[styles.productInfoItemWrapper]}>
         <TextInput
-          style={[theme.styles.input, styles.input, {flex: 2}]}
+          style={[theme.styles.input, styles.input, {width: 200}]}
           placeholder="상품명"
           placeholderTextColor={theme.gray200}
           value={name}
           onChangeText={setName}
         />
         <TextInput
-          style={[theme.styles.input, {flex: 1}, styles.input]}
+          style={[theme.styles.input, styles.input, {width: STOCK_WIDTH}]}
           placeholder="재고"
           placeholderTextColor={theme.gray200}
           keyboardType="numeric"
@@ -101,8 +100,8 @@ export const ProductInfo = ({productInfos, setProductInfos, quantityLimit, setQu
             onChangeText={text => setLimit(Number(text))}
           />
         )}
-        <Pressable style={[theme.styles.input, {alignItems: 'center', justifyContent: 'center'}]} onPress={onPressAdd}>
-          <Icons name="add-outline" color={theme.gray800} size={20} />
+        <Pressable style={[styles.button]} onPress={onPressAdd}>
+          <PlusIcon onPress={onPressAdd} />
         </Pressable>
       </View>
       <View>
@@ -115,6 +114,14 @@ export const ProductInfo = ({productInfos, setProductInfos, quantityLimit, setQu
 }
 
 const styles = StyleSheet.create({
+  button: {
+    width: 48,
+    height: 48,
+    borderRadius: 4,
+    backgroundColor: theme.main50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -129,14 +136,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 8,
+    marginBottom: 10,
   },
   input: {
-    marginRight: 10,
+    marginRight: 8,
   },
   itemView: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 10,
+    marginRight: 8,
   },
 })

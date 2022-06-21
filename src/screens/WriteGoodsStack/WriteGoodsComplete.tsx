@@ -3,23 +3,9 @@ import {View, Text, Pressable, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation} from '@react-navigation/native'
 
-import {StackHeader} from '../../components/utils'
+import {StackHeader, RoundButton} from '../../components/utils'
 import {StepIndicator} from '../../components/WriteGoodsStack'
 import * as theme from '../../theme'
-
-type ButtonProps = {
-  label: string
-  onPress?: () => void
-  enabled?: boolean
-}
-
-export const Button = ({label, onPress, enabled = false}: ButtonProps) => {
-  return (
-    <Pressable onPress={onPress} style={[theme.styles.wrapper, styles.buttonContainer, enabled ? theme.styles.button : theme.styles.disabledButton]}>
-      <Text style={styles.label}>{label}</Text>
-    </Pressable>
-  )
-}
 
 export const WriteGoodsComplete = () => {
   const navigation = useNavigation()
@@ -33,9 +19,13 @@ export const WriteGoodsComplete = () => {
         <StepIndicator step={3} />
         <View style={styles.container}>
           <View style={styles.illustration}></View>
-          <Text style={[styles.text, theme.styles.bold20]}>모집글 등록이 완료되었습니다.</Text>
-          <Button label="게시글 보기" enabled onPress={onPressButton} />
+          <View style={{marginVertical: 32, justifyContent: 'center', alignItems: 'center'}}>
+            <Text style={[theme.styles.bold20, {marginBottom: 8}]}>모집글 등록 완료</Text>
+            <Text style={{fontSize: 16, color: theme.gray700}}>모집글 등록이 완료됬습니다.</Text>
+            <Text style={{fontSize: 16, color: theme.gray700}}>게시글이 잘 등록됬는지 확인해보세요!</Text>
+          </View>
         </View>
+        <RoundButton label="등록한 게시글로 이동" enabled onPress={onPressButton} />
       </View>
     </SafeAreaView>
   )
@@ -53,18 +43,14 @@ const styles = StyleSheet.create({
     fontFamily: 'Pretendard-SemiBold',
   },
   container: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: -46,
+    alignSelf: 'center',
   },
   illustration: {
     position: 'relative',
     width: 240,
     height: 240,
     backgroundColor: theme.main50,
-  },
-  text: {
-    marginVertical: 32,
   },
 })

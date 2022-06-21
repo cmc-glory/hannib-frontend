@@ -34,17 +34,16 @@ export const WriteGoodsOnline = () => {
           <ProductInfo productInfos={productInfos} setProductInfos={setProductInfos} quantityLimit={quantityLimit} setQuantityLimit={setQuantityLimit} />
         </View>
         <View style={[theme.styles.wrapper, styles.spacing]}>
-          <Text>추가 질문 사항</Text>
           <AdditionalQuestions />
         </View>
 
         <View style={[theme.styles.wrapper, styles.spacing]}>
-          <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-            <Text>시크릿 폼</Text>
+          <View style={[theme.styles.rowSpaceBetween]}>
+            <Text style={{fontFamily: 'Pretendard-Medium', fontSize: 16}}>시크릿 폼</Text>
             <Switch color={theme.gray800} onValueChange={toggleSecretForm} value={secretForm} style={styles.switch} />
           </View>
           <TextInput
-            style={[theme.styles.input, styles.input]}
+            style={[theme.styles.input, {marginTop: 10}]}
             value={secretPassword}
             onChangeText={setSecretPassword}
             placeholder="비밀번호를 입력하세요"
