@@ -20,7 +20,7 @@ export const MyPage = () => {
   const [refreshing, setRefreshing] = useState<boolean>(false)
   const layout = useWindowDimensions()
   const [index, setIndex] = React.useState(0) // tab view index
-  const [settingsModalVisible, setSettingsModalVisible] = useState<boolean>(true)
+  const [settingsModalVisible, setSettingsModalVisible] = useState<boolean>(false)
 
   // tab view configuration
   const [routes] = React.useState([

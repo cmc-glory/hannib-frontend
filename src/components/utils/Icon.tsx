@@ -34,6 +34,7 @@ import CalendarSelectedSvg from '../../assets/Icon/selected/CalenderFilled.svg'
 import MyPageSelectedSvg from '../../assets/Icon/selected/accountFilled.svg'
 import XSvg from '../../assets/Icon/Close.svg'
 import UpArrowSvg from '../../assets/Icon/UpArrow.svg'
+import EmptyCheckboxSvg from '../../assets/Icon/UnCheckbox.svg'
 
 import * as theme from '../../theme'
 
@@ -47,6 +48,14 @@ type IconPropss = {
   onPress?: () => void
   style?: any
   size?: number
+}
+
+export const EmptyCheckboxIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
+  return (
+    <Pressable onPress={onPress} style={style}>
+      <EmptyCheckboxSvg width={size} height={size} />
+    </Pressable>
+  )
 }
 
 export const UpArrowIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
