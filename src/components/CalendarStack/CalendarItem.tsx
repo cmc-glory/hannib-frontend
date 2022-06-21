@@ -1,6 +1,6 @@
 import React from 'react'
 import {View, Text, StyleSheet} from 'react-native'
-import {Tag, Clock, Location} from '../utils'
+import {Tag, Clock, LocationIcon} from '../utils'
 import * as theme from '../../theme'
 
 export const CalendarItem = () => {
@@ -18,7 +18,7 @@ export const CalendarItem = () => {
           <Text style={[theme.styles.bold16, {color: theme.gray700}]}>나눔 제목</Text>
           <View style={styles.row}>
             <Text style={styles.normal}>블루스퀘어</Text>
-            <Location />
+            <LocationIcon />
           </View>
         </View>
         <View>

@@ -71,5 +71,9 @@ declare namespace ReactNavigation {
     }
     AskAddStar: undefined
     AskAddStarComplete: undefined
+    BlockedUsers: undefined
+    MyPageStackNavigator: {
+      screen: string
+    }
   }
 }
