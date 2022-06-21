@@ -1,13 +1,13 @@
 import React, {useCallback, useState} from 'react'
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native'
+import {View, Text, Pressable, StyleSheet, TouchableOpacity} from 'react-native'
 import FastImage from 'react-native-fast-image'
 import Modal from 'react-native-modal'
 import type {Asset} from 'react-native-image-picker'
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker'
 import * as theme from '../../theme'
-import AddIcon from '../../assets/icons/add_light.svg'
+import {PlusIcon} from '../utils'
 
-const IMAGE_SIZE = 63
+const IMAGE_SIZE = 64
 const BORDER_SIZE = IMAGE_SIZE / 2
 
 type ImagePickerProps = {
@@ -26,64 +26,36 @@ export const ImagePreview = ({uri}: {uri: string | undefined}) => {
   return <FastImage source={{uri: uri}} style={styles.image}></FastImage>
 }
 
-export const ImagePickerModal = ({isVisible, onClose, onImageLibraryPress, onCameraPress}: ImageModalProps) => {
-  return (
-    <Modal isVisible={isVisible} onBackButtonPress={onClose} onBackdropPress={onClose} style={styles.modal}>
-      <TouchableOpacity onPress={onCameraPress} style={styles.buttonView}>
-        <Text style={styles.buttonText}>camera</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={onImageLibraryPress} style={styles.buttonView}>ㅗㅁㄴ
-        <Text style={styles.buttonText}>Library</Text>
-      </TouchableOpacity>
-    </Modal>
-  )
-}
-
 export const ImagePicker = ({images, setImages}: ImagePickerProps) => {
-  const [pickerResponse, setPickerResponse] = useState(null)
-  const [visible, setVisible] = useState<boolean>(false)
-
-  const imageCallback = useCallback(
-    (res: any) => {
-      if (res) {
-        setImages([...images, res.assets[0]])
-      }
-
-      setVisible(false)
-    },
-    [images],
-  )
-
   React.useEffect(() => {
     console.log('images : ', images)
   }, [images])
 
-  const onImageLibraryPress = useCallback(() => {
-    launchImageLibrary({selectionLimit: 1, mediaType: 'photo', includeBase64: false}, imageCallback)
-  }, [])
-
-  const onCameraPress = useCallback(() => {
-    launchCamera({saveToPhotos: true, mediaType: 'photo', includeBase64: false}, imageCallback)
-  }, [])
-
-  const showModal = useCallback(() => {
-    setVisible(true)
-  }, [])
+  const onImageLibraryPress = useCallback(async () => {
+    const response = await launchImageLibrary({selectionLimit: 1, mediaType: 'photo', includeBase64: false})
+    if (response.didCancel) {
+      console.log('User cancelled image picker')
+    } else if (response.errorCode) {
+      console.log('errorCode : ', response.errorCode)
+    } else if (response.errorMessage) {
+      console.log('errorMessage', response.errorMessage)
+    } else if (response.assets) {
+      setImages([...images, response?.assets[0]])
+    }
+  }, [images])
 
   return (
     <View style={[styles.contianer]}>
-      <Text style={[{marginBottom: 8}]}>대표 이미지 등록</Text>
+      <Text style={[theme.styles.label]}>대표 이미지 등록</Text>
       <View style={[styles.imageContainer]}>
         {images?.map(image => (
           <ImagePreview key={image.uri} uri={image.uri} />
         ))}
-        <TouchableOpacity onPress={showModal}>
-          <View style={[styles.addImage]}>
-            <AddIcon width={IMAGE_SIZE * 0.3} height={IMAGE_SIZE * 0.3} fill={theme.gray700} />
+        <Pressable onPress={onImageLibraryPress}>
+          <View style={[styles.addImage, {marginBottom: 8}]}>
+            <PlusIcon />
           </View>
-        </TouchableOpacity>
-
-        <ImagePickerModal isVisible={visible} onClose={() => setVisible(false)} onImageLibraryPress={onImageLibraryPress} onCameraPress={onCameraPress} />
+        </Pressable>
       </View>
     </View>
   )
@@ -100,17 +72,19 @@ const styles = StyleSheet.create({
     width: IMAGE_SIZE,
     height: IMAGE_SIZE,
     borderRadius: 5,
+    marginBottom: 8,
     marginRight: 8,
   },
   imageContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
     flexWrap: 'wrap',
   },
   addImage: {
     width: IMAGE_SIZE,
     height: IMAGE_SIZE,
-    borderRadius: 8,
+    borderRadius: 5,
     borderWidth: 1,
     borderColor: theme.gray300,
     justifyContent: 'center',

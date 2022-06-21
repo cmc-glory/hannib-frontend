@@ -1,55 +1,84 @@
 import React from 'react'
 import {View, Text, StyleSheet} from 'react-native'
 
-import {StepDots} from '../utils'
-import {black, white, gray300, gray700} from '../../theme'
+import {StepDots, CheckboxIcon} from '../utils'
+import * as theme from '../../theme'
 
-const ICON_SIZE = 9
 type stepIndicatorProps = {
   step: number
+}
+
+type StepProps = {
+  label: string
+  index?: number
+  key?: number
+}
+
+const steps = [{label: '기본 정보'}, {label: '입력폼'}, {label: '완료'}]
+
+const PreviousStep = ({label}: StepProps) => {
+  return (
+    <View style={[styles.itemContainer]}>
+      <CheckboxIcon />
+      <Text style={{color: theme.gray800}}>{label}</Text>
+    </View>
+  )
+}
+
+const CurrentStep = ({label, index}: StepProps) => {
+  return (
+    <View style={[styles.itemContainer]}>
+      <View style={[styles.circle, styles.selectedCircle]}>
+        <Text style={{color: theme.white, fontSize: 12}}>{index}</Text>
+      </View>
+      <Text style={{color: theme.gray800}}>{label}</Text>
+    </View>
+  )
+}
+
+const PostStep = ({label, index}: StepProps) => {
+  return (
+    <View style={[styles.itemContainer]}>
+      <View style={[styles.circle, styles.unselectedCircle]}>
+        <Text style={{color: theme.white, fontSize: 12}}>{index}</Text>
+      </View>
+      <Text style={{color: theme.gray300}}>{label}</Text>
+    </View>
+  )
 }
 
 export const StepIndicator = ({step}: stepIndicatorProps) => {
   return (
     <View style={[styles.container]}>
-      <View style={[styles.itemContainer]}>
-        <View style={[styles.circle, step == 1 ? styles.selectedCircle : styles.unselectedCircle]}>
-          <Text style={{color: step == 1 ? white : gray300}}>1</Text>
-        </View>
-        <Text style={[{fontFamily: 'Pretendard-Bold'}, step == 1 ? styles.selectedText : styles.unselectedText]}>기본 정보</Text>
-      </View>
-      <StepDots />
-      <View style={[styles.itemContainer]}>
-        <View style={[styles.circle, step == 2 ? styles.selectedCircle : styles.unselectedCircle]}>
-          <Text style={{color: step == 2 ? white : gray300}}>2</Text>
-        </View>
-        <Text style={[{fontFamily: 'Pretendard-Bold'}, step == 2 ? styles.selectedText : styles.unselectedText]}>입력폼</Text>
-      </View>
-      <StepDots />
-      <View style={[styles.itemContainer]}>
-        <View style={[styles.circle, step == 3 ? styles.selectedCircle : styles.unselectedCircle]}>
-          <Text style={{color: step == 3 ? white : gray300}}>3</Text>
-        </View>
-        <Text style={[{fontFamily: 'Pretendard-Bold'}, step == 3 ? styles.selectedText : styles.unselectedText]}>완료</Text>
-      </View>
+      {step == 1 ? <CurrentStep label={steps[0].label} index={1} /> : <PreviousStep label={steps[0].label} />}
+      <StepDots color={step == 1 ? theme.gray300 : theme.gray800} />
+      {step == 2 ? (
+        <CurrentStep label={steps[1].label} index={2} />
+      ) : step < 2 ? (
+        <PostStep label={steps[0].label} index={2} />
+      ) : (
+        <PreviousStep label={steps[0].label} />
+      )}
+      <StepDots color={step == 3 ? theme.gray800 : theme.gray300} />
+      {step == 3 ? <CurrentStep label={steps[2].label} index={3} /> : <PostStep label={steps[2].label} index={3} />}
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   selectedText: {
-    color: gray700,
+    color: theme.gray700,
   },
   unselectedText: {
-    color: gray300,
+    color: theme.gray300,
   },
   unselectedCircle: {
-    backgroundColor: white,
-    borderColor: gray300,
+    backgroundColor: theme.gray300,
+    //borderColor: theme.gray300,
   },
   selectedCircle: {
-    backgroundColor: gray700,
-    borderColor: gray700,
+    backgroundColor: theme.gray700,
+    //borderColor: theme.gray700,
   },
   circle: {
     width: 20,
@@ -57,14 +86,15 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 5,
-    borderWidth: 0.5,
+    marginRight: 8,
+    //borderWidth: 0.5,
   },
   container: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginVertical: 16,
+    marginTop: 16,
+    marginBottom: 24,
   },
   itemContainer: {
     flexDirection: 'row',

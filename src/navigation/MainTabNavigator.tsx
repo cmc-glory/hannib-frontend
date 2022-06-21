@@ -17,8 +17,8 @@ import {
   CommunityIconFocused,
   ChattingIcon,
   ChattingIconFocused,
-  CalendarIcon,
-  CalendarIconFocused,
+  CalendarTabIcon,
+  CalendarTabIconFocused,
   AccountIcon,
   AccountIconFocused,
 } from '../components/utils'
@@ -77,7 +77,7 @@ function BottomTab() {
         name="CalendarStackNavigator"
         options={{
           title: '일정',
-          tabBarIcon: ({focused}) => (focused ? <CalendarIconFocused /> : <CalendarIcon />),
+          tabBarIcon: ({focused}) => (focused ? <CalendarTabIconFocused /> : <CalendarTabIcon />),
         }}
         component={CalendarStackNavigator}
       />

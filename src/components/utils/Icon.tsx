@@ -24,6 +24,8 @@ import StarFilledSvg from '../../assets/Icon/starFilled.svg'
 import CommunicationSvg from '../../assets/Icon/Communication.svg'
 import CommunicationWhiteSvg from '../../assets/Icon/CommunicationWhite.svg'
 import CheckboxSvg from '../../assets/Icon/Checkbox.svg'
+import PlusSvg from '../../assets/Icon/Plus.svg'
+import CalendarSvg from '../../assets/Icon/Calender.svg'
 
 import HomeSelectedSvg from '../../assets/Icon/selected/HouseFilled.svg'
 import CommunitySelectedSvg from '../../assets/Icon/selected/usersFilled.svg'
@@ -44,6 +46,22 @@ type IconPropss = {
   onPress?: () => void
   style?: any
   size?: number
+}
+
+export const CalendarIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
+  return (
+    <Pressable onPress={onPress} style={style}>
+      <CalendarSvg width={size} height={size} />
+    </Pressable>
+  )
+}
+
+export const PlusIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
+  return (
+    <Pressable onPress={onPress} style={style}>
+      <PlusSvg width={size} height={size} />
+    </Pressable>
+  )
 }
 
 export const CheckboxIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
@@ -213,11 +231,11 @@ export const ChattingIcon = ({onPress, style, size = theme.ICON_SIZE}: IconProps
 export const ChattingIconFocused = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
   return <ChattingSelectedSvg width={size} height={size} />
 }
-export const CalendarIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
+export const CalendarTabIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
   return <CalendarUnselectedSvg width={size} height={size} />
 }
 
-export const CalendarIconFocused = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
+export const CalendarTabIconFocused = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
   return <CalendarSelectedSvg width={size} height={size} />
 }
 

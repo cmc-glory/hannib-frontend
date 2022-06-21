@@ -7,9 +7,9 @@ export const ICON_SIZE = 24
 
 export const styles = StyleSheet.create({
   label: {
-    fontFamily: 'Pretendard-SemiBold',
-    fontSize: 18,
-    color: black,
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 16,
+    color: gray800,
     marginBottom: 10,
   },
   wrapper: {

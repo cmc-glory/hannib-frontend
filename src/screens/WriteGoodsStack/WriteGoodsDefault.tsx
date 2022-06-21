@@ -5,7 +5,7 @@ import type {Asset} from 'react-native-image-picker'
 import {useNavigation} from '@react-navigation/native'
 
 import StackHeader from '../../components/utils/StackHeader'
-import {SelectCategory, ImagePicker, StepIndicator, HashTag, SetSharingType} from '../../components/WriteGoodsStack'
+import {SelectCategory, ImagePicker, StepIndicator, HashTag, SetSharingType, BookSharingDate} from '../../components/WriteGoodsStack'
 import {FloatingBottomButton} from '../../components/utils'
 import type {IHashtag, ISharingType} from '../../types'
 import * as theme from '../../theme'
@@ -28,18 +28,16 @@ export const WriteGoodsDefault = () => {
   return (
     <SafeAreaView edges={['top', 'bottom']} style={{backgroundColor: '#fff', flex: 1}}>
       <StackHeader goBack title="모집폼 작성" />
-      {/* <ScrollView style={[styles.container]}> */}
       <AutoFocusProvider contentContainerStyle={[theme.styles.wrapper]}>
         <StepIndicator step={1} />
-
         <ImagePicker images={images} setImages={setImages} />
         <SelectCategory />
         <View style={[styles.itemWrapper]}>
-          <Text style={[styles.label]}>제목</Text>
+          <Text style={[theme.styles.label]}>제목</Text>
           <TextInput style={theme.styles.input} onFocus={focus} placeholder="제목 입력" placeholderTextColor={theme.gray300} />
         </View>
         <View style={[styles.itemWrapper]}>
-          <Text style={[styles.label]}>내용</Text>
+          <Text style={[theme.styles.label]}>내용</Text>
           <TextInput
             multiline={true}
             onFocus={focus}
@@ -49,14 +47,14 @@ export const WriteGoodsDefault = () => {
           />
         </View>
         <View style={[styles.itemWrapper]}>
-          <Text style={[styles.label]}>해시태그</Text>
+          <Text style={[theme.styles.label]}>해시태그</Text>
           <HashTag hashtags={hashtags} setHashtags={setHashtags} />
         </View>
         <View style={[styles.itemWrapper]}>
-          <Text style={[styles.label]}>나눔 방식</Text>
+          <Text style={[theme.styles.label]}>나눔 방식</Text>
           <SetSharingType type={type} setType={setType} />
         </View>
-        {/* </ScrollView> */}
+        <BookSharingDate />
       </AutoFocusProvider>
       <FloatingBottomButton label="다음" onPress={type == 'offline' ? onPressOffline : onPressOnline} />
     </SafeAreaView>
@@ -65,15 +63,12 @@ export const WriteGoodsDefault = () => {
 
 const styles = StyleSheet.create({
   itemWrapper: {
-    marginBottom: 16,
+    marginBottom: 24,
   },
   keyboardAwareFocus: {
     //flex: 1,
     backgroundColor: '#fff',
     paddingHorizontal: 15,
-  },
-  label: {
-    marginBottom: 8,
   },
   container: {
     backgroundColor: '#fff',

@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect} from 'react'
 import {View, Text, Pressable, StyleSheet, Dimensions} from 'react-native'
 import type {ISharingType} from '../../types'
-import {styles as s, white, gray500, gray200, main} from '../../theme'
+import * as theme from '../../theme'
 
 type SetSharingTypeProps = {
   type: ISharingType
@@ -20,7 +20,7 @@ type ButtonProps = {
 const Selected = ({label, onPress}: ButtonProps) => {
   return (
     <Pressable style={[styles.button, styles.selectedButton]} onPress={onPress}>
-      <Text style={[s.bold16, styles.selectedText]}>{label}</Text>
+      <Text style={[theme.styles.bold16, styles.selectedText]}>{label}</Text>
     </Pressable>
   )
 }
@@ -28,7 +28,7 @@ const Selected = ({label, onPress}: ButtonProps) => {
 const Unselected = ({label, onPress}: ButtonProps) => {
   return (
     <Pressable style={[styles.button, styles.unselectedButton]} onPress={onPress}>
-      <Text style={[s.bold16, styles.unselectedText]}>{label}</Text>
+      <Text style={[{fontSize: 16}, styles.unselectedText]}>{label}</Text>
     </Pressable>
   )
 }
@@ -64,18 +64,18 @@ export const SetSharingType = ({type, setType}: SetSharingTypeProps) => {
 
 const styles = StyleSheet.create({
   selectedButton: {
-    backgroundColor: '#FFF3F2',
-    borderColor: main,
+    backgroundColor: theme.main50,
+    borderColor: theme.main,
   },
   unselectedButton: {
-    backgroundColor: white,
-    borderColor: gray200,
+    backgroundColor: theme.white,
+    borderColor: theme.gray200,
   },
   selectedText: {
-    color: main,
+    color: theme.main,
   },
   unselectedText: {
-    color: gray500,
+    color: theme.gray300,
   },
   container: {
     flexDirection: 'row',
