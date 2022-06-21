@@ -19,7 +19,7 @@ const steps = [{label: '기본 정보'}, {label: '입력폼'}, {label: '완료'}
 const PreviousStep = ({label}: StepProps) => {
   return (
     <View style={[styles.itemContainer]}>
-      <CheckboxIcon />
+      <CheckboxIcon size={24} style={{marginRight: 8}} />
       <Text style={{color: theme.gray800}}>{label}</Text>
     </View>
   )
@@ -55,9 +55,9 @@ export const StepIndicator = ({step}: stepIndicatorProps) => {
       {step == 2 ? (
         <CurrentStep label={steps[1].label} index={2} />
       ) : step < 2 ? (
-        <PostStep label={steps[0].label} index={2} />
+        <PostStep label={steps[1].label} index={2} />
       ) : (
-        <PreviousStep label={steps[0].label} />
+        <PreviousStep label={steps[1].label} />
       )}
       <StepDots color={step == 3 ? theme.gray800 : theme.gray300} />
       {step == 3 ? <CurrentStep label={steps[2].label} index={3} /> : <PostStep label={steps[2].label} index={3} />}
@@ -68,16 +68,18 @@ export const StepIndicator = ({step}: stepIndicatorProps) => {
 const styles = StyleSheet.create({
   selectedText: {
     color: theme.gray700,
+    fontFamily: 'Pretendard-Medium',
   },
   unselectedText: {
     color: theme.gray300,
+    fontFamily: 'Pretendard-Medium',
   },
   unselectedCircle: {
     backgroundColor: theme.gray300,
     //borderColor: theme.gray300,
   },
   selectedCircle: {
-    backgroundColor: theme.gray700,
+    backgroundColor: theme.secondary,
     //borderColor: theme.gray700,
   },
   circle: {

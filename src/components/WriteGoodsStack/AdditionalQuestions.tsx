@@ -2,27 +2,27 @@ import React, {useCallback, useState} from 'react'
 import {View, Text, TextInput, StyleSheet, Pressable} from 'react-native'
 import uuid from 'react-native-uuid'
 import {PlusIcon, CheckboxIcon, MinusIcon} from '../utils'
+import {IAdditionalQuestion} from '../../types'
 import * as theme from '../../theme'
 
 const ICON_SIZE = 16
-
-type IAdditionalQuestion = {
-  neccesary: boolean
-  content: string
-  id: string
-}
 
 type AdditionalQuestionItemProps = {
   item: IAdditionalQuestion
   onPressRemove: (id: string) => void
 }
 
+type AdditionalQuestionsProps = {
+  questions: IAdditionalQuestion[]
+  setQuestions: React.Dispatch<React.SetStateAction<IAdditionalQuestion[]>>
+}
+
 const AdditionalQuestionItem = ({item, onPressRemove}: AdditionalQuestionItemProps) => {
-  const {neccesary, content, id} = item
+  const {necessary, content, id} = item
   return (
     <View style={styles.wrapper}>
       <View style={[{alignSelf: 'center', alignItems: 'center'}, styles.spacing]}>
-        {neccesary ? <CheckboxIcon /> : <Pressable style={{width: 24, height: 24, borderRadius: 12, borderWidth: 1, borderColor: theme.gray300}} />}
+        {necessary ? <CheckboxIcon /> : <Pressable style={{width: 24, height: 24, borderRadius: 12, borderWidth: 1, borderColor: theme.gray300}} />}
         <Text style={{fontSize: 12, color: theme.gray700, marginTop: 2}}>필수</Text>
       </View>
       <TextInput
@@ -39,27 +39,32 @@ const AdditionalQuestionItem = ({item, onPressRemove}: AdditionalQuestionItemPro
   )
 }
 
-export const AdditionalQuestions = () => {
-  const [questions, setQuestions] = useState<IAdditionalQuestion[]>([])
+export const AdditionalQuestions = ({questions, setQuestions}: AdditionalQuestionsProps) => {
   const [questionForm, setQuestionForm] = useState<IAdditionalQuestion>({
-    neccesary: false,
+    necessary: false,
     content: '',
     id: '',
   })
 
   const onPressNeccesary = useCallback(() => {
     setQuestionForm(questionForm => {
-      return {...questionForm, neccesary: !questionForm.neccesary}
+      return {...questionForm, necessary: !questionForm.necessary}
     })
   }, [])
 
   const onPressAdd = useCallback(() => {
     const content = questionForm.content
-    const neccesary = questionForm.neccesary
+    const necessary = questionForm.necessary
+
+    // 질문 내용이 없을 때는 추가하지 않음.
+    if (content == '') {
+      return
+    }
+
     const id = String(uuid.v1())
-    setQuestions([...questions, {content, neccesary, id}])
+    setQuestions([...questions, {content, necessary, id}])
     setQuestionForm({
-      neccesary: false,
+      necessary: false,
       content: '',
       id: '',
     })
@@ -82,7 +87,7 @@ export const AdditionalQuestions = () => {
       <Text style={{color: theme.main, fontSize: 12}}>* 우편 나눔의 경우 주소 입력을 기본으로 받습니다.</Text>
       <View style={styles.wrapper}>
         <View style={[{alignSelf: 'center', alignItems: 'center'}, styles.spacing]}>
-          {questionForm.neccesary ? (
+          {questionForm.necessary ? (
             <CheckboxIcon onPress={onPressNeccesary} />
           ) : (
             <Pressable onPress={onPressNeccesary} style={{width: 24, height: 24, borderRadius: 12, borderWidth: 1, borderColor: theme.gray300}} />
@@ -101,7 +106,7 @@ export const AdditionalQuestions = () => {
         </Pressable>
       </View>
       {questions.map(item => (
-        <AdditionalQuestionItem item={item} onPressRemove={onPressRemove} />
+        <AdditionalQuestionItem item={item} onPressRemove={onPressRemove} key={item.id} />
       ))}
     </View>
   )

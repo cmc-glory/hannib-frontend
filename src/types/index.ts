@@ -1,3 +1,5 @@
+import type {Asset} from 'react-native-image-picker'
+
 export type IHashtag = {
   id: string
   content: string
@@ -37,4 +39,32 @@ export type ISharingInfo = {
   openDate: Date
   isSecret: boolean
   secretKey?: string
+}
+
+export type IAdditionalQuestion = {
+  id: string
+  necessary: boolean
+  content: string
+}
+
+export type IReceiveInfo = {
+  id: string
+  receiveDate: Date | undefined
+  receivePlace: string
+}
+
+export type ISharingForm = {
+  images: Asset[]
+  categories: string[]
+  title: string
+  content: string
+  //hashtags: string[]
+  type: ISharingType
+  isOpenDateBooked: boolean
+  openDate?: Date | undefined
+  products: IProductInfo[]
+  isSecretForm: boolean
+  secretKey?: string
+  additionalQuestions: IAdditionalQuestion[]
+  receiveInfo?: IReceiveInfo[]
 }

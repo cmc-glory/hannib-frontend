@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native'
-import {black, gray500, gray800, gray300, white, main} from './colors'
+import {black, gray50, gray500, gray800, gray300, white, main} from './colors'
 
 export const PADDING_SIZE = 20
 export const INPUT_HEIGHT = 48
@@ -54,5 +54,13 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
+  },
+  plusMinusButton: {
+    width: 48,
+    height: 48,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 4,
+    backgroundColor: gray50,
   },
 })

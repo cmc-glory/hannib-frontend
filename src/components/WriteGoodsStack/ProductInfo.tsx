@@ -1,5 +1,5 @@
 import React, {useState, useCallback} from 'react'
-import {View, Text, TextInput, Pressable, TouchableWithoutFeedback, StyleSheet, Dimensions, Touchable} from 'react-native'
+import {View, Text, TextInput, Pressable, TouchableOpacity, StyleSheet, Dimensions, Touchable} from 'react-native'
 import uuid from 'react-native-uuid' // uuid
 import {PlusIcon, MinusIcon} from '../utils'
 import Icons from 'react-native-vector-icons/Ionicons'
@@ -11,18 +11,15 @@ const STOCK_WIDTH = Dimensions.get('window').width - theme.PADDING_SIZE * 2 - 8 
 type ProductInfoProps = {
   productInfos: IProductInfo[]
   setProductInfos: React.Dispatch<React.SetStateAction<IProductInfo[]>>
-  quantityLimit: boolean
-  setQuantityLimit: () => void
 }
 
 type ProductInfoItemProps = {
   onPress: (id: string) => void
-  quantityLimit: boolean
   productInfo: IProductInfo
   key: string
 }
 
-const ProductInfoItem = ({productInfo, onPress, quantityLimit}: ProductInfoItemProps) => {
+const ProductInfoItem = ({productInfo, onPress}: ProductInfoItemProps) => {
   const {id, name, quantity} = productInfo
   return (
     <View style={styles.productInfoItemWrapper}>
@@ -32,15 +29,14 @@ const ProductInfoItem = ({productInfo, onPress, quantityLimit}: ProductInfoItemP
       <View style={[theme.styles.input, styles.itemView, {width: STOCK_WIDTH}]}>
         <Text>{quantity}</Text>
       </View>
-      {quantityLimit && productInfo.productLimit && <View style={[theme.styles.input, {flex: 1}, styles.itemView]}>{productInfo.productLimit}</View>}
-      <Pressable onPress={() => onPress(id)} style={[styles.button]}>
+      <TouchableOpacity onPress={() => onPress(id)} style={[styles.button]}>
         <MinusIcon onPress={() => onPress(id)} />
-      </Pressable>
+      </TouchableOpacity>
     </View>
   )
 }
 
-export const ProductInfo = ({productInfos, setProductInfos, quantityLimit, setQuantityLimit}: ProductInfoProps) => {
+export const ProductInfo = ({productInfos, setProductInfos}: ProductInfoProps) => {
   const [name, setName] = useState('')
   const [quantity, setQuantity] = useState<number>()
   const [limit, setLimit] = useState<number>()
@@ -49,7 +45,6 @@ export const ProductInfo = ({productInfos, setProductInfos, quantityLimit, setQu
     // 이름이나 수량 중 하나만 값이 없어도 추가하지 않음
     if (name == '' || quantity == 0 || quantity == undefined) return
     // 인당 수량 제한 여부가 체크돼 있고, 그 값이 없어도 추가하지 않음
-    else if (quantityLimit && (limit == 0 || limit == undefined)) return
 
     const item: IProductInfo = {
       id: String(uuid.v1()),
@@ -60,10 +55,7 @@ export const ProductInfo = ({productInfos, setProductInfos, quantityLimit, setQu
     setName('')
     setQuantity(undefined)
     // 인당 수량 제한 여부가 체크 돼 있으면
-    if (quantityLimit) {
-      item.productLimit = limit
-      setLimit(undefined)
-    }
+
     setProductInfos(productInfos => productInfos.concat(item))
   }
   const onPressRemove = useCallback((id: string) => {
@@ -90,23 +82,14 @@ export const ProductInfo = ({productInfos, setProductInfos, quantityLimit, setQu
           value={quantity != undefined ? String(quantity) : undefined}
           onChangeText={text => setQuantity(Number(text))}
         />
-        {quantityLimit && (
-          <TextInput
-            style={[theme.styles.input, {flex: 1}, styles.input]}
-            placeholder="인당 수량"
-            placeholderTextColor={theme.gray200}
-            keyboardType="numeric"
-            value={limit != undefined ? String(limit) : undefined}
-            onChangeText={text => setLimit(Number(text))}
-          />
-        )}
-        <Pressable style={[styles.button]} onPress={onPressAdd}>
+
+        <TouchableOpacity style={[styles.button]} onPress={onPressAdd}>
           <PlusIcon onPress={onPressAdd} />
-        </Pressable>
+        </TouchableOpacity>
       </View>
       <View>
         {productInfos.map(productInfo => (
-          <ProductInfoItem key={productInfo.id} productInfo={productInfo} onPress={onPressRemove} quantityLimit={quantityLimit}></ProductInfoItem>
+          <ProductInfoItem key={productInfo.id} productInfo={productInfo} onPress={onPressRemove}></ProductInfoItem>
         ))}
       </View>
     </View>

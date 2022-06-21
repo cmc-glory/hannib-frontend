@@ -1,7 +1,6 @@
 import React, {useCallback, useState} from 'react'
 import {View, Text, Pressable, StyleSheet, TouchableOpacity} from 'react-native'
 import FastImage from 'react-native-fast-image'
-import Modal from 'react-native-modal'
 import type {Asset} from 'react-native-image-picker'
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker'
 import * as theme from '../../theme'
@@ -13,13 +12,6 @@ const BORDER_SIZE = IMAGE_SIZE / 2
 type ImagePickerProps = {
   images: Asset[]
   setImages: React.Dispatch<React.SetStateAction<Asset[]>>
-}
-
-type ImageModalProps = {
-  isVisible: boolean
-  onClose: () => void
-  onImageLibraryPress: () => void
-  onCameraPress: () => void
 }
 
 export const ImagePreview = ({uri}: {uri: string | undefined}) => {

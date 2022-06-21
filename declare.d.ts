@@ -14,8 +14,26 @@ declare namespace ReactNavigation {
     MainTabNavigator: undefined
     GoodsDetail: undefined
     WriteGoodsStackNavigator: undefined
-    WriteGoodsOnline: undefined
-    WriteGoodsOffline: undefined
+    WriteGoodsOnline: {
+      images: Asset[]
+      categories: string[]
+      title: string
+      content: string
+      hashtags: string[]
+      type: ISharingType
+      isOpenDateBooked: boolean
+      openDate?: Date | undefined
+    }
+    WriteGoodsOffline: {
+      images: Asset[]
+      categories: string[]
+      title: string
+      content: string
+      hashtags: string[]
+      type: ISharingType
+      isOpenDateBooked: boolean
+      openDate?: Date | undefined
+    }
     GoodsRequestOffline: undefined
     GoodsRequestOnline: undefined
     GoodsStackNavigator: undefined
@@ -25,7 +43,9 @@ declare namespace ReactNavigation {
       email: string
       name: string
     }
-    WriteGoodsComplete: undefined
+    WriteGoodsComplete: {
+      id: string // 작성한 게시글의 id. "등록한 게시글로 이동"에서 사용한다.
+    }
     NotificationStackNavigator: undefined
     NotificationContent: undefined
     SearchStackNavigator: undefined

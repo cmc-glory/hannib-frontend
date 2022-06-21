@@ -10,7 +10,9 @@ type FloatingBottoButtonProps = {
 
 export const FloatingBottomButton = ({label, onPress, enabled = false}: FloatingBottoButtonProps) => {
   return (
-    <Pressable onPress={onPress} style={[theme.styles.wrapper, styles.container, enabled ? theme.styles.button : theme.styles.disabledButton]}>
+    <Pressable
+      onPress={enabled ? onPress : undefined}
+      style={[theme.styles.wrapper, styles.container, enabled ? theme.styles.button : theme.styles.disabledButton]}>
       <Text style={styles.label}>{label}</Text>
     </Pressable>
   )

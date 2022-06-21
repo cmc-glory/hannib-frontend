@@ -1,26 +1,60 @@
-import React, {useCallback, useState} from 'react'
+import React, {useCallback, useMemo, useState} from 'react'
 import {View, Text, TextInput, ScrollView, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {Switch} from 'react-native-paper'
-import {useNavigation} from '@react-navigation/native'
+import {useNavigation, useRoute} from '@react-navigation/native'
+import {WriteGoodsOnlineRouteProps} from '../../navigation/WriteGoodsStackNavigator'
 import {StackHeader, FloatingBottomButton} from '../../components/utils'
-import {StepIndicator, GoodsInput, AdditionalQuestions, ProductInfo} from '../../components/WriteGoodsStack'
+import {StepIndicator, AdditionalQuestions, ProductInfo} from '../../components/WriteGoodsStack'
 import * as theme from '../../theme'
 import {useToggle} from '../../hooks/useToggle'
-import {IProductInfo} from '../../types'
+import {IProductInfo, IAdditionalQuestion, ISharingForm} from '../../types'
 
 export const WriteGoodsOnline = () => {
   const navigation = useNavigation()
-  const onPressNext = useCallback(() => {
-    navigation.navigate('WriteGoodsComplete')
-  }, [])
-  const [addressEditable, toggleAddressEditable] = useToggle(false) // 주소 정보 수정 여부
-  const [quantityLimit, setQuantityLimit] = useToggle(false) // 인당 수량 제한 여부
-  const [secretForm, toggleSecretForm] = useToggle(false) // 시크릿 폼 여부
+  const route = useRoute<WriteGoodsOnlineRouteProps>()
 
-  const [productInfos, setProductInfos] = useState<IProductInfo[]>([]) // 상품 정보 state
-  const [addtionalQuestions, setAdditionalQuestions] = useState<string[]>([]) // 추가 질문 사항 state
-  const [secretPassword, setSecretPassword] = useState('')
+  // 처음에 화면 로드될 때 이전 페이지 작성 정보 가져옴
+  const {images, categories, title, content, hashtags, type, isOpenDateBooked, openDate} = useMemo(() => {
+    return route.params
+  }, [])
+
+  // const [quantityLimit, setQuantityLimit] = useToggle(false) // 인당 수량 제한 여부
+  const [isSecretForm, toggleSecretForm] = useToggle(false) // 시크릿 폼 여부
+  const [additionalQuestions, setAdditionalQuestions] = useState<IAdditionalQuestion[]>([])
+  const [products, setProducts] = useState<IProductInfo[]>([]) // 상품 정보 state
+  const [secretKey, setSecretKey] = useState('')
+
+  const onPressNext = useCallback(() => {
+    // 백에 전송할 나눔글 폼
+    const form: ISharingForm = {
+      images,
+      categories,
+      title,
+      content,
+      //hashtags,
+      type,
+      isOpenDateBooked,
+      openDate,
+      isSecretForm,
+      additionalQuestions,
+      products,
+      secretKey,
+    }
+    // ************* 여기에 api 작성 *************
+    // 백에서 받아온 게시글 id를 다음 스크린으로 넘겨줌.
+    navigation.navigate('WriteGoodsComplete', {
+      id: '11111',
+    })
+  }, [isSecretForm, additionalQuestions, products, secretKey])
+
+  const checkNextEnabled = useCallback(() => {
+    if (products.length > 0) {
+      return true
+    } else {
+      return false
+    }
+  }, [products])
 
   return (
     <SafeAreaView style={{backgroundColor: '#fff', flex: 1}}>
@@ -31,27 +65,27 @@ export const WriteGoodsOnline = () => {
         </View>
 
         <View style={[theme.styles.wrapper, styles.spacing]}>
-          <ProductInfo productInfos={productInfos} setProductInfos={setProductInfos} quantityLimit={quantityLimit} setQuantityLimit={setQuantityLimit} />
+          <ProductInfo productInfos={products} setProductInfos={setProducts} />
         </View>
         <View style={[theme.styles.wrapper, styles.spacing]}>
-          <AdditionalQuestions />
+          <AdditionalQuestions questions={additionalQuestions} setQuestions={setAdditionalQuestions} />
         </View>
 
         <View style={[theme.styles.wrapper, styles.spacing]}>
           <View style={[theme.styles.rowSpaceBetween]}>
             <Text style={{fontFamily: 'Pretendard-Medium', fontSize: 16}}>시크릿 폼</Text>
-            <Switch color={theme.gray800} onValueChange={toggleSecretForm} value={secretForm} style={styles.switch} />
+            <Switch color={theme.gray800} onValueChange={toggleSecretForm} value={isSecretForm} />
           </View>
           <TextInput
             style={[theme.styles.input, {marginTop: 10}]}
-            value={secretPassword}
-            onChangeText={setSecretPassword}
+            value={secretKey}
+            onChangeText={setSecretKey}
             placeholder="비밀번호를 입력하세요"
             placeholderTextColor={theme.gray300}
           />
         </View>
       </ScrollView>
-      <FloatingBottomButton label="다음" onPress={onPressNext} />
+      <FloatingBottomButton label="다음" onPress={onPressNext} enabled={checkNextEnabled()} />
     </SafeAreaView>
   )
 }
@@ -60,9 +94,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
   },
-  switch: {
-    //marginBottom: 10,
-  },
+
   input: {
     marginTop: 5,
   },
