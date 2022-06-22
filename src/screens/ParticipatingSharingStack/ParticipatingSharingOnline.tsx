@@ -1,9 +1,24 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {View, Text, StyleSheet, Dimensions} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {StackHeader, SharingPreview, GoodsListItem, Button, Tag} from '../../components/utils'
 import * as theme from '../../theme'
 const BUTTON_WIDTH = (Dimensions.get('window').width - theme.PADDING_SIZE * 2 - 10) / 2
+
+const participateState: string = 'proceeding'
+const Buttons = () => {
+  switch (participateState) {
+    case 'proceeding':
+      return (
+        <View style={{...theme.styles.rowSpaceBetween, width: '100%'}}>
+          <Button label="취소하기" selected={false} style={{width: BUTTON_WIDTH}} />
+          <Button label="문의하기" selected={true} style={{width: BUTTON_WIDTH}} />
+        </View>
+      )
+    case 'completed':
+      return <Button label="후기 작성" selected={true} style={{width: '100%'}} />
+  }
+}
 
 export const ParticipatingSharingOnline = () => {
   return (
@@ -50,16 +65,9 @@ export const ParticipatingSharingOnline = () => {
             </View>
           </View>
         </View>
-        {false ? ( //수령 완료 여부 변수 db에서 받아온 후 판별
-          <View style={{...theme.styles.rowSpaceBetween, width: '100%'}}>
-            <Button label="취소하기" selected={false} style={{width: BUTTON_WIDTH}} />
-            <Button label="문의하기" selected={true} style={{width: BUTTON_WIDTH}} />
-          </View>
-        ) : (
-          <View style={{...theme.styles.rowSpaceBetween, width: '100%'}}>
-            <Button label="후기 작성" selected={true} style={{width: '100%'}} />
-          </View>
-        )}
+        <View style={{...theme.styles.rowSpaceBetween, width: '100%'}}>
+          <Buttons />
+        </View>
       </View>
     </SafeAreaView>
   )

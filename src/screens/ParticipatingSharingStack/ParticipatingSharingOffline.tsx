@@ -5,6 +5,23 @@ import {StackHeader, SharingPreview, GoodsListItem, Button} from '../../componen
 import * as theme from '../../theme'
 const BUTTON_WIDTH = (Dimensions.get('window').width - theme.PADDING_SIZE * 2 - 10) / 2
 
+const participateState: string = 'completed'
+const Buttons = () => {
+  switch (participateState) {
+    case 'proceeding':
+      return (
+        <View style={{...theme.styles.rowSpaceBetween, width: '100%'}}>
+          <Button label="취소하기" selected={false} style={{width: BUTTON_WIDTH}} />
+          <Button label="문의하기" selected={true} style={{width: BUTTON_WIDTH}} />
+        </View>
+      )
+    case 'completed':
+      return <Button label="후기 작성" selected={true} style={{width: '100%'}} />
+    case 'notTaken':
+      return <Button label="미수령" selected={false} style={{width: '100%'}}></Button>
+  }
+}
+
 export const ParticipatingSharingOffline = () => {
   return (
     <SafeAreaView style={styles.rootContainer}>
@@ -30,7 +47,7 @@ export const ParticipatingSharingOffline = () => {
               <Text style={styles.requestInfoText}>수령자명</Text>
             </View>
             <View style={[theme.styles.rowSpaceBetween, styles.requestInfoWrapper]}>
-              <Text style={styles.requestInfoLabel}>수령일</Text>
+              <Text style={styles.requestInfoLabel}>{participateState == 'proceeding' ? '수령 예정일' : '최종 수령일'}</Text>
               <Text style={styles.requestInfoText}>2022.06.11 14:00</Text>
             </View>
             <View style={[theme.styles.rowSpaceBetween, styles.requestInfoWrapper]}>
@@ -40,16 +57,9 @@ export const ParticipatingSharingOffline = () => {
           </View>
         </View>
 
-        {false ? ( //수령 완료 여부 변수 db에서 받아온 후 판별
-          <View style={{...theme.styles.rowSpaceBetween, width: '100%'}}>
-            <Button label="취소하기" selected={false} style={{width: BUTTON_WIDTH}} />
-            <Button label="문의하기" selected={true} style={{width: BUTTON_WIDTH}} />
-          </View>
-        ) : (
-          <View style={{...theme.styles.rowSpaceBetween, width: '100%'}}>
-            <Button label="후기 작성" selected={true} style={{width: '100%'}} />
-          </View>
-        )}
+        <View style={{...theme.styles.rowSpaceBetween, width: '100%'}}>
+          <Buttons />
+        </View>
       </View>
     </SafeAreaView>
   )
