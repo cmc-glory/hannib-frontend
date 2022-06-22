@@ -79,5 +79,12 @@ declare namespace ReactNavigation {
     SetProfile: {
       email?: string
     }
+    QnAList: {
+      id: string
+    }
+    WriteQnA: {
+      postid: string
+      userid: string
+    }
   }
 }

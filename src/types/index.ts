@@ -68,3 +68,14 @@ export type ISharingForm = {
   additionalQuestions: IAdditionalQuestion[]
   receiveInfo?: IReceiveInfo[]
 }
+
+export type IQnAList = {
+  id: string
+  isSecret: boolean
+  isAnswered: boolean
+  writer: string
+  content: string
+  date: undefined | Date
+  answer?: string
+  answeredDate?: undefined | Date
+}

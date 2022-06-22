@@ -1,0 +1,28 @@
+[
+  {
+    "id": "0",
+    "isSecret": true,
+    "isAnswered": false,
+    "writer": "춤추는 고양이",
+    "content": "글자 두줄로  채우기 하는 중인데 생각보다 두줄이 너무너무 길어요",
+    "date": "2014-01-01T23:28:56.782Z"
+  },
+  {
+    "id": "1",
+    "isSecret": false,
+    "isAnswered": false,
+    "writer": "달리는 찻잔",
+    "content": "띠용띠용띠용띠용",
+    "date": "2014-01-01T23:28:56.782Z"
+  },
+  {
+    "id": "2",
+    "isSecret": false,
+    "isAnswered": true,
+    "writer": "잠자는 커피",
+    "content": "하하하하하하ㅏ핳핳하ㅏ하하하",
+    "date": "2014-01-01T23:28:56.782Z",
+    "answer": "답변도 두줄로 작성중 만약에 초과되면 ... 으로 끝날 예정이고 확장버튼 있는건 어떠신지요",
+    "answeredDate": "2014-01-01T23:28:56.782Z"
+  }
+]

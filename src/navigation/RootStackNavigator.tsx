@@ -16,6 +16,7 @@ import HoldingSharingStackNavigator from './HoldingSharingStackNavigator'
 import ParticipatingSharingStackNavigator from './ParticipatingSharingStackNavigator'
 import ReportIssueStackNavigator from './ReportIssueStackNavigator'
 import MyPageStackNavigator from './MyPageStackNavigator'
+import QnAStackNavigator from './QnAStackNavigator'
 
 const Stack = createStackNavigator()
 
@@ -37,6 +38,7 @@ const RootStackNavigator = () => {
       <Stack.Screen name="ParticipatingSharingStackNavigator" component={ParticipatingSharingStackNavigator}></Stack.Screen>
       <Stack.Screen name="ReportIssueStackNavigator" component={ReportIssueStackNavigator}></Stack.Screen>
       <Stack.Screen name="MyPageStackNavigator" component={MyPageStackNavigator}></Stack.Screen>
+      {/* <Stack.Screen name="QnAStackNavigator" component={QnAStackNavigator}></Stack.Screen> */}
     </Stack.Navigator>
   )
 }
