@@ -21,10 +21,10 @@ export const ParticipatingSharingOffline = () => {
           <Text style={[theme.styles.bold16, {marginBottom: 16}]}>신청 내역</Text>
 
           <View>
-            <Text style={{color: theme.gray500}}>2022.06.30 22:01:52</Text>
-            <View style={{paddingVertical: 16, alignSelf: 'center'}}>
+            <Text style={{marginBottom: 24, color: theme.gray500}}>2022.06.30 22:01:52</Text>
+            {/* <View style={{paddingVertical: 16, alignSelf: 'center'}}>
               <View style={{backgroundColor: theme.main50, width: 104, height: 104}} />
-            </View>
+            </View> */}
             <View style={[theme.styles.rowSpaceBetween, styles.requestInfoWrapper]}>
               <Text style={styles.requestInfoLabel}>수령자명</Text>
               <Text style={styles.requestInfoText}>수령자명</Text>
@@ -40,10 +40,16 @@ export const ParticipatingSharingOffline = () => {
           </View>
         </View>
 
-        <View style={{...theme.styles.rowSpaceBetween, width: '100%', position: 'absolute', bottom: 10}}>
-          <Button label="취소하기" selected={false} style={{width: BUTTON_WIDTH}} />
-          <Button label="문의하기" selected={true} style={{width: BUTTON_WIDTH}} />
-        </View>
+        {false ? ( //수령 완료 여부 변수 db에서 받아온 후 판별
+          <View style={{...theme.styles.rowSpaceBetween, width: '100%'}}>
+            <Button label="취소하기" selected={false} style={{width: BUTTON_WIDTH}} />
+            <Button label="문의하기" selected={true} style={{width: BUTTON_WIDTH}} />
+          </View>
+        ) : (
+          <View style={{...theme.styles.rowSpaceBetween, width: '100%'}}>
+            <Button label="후기 작성" selected={true} style={{width: '100%'}} />
+          </View>
+        )}
       </View>
     </SafeAreaView>
   )

@@ -1,7 +1,7 @@
 import React from 'react'
 import {View, Text, StyleSheet, Dimensions} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
-import {StackHeader, SharingPreview, GoodsListItem, Button} from '../../components/utils'
+import {StackHeader, SharingPreview, GoodsListItem, Button, Tag} from '../../components/utils'
 import * as theme from '../../theme'
 const BUTTON_WIDTH = (Dimensions.get('window').width - theme.PADDING_SIZE * 2 - 10) / 2
 
@@ -20,7 +20,10 @@ export const ParticipatingSharingOnline = () => {
         <View style={{marginVertical: 16}}>
           <Text style={[theme.styles.bold16, {marginBottom: 16}]}>신청 내역</Text>
           <View>
-            <Text style={{marginBottom: 12, color: theme.gray500}}>2022.06.30 22:01:52</Text>
+            <View style={[theme.styles.rowSpaceBetween, {marginBottom: 20}]}>
+              <Text style={{color: theme.gray500}}>2022.06.30 22:01:52</Text>
+              <Tag label="수령 완료"></Tag>
+            </View>
             <View style={[theme.styles.rowSpaceBetween, styles.requestInfoWrapper]}>
               <Text style={styles.requestInfoLabel}>수령자명</Text>
               <Text style={styles.requestInfoText}>수령자명</Text>
@@ -28,9 +31,9 @@ export const ParticipatingSharingOnline = () => {
             <View style={[theme.styles.rowSpaceBetween, styles.requestInfoWrapper]}>
               <Text style={styles.requestInfoLabel}>주문 목록</Text>
               <View>
-                <Text style={{...styles.requestInfoText, marginBottom: 4}}>BTS 뷔 컨셉의 하트 키링(2개)</Text>
-                <Text style={{...styles.requestInfoText, marginBottom: 4}}>BTS 지민 컨셉의 클로버 키링(2개)</Text>
-                <Text style={{...styles.requestInfoText, marginBottom: 4}}>BTS 정국 컨셉의 스페이드 키링(2개)</Text>
+                <Text style={{...styles.requestInfoText, marginBottom: 8}}>BTS 뷔 컨셉의 하트 키링(2개)</Text>
+                <Text style={{...styles.requestInfoText, marginBottom: 8}}>BTS 지민 컨셉의 클로버 키링(2개)</Text>
+                <Text style={{...styles.requestInfoText}}>BTS 정국 컨셉의 스페이드 키링(2개)</Text>
               </View>
             </View>
             <View style={[theme.styles.rowSpaceBetween, styles.requestInfoWrapper]}>
@@ -47,10 +50,16 @@ export const ParticipatingSharingOnline = () => {
             </View>
           </View>
         </View>
-        <View style={{...theme.styles.rowSpaceBetween, width: '100%', position: 'absolute', bottom: 10}}>
-          <Button label="취소하기" selected={false} style={{width: BUTTON_WIDTH}} />
-          <Button label="운송장 등록" selected={true} style={{width: BUTTON_WIDTH}} />
-        </View>
+        {false ? ( //수령 완료 여부 변수 db에서 받아온 후 판별
+          <View style={{...theme.styles.rowSpaceBetween, width: '100%'}}>
+            <Button label="취소하기" selected={false} style={{width: BUTTON_WIDTH}} />
+            <Button label="문의하기" selected={true} style={{width: BUTTON_WIDTH}} />
+          </View>
+        ) : (
+          <View style={{...theme.styles.rowSpaceBetween, width: '100%'}}>
+            <Button label="후기 작성" selected={true} style={{width: '100%'}} />
+          </View>
+        )}
       </View>
     </SafeAreaView>
   )
