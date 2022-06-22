@@ -8,7 +8,7 @@ import LocationSvg from '../../assets/Icon/Location.svg'
 import MagnifierIcon from '../../assets/Icon/Magnifier.svg'
 import SettingIcon from '../../assets/Icon/Setting.svg'
 import CheckIcon from '../../assets/Icon/check.svg'
-import MenuWhiteIcon from '../../assets/Icon/Menu_white.svg'
+//import MenuWhiteSvg from '../../assets/Icon/MenuShite.svg'
 import DownArrowSvg from '../../assets/Icon/Bottom arrow.svg'
 import RightArrowSvg from '../../assets/Icon/Right arrow.svg'
 import LeftArrowSvg from '../../assets/Icon/Left arrow.svg'
@@ -35,6 +35,11 @@ import MyPageSelectedSvg from '../../assets/Icon/selected/accountFilled.svg'
 import XSvg from '../../assets/Icon/Close.svg'
 import UpArrowSvg from '../../assets/Icon/UpArrow.svg'
 import EmptyCheckboxSvg from '../../assets/Icon/UnCheckbox.svg'
+import LeftArrowWhiteSvg from '../../assets/Icon/LeftArrowWhite.svg'
+import MenuWhiteSvg from '../../assets/Icon/MenuWhite.svg'
+import ShareWhiteSvg from '../../assets/Icon/ShareWhite.svg'
+import CameraWhiteSvg from '../../assets/Icon/CameraWhite.svg'
+import SelectImageSvg from '../../assets/Icon/SelectImage.svg'
 
 import * as theme from '../../theme'
 
@@ -48,6 +53,47 @@ type IconPropss = {
   onPress?: () => void
   style?: any
   size?: number
+}
+
+export const SelectImageIcon = ({onPress, style, size = 36}: IconPropss) => {
+  return (
+    <Pressable onPress={onPress} style={style}>
+      <SelectImageSvg width={size} height={size} />
+    </Pressable>
+  )
+}
+
+
+export const CameraWhiteIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
+  return (
+    <Pressable onPress={onPress} style={style}>
+      <CameraWhiteSvg width={size} height={size} />
+    </Pressable>
+  )
+}
+
+export const ShareWhiteIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
+  return (
+    <Pressable onPress={onPress} style={style}>
+      <ShareWhiteSvg width={size} height={size} />
+    </Pressable>
+  )
+}
+
+export const MenuWhiteIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
+  return (
+    <Pressable onPress={onPress} style={style}>
+      <MenuWhiteSvg width={size} height={size} />
+    </Pressable>
+  )
+}
+
+export const LeftArrowWhiteIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
+  return (
+    <Pressable onPress={onPress} style={style}>
+      <LeftArrowWhiteSvg width={size} height={size} />
+    </Pressable>
+  )
 }
 
 export const EmptyCheckboxIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
@@ -190,13 +236,13 @@ export const CheckCategory = ({onPress, style, size = theme.ICON_SIZE}: IconProp
   )
 }
 
-export const MenuWhite = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
-  return (
-    <Pressable onPress={onPress} style={style}>
-      <MenuWhiteIcon width={size} height={size} />
-    </Pressable>
-  )
-}
+// export const MenuWhite = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
+//   return (
+//     <Pressable onPress={onPress} style={style}>
+//       <MenuWhiteIcon width={size} height={size} />
+//     </Pressable>
+//   )
+// }
 
 export const DownArrowIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
   return (

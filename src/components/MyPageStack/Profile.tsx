@@ -1,9 +1,16 @@
-import React from 'react'
+import React, {useCallback} from 'react'
 import {View, Text, StyleSheet, Pressable} from 'react-native'
 import FastImage from 'react-native-fast-image'
+import {useNavigation} from '@react-navigation/native'
 import * as theme from '../../theme'
 
 export const Profile = () => {
+  const navigation = useNavigation()
+  const onPressEdit = useCallback(() => {
+    navigation.navigate('MyPageStackNavigator', {
+      screen: 'EditProfile',
+    })
+  }, [])
   return (
     <View>
       <View style={[theme.styles.rowFlexStart, {marginBottom: 15}]}>
@@ -12,7 +19,7 @@ export const Profile = () => {
           <Text style={[theme.styles.bold20, {color: theme.gray700}]}>춤추는 고양이</Text>
         </View>
       </View>
-      <Pressable style={styles.button}>
+      <Pressable style={styles.button} onPress={onPressEdit}>
         <Text style={styles.editProfileText}>프로필 수정</Text>
       </Pressable>
     </View>

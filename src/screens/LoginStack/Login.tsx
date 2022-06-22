@@ -45,9 +45,8 @@ export const Login = () => {
     const token: KakaoOAuthToken = await login()
     const profile: KakaoProfile = await getKakaoProfile()
 
-    navigation.navigate('SelectCategory', {
+    navigation.navigate('SetProfile', {
       email: profile.email,
-      name: profile.nickname,
     })
   }
 

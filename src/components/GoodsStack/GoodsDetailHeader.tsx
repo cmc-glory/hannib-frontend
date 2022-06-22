@@ -7,7 +7,7 @@ import Clipboard from '@react-native-clipboard/clipboard'
 
 import * as theme from '../../theme'
 import {useToggle, useAsyncState} from '../../hooks'
-import {LeftArrowIcon, ShareIcon, XIcon, MenuIcon} from '../utils'
+import {LeftArrowIcon, ShareIcon, XIcon, MenuIcon, LeftArrowWhiteIcon, ShareWhiteIcon, MenuWhiteIcon} from '../utils'
 
 const STATUSBAR_HEIGHT = getStatusBarHeight()
 
@@ -63,7 +63,7 @@ const MenuModal = ({moreVisible, setMoreVisible, onPressReportIssue}: MenuModalP
   )
 }
 
-export const GoodsDetailHeader = () => {
+export const GoodsDetailHeader = ({inverted}: {inverted?: boolean}) => {
   const navigation = useNavigation()
   const [shareVisible, toggleShareVisible] = useToggle() // 공유 모달창 띄울지
   //const [moreVisible, toggleMoreVisible] = useToggle() // 메뉴 모달창 띄울지
@@ -80,13 +80,26 @@ export const GoodsDetailHeader = () => {
 
   return (
     <View style={[styles.container]}>
-      <LeftArrowIcon onPress={onPressGoback} style={{marginRight: 10}} />
+      {inverted ? (
+        <LeftArrowIcon onPress={onPressGoback} style={{marginRight: 10}} />
+      ) : (
+        <LeftArrowWhiteIcon onPress={onPressGoback} style={{marginRight: 10}} />
+      )}
+
       <ShareModal shareVisible={shareVisible} toggleShareVisible={toggleShareVisible} />
       <View style={{flexDirection: 'row', alignItems: 'center', width: 65, justifyContent: 'space-between'}}>
         <MenuModal moreVisible={moreVisible} setMoreVisible={setMoreVisible} onPressReportIssue={onPressReportIssue} />
-
-        <ShareIcon onPress={toggleShareVisible} />
-        <MenuIcon onPress={() => setMoreVisible(true)} />
+        {inverted ? (
+          <>
+            <ShareIcon onPress={toggleShareVisible} />
+            <MenuIcon onPress={() => setMoreVisible(true)} />
+          </>
+        ) : (
+          <>
+            <ShareWhiteIcon onPress={toggleShareVisible} />
+            <MenuWhiteIcon onPress={() => setMoreVisible(true)} />
+          </>
+        )}
       </View>
     </View>
   )
@@ -133,7 +146,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     flexDirection: 'row',
     paddingHorizontal: 15,
-    height: 45,
+    height: 56,
     alignItems: 'center',
     justifyContent: 'space-between',
     zIndex: 99,

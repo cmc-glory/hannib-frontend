@@ -64,7 +64,7 @@ export const Carousel = ({imageUrls, imageWidth}: CarouselProps) => {
     <View>
       <ImageView images={imageViewAssets} imageIndex={imageIndex} visible={showImageView} onRequestClose={() => setShowImageView(false)} swipeToCloseEnabled />
       <FlatList
-        bounces={true}
+        bounces={false}
         ref={flatlistRef}
         scrollEnabled={true}
         pagingEnabled

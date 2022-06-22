@@ -1,15 +1,15 @@
 import React, {useState, useRef} from 'react'
-import {ScrollView, StyleSheet, Animated} from 'react-native'
+import {View, ScrollView, StyleSheet, Animated} from 'react-native'
 import {getStatusBarHeight} from 'react-native-status-bar-height'
 import {useNavigation} from '@react-navigation/native'
 import {HeaderImage, GoodsDetailContent, GoodsDetailHeader} from '../../components/GoodsStack'
 import {useAnimatedValue, useMonitorAnimatedValue} from '../../hooks'
 import {SafeAreaView} from 'react-native-safe-area-context'
+import LinearGradient from 'react-native-linear-gradient'
 import * as theme from '../../theme'
 
 const IMAGE_HEIGHT = 350
-
-//const AnimatedCarousel = Animated.createAnimatedComponent(HeaderImage)
+const TOP_HEIGHT = getStatusBarHeight() + 48
 
 export const GoodsDetail = () => {
   const navigation = useNavigation()
@@ -19,22 +19,39 @@ export const GoodsDetail = () => {
   const scrollY = useAnimatedValue(0)
   const realScrollY = useMonitorAnimatedValue(scrollY)
   const [y, setY] = useState<number>(realScrollY)
+  const [headerInvert, setHeaderInvert] = useState(false)
   //const realScrollY = useMonitorAnimatedValue(scrollY)
   console.log(realScrollY)
 
   return (
     <SafeAreaView edges={['bottom']} style={{flex: 1, position: 'relative'}}>
-      <GoodsDetailHeader />
+      {headerInvert ? (
+        <View style={{position: 'absolute', width: 390, height: TOP_HEIGHT, zIndex: 99, backgroundColor: 'white'}}></View>
+      ) : (
+        <LinearGradient
+          colors={['rgba(33, 33, 33, 0.3)', 'rgba(255, 255, 255, 0)']}
+          locations={[0, 0.99]}
+          style={{position: 'absolute', width: 390, height: TOP_HEIGHT, zIndex: 99}}></LinearGradient>
+      )}
+
+      <GoodsDetailHeader inverted={headerInvert} />
 
       <ScrollView
         bounces={false}
         ref={scrollViewRef}
-        scrollEventThrottle={0}
+        scrollEventThrottle={1}
         scrollEnabled
         bouncesZoom={false}
-        onScroll={Animated.event([{nativeEvent: {contentOffset: {y: scrollY}}}], {
-          useNativeDriver: false,
-        })}>
+        onScroll={(e: any) => {
+          if (e.nativeEvent.contentOffset.y >= IMAGE_HEIGHT - TOP_HEIGHT - 48) {
+            setHeaderInvert(true)
+          } else {
+            setHeaderInvert(false)
+          }
+          Animated.event([{nativeEvent: {contentOffset: {y: scrollY}}}], {
+            useNativeDriver: false,
+          })
+        }}>
         <HeaderImage />
         <GoodsDetailContent headerHeight={headerHeight} scrollY={scrollY} />
       </ScrollView>

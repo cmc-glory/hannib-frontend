@@ -75,5 +75,8 @@ declare namespace ReactNavigation {
     MyPageStackNavigator: {
       screen: string
     }
+    SetProfile: {
+      email?: string
+    }
   }
 }
