@@ -23,29 +23,8 @@ const BUTTON_WIDTH = (Dimensions.get('window').width - theme.PADDING_SIZE * 2 - 
 
 export const HoldingSharingDetail = () => {
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <StackHeader goBack title="진행한 나눔"></StackHeader>
-      <ScrollView contentContainerStyle={[theme.styles.wrapper, {flex: 1}]}>
-        <FastImage source={{uri: 'http://localhost:8081/src/assets/images/detail_image_example.png'}} style={styles.thumbnailImage}>
-          <View style={styles.thumbnailImageOverlay} />
-          <View style={{padding: theme.PADDING_SIZE, alignSelf: 'stretch', justifyContent: 'space-between', zIndex: 1}}>
-            <Text style={{color: theme.white, marginBottom: 5}}>BTS</Text>
-            <Text style={[theme.styles.bold16, {color: theme.white}]}>BTS 키링 나눔</Text>
-          </View>
-        </FastImage>
-
-        <View style={{marginTop: 16}}>
-          <GoodsListItem />
-          <GoodsListItem />
-          <GoodsListItem />
-        </View>
-        <View style={{width: '100%', height: 1, backgroundColor: theme.gray200, marginVertical: 10}} />
-        <View style={[{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', marginVertical: 16}]}>
-          <View style={[theme.styles.rowFlexStart]}>
-            <Text>전체 보기</Text>
-            <DownArrowIcon />
-          </View>
-        </View>
+    <View style={{flex: 1, marginTop: 16}}>
+      <ScrollView>
         <View style={styles.receiverInfoContainer}>
           <View style={[theme.styles.rowSpaceBetween, {marginBottom: 20}]}>
             <Text style={{color: theme.gray500}}>2022.06.30 22:01:52</Text>
@@ -71,12 +50,12 @@ export const HoldingSharingDetail = () => {
             <Text style={styles.receiverInfoText}>010-2229-7345</Text>
           </View>
         </View>
-        <View style={{...theme.styles.rowSpaceBetween, width: '100%', position: 'absolute', bottom: 10}}>
+        <View style={{...theme.styles.rowSpaceBetween, width: '100%'}}>
           <Button label="취소하기" selected={false} style={{width: BUTTON_WIDTH}} />
           <Button label="운송장 등록" selected={true} style={{width: BUTTON_WIDTH}} />
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   )
 }
 
