@@ -68,7 +68,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    height: 12000,
   },
   image: {
     width: IMAGE_SIZE,
