@@ -1,17 +1,30 @@
 import React, {useState} from 'react'
-import {View, Text, StyleSheet, Dimensions} from 'react-native'
+import {View, Text, StyleSheet, Dimensions, ButtonProps, TextInput} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
-import {StackHeader, SharingPreview, GoodsListItem, Button, Tag} from '../../components/utils'
+import Modal from 'react-native-modal'
+
+import {StackHeader, SharingPreview, GoodsListItem, Button, Tag, RoundButton, XIcon} from '../../components/utils'
+
 import * as theme from '../../theme'
+import {ToggleButton} from 'react-native-paper'
+import {useToggle} from '../../hooks'
 const BUTTON_WIDTH = (Dimensions.get('window').width - theme.PADDING_SIZE * 2 - 10) / 2
 
+type ButtonsProps = {
+  toggleCancelModalVisible: () => void
+}
+type ModalProps = {
+  isVisible: boolean
+  toggleIsVisible: () => void
+}
+
 const participateState: string = 'proceeding'
-const Buttons = () => {
+const Buttons = ({toggleCancelModalVisible}: ButtonsProps) => {
   switch (participateState) {
     case 'proceeding':
       return (
         <View style={{...theme.styles.rowSpaceBetween, width: '100%'}}>
-          <Button label="취소하기" selected={false} style={{width: BUTTON_WIDTH}} />
+          <Button label="취소하기" selected={false} style={{width: BUTTON_WIDTH}} onPress={toggleCancelModalVisible} />
           <Button label="문의하기" selected={true} style={{width: BUTTON_WIDTH}} />
         </View>
       )
@@ -20,7 +33,27 @@ const Buttons = () => {
   }
 }
 
+const CancelModal = ({isVisible, toggleIsVisible}: ModalProps) => {
+  return (
+    <Modal isVisible={isVisible} onBackdropPress={toggleIsVisible} backdropColor={theme.gray800} backdropOpacity={0.6}>
+      <View style={styles.shareModal}>
+        <View style={[theme.styles.rowSpaceBetween]}>
+          <Text style={[theme.styles.bold16]}>취소하기</Text>
+          <XIcon onPress={toggleIsVisible} />
+        </View>
+        <View style={{width: '100%', height: 1, marginVertical: 16, backgroundColor: theme.gray200}} />
+        <View style={{marginBottom: 16}}>
+          <Text style={{fontSize: 16, marginBottom: 12}}>취소사유</Text>
+          <TextInput placeholder="취소사유를 입력해주세요." style={styles.modalTextInput} autoCorrect={false}></TextInput>
+        </View>
+        <RoundButton label="확인" enabled />
+      </View>
+    </Modal>
+  )
+}
+
 export const ParticipatingSharingOnline = () => {
+  const [cancelModalVisible, toggleCancelModalVisible] = useToggle() // 취소 모달창 띄울지
   return (
     <SafeAreaView style={styles.rootContainer}>
       <StackHeader title="참여한 나눔" goBack />
@@ -66,8 +99,10 @@ export const ParticipatingSharingOnline = () => {
           </View>
         </View>
         <View style={{...theme.styles.rowSpaceBetween, width: '100%'}}>
-          <Buttons />
+          <Buttons toggleCancelModalVisible={toggleCancelModalVisible} />
         </View>
+
+        <CancelModal isVisible={cancelModalVisible} toggleIsVisible={toggleCancelModalVisible} />
       </View>
     </SafeAreaView>
   )
@@ -96,5 +131,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: theme.gray700,
     alignSelf: 'flex-end',
+  },
+  shareModal: {
+    backgroundColor: theme.white,
+    borderRadius: 8,
+    padding: theme.PADDING_SIZE,
+  },
+  modalTextInput: {
+    borderWidth: 1,
+    borderColor: theme.gray200,
+    borderRadius: 4,
+    paddingVertical: 14,
+    paddingHorizontal: 18,
   },
 })

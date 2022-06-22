@@ -7,6 +7,11 @@ import BouncyCheckbox from 'react-native-bouncy-checkbox'
 import {DownArrowIcon, RightArrowIcon, Tag} from '../../components/utils'
 import * as theme from '../../theme'
 
+type HoldingSharingDetailProps = {
+  toggleCancelModalVisible: () => void
+  toggleAddressModalVisible: () => void
+}
+
 const GoodsListItem = () => {
   return (
     <View style={[theme.styles.rowFlexStart, {marginBottom: 16}]}>
@@ -21,7 +26,7 @@ const GoodsListItem = () => {
 
 const BUTTON_WIDTH = (Dimensions.get('window').width - theme.PADDING_SIZE * 2 - 10) / 2
 
-export const HoldingSharingDetail = () => {
+export const HoldingSharingDetail = ({toggleAddressModalVisible, toggleCancelModalVisible}: HoldingSharingDetailProps) => {
   return (
     <View style={{flex: 1, marginTop: 16}}>
       <ScrollView>
@@ -51,8 +56,8 @@ export const HoldingSharingDetail = () => {
           </View>
         </View>
         <View style={{...theme.styles.rowSpaceBetween, width: '100%'}}>
-          <Button label="취소하기" selected={false} style={{width: BUTTON_WIDTH}} />
-          <Button label="운송장 등록" selected={true} style={{width: BUTTON_WIDTH}} />
+          <Button label="취소하기" selected={false} style={{width: BUTTON_WIDTH}} onPress={toggleCancelModalVisible} />
+          <Button label="운송장 등록" selected={true} style={{width: BUTTON_WIDTH}} onPress={toggleAddressModalVisible} />
         </View>
         {/* db 나오면 타입 받고 타입에 따라 보여주기
         <Pressable style={{marginTop: 7}}>

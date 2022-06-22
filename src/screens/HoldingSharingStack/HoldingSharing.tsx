@@ -2,15 +2,47 @@ import React, {useCallback, useState} from 'react'
 import {View, Pressable, ScrollView, Text, StyleSheet} from 'react-native'
 import FastImage from 'react-native-fast-image'
 import {SafeAreaView} from 'react-native-safe-area-context'
-import {StackHeader, FloatingBottomButton, DownArrowIcon, LeftArrowIcon, RightArrowIcon, SharingPreview, GoodsListItem, XIcon} from '../../components/utils'
+import {
+  StackHeader,
+  FloatingBottomButton,
+  DownArrowIcon,
+  LeftArrowIcon,
+  RightArrowIcon,
+  SharingPreview,
+  GoodsListItem,
+  XIcon,
+  RoundButton,
+} from '../../components/utils'
 import BouncyCheckbox from 'react-native-bouncy-checkbox'
+import Modal from 'react-native-modal'
+import {useToggle} from '../../hooks'
 import * as theme from '../../theme'
 import {useNavigation} from '@react-navigation/native'
 import {HoldingSharingDetail} from './HoldingSharingDetail'
+import {TextInput} from 'react-native-gesture-handler'
 
 type ReceiverListItem = {
   onPressViewDetail: () => void
   index: number //db나오면 수정
+}
+
+type HoldingListItem = {
+  onPressViewDetail: () => void
+  index: number
+}
+
+type HoldingDetailItem = {
+  onPressLeftArrow: () => void
+  onPressRightArrow: () => void
+  cntList: number
+  setIsDetail: (bool: boolean) => void
+  toggleCancelModalVisible: () => void
+  toggleAddressModalVisible: () => void
+}
+
+type ModalProps = {
+  isVisible: boolean
+  toggleIsVisible: () => void
 }
 
 const ReceiverListItem = ({onPressViewDetail, index}: ReceiverListItem) => {
@@ -42,7 +74,78 @@ const ReceiverListItem = ({onPressViewDetail, index}: ReceiverListItem) => {
   )
 }
 
+const HoldingListItem = ({onPressViewDetail, index}: HoldingListItem) => {
+  return (
+    <View>
+      <View style={[theme.styles.rowSpaceBetween, {marginVertical: 16}]}>
+        <Text>전체 선택 해제</Text>
+        <View style={[theme.styles.rowFlexStart]}>
+          <Text>전체 보기</Text>
+          <DownArrowIcon />
+        </View>
+      </View>
+      <View>
+        {/* 리스트 api 필요 */}
+        <ReceiverListItem onPressViewDetail={onPressViewDetail} index={1} />
+        <ReceiverListItem onPressViewDetail={onPressViewDetail} index={2} />
+      </View>
+    </View>
+  )
+}
+
+const HoldingDetailItem = ({
+  onPressLeftArrow,
+  onPressRightArrow,
+  cntList,
+  setIsDetail,
+  toggleAddressModalVisible,
+  toggleCancelModalVisible,
+}: HoldingDetailItem) => {
+  return (
+    <View>
+      <View style={[theme.styles.rowSpaceBetween, {marginTop: 16}]}>
+        <View style={[theme.styles.rowSpaceBetween, {width: 85}]}>
+          <LeftArrowIcon size={24} onPress={onPressLeftArrow} />
+          <Text> {cntList} / 12 </Text>
+          <RightArrowIcon size={24} onPress={onPressRightArrow} />
+        </View>
+        <XIcon size={20} onPress={() => setIsDetail(false)} />
+      </View>
+      <HoldingSharingDetail toggleAddressModalVisible={toggleAddressModalVisible} toggleCancelModalVisible={toggleCancelModalVisible} />
+    </View>
+  )
+}
+
+const CancelModal = ({isVisible, toggleIsVisible}: ModalProps) => {
+  return (
+    <Modal isVisible={isVisible} onBackdropPress={toggleIsVisible} backdropColor={theme.gray800} backdropOpacity={0.6}>
+      <View style={styles.shareModal}>
+        <View style={[theme.styles.rowSpaceBetween]}>
+          <Text style={[theme.styles.bold16]}>취소하기</Text>
+          <XIcon onPress={toggleIsVisible} />
+        </View>
+        <View style={{width: '100%', height: 1, marginVertical: 16, backgroundColor: theme.gray200}} />
+        <View style={{marginBottom: 16}}>
+          <Text style={{fontSize: 16, marginBottom: 12}}>취소사유</Text>
+          <TextInput placeholder="취소사유를 입력해주세요." style={styles.modalTextInput} autoCorrect={false}></TextInput>
+        </View>
+        <RoundButton label="확인" enabled />
+      </View>
+    </Modal>
+  )
+}
+const AddressModal = ({isVisible, toggleIsVisible}: ModalProps) => {
+  return (
+    <Modal isVisible={isVisible} onBackdropPress={toggleIsVisible} backdropColor={theme.gray800} backdropOpacity={0.6}>
+      <Text>adf</Text>
+    </Modal>
+  )
+}
+
 export const HoldingSharing = () => {
+  const [cancelModalVisible, toggleCancelModalVisible] = useToggle() // 취소 모달창 띄울지
+  const [addressModalVisible, toggleAddressModalVisible] = useToggle() // 운송장 등록 모달창 띄울지
+
   const navigation = useNavigation()
   // const onPressViewDetail = useCallback(() => {
   //   navigation.navigate('HoldingSharingDetail')
@@ -60,6 +163,7 @@ export const HoldingSharing = () => {
     else setCntList(cntList + 1)
   }
   // 우선 숫자만 바뀌게 해둠. db 들어오면 바꿔야함.
+
   const [isDetail, setIsDetail] = useState<boolean>(false)
   const [cntList, setCntList] = useState<number>(1)
   return (
@@ -75,34 +179,22 @@ export const HoldingSharing = () => {
         </View>
         <View style={{width: '100%', height: 1, backgroundColor: theme.gray200, marginVertical: 10}} />
         {isDetail ? (
-          <View>
-            <View style={[theme.styles.rowSpaceBetween, {marginTop: 16}]}>
-              <View style={[theme.styles.rowSpaceBetween, {width: 85}]}>
-                <LeftArrowIcon size={24} onPress={onPressLeftArrow} />
-                <Text> {cntList} / 12 </Text>
-                <RightArrowIcon size={24} onPress={onPressRightArrow} />
-              </View>
-              <XIcon size={20} onPress={() => setIsDetail(false)} />
-            </View>
-            <HoldingSharingDetail />
-          </View>
+          <HoldingDetailItem
+            onPressLeftArrow={onPressLeftArrow}
+            onPressRightArrow={onPressRightArrow}
+            cntList={cntList}
+            setIsDetail={setIsDetail}
+            toggleAddressModalVisible={toggleAddressModalVisible}
+            toggleCancelModalVisible={toggleCancelModalVisible}
+          />
         ) : (
-          <View>
-            <View style={[theme.styles.rowSpaceBetween, {marginVertical: 16}]}>
-              <Text>전체 선택 해제</Text>
-              <View style={[theme.styles.rowFlexStart]}>
-                <Text>전체 보기</Text>
-                <DownArrowIcon />
-              </View>
-            </View>
-            <View>
-              {/* 리스트 api 필요 */}
-              <ReceiverListItem onPressViewDetail={onPressViewDetail} index={1} />
-              <ReceiverListItem onPressViewDetail={onPressViewDetail} index={2} />
-            </View>
-          </View>
+          <HoldingListItem onPressViewDetail={onPressViewDetail} index={cntList} />
         )}
       </ScrollView>
+
+      <CancelModal isVisible={cancelModalVisible} toggleIsVisible={toggleCancelModalVisible} />
+      <AddressModal isVisible={addressModalVisible} toggleIsVisible={toggleAddressModalVisible} />
+
       <FloatingBottomButton
         label="공지 보내기"
         enabled
@@ -114,4 +206,17 @@ export const HoldingSharing = () => {
   )
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  shareModal: {
+    backgroundColor: theme.white,
+    borderRadius: 8,
+    padding: theme.PADDING_SIZE,
+  },
+  modalTextInput: {
+    borderWidth: 1,
+    borderColor: theme.gray200,
+    borderRadius: 4,
+    paddingVertical: 14,
+    paddingHorizontal: 18,
+  },
+})
