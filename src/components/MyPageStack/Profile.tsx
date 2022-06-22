@@ -8,18 +8,12 @@ export const Profile = () => {
     <View>
       <View style={[theme.styles.rowFlexStart, {marginBottom: 15}]}>
         <FastImage style={styles.image} source={{uri: 'http://localhost:8081/src/assets/images/iu.jpeg'}} />
-        <View style={{alignSelf: 'stretch', paddingVertical: 20, justifyContent: 'space-between'}}>
+        <View style={{alignSelf: 'stretch', justifyContent: 'center'}}>
           <Text style={[theme.styles.bold20, {color: theme.gray700}]}>춤추는 고양이</Text>
-          <View style={[theme.styles.rowFlexStart]}>
-            <Text style={styles.followText}>팔로잉</Text>
-            <Text style={{...styles.followNumber, marginRight: 16}}>23</Text>
-            <Text style={styles.followText}> 팔로잉</Text>
-            <Text style={styles.followNumber}>23</Text>
-          </View>
         </View>
       </View>
       <Pressable style={styles.button}>
-        <Text style={styles.editProfileText}>프로필 편집</Text>
+        <Text style={styles.editProfileText}>프로필 수정</Text>
       </Pressable>
     </View>
   )

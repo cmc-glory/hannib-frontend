@@ -10,14 +10,28 @@ import {useNavigation} from '@react-navigation/native'
 
 type ReceiverListItem = {
   onPressViewDetail: () => void
+  index: number //db나오면 수정
 }
 
-const ReceiverListItem = ({onPressViewDetail}: ReceiverListItem) => {
+const ReceiverListItem = ({onPressViewDetail, index}: ReceiverListItem) => {
   return (
     <View style={[theme.styles.rowFlexStart, {paddingVertical: 16, borderBottomWidth: 1, borderBottomColor: theme.gray200}]}>
-      <BouncyCheckbox size={20} fillColor={theme.secondary} />
+      <View style={{maxWidth: 20, alignItems: 'center', marginRight: 12}}>
+        <Text style={{marginBottom: 2, fontSize: 12}}>{index}</Text>
+        <BouncyCheckbox size={20} fillColor={theme.secondary} style={{width: 20}} />
+      </View>
+
       <View style={{alignSelf: 'stretch', justifyContent: 'space-between', flex: 1}}>
-        <Text style={{fontSize: 12, marginBottom: 8}}>수령자명</Text>
+        <View style={{flexDirection: 'row', marginBottom: 8}}>
+          <Text style={{fontSize: 12}}>수령자명</Text>
+          {index == 1 ? ( //임시
+            <View style={{flexDirection: 'row'}}>
+              <Text style={{fontSize: 12}}> | </Text>
+              <Text style={{fontSize: 12, color: theme.main}}>수령완료</Text>
+            </View>
+          ) : null}
+        </View>
+
         <Text style={{color: theme.gray700, fontSize: 16}}>BTS 뷔 컨셉의 하트 키링</Text>
       </View>
       <Pressable style={[theme.styles.rowFlexStart]} onPress={onPressViewDetail}>
@@ -53,8 +67,8 @@ export const HoldingSharing = () => {
           </View>
         </View>
         <View>
-          <ReceiverListItem onPressViewDetail={onPressViewDetail} />
-          <ReceiverListItem onPressViewDetail={onPressViewDetail} />
+          <ReceiverListItem onPressViewDetail={onPressViewDetail} index={1} />
+          <ReceiverListItem onPressViewDetail={onPressViewDetail} index={2} />
         </View>
       </ScrollView>
       <FloatingBottomButton
