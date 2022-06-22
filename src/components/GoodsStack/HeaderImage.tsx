@@ -1,18 +1,23 @@
 import React from 'react'
-import {View, Text, ScrollView, StyleSheet, Image, Dimensions} from 'react-native'
-import FastImage from 'react-native-fast-image'
+import {StyleSheet, Dimensions} from 'react-native'
+import {Carousel} from '../utils/Carousel'
 
 const {width} = Dimensions.get('window')
 
 type HeaderImageProps = {
   style?: any
-  imageHeight: number
+  imageHeight?: number
 }
 
-const images = [require('../../assets/images/detail_image_example.png')]
+const images = [
+  'http://localhost:8081/src/assets/images/detail_image_example.png',
+  'http://localhost:8081/src/assets/images/detail_image_example2.jpeg',
+  'http://localhost:8081/src/assets/images/detail_image_example3.jpeg',
+]
 
 export const HeaderImage = ({style, imageHeight}: HeaderImageProps) => {
-  return <Image source={{uri: 'http://localhost:8081/src/assets/images/detail_image_example2.jpeg'}} style={{...styles.image, height: imageHeight}} />
+  const [visible, setIsVisible] = React.useState(true)
+  return <Carousel imageUrls={images} imageWidth={width} />
 }
 const styles = StyleSheet.create({
   image: {
