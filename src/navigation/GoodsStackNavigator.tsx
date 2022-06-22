@@ -13,6 +13,9 @@ type GoodsStackNavigatorParamList = {
   WriteQnA: {
     postid: string
     userid: string
+    imageuri: string
+    category: string
+    title: string
   }
 }
 
@@ -22,7 +25,7 @@ type QnAListProps = NativeStackScreenProps<GoodsStackNavigatorParamList, 'QnALis
 export type QnAListRouteProps = QnAListProps['route']
 
 type WriteQnAProps = NativeStackScreenProps<GoodsStackNavigatorParamList, 'WriteQnA'>
-export type WriteQnARouteProps = QnAListProps['route']
+export type WriteQnARouteProps = WriteQnAProps['route']
 
 const GoodsStackNavigator = () => {
   return (

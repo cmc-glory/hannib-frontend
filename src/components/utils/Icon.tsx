@@ -45,6 +45,8 @@ import CheckSvg from '../../assets/Icon/Check.svg'
 import CheckboxMainSvg from '../../assets/Icon/CheckboxMain.svg'
 import StarUnselectedSvg from '../../assets/Icon/unselected/Star.svg'
 import StarSelectedSvg from '../../assets/Icon/selected/Star.svg'
+import SwitchFalseSvg from '../../assets/Icon/SwitchFalse.svg'
+import SwitchTrueSvg from '../../assets/Icon/SwitchTrue.svg'
 import * as theme from '../../theme'
 
 type IconProps = {
@@ -57,6 +59,22 @@ type IconPropss = {
   onPress?: () => void
   style?: any
   size?: number
+}
+
+export const SwitchFalseIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
+  return (
+    <Pressable onPress={onPress} style={style}>
+      <SwitchFalseSvg width={48} height={24} />
+    </Pressable>
+  )
+}
+
+export const SwitchTrueIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
+  return (
+    <Pressable onPress={onPress} style={style}>
+      <SwitchTrueSvg width={48} height={24} />
+    </Pressable>
+  )
 }
 
 export const CheckboxMainIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {

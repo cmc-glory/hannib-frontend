@@ -85,6 +85,9 @@ declare namespace ReactNavigation {
     WriteQnA: {
       postid: string
       userid: string
+      imageuri: string
+      category: string
+      title: string
     }
   }
 }

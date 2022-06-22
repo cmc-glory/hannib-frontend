@@ -1,14 +1,16 @@
 import React, {useEffect, useCallback, useState} from 'react'
-import {View, Text, Pressable, StyleSheet} from 'react-native'
+import {View, Text, ScrollView, TextInput, Pressable, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation} from '@react-navigation/native'
 import moment from 'moment'
 import {StackHeader, SharingPreview} from '../../components/utils'
 import * as theme from '../../theme'
 import {IQnAList} from '../../types'
+import {useToggle} from '../../hooks'
 
 type QnAListItemProps = {
   item: IQnAList
+  isOwner: boolean
 }
 
 type Answerprops = {
@@ -63,30 +65,85 @@ const QnASecret = () => {
   )
 }
 
-const QnAListItem = ({item}: QnAListItemProps) => {
-  console.log(item)
+const WriteAnswer = () => {
+  const [content, setContent] = useState<string>('')
+  const onPressSubmitAnswer = useCallback(() => {
+    // 문의글 id, 답변 내용 post.
+  }, [])
+  const [writeAnswerPressed, toggleWriteAnswerPressed] = useToggle()
+  return (
+    <View style={{marginTop: 16}}>
+      {writeAnswerPressed ? (
+        <View>
+          <TextInput
+            placeholder="답변 내용 입력"
+            placeholderTextColor={theme.gray300}
+            textAlignVertical="top"
+            multiline
+            style={[theme.styles.input, {paddingTop: 16, height: 100}]}
+            value={content}
+            onChangeText={setContent}></TextInput>
+          <Pressable style={styles.submitAnswerButton} onPress={onPressSubmitAnswer}>
+            <Text style={{fontSize: 16, color: theme.white}}>등록하기</Text>
+          </Pressable>
+        </View>
+      ) : (
+        <Pressable style={styles.writeAnswerButton} onPress={toggleWriteAnswerPressed}>
+          <Text style={{fontSize: 16}}>답변하기</Text>
+        </Pressable>
+      )}
+    </View>
+  )
+}
+
+const QnAListItem = ({item, isOwner}: QnAListItemProps) => {
   const {isSecret, isAnswered, writer, content, date, answer, answeredDate} = item
 
-  if (isSecret) {
-    return (
-      <View style={[styles.qnaListItemContainer]}>
-        <QnASecret />
-      </View>
-    )
-  } else {
-    return (
-      <View style={[styles.qnaListItemContainer]}>
-        <Question isAnswered={isAnswered} content={content} writer={writer} date={date} />
-        {isAnswered && <Answer answer={answer} answeredDate={answeredDate} />}
-      </View>
-    )
+  // 나눔글 작성자한테 보이는 화면
+  if (isOwner) {
+    if (isAnswered) {
+      return (
+        <View style={[styles.qnaListItemContainer]}>
+          <Question isAnswered={isAnswered} content={content} writer={writer} date={date} />
+          <Answer answer={answer} answeredDate={answeredDate} />
+        </View>
+      )
+    } else {
+      return (
+        <View style={[styles.qnaListItemContainer]}>
+          <Question isAnswered={isAnswered} content={content} writer={writer} date={date} />
+          <WriteAnswer />
+        </View>
+      )
+    }
+  }
+
+  // 일반 사용자에게 보이는 화면
+  else {
+    if (isSecret) {
+      return (
+        <View style={[styles.qnaListItemContainer]}>
+          <QnASecret />
+        </View>
+      )
+    } else {
+      return (
+        <View style={[styles.qnaListItemContainer]}>
+          <Question isAnswered={isAnswered} content={content} writer={writer} date={date} />
+
+          {isAnswered && <Answer answer={answer} answeredDate={answeredDate} />}
+        </View>
+      )
+    }
   }
 }
 
 export const QnAList = () => {
   const navigation = useNavigation()
   const [qnas, setQnas] = useState<IQnAList[]>([]) // 문의 목록 state
+  const [isOwner, setIsOwner] = useState<boolean>(true)
   useEffect(() => {
+    // qna list 받아오기
     fetch('http://localhost:8081/src/data/dummyQnA.json', {
       method: 'get',
     })
@@ -94,33 +151,60 @@ export const QnAList = () => {
       .then(result => {
         setQnas(result)
       })
+
+    // redux에서 사용자 id를 가져오고 writer인지를 체크.
+    // setIsOwner(true)
   }, [])
 
   // 문의글 작성으로 이동
   const onPressWrite = useCallback(() => {
     navigation.navigate('WriteQnA', {
       postid: '1', // 해당 나눔 게시글의 id
-      userid: '1', // 문의글을 남기는 사용자의 id
+      userid: '1', // 문의글을 남기는 사용자의 id,
+      imageuri: 'http://localhost:8081/src/assets/images/detail_image_example.png', // 썸네일 uri
+      category: 'bts', // 카테고리
+      title: 'BTS 키링 나눔', // 나눔 제목
     })
   }, [])
 
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
       <StackHeader goBack title="문의" />
-      <View style={[styles.container]}>
+      <ScrollView style={[styles.container]}>
         <SharingPreview uri="http://localhost:8081/src/assets/images/detail_image_example.png" category="BTS" title="BTS 키링 나눔" />
-        <Pressable style={[styles.writeButton]} onPress={onPressWrite}>
-          <Text style={[theme.styles.bold16, {color: theme.white}]}>문의 작성하기</Text>
-        </Pressable>
+        {!isOwner && (
+          <Pressable style={[styles.writeButton]} onPress={onPressWrite}>
+            <Text style={[theme.styles.bold16, {color: theme.white}]}>문의 작성하기</Text>
+          </Pressable>
+        )}
         {qnas.map(qna => (
-          <QnAListItem item={qna} key={qna.id} />
+          <QnAListItem item={qna} key={qna.id} isOwner={isOwner} />
         ))}
-      </View>
+      </ScrollView>
     </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
+  submitAnswerButton: {
+    height: 48,
+    borderWidth: 1,
+    borderColor: theme.gray800,
+    backgroundColor: theme.gray800,
+    borderRadius: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 16,
+  },
+
+  writeAnswerButton: {
+    height: 48,
+    borderWidth: 1,
+    borderColor: theme.gray800,
+    borderRadius: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   writer: {
     color: theme.gray500,
     fontSize: 12,
@@ -146,7 +230,7 @@ const styles = StyleSheet.create({
     borderColor: theme.gray200,
     borderWidth: 1,
     borderRadius: 4,
-    marginBottom: 16,
+    marginTop: 16,
   },
   writeButton: {
     height: 48,
@@ -154,7 +238,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: theme.main,
     borderRadius: 4,
-    marginVertical: 16,
+    marginTop: 16,
   },
   container: {
     paddingHorizontal: theme.PADDING_SIZE,
