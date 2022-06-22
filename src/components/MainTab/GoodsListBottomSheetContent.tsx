@@ -1,5 +1,6 @@
 import React, {useCallback} from 'react'
 import {View, Text, StyleSheet, Pressable} from 'react-native'
+import {CheckIcon} from '../utils'
 import * as theme from '../../theme'
 
 type GoodsListBottomSheetContentProps = {
@@ -16,8 +17,9 @@ type GoodsListBottomSheetContentItemProps = {
 
 const GoodsListBottomSheetContentItem = ({label, selected, onPress}: GoodsListBottomSheetContentItemProps) => {
   return (
-    <Pressable style={styles.itemContainer} onPress={() => onPress(label)}>
+    <Pressable style={[theme.styles.rowSpaceBetween, styles.itemContainer]} onPress={() => onPress(label)}>
       <Text style={{...styles.label, fontFamily: selected ? 'Pretendard-Bold' : 'Pretendard-Regular'}}>{label}</Text>
+      {selected && <CheckIcon size={18} />}
     </Pressable>
   )
 }
@@ -41,14 +43,14 @@ export const GoodsListBottomSheetContent = ({itemFilter, setItemFilter, close}: 
 const styles = StyleSheet.create({
   rootContainer: {
     alignSelf: 'stretch',
+    marginTop: 10,
   },
   itemContainer: {
     borderBottomColor: theme.gray200,
     borderBottomWidth: 1,
-    marginBottom: 20,
+
     width: '100%',
+    paddingVertical: 20,
   },
-  label: {
-    marginBottom: 14,
-  },
+  label: {},
 })

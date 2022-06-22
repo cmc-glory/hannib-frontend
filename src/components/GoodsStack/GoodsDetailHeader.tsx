@@ -54,12 +54,18 @@ const ShareModal = ({shareVisible, toggleShareVisible}: ShareModalProps) => {
 
 const MenuModal = ({moreVisible, setMoreVisible, onPressReportIssue}: MenuModalProps) => {
   return (
-    <RNModal transparent={true} visible={moreVisible}>
-      <Pressable style={{flex: 1, justifyContent: 'center'}} onPress={() => setMoreVisible(false)} />
+    <Modal
+      isVisible={moreVisible}
+      onBackdropPress={() => setMoreVisible(false)}
+      animationInTiming={150}
+      animationOutTiming={150}
+      backdropOpacity={0}
+      animationIn={'fadeIn'}
+      animationOut="fadeOut">
       <Pressable style={styles.menuModal} onPress={onPressReportIssue}>
         <Text style={{color: theme.gray800}}>신고하기</Text>
       </Pressable>
-    </RNModal>
+    </Modal>
   )
 }
 
@@ -122,24 +128,24 @@ const styles = StyleSheet.create({
   },
   menuModal: {
     //backgroundColor: theme.white,
-    backgroundColor: 'rgba(255,255,255,0.95)',
+    backgroundColor: theme.white,
     position: 'absolute',
     width: 144,
     height: 40,
     padding: 10,
     justifyContent: 'center',
     zIndex: 1,
-    right: 20,
+    right: 0,
     borderRadius: 4,
-    top: STATUSBAR_HEIGHT + 48,
-    shadowColor: theme.gray500,
-    shadowOffset: {
-      width: 0,
-      height: 0,
-    },
-    shadowOpacity: 0.32,
-    shadowRadius: 32,
-    elevation: 1,
+    top: STATUSBAR_HEIGHT + 28,
+    // shadowColor: theme.gray500,
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 0,
+    // },
+    // shadowOpacity: 0.32,
+    // shadowRadius: 32,
+    // elevation: 1,
   },
   container: {
     width: '100%',

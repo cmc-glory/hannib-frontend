@@ -23,6 +23,9 @@ const Stack = createStackNavigator<LoginStackNavigatorParamList>()
 type SetProfileProps = NativeStackScreenProps<LoginStackNavigatorParamList, 'SetProfile'>
 export type SetProfileRouteProps = SetProfileProps['route']
 
+type SelectCategoryProps = NativeStackScreenProps<LoginStackNavigatorParamList, 'SelectCategory'>
+export type SelectCategoryRouteProps = SelectCategoryProps['route']
+
 const LoginStackNavigator = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName="Login">

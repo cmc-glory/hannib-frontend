@@ -9,7 +9,7 @@ import {NoticeBanner} from './NoticeBanner'
 import {RelatedSharing} from './RelatedSharing'
 import {GoodsContentDetail} from './GoodsContentDetail'
 import {SharingTimeLocation} from './SharingTimeLocation'
-import {WriterProfile} from './WriterProfile'
+import {WriterProfileBanner} from './WriterProfileBanner'
 import {SharingGoodsInfo} from './SharingGoodsInfo'
 import {useLayout} from '../../hooks'
 import * as theme from '../../theme'
@@ -56,7 +56,7 @@ export function GoodsDetailContent({headerHeight, scrollY}: ContentProps) {
       </View>
       <NoticeBanner />
       <GoodsContentDetail />
-      <WriterProfile />
+      <WriterProfileBanner />
 
       <View style={[styles.padding]}>
         <RelatedSharing />

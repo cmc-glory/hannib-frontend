@@ -7,7 +7,7 @@ import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5'
 import moment from 'moment'
 import * as theme from '../../theme'
 import type {ISharingInfo} from '../../types'
-import {Tag, XIcon} from '../utils'
+import {Tag, XIcon, StarUnfilledIcon, StarFilledIcon} from '../utils'
 
 const {width} = Dimensions.get('window')
 
@@ -42,12 +42,12 @@ const SecretModal = ({secretModalVisible, setSecretModalVisible, secretKey}: Sec
           <XIcon onPress={() => setSecretModalVisible(false)} />
         </View>
         <View style={{marginTop: theme.PADDING_SIZE, alignItems: 'center'}}>
-          <Text style={[{fontFamily: 'Pretendard-Bold', fontSize: 18, marginBottom: 8}]}>해당 게시물은 비밀번호가 걸려있습니다.</Text>
-          <Text style={{color: theme.gray500, fontSize: 14}}>게시자에게 공유받은 비밀번호를 입력해주세요.</Text>
+          <Text style={[{fontFamily: 'Pretendard-Bold', fontSize: 18, marginBottom: 8}]}>비밀번호가 걸려있습니다.</Text>
+          <Text style={{color: theme.gray500, fontSize: 14}}>공유받은 비밀번호를 입력해주세요.</Text>
         </View>
         <View style={{marginVertical: 16, height: 68, justifyContent: 'space-between'}}>
           <TextInput
-            style={[theme.styles.input, {color: theme.gray800}, secretSuccess == false && {borderColor: '#FF6060'}]}
+            style={[theme.styles.input, {color: theme.gray800}, secretSuccess == false && {borderColor: theme.red}]}
             placeholder="시크릿 코드를 입력해 주세요"
             placeholderTextColor={theme.gray300}
             value={secretInput}
@@ -56,7 +56,7 @@ const SecretModal = ({secretModalVisible, setSecretModalVisible, secretKey}: Sec
               setSecretSuccess(null)
             }}
           />
-          {secretSuccess == false && <Text style={{color: '#FF6060', fontSize: 12}}>비밀번호가 맞지 않습니다</Text>}
+          {secretSuccess == false && <Text style={{color: theme.red, fontSize: 12}}>비밀번호가 맞지 않습니다.</Text>}
         </View>
 
         <Pressable
@@ -109,7 +109,7 @@ export const GoodsListItemVer2 = ({item}: {item: ISharingInfo}) => {
         )}
         <View style={{width: IMAGE_SIZE}}>
           <View style={[styles.imageHeader, {width: IMAGE_SIZE}]}>
-            <FontAwesome5Icon name="star" size={18} color={theme.gray500} />
+            <StarUnfilledIcon />
           </View>
           <FastImage style={[styles.image, {width: IMAGE_SIZE, height: IMAGE_SIZE}]} source={{uri: imageUri}}></FastImage>
         </View>
@@ -161,11 +161,11 @@ const styles = StyleSheet.create({
   },
   imageHeader: {
     position: 'absolute',
-    top: 10,
+    top: 5,
     zIndex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    paddingHorizontal: 10,
+    paddingHorizontal: 5,
   },
   title: {
     fontFamily: 'Pretendard-Bold',

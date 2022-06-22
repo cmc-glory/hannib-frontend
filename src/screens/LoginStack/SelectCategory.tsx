@@ -1,8 +1,9 @@
 import React, {useMemo, useState, useEffect, useCallback} from 'react'
 import {View, StyleSheet, Dimensions, FlatList, Alert} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
-import {useNavigation} from '@react-navigation/native'
-import {StackHeader, Button, CategoryItem, FloatingBottomButton} from '../../components/utils'
+import {useNavigation, useRoute} from '@react-navigation/native'
+import {SelectCategoryRouteProps} from '../../navigation/LoginStackNavigator'
+import {StackHeader, Button, CategoryItem, FloatingBottomButton, CheckboxMainIcon} from '../../components/utils'
 import {SearchStar, EmptyResult} from '../../components/LoginStack'
 import * as theme from '../../theme'
 import {IStar} from '../../types'
@@ -11,7 +12,7 @@ const BUTTON_GAP = 10
 
 export const SelectCategory = () => {
   const navigation = useNavigation()
-
+  const route = useRoute<SelectCategoryRouteProps>()
   const BUTTON_WIDTH = useMemo(() => (Dimensions.get('window').width - theme.PADDING_SIZE * 2 - BUTTON_GAP) / 2, [])
   const [singerSelected, setSingerSelected] = useState(true) // 가수, 배우 대분류 선택
   const [starsAll, setStarsAll] = useState<IStar[]>([]) // 서버에서 받아온 연예인 데이터 전부
@@ -48,6 +49,8 @@ export const SelectCategory = () => {
 
   const onPressSelectCompletion = useCallback(() => {
     if (selectedStars.length == 0) return
+    // email, name, image, category 백으로 전송하는 api
+
     navigation.navigate('MainTabNavigator')
   }, [selectedStars])
 

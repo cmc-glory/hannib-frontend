@@ -91,7 +91,6 @@ const styles = StyleSheet.create({
     height: 5,
     borderRadius: 100,
     marginTop: 10,
-    marginBottom: 30,
   },
   overlay: {
     flex: 1,

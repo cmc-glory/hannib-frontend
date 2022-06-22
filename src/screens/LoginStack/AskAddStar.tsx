@@ -6,7 +6,7 @@ import {launchImageLibrary} from 'react-native-image-picker'
 import {useNavigation} from '@react-navigation/native'
 import FastImage from 'react-native-fast-image'
 import {useToggle, useAnimatedValue} from '../../hooks'
-import {StackHeader, DownArrowIcon, RoundButton, PlusIcon} from '../../components/utils'
+import {StackHeader, DownArrowIcon, RoundButton, PlusIcon, RemoveButtonIcon} from '../../components/utils'
 import * as theme from '../../theme'
 
 const IMAGE_SIZE = 64
@@ -50,6 +50,11 @@ export const AskAddStar = () => {
     open.start(toggleOpend)
     setMainCategory(mainCategory => (mainCategory == '가수' ? '배우' : '가수'))
   }, [opend])
+
+  // 선택한 이미지 삭제
+  const onPressRemoveImage = useCallback(() => {
+    setImage(undefined)
+  }, [])
 
   const onPressSubmit = useCallback(() => {
     const form = {mainCategory, name, image, email}
@@ -128,17 +133,19 @@ export const AskAddStar = () => {
             style={[theme.styles.input]}
           />
         </View>
-        <View style={styles.spacing}>
+        <View style={[styles.spacing]}>
           <Text style={[theme.styles.label]}>공식 대표 이미지</Text>
-          <View>
-            {image == undefined ? (
-              <Pressable onPress={onImageLibraryPress}>
-                <View style={[styles.addImage, {marginBottom: 8}]}>
-                  <PlusIcon />
-                </View>
-              </Pressable>
-            ) : (
-              <FastImage source={{uri: image.uri}} style={styles.image}></FastImage>
+          <View style={[theme.styles.rowFlexStart]}>
+            <Pressable onPress={onImageLibraryPress}>
+              <View style={[styles.addImage]}>
+                <PlusIcon onPress={onImageLibraryPress} />
+              </View>
+            </Pressable>
+            {image !== undefined && (
+              <View>
+                <RemoveButtonIcon style={[styles.removeButton]} onPress={onPressRemoveImage} />
+                <FastImage source={{uri: image.uri}} style={styles.image} />
+              </View>
             )}
           </View>
         </View>
@@ -159,6 +166,12 @@ export const AskAddStar = () => {
 }
 
 const styles = StyleSheet.create({
+  removeButton: {
+    position: 'absolute',
+    zIndex: 1,
+    right: -8,
+    top: -8,
+  },
   input: {
     borderColor: theme.gray300,
     borderWidth: 1,
@@ -183,6 +196,7 @@ const styles = StyleSheet.create({
     borderColor: theme.gray300,
     justifyContent: 'center',
     alignItems: 'center',
+    marginRight: 8,
   },
   image: {
     width: IMAGE_SIZE,

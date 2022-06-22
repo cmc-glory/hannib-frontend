@@ -57,7 +57,7 @@ function BottomTab() {
         }}
         component={GoodsList}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="CommunityStackNavigator"
         options={{
           title: '커뮤니티',
@@ -72,7 +72,7 @@ function BottomTab() {
           tabBarIcon: ({focused}) => (focused ? <ChattingIconFocused /> : <ChattingIcon />),
         }}
         component={ChattingStackNavigator}
-      />
+      /> */}
       <Tab.Screen
         name="CalendarStackNavigator"
         options={{

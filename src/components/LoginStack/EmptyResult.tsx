@@ -25,7 +25,7 @@ export const EmptyResult = () => {
   )
 }
 const styles = StyleSheet.create({
-  container: {flex: 1, justifyContent: 'center', alignItems: 'center'},
+  container: {flex: 1, alignItems: 'center', paddingTop: 64},
   title: {
     fontSize: 16,
     marginVertical: 10,

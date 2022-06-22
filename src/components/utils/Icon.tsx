@@ -7,7 +7,7 @@ import ClockIcon from '../../assets/Icon/Time.svg'
 import LocationSvg from '../../assets/Icon/Location.svg'
 import MagnifierIcon from '../../assets/Icon/Magnifier.svg'
 import SettingIcon from '../../assets/Icon/Setting.svg'
-import CheckIcon from '../../assets/Icon/check.svg'
+//import CheckIcon from '../../assets/Icon/check.svg'
 //import MenuWhiteSvg from '../../assets/Icon/MenuShite.svg'
 import DownArrowSvg from '../../assets/Icon/Bottom arrow.svg'
 import RightArrowSvg from '../../assets/Icon/Right arrow.svg'
@@ -40,6 +40,9 @@ import MenuWhiteSvg from '../../assets/Icon/MenuWhite.svg'
 import ShareWhiteSvg from '../../assets/Icon/ShareWhite.svg'
 import CameraWhiteSvg from '../../assets/Icon/CameraWhite.svg'
 import SelectImageSvg from '../../assets/Icon/SelectImage.svg'
+import RemoveButtonSvg from '../../assets/Icon/RemoveButton.svg'
+import CheckSvg from '../../assets/Icon/Check.svg'
+import CheckboxMainSvg from '../../assets/Icon/CheckboxMain.svg'
 
 import * as theme from '../../theme'
 
@@ -55,6 +58,30 @@ type IconPropss = {
   size?: number
 }
 
+export const CheckboxMainIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
+  return (
+    <Pressable onPress={onPress} style={style}>
+      <CheckboxMainSvg width={size} height={size} />
+    </Pressable>
+  )
+}
+
+export const CheckIcon = ({onPress, style, size = 21}: IconPropss) => {
+  return (
+    <Pressable onPress={onPress} style={style}>
+      <CheckSvg width={size} height={size} />
+    </Pressable>
+  )
+}
+
+export const RemoveButtonIcon = ({onPress, style, size = 22}: IconPropss) => {
+  return (
+    <Pressable onPress={onPress} style={style}>
+      <RemoveButtonSvg width={size} height={size} />
+    </Pressable>
+  )
+}
+
 export const SelectImageIcon = ({onPress, style, size = 36}: IconPropss) => {
   return (
     <Pressable onPress={onPress} style={style}>
@@ -62,7 +89,6 @@ export const SelectImageIcon = ({onPress, style, size = 36}: IconPropss) => {
     </Pressable>
   )
 }
-
 
 export const CameraWhiteIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
   return (
@@ -228,13 +254,13 @@ export const Setting = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) =>
   )
 }
 
-export const CheckCategory = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
-  return (
-    <Pressable onPress={onPress} style={style}>
-      <CheckIcon width={9} height={9} fill={'#fff'} />
-    </Pressable>
-  )
-}
+// export const CheckCategory = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
+//   return (
+//     <Pressable onPress={onPress} style={style}>
+//       <CheckIcon width={9} height={9} fill={'#fff'} />
+//     </Pressable>
+//   )
+// }
 
 // export const MenuWhite = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
 //   return (

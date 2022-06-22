@@ -3,13 +3,13 @@ import {View, Text, Pressable, StyleSheet} from 'react-native'
 import FastImage from 'react-native-fast-image'
 import * as theme from '../../theme'
 import {IStar} from '../../types'
-import {CheckCategory} from './Icon'
+import {CheckboxMainIcon} from './Icon'
 
 const Check = () => {
   return (
     <View style={[styles.checkView]}>
       {/* <FastImage style={styles.checkImage} source={require('../../assets/Icon/Check.png')} /> */}
-      <CheckCategory />
+      <CheckboxMainIcon />
     </View>
   )
 }

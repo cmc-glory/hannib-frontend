@@ -2,17 +2,19 @@ import React, {useCallback} from 'react'
 import {View, Text, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import FastImage from 'react-native-fast-image'
+import type {NativeStackNavigationProp} from '@react-navigation/native-stack'
 import {useNavigation} from '@react-navigation/native'
 import {StackHeader, RoundButton} from '../../components/utils'
 import * as theme from '../../theme'
 
 export const AskAddStarComplete = () => {
-  const navigation = useNavigation()
+  const navigation = useNavigation<NativeStackNavigationProp<any>>()
   const onPressNext = useCallback(() => {
-    navigation.navigate('SelectCategory', {
-      email: '',
-      name: '',
-    })
+    // navigation.navigate('SelectCategory', {
+    //   email: '',
+    //   name: '',
+    // })
+    navigation.pop(2)
   }, [])
   return (
     <SafeAreaView style={theme.styles.safeareaview}>

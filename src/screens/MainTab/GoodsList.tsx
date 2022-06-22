@@ -75,7 +75,7 @@ const GoodsLists = () => {
           setShowItemFilterBottomSheet={setShowItemFilterBottomSheet}
         />
         <FlatList
-          contentContainerStyle={{paddingHorizontal: theme.PADDING_SIZE}}
+          contentContainerStyle={{paddingHorizontal: theme.PADDING_SIZE, paddingVertical: 10}}
           data={sharings}
           renderItem={({item}) => <GoodsListItemVer2 item={item}></GoodsListItemVer2>}
           refreshing={refreshing}
