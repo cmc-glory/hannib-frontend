@@ -50,6 +50,7 @@ export const HoldingSharing = () => {
   const onPressViewDetail = () => {
     setIsDetail(true)
   }
+
   const onPressLeftArrow = () => {
     if (cntList == 1) setCntList(12)
     else setCntList(cntList - 1)
@@ -58,6 +59,7 @@ export const HoldingSharing = () => {
     if (cntList == 12) setCntList(1)
     else setCntList(cntList + 1)
   }
+  // 우선 숫자만 바뀌게 해둠. db 들어오면 바꿔야함.
   const [isDetail, setIsDetail] = useState<boolean>(false)
   const [cntList, setCntList] = useState<number>(1)
   return (

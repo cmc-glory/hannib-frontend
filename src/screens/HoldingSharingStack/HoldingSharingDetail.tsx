@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {View, Pressable, ScrollView, Text, StyleSheet, Dimensions} from 'react-native'
 import FastImage from 'react-native-fast-image'
 import {SafeAreaView} from 'react-native-safe-area-context'
@@ -54,6 +54,10 @@ export const HoldingSharingDetail = () => {
           <Button label="취소하기" selected={false} style={{width: BUTTON_WIDTH}} />
           <Button label="운송장 등록" selected={true} style={{width: BUTTON_WIDTH}} />
         </View>
+        {/* db 나오면 타입 받고 타입에 따라 보여주기
+        <Pressable style={{marginTop: 7}}>
+          <Text style={{fontSize: 12, fontWeight: '400', color: theme.main}}>혹시 미수령인가요?</Text>
+        </Pressable> */}
       </ScrollView>
     </View>
   )
