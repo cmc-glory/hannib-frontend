@@ -25,7 +25,7 @@ export const ImagePreview = ({
 }) => {
   return (
     <View>
-      <RemoveButtonIcon style={[styles.removeButton]} size={20} onPress={() => onPressRemove(fileName)} />
+      <RemoveButtonIcon style={[styles.removeButton]} size={22} onPress={() => onPressRemove(fileName)} />
       <FastImage source={{uri: uri}} style={styles.image}></FastImage>
     </View>
   )
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
   removeButton: {
     position: 'absolute',
     zIndex: 1,
-    right: 4,
+    right: 6.5,
     top: -11,
   },
   contianer: {
@@ -103,8 +103,10 @@ const styles = StyleSheet.create({
     width: IMAGE_SIZE,
     height: IMAGE_SIZE,
     borderRadius: 5,
-    marginBottom: 12,
-    marginRight: 12,
+    marginBottom: 16,
+    marginRight: 16,
+    borderWidth: 1,
+    borderColor: theme.gray300,
   },
   imageContainer: {
     flexDirection: 'row',
@@ -120,7 +122,7 @@ const styles = StyleSheet.create({
     borderColor: theme.gray300,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 12,
+    marginRight: 16,
   },
   modal: {
     backgroundColor: theme.white,
