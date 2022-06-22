@@ -8,11 +8,14 @@ import CommunityStackNavigator from './CommunityStackNavigator'
 import ChattingStackNavigator from './ChattingStackNavigator'
 import CalendarStackNavigator from './CalendarStackNavigator'
 import {MyPage} from '../screens/MainTab/MyPage'
+import {Favorites} from '../screens/MainTab/Favorites'
 //import MyPageStackNavigator from './MyPageStackNavigator'
 
 import {
   HomeIcon,
   HomeIconFocused,
+  StarTabIcon,
+  StarTabIconFocused,
   CommunityIcon,
   CommunityIconFocused,
   ChattingIcon,
@@ -56,6 +59,14 @@ function BottomTab() {
           tabBarIcon: ({focused}) => (focused ? <HomeIconFocused /> : <HomeIcon />),
         }}
         component={GoodsList}
+      />
+      <Tab.Screen
+        name="Favorites"
+        options={{
+          title: '찜',
+          tabBarIcon: ({focused}) => (focused ? <StarTabIconFocused /> : <StarTabIcon />),
+        }}
+        component={Favorites}
       />
       {/* <Tab.Screen
         name="CommunityStackNavigator"

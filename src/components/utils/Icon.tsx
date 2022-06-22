@@ -43,7 +43,8 @@ import SelectImageSvg from '../../assets/Icon/SelectImage.svg'
 import RemoveButtonSvg from '../../assets/Icon/RemoveButton.svg'
 import CheckSvg from '../../assets/Icon/Check.svg'
 import CheckboxMainSvg from '../../assets/Icon/CheckboxMain.svg'
-
+import StarUnselectedSvg from '../../assets/Icon/unselected/Star.svg'
+import StarSelectedSvg from '../../assets/Icon/selected/Star.svg'
 import * as theme from '../../theme'
 
 type IconProps = {
@@ -343,4 +344,12 @@ export const AccountIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss
 
 export const AccountIconFocused = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
   return <MyPageSelectedSvg width={size} height={size} />
+}
+
+export const StarTabIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
+  return <StarUnselectedSvg width={size} height={size} />
+}
+
+export const StarTabIconFocused = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
+  return <StarSelectedSvg width={size} height={size} />
 }
