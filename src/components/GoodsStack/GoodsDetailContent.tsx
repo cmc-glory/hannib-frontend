@@ -20,7 +20,7 @@ type ContentProps = {
   // animatedBorder: Animated.AnimatedInterpolation
 }
 
-const window = Dimensions.get('window')
+const window = Dimensions.get('screen')
 
 export function GoodsDetailContent({headerHeight, scrollY}: ContentProps) {
   const navigation = useNavigation()

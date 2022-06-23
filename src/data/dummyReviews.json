@@ -1,0 +1,54 @@
+[
+  {
+    "id": "0",
+    "writer": "춤추는 고양이",
+    "date": "2022-06-20T13:28:56.782Z",
+    "product": [
+      {
+        "id": "0",
+        "quantity": 1,
+        "name": "BTS 뷔 컨셉의 하트키링"
+      }
+    ],
+    "content": "키링 너무 예뻐요. 일코 완전 가능~~~키링 너무 예뻐요. 일코 완전 가능~~~키링 너무 예뻐요. 일코 완전 가능~~~키링 너무 예뻐요. 일코 완전 가능~~~키링 너무 예뻐요. 일코 완전 가능~~~",
+    "images": ["http://localhost:8081/src/assets/images/detail_image_example.png"]
+  },
+  {
+    "id": "1",
+    "writer": "잠자는 찻잔",
+    "date": "2022-05-03T22:14:56.782Z",
+    "product": [
+      {
+        "id": "1",
+        "quantity": 1,
+        "name": "BTS 지민 컨셉의 스페이드키링"
+      },
+      {
+        "id": "2",
+        "quantity": 1,
+        "name": "BTS 정국 컨셉의 클로버키링"
+      }
+    ],
+    "content": "키링키링키링 체고체고체고~~~",
+    "images": [
+      "http://localhost:8081/src/assets/images/detail_image_example.png",
+      "http://localhost:8081/src/assets/images/detail_image_example.png",
+      "http://localhost:8081/src/assets/images/detail_image_example2.jpeg",
+      "http://localhost:8081/src/assets/images/detail_image_example3.jpeg"
+    ]
+  },
+  {
+    "id": "3",
+    "writer": "달리는 믹서기",
+    "date": "2022-06-20T13:28:56.782Z",
+    "product": [
+      {
+        "id": "0",
+        "quantity": 1,
+        "name": "BTS 뷔 컨셉의 하트키링"
+      }
+    ],
+    "content": "키링 너무 예뻐요. 일코 완전 가능~~~키링 너무 예뻐요. 일코 완전 가능~~~키링 너무 예뻐요. 일코 완전 가능~~~키링 너무 예뻐요. 일코 완전 가능~~~키링 너무 예뻐요. 일코 완전 가능~~~",
+    "images": []
+  }
+]

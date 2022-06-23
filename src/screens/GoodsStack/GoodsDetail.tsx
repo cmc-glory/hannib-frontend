@@ -1,5 +1,5 @@
 import React, {useState, useRef} from 'react'
-import {View, ScrollView, StyleSheet, Animated} from 'react-native'
+import {View, ScrollView, StyleSheet, Dimensions, Animated} from 'react-native'
 import {getStatusBarHeight} from 'react-native-status-bar-height'
 import {useNavigation} from '@react-navigation/native'
 import {HeaderImage, GoodsDetailContent, GoodsDetailHeader} from '../../components/GoodsStack'
@@ -10,6 +10,7 @@ import * as theme from '../../theme'
 
 const IMAGE_HEIGHT = 350
 const TOP_HEIGHT = getStatusBarHeight() + 48
+const WIDTH = Dimensions.get('window').width
 
 export const GoodsDetail = () => {
   const navigation = useNavigation()
@@ -26,12 +27,12 @@ export const GoodsDetail = () => {
   return (
     <SafeAreaView edges={['bottom']} style={{flex: 1, position: 'relative'}}>
       {headerInvert ? (
-        <View style={{position: 'absolute', width: 390, height: TOP_HEIGHT, zIndex: 99, backgroundColor: 'white'}}></View>
+        <View style={{position: 'absolute', width: WIDTH, height: TOP_HEIGHT, zIndex: 99, backgroundColor: 'white'}}></View>
       ) : (
         <LinearGradient
           colors={['rgba(33, 33, 33, 0.3)', 'rgba(255, 255, 255, 0)']}
           locations={[0, 0.99]}
-          style={{position: 'absolute', width: 390, height: TOP_HEIGHT, zIndex: 99}}></LinearGradient>
+          style={{position: 'absolute', width: WIDTH, height: TOP_HEIGHT, zIndex: 99}}></LinearGradient>
       )}
 
       <GoodsDetailHeader inverted={headerInvert} />

@@ -89,5 +89,8 @@ declare namespace ReactNavigation {
       category: string
       title: string
     }
+    WriterProfile: {
+      writerid: string
+    }
   }
 }
