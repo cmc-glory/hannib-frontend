@@ -99,8 +99,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.PADDING_SIZE,
   },
   button: {
-    paddingHorizontal: 10,
-    height: 32,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
     borderRadius: 5,
     borderWidth: 1,
     marginRight: 10,

@@ -56,7 +56,7 @@ export const Favorites = () => {
     <SafeAreaView style={[theme.styles.safeareaview]} edges={['top', 'left', 'right']}>
       <StackHeader title="찜한 리스트" />
       <View style={styles.container}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{marginBottom: 10}}>
           <CategoryItem id="0" name="전체" onPressCategory={onPressCategory} selectedCategory={selectedCategory} />
           <CategoryItem id="1" name="BTS" onPressCategory={onPressCategory} selectedCategory={selectedCategory} />
           <CategoryItem id="2" name="세븐틴" onPressCategory={onPressCategory} selectedCategory={selectedCategory} />
@@ -106,6 +106,6 @@ const styles = StyleSheet.create({
   },
   categoryText: {},
   container: {
-    padding: theme.PADDING_SIZE,
+    paddingHorizontal: theme.PADDING_SIZE,
   },
 })
