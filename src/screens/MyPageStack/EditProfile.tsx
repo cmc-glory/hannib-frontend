@@ -1,37 +1,86 @@
-import React from 'react'
-import {View, Text, Pressable, StyleSheet} from 'react-native'
+import React, {useState, useCallback} from 'react'
+import {View, Text, TextInput, Pressable, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import FastImage from 'react-native-fast-image'
 import {launchImageLibrary} from 'react-native-image-picker'
-import {CameraWhiteIcon, XIcon} from '../../components/utils'
+import {StackHeader, SelectImageIcon, XIcon} from '../../components/utils'
+import type {Asset} from 'react-native-image-picker'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+
+import {useAppSelector} from '../../hooks'
 import * as theme from '../../theme'
 
 export const EditProfile = () => {
+  const user = useAppSelector(state => state.auth.user)
+
+  const [name, setName] = useState<string>(user.name)
+  const [profileImage, setProfileImage] = useState<string | undefined>(user.profileImageUri)
+
+  // 이미지 상관 없이 닉네임이 null이 아닐 때만
+  const checkButtonEnabled = useCallback((name: string, profileImage: string | undefined) => {
+    // 이름도, profile image도 바뀐 게 없다면
+    return name == user.name && profileImage == user.profileImageUri ? false : true
+  }, [])
+
+  const onPressComplete = useCallback(() => {
+    // back으로 변경 정보 전송.
+  }, [name, profileImage])
+
+  const onImageLibraryPress = useCallback(async () => {
+    const response = await launchImageLibrary({selectionLimit: 1, mediaType: 'photo', includeBase64: false})
+    if (response.didCancel) {
+      console.log('User cancelled image picker')
+    } else if (response.errorCode) {
+      console.log('errorCode : ', response.errorCode)
+    } else if (response.errorMessage) {
+      console.log('errorMessage', response.errorMessage)
+    } else if (response.assets) {
+      setProfileImage(response?.assets[0].uri)
+    }
+  }, [])
+
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
-      <View style={[theme.styles.rowSpaceBetween, styles.headerContainer]}>
-        <XIcon />
-        <Text style={[theme.styles.bold20]}>프로필 수정</Text>
+      <StackHeader goBack title="프로필 설정">
         <Pressable>
-          <Text style={[theme.styles.bold16, {color: theme.gray300}]}>완료</Text>
+          <Text style={[theme.styles.bold16, {color: checkButtonEnabled(name, profileImage) ? theme.main : theme.gray300}]}>완료</Text>
         </Pressable>
-      </View>
+      </StackHeader>
       <View style={styles.container}>
-        <View style={{paddingVertical: 32, alignItems: 'center'}}>
-          <View style={styles.imageOverlay} />
-          <FastImage source={{uri: 'http://localhost:8081/src/assets/images/leedohyeon.png'}} style={styles.image} />
-          <Pressable style={styles.cameraContainer}>
-            <CameraWhiteIcon />
-          </Pressable>
+        <View style={{alignSelf: 'center'}}>
+          {profileImage == undefined ? (
+            <Pressable style={[styles.image, styles.selectImage]} onPress={onImageLibraryPress}></Pressable>
+          ) : (
+            <FastImage source={{uri: profileImage}} style={styles.image}></FastImage>
+          )}
+
+          <SelectImageIcon style={styles.cameraIcon} onPress={onImageLibraryPress} />
         </View>
 
-        <Text>EditProfile</Text>
+        <Text style={theme.styles.label}>닉네임</Text>
+        <TextInput style={theme.styles.input} placeholder={user.name} placeholderTextColor={theme.gray300} value={name} onChangeText={setName} />
       </View>
     </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
+  cameraIcon: {
+    position: 'absolute',
+    left: 72,
+    top: 108,
+  },
+  image: {
+    width: 108,
+    height: 108,
+    borderRadius: 54,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 32,
+  },
+  selectImage: {
+    backgroundColor: theme.gray100,
+  },
   imageOverlay: {
     position: 'absolute',
     width: 108,
@@ -59,12 +108,5 @@ const styles = StyleSheet.create({
   headerContainer: {
     height: 56,
     paddingHorizontal: theme.PADDING_SIZE,
-  },
-  image: {
-    width: 108,
-    height: 108,
-    borderRadius: 54,
-    borderWidth: 1,
-    borderColor: theme.gray200,
   },
 })

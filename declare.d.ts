@@ -40,8 +40,8 @@ declare namespace ReactNavigation {
     SplashScreen: undefined
     LoginStackNavigator: undefined
     SelectCategory: {
-      email?: string
-      name?: string
+      email: string
+      name: string
       profileImage: Asset
     }
     WriteGoodsComplete: {

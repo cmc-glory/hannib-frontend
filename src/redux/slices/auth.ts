@@ -1,4 +1,5 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
+import {createDraftSafeSelector} from '@reduxjs/toolkit'
 import {IUserCategory} from '../../types'
 
 //Each slice file should define a type for its initial state value,
@@ -44,5 +45,8 @@ export const authSlice = createSlice({
     },
   },
 })
+
+const selectSelf = (state: Auth) => state
+export const userSelector = createDraftSafeSelector(selectSelf, state => state.user)
 export default authSlice.reducer
 export const {login, storeAccessToken, storeRefreshToken} = authSlice.actions
