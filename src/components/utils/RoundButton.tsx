@@ -1,6 +1,5 @@
 import React from 'react'
 import {Pressable, Text, StyleSheet, Platform} from 'react-native'
-import {RadioButton} from 'react-native-paper'
 import * as theme from '../../theme'
 
 type RoundButtonProps = {

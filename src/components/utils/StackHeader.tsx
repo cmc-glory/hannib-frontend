@@ -1,7 +1,7 @@
 import React, {useCallback} from 'react'
 import {View, Text, Pressable, StyleSheet} from 'react-native'
 import {useNavigation} from '@react-navigation/native'
-import {LeftArrowIcon, Icon} from './Icon'
+import {LeftArrowIcon, XIcon, Icon} from './Icon'
 import * as theme from '../../theme'
 
 // 사용밥 : <StackHeader title="상단 제목 이름" onPressTitle="상단 제목 눌렀을 때 수행할 일">{오른쪽에 들어갈 아이콘 컴포넌트}</StackHeader>
@@ -11,16 +11,19 @@ type StackHeaderParams = {
   onPressTitle?: () => void // 상단 제목을 눌렀을 때
   dropdown?: boolean
   children?: React.ReactNode | React.ReactNode[] // 오른쪽에 띄울 아이콘
+  x?: boolean
 }
 
-export const StackHeader = ({goBack = false, title, onPressTitle, dropdown = false, children}: StackHeaderParams) => {
+export const StackHeader = ({goBack = false, title, onPressTitle, dropdown = false, x, children}: StackHeaderParams) => {
   const navigation = useNavigation()
   const onPressGoback = useCallback(() => {
     navigation.goBack()
   }, [])
   return (
     <View style={[styles.container]}>
-      {goBack && navigation.canGoBack() && (
+      {goBack && navigation.canGoBack() && x == true ? (
+        <XIcon onPress={onPressGoback} style={{marginRight: 10}} />
+      ) : (
         <LeftArrowIcon onPress={onPressGoback} style={{marginRight: 10}} />
         // <Pressable onPress={onPressGoback} style={{marginRight: 10}}>
         //   <Icon uri="http://localhost:8081/src/assets/Icon/Left arrow.png" />

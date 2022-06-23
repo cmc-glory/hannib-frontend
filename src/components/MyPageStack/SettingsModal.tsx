@@ -30,6 +30,11 @@ export const SettingsModal = ({settingsModalVisible, setSettingsModalVisible, lo
     console.log(logoutModalVisible)
   }, [])
 
+  const onPressResign = useCallback(() => {
+    setSettingsModalVisible(false)
+    navigation.navigate('MyPageStackNavigator', {screen: 'Resign'})
+  }, [])
+
   return (
     <>
       <Modal
@@ -55,7 +60,7 @@ export const SettingsModal = ({settingsModalVisible, setSettingsModalVisible, lo
           <Pressable onPress={onPressLogout}>
             <Text style={styles.text}>로그아웃</Text>
           </Pressable>
-          <Pressable>
+          <Pressable onPress={onPressResign}>
             <Text style={styles.text}>회원탈퇴</Text>
           </Pressable>
         </View>
