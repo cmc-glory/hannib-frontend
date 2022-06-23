@@ -3,7 +3,7 @@ import {View, Text, ScrollView, FlatList, Pressable, StyleSheet, Dimensions, Lay
 import FastImage from 'react-native-fast-image'
 import {useNavigation} from '@react-navigation/native'
 import * as theme from '../../theme'
-import {Tag, MenuWhite} from '../../components/utils'
+import {Tag, MenuWhiteIcon} from '../../components/utils'
 
 const images: string[] = [
   'http://localhost:8081/src/assets/images/detail_image_example.png',
@@ -37,7 +37,7 @@ const HoldingSharingItem = ({uri, onPress}: {uri: string; onPress: () => void}) 
     <Pressable style={{marginBottom: theme.PADDING_SIZE}} onPress={onPress}>
       <View style={[styles.headerContainer, theme.styles.rowSpaceBetween]}>
         <Tag label="모집중" />
-        <MenuWhite />
+        <MenuWhiteIcon />
       </View>
       <FastImage source={{uri: uri}} style={styles.image}></FastImage>
     </Pressable>
@@ -49,7 +49,7 @@ const ReviewItem = ({uri, onPress}: {uri: string; onPress: () => void}) => {
     <Pressable style={{marginBottom: theme.PADDING_SIZE}} onPress={onPress}>
       <View style={[styles.headerContainer, theme.styles.rowSpaceBetween]}>
         <Tag label="모집중" />
-        <MenuWhite />
+        <MenuWhiteIcon />
       </View>
       <FastImage source={{uri: uri}} style={styles.image}></FastImage>
     </Pressable>

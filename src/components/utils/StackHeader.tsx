@@ -14,21 +14,23 @@ type StackHeaderParams = {
   x?: boolean
 }
 
-export const StackHeader = ({goBack = false, title, onPressTitle, dropdown = false, x, children}: StackHeaderParams) => {
+export const StackHeader = ({title, onPressTitle, dropdown = false, x, goBack = false, children}: StackHeaderParams) => {
   const navigation = useNavigation()
   const onPressGoback = useCallback(() => {
     navigation.goBack()
   }, [])
   return (
     <View style={[styles.container]}>
-      {goBack && navigation.canGoBack() && x == true ? (
-        <XIcon onPress={onPressGoback} style={{marginRight: 10}} />
-      ) : (
-        <LeftArrowIcon onPress={onPressGoback} style={{marginRight: 10}} />
-        // <Pressable onPress={onPressGoback} style={{marginRight: 10}}>
-        //   <Icon uri="http://localhost:8081/src/assets/Icon/Left arrow.png" />
-        // </Pressable>
-      )}
+      {goBack &&
+        navigation.canGoBack() &&
+        (x == true ? (
+          <XIcon onPress={onPressGoback} style={{marginRight: 10}} />
+        ) : (
+          <LeftArrowIcon onPress={onPressGoback} style={{marginRight: 10}} />
+          // <Pressable onPress={onPressGoback} style={{marginRight: 10}}>
+          //   <Icon uri="http://localhost:8081/src/assets/Icon/Left arrow.png" />
+          // </Pressable>
+        ))}
       <Pressable style={[styles.titleContainer]}>
         <Text style={styles.title}>{title}</Text>
         {dropdown && <Icon uri="http://localhost:8081/src/assets/Icon/Bottom_arrow.png" />}

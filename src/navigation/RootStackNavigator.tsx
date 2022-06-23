@@ -16,7 +16,6 @@ import HoldingSharingStackNavigator from './HoldingSharingStackNavigator'
 import ParticipatingSharingStackNavigator from './ParticipatingSharingStackNavigator'
 import ReportIssueStackNavigator from './ReportIssueStackNavigator'
 import MyPageStackNavigator from './MyPageStackNavigator'
-import QnAStackNavigator from './QnAStackNavigator'
 
 const Stack = createStackNavigator()
 

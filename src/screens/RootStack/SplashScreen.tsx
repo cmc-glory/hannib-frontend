@@ -18,6 +18,22 @@ export const SplashScreen = () => {
       } else {
         //dispatch(storeAccessToken(accessToken)) // redux에 accesss
         // accessToken으로 id, email, 카테고리 저장
+        storeAccessToken(accessToken)
+        // qna list 받아오기
+        fetch('http://localhost:8081/src/data/dummyUser.json', {
+          method: 'get',
+        })
+          .then(res => res.json())
+          .then(result => {
+            dispatch(
+              login({
+                email: result.email,
+                name: result.name,
+                profileImageUri: result.profileImageUri,
+                userCategory: [],
+              }),
+            )
+          })
 
         // access token이 있으면 메인탭으로 이동
         navigation.navigate('MainTabNavigator')

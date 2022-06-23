@@ -39,6 +39,7 @@ export const authSlice = createSlice({
       state.isLoggedIn = true
       state.user.email = action.payload.email
       state.user.name = action.payload.name
+      state.user.profileImageUri = action.payload.profileImageUri
       state.user.userCategory = action.payload.userCategory
     },
     storeAccessToken: (state, action: PayloadAction<string>) => {
@@ -48,7 +49,7 @@ export const authSlice = createSlice({
       state.refreshToken = action.payload
     },
     logout: state => {
-      state = initialState
+      return initialState
     },
   },
 })
