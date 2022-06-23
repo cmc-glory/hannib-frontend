@@ -1,11 +1,13 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
+import {IUserCategory} from '../../types'
 
 //Each slice file should define a type for its initial state value,
 // so that createSlice can correctly infer the type of state in each case reducer.
 
 interface User {
-  id: string
+  email: string
   name: string
+  userCategory: IUserCategory[]
 }
 
 interface Auth {
@@ -20,23 +22,27 @@ export const authSlice = createSlice({
   initialState: {
     isLoggedIn: false,
     user: {
-      id: '',
+      email: '',
       name: '',
-    },
+      userCategory: [],
+    } as User,
     accessToken: '',
     refreshToken: '',
   },
   reducers: {
     login: (state, action: PayloadAction<User>) => {
-      console.log('redux state : ', state)
       state.isLoggedIn = true
-      state.user.id = action.payload.id
+      state.user.email = action.payload.email
       state.user.name = action.payload.name
+      state.user.userCategory = action.payload.userCategory
     },
     storeAccessToken: (state, action: PayloadAction<string>) => {
       state.accessToken = action.payload
     },
+    storeRefreshToken: (state, action: PayloadAction<string>) => {
+      state.refreshToken = action.payload
+    },
   },
 })
 export default authSlice.reducer
-export const {login, storeAccessToken} = authSlice.actions
+export const {login, storeAccessToken, storeRefreshToken} = authSlice.actions

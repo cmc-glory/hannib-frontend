@@ -10,7 +10,7 @@ export type ISharingType = 'offline' | 'online' | ''
 export type IProductInfo = {
   name: string
   quantity: number
-  id: string
+  id: string // 해당 상품의 id
   productLimit?: number
 }
 
@@ -78,4 +78,17 @@ export type IQnAList = {
   date: undefined | Date
   answer?: string
   answeredDate?: undefined | Date
+}
+
+export type IReview = {
+  id: string
+  writer: string
+  date: Date | undefined
+  product: IProductInfo[]
+  content: string
+  images?: string[]
+}
+export type IUserCategory = {
+  id: string
+  name: string
 }

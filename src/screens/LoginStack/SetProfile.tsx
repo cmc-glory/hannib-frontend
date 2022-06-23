@@ -23,7 +23,7 @@ export const SetProfile = () => {
 
   const onPressNext = useCallback(() => {
     navigation.navigate('SelectCategory', {email: route.params.email, name, profileImage})
-  }, [name])
+  }, [name, profileImage])
 
   const onImageLibraryPress = useCallback(async () => {
     const response = await launchImageLibrary({selectionLimit: 1, mediaType: 'photo', includeBase64: false})

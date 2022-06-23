@@ -22,7 +22,7 @@ export const GoodsDetail = () => {
   const [y, setY] = useState<number>(realScrollY)
   const [headerInvert, setHeaderInvert] = useState(false)
   //const realScrollY = useMonitorAnimatedValue(scrollY)
-  console.log(realScrollY)
+  //console.log(realScrollY)
 
   return (
     <SafeAreaView edges={['bottom']} style={{flex: 1, position: 'relative'}}>

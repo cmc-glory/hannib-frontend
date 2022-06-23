@@ -41,7 +41,7 @@ export const Login = () => {
   const navigation = useNavigation()
 
   const signInWithKakao = async (): Promise<void> => {
-    console.log('clicked')
+    //console.log('clicked')
     const token: KakaoOAuthToken = await login()
     const profile: KakaoProfile = await getKakaoProfile()
 
@@ -51,10 +51,16 @@ export const Login = () => {
   }
 
   const SignInWithGoogle = async () => {
-    const {idToken, user} = await GoogleSignin.signIn()
-    const googleCredential = auth.GoogleAuthProvider.credential(idToken)
+    const result = await GoogleSignin.signIn()
 
+    const idToken = result.idToken
+    const user = result.user
+    const googleCredential = auth.GoogleAuthProvider.credential(idToken)
     auth().signInWithCredential(googleCredential)
+
+    navigation.navigate('SetProfile', {
+      email: user.email,
+    })
   }
 
   return (
@@ -84,7 +90,14 @@ export const Login = () => {
               onPress={SignInWithGoogle}
             />
           )}
-          {!ios && <LoginButton style={{backgroundColor: theme.white}} label="Google로 로그인" source={require('../../assets/images/google_logo.png')} />}
+          {!ios && (
+            <LoginButton
+              style={{backgroundColor: theme.white}}
+              onPress={SignInWithGoogle}
+              label="Google로 로그인"
+              source={require('../../assets/images/google_logo.png')}
+            />
+          )}
         </View>
       </SafeAreaView>
     </LinearGradient>
