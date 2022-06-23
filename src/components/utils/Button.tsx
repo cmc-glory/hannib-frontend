@@ -52,8 +52,10 @@ const styles = StyleSheet.create({
   },
   selectedText: {
     color: theme.main,
+    fontWeight: '700',
   },
   unselectedText: {
     color: theme.gray300,
+    fontWeight: '700',
   },
 })

@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.white,
     borderColor: theme.main,
     borderWidth: 1,
-    height: 24,
+    height: 28,
     paddingHorizontal: 8,
     borderRadius: 4,
     marginRight: 7.5,
@@ -27,5 +27,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignSelf: 'flex-start',
   },
-  tagText: {color: theme.main, fontFamily: 'Pretendard-Regular', fontSize: 12},
+  tagText: {color: theme.main, fontFamily: 'Pretendard-Regular', fontSize: 14},
 })
