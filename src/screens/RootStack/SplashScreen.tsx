@@ -13,10 +13,13 @@ export const SplashScreen = () => {
     getString('accessToken').then(accessToken => {
       console.log('accessToken :', accessToken)
       if (accessToken == null) {
+        // access token이 없으면 회원 가입 페이지로 이동
         navigation.navigate('LoginStackNavigator')
       } else {
         //dispatch(storeAccessToken(accessToken)) // redux에 accesss
         // accessToken으로 id, email, 카테고리 저장
+
+        // access token이 있으면 메인탭으로 이동
         navigation.navigate('MainTabNavigator')
       }
     })

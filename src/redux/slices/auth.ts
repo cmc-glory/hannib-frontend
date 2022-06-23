@@ -9,6 +9,7 @@ interface User {
   email: string
   name: string
   userCategory: IUserCategory[]
+  profileImageUri: string
 }
 
 interface Auth {
@@ -18,18 +19,21 @@ interface Auth {
   refreshToken: string
 }
 
+const initialState = {
+  isLoggedIn: false,
+  user: {
+    email: '',
+    name: '',
+    userCategory: [],
+    profileImageUri: '',
+  } as User,
+  accessToken: '',
+  refreshToken: '',
+}
+
 export const authSlice = createSlice({
   name: 'auth',
-  initialState: {
-    isLoggedIn: false,
-    user: {
-      email: '',
-      name: '',
-      userCategory: [],
-    } as User,
-    accessToken: '',
-    refreshToken: '',
-  },
+  initialState,
   reducers: {
     login: (state, action: PayloadAction<User>) => {
       state.isLoggedIn = true
@@ -43,10 +47,13 @@ export const authSlice = createSlice({
     storeRefreshToken: (state, action: PayloadAction<string>) => {
       state.refreshToken = action.payload
     },
+    logout: state => {
+      state = initialState
+    },
   },
 })
 
 const selectSelf = (state: Auth) => state
 export const userSelector = createDraftSafeSelector(selectSelf, state => state.user)
 export default authSlice.reducer
-export const {login, storeAccessToken, storeRefreshToken} = authSlice.actions
+export const {login, storeAccessToken, storeRefreshToken, logout} = authSlice.actions

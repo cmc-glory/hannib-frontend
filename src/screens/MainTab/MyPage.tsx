@@ -4,9 +4,10 @@ import {SafeAreaView} from 'react-native-safe-area-context'
 import {TabView, SceneMap, TabBar} from 'react-native-tab-view'
 import {getStatusBarHeight} from 'react-native-status-bar-height'
 import {Bell, Setting, StackHeader, TopTabBar} from '../../components/utils'
-import {Profile, Follow, SettingsModal} from '../../components/MyPageStack'
+import {Profile, Follow, SettingsModal, LogoutModal} from '../../components/MyPageStack'
 import {HoldingSharingTab} from './HoldingSharingTab'
 import {ParticipatingSharingTab} from './ParticipatingSharingTab'
+import {useAsyncState} from '../../hooks'
 import * as theme from '../../theme'
 import {useAnimatedValue} from '../../hooks'
 
@@ -21,6 +22,7 @@ export const MyPage = () => {
   const layout = useWindowDimensions()
   const [index, setIndex] = React.useState(0) // tab view index
   const [settingsModalVisible, setSettingsModalVisible] = useState<boolean>(false)
+  const [logoutModalVisible, setLogoutModalVisible] = useState<boolean>(false) // 로그아웃 모달창 띄울 지
 
   // tab view configuration
   const [routes] = React.useState([
@@ -56,8 +58,13 @@ export const MyPage = () => {
           <Setting onPress={() => setSettingsModalVisible(settingsModalVisible => !settingsModalVisible)} />
         </View>
       </StackHeader>
-
-      <SettingsModal settingsModalVisible={settingsModalVisible} setSettingsModalVisible={setSettingsModalVisible} />
+      <LogoutModal logoutModalVisible={logoutModalVisible} setLogoutModalVisible={setLogoutModalVisible} />
+      <SettingsModal
+        settingsModalVisible={settingsModalVisible}
+        setSettingsModalVisible={setSettingsModalVisible}
+        logoutModalVisible={logoutModalVisible}
+        setLogoutModalVisible={setLogoutModalVisible}
+      />
 
       <View style={[theme.styles.wrapper]}>
         <View style={{marginVertical: 15}}>

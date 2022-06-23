@@ -41,14 +41,14 @@ export const EditProfile = () => {
 
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
-      <StackHeader goBack title="프로필 설정">
+      <StackHeader goBack title="프로필 수정">
         <Pressable>
           <Text style={[theme.styles.bold16, {color: checkButtonEnabled(name, profileImage) ? theme.main : theme.gray300}]}>완료</Text>
         </Pressable>
       </StackHeader>
       <View style={styles.container}>
         <View style={{alignSelf: 'center'}}>
-          {profileImage == undefined ? (
+          {profileImage == '' ? (
             <Pressable style={[styles.image, styles.selectImage]} onPress={onImageLibraryPress}></Pressable>
           ) : (
             <FastImage source={{uri: profileImage}} style={styles.image}></FastImage>
