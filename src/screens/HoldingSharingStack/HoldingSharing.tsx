@@ -32,6 +32,7 @@ type HoldingListItem = {
 }
 
 type HoldingDetailItem = {
+  isOnline: boolean
   onPressLeftArrow: () => void
   onPressRightArrow: () => void
   cntList: number
@@ -86,7 +87,7 @@ const HoldingListItem = ({onPressViewDetail, index}: HoldingListItem) => {
   )
 }
 
-const HoldingDetailItem = ({onPressLeftArrow, onPressRightArrow, cntList, setIsDetail}: HoldingDetailItem) => {
+const HoldingDetailItem = ({isOnline, onPressLeftArrow, onPressRightArrow, cntList, setIsDetail}: HoldingDetailItem) => {
   return (
     <View>
       <View style={[theme.styles.rowSpaceBetween, {marginTop: 16}]}>
@@ -97,7 +98,7 @@ const HoldingDetailItem = ({onPressLeftArrow, onPressRightArrow, cntList, setIsD
         </View>
         <XIcon size={20} onPress={() => setIsDetail(false)} />
       </View>
-      <HoldingSharingDetail />
+      <HoldingSharingDetail isOnline={isOnline} />
     </View>
   )
 }
@@ -136,7 +137,13 @@ export const HoldingSharing = () => {
         </View>
         <View style={{width: '100%', height: 1, backgroundColor: theme.gray200, marginVertical: 10}} />
         {isDetail ? (
-          <HoldingDetailItem onPressLeftArrow={onPressLeftArrow} onPressRightArrow={onPressRightArrow} cntList={cntList} setIsDetail={setIsDetail} />
+          <HoldingDetailItem
+            isOnline={true}
+            onPressLeftArrow={onPressLeftArrow}
+            onPressRightArrow={onPressRightArrow}
+            cntList={cntList}
+            setIsDetail={setIsDetail}
+          />
         ) : (
           <HoldingListItem onPressViewDetail={onPressViewDetail} index={cntList} />
         )}

@@ -9,7 +9,7 @@ import {DownArrowIcon, RightArrowIcon, Tag, XIcon} from '../../components/utils'
 import * as theme from '../../theme'
 import {useToggle} from '../../hooks'
 
-type CancelModal = {
+type ModalProps = {
   isVisible: boolean
   toggleIsVisible: () => void
 }
@@ -19,6 +19,17 @@ type AddressModal = {
   toggleIsVisible: () => void
   sendMethod: string
   setSendMethod: (mthd: string) => void
+}
+
+type DetailInfo = {
+  isOnline: boolean
+}
+
+type Buttons = {
+  toggleCancelModalVisible: () => void
+  toggleAddressModalVisible: () => void
+  toggleCheckFinishedModalVisible: () => void
+  toggleNotTakenModalVisible: () => void
 }
 
 const GoodsListItem = () => {
@@ -33,7 +44,7 @@ const GoodsListItem = () => {
   )
 }
 
-const CancelModal = ({isVisible, toggleIsVisible}: CancelModal) => {
+const CancelModal = ({isVisible, toggleIsVisible}: ModalProps) => {
   return (
     <Modal isVisible={isVisible} onBackdropPress={toggleIsVisible} backdropColor={theme.gray800} backdropOpacity={0.6}>
       <View style={styles.shareModal}>
@@ -99,12 +110,85 @@ const AddressModal = ({isVisible, toggleIsVisible, sendMethod, setSendMethod}: A
   )
 }
 
+const CheckFinishedModal = ({isVisible, toggleIsVisible}: ModalProps) => {
+  return (
+    <Modal isVisible={isVisible} onBackdropPress={toggleIsVisible} backdropColor={theme.gray800} backdropOpacity={0.6}>
+      <View style={styles.shareModal}>
+        <View style={[{flexDirection: 'row', justifyContent: 'flex-end', marginBottom: 16}]}>
+          <XIcon onPress={toggleIsVisible} />
+        </View>
+
+        <View style={{marginBottom: 16, alignItems: 'center'}}>
+          <Text style={[theme.styles.bold20, {marginBottom: 8}]}>전달 완료 하셨나요?</Text>
+          <Text style={{marginHorizontal: 24, fontSize: 16, lineHeight: 24, textAlign: 'center'}}>전달완료 처리 진행하시겠습니까?</Text>
+        </View>
+        <RoundButton label="확인" onPress={toggleIsVisible} enabled />
+      </View>
+    </Modal>
+  )
+}
+const NotTakenModal = ({isVisible, toggleIsVisible}: ModalProps) => {
+  return (
+    <Modal isVisible={isVisible} onBackdropPress={toggleIsVisible} backdropColor={theme.gray800} backdropOpacity={0.6}>
+      <View style={styles.shareModal}>
+        <View style={[{flexDirection: 'row', justifyContent: 'flex-end', marginBottom: 16}]}>
+          <XIcon onPress={toggleIsVisible} />
+        </View>
+
+        <View style={{marginBottom: 16, alignItems: 'center'}}>
+          <Text style={[theme.styles.bold20, {marginBottom: 8}]}>미수령 처리 하시겠습니까?</Text>
+          <Text style={{marginHorizontal: 24, fontSize: 16, lineHeight: 24, textAlign: 'center'}}>
+            미수령 처리 진행시, 해당 수령자는 미수령처리로 경고가 들어갑니다. 정말로 미수령처리 하시겠습니까?
+          </Text>
+        </View>
+        <RoundButton label="확인" onPress={toggleIsVisible} enabled />
+      </View>
+    </Modal>
+  )
+}
+
+let holdingSharingState = 'offlineNotFinished' //'onlineNotSent', 'onlineSent', 'offlineFinished', 'offlineNotFinished'
+const Buttons = ({toggleAddressModalVisible, toggleCancelModalVisible, toggleCheckFinishedModalVisible, toggleNotTakenModalVisible}: Buttons) => {
+  switch (holdingSharingState) {
+    case 'onlineNotSent':
+      return (
+        <View style={{...theme.styles.rowSpaceBetween, width: '100%'}}>
+          <Button label="취소하기" selected={false} style={{width: BUTTON_WIDTH}} onPress={toggleCancelModalVisible} />
+          <Button label="운송장 등록" selected={true} style={{width: BUTTON_WIDTH}} onPress={toggleAddressModalVisible} />
+        </View>
+      )
+    case 'onlineSent':
+      return (
+        <View style={{...theme.styles.rowSpaceBetween, width: '100%'}}>
+          <Button label="취소하기" selected={false} style={{width: BUTTON_WIDTH}} onPress={toggleCancelModalVisible} />
+          <Button label="운송장 등록 완료" selected={false} style={{width: BUTTON_WIDTH}} />
+        </View>
+      )
+    case 'offlineFinished':
+      return <Button label="미수령" selected={false} style={{width: '100%'}}></Button>
+    case 'offlineNotFinished':
+      return (
+        <View style={{width: '100%'}}>
+          <View style={{...theme.styles.rowSpaceBetween, width: '100%', marginBottom: 10}}>
+            <Button label="취소하기" selected={false} style={{width: BUTTON_WIDTH}} onPress={toggleCancelModalVisible} />
+            <Button label="수령 체크" selected={true} style={{width: BUTTON_WIDTH}} onPress={toggleCheckFinishedModalVisible} />
+          </View>
+          <Pressable style={{marginTop: 7}} onPress={toggleNotTakenModalVisible}>
+            <Text style={{fontSize: 12, fontWeight: '400', color: theme.main}}>혹시 미수령인가요?</Text>
+          </Pressable>
+        </View>
+      )
+  }
+}
+
 const BUTTON_WIDTH = (Dimensions.get('window').width - theme.PADDING_SIZE * 2 - 10) / 2
 const MODAL_BUTTON_WIDTH = (Dimensions.get('window').width - theme.PADDING_SIZE * 2 - 50) / 2
 
-export const HoldingSharingDetail = () => {
+export const HoldingSharingDetail = ({isOnline}: DetailInfo) => {
   const [cancelModalVisible, toggleCancelModalVisible] = useToggle() // 취소 모달창 띄울지
   const [addressModalVisible, toggleAddressModalVisible] = useToggle() // 운송장 등록 모달창 띄울지
+  const [checkFinishedModalVisible, toggleCheckFinishedModalVisible] = useToggle() // 수령 체크 모달창 띄울지
+  const [notTakenModalVisible, toggleNotTakenModalVisible] = useToggle()
   const [sendMethod, setSendMethod] = useState<string>('post') //post : 우편, registeredMail : 등기
 
   return (
@@ -136,8 +220,12 @@ export const HoldingSharingDetail = () => {
           </View>
         </View>
         <View style={{...theme.styles.rowSpaceBetween, width: '100%'}}>
-          <Button label="취소하기" selected={false} style={{width: BUTTON_WIDTH}} onPress={toggleCancelModalVisible} />
-          <Button label="운송장 등록" selected={true} style={{width: BUTTON_WIDTH}} onPress={toggleAddressModalVisible} />
+          <Buttons
+            toggleAddressModalVisible={toggleAddressModalVisible}
+            toggleCancelModalVisible={toggleCancelModalVisible}
+            toggleCheckFinishedModalVisible={toggleCheckFinishedModalVisible}
+            toggleNotTakenModalVisible={toggleNotTakenModalVisible}
+          />
         </View>
         {/* db 나오면 타입 받고 타입에 따라 보여주기
         <Pressable style={{marginTop: 7}}>
@@ -146,6 +234,8 @@ export const HoldingSharingDetail = () => {
       </ScrollView>
       <CancelModal isVisible={cancelModalVisible} toggleIsVisible={toggleCancelModalVisible} />
       <AddressModal isVisible={addressModalVisible} toggleIsVisible={toggleAddressModalVisible} sendMethod={sendMethod} setSendMethod={setSendMethod} />
+      <CheckFinishedModal isVisible={checkFinishedModalVisible} toggleIsVisible={toggleCheckFinishedModalVisible} />
+      <NotTakenModal isVisible={notTakenModalVisible} toggleIsVisible={toggleNotTakenModalVisible} />
     </View>
   )
 }
