@@ -36,13 +36,6 @@ type HoldingDetailItem = {
   onPressRightArrow: () => void
   cntList: number
   setIsDetail: (bool: boolean) => void
-  toggleCancelModalVisible: () => void
-  toggleAddressModalVisible: () => void
-}
-
-type ModalProps = {
-  isVisible: boolean
-  toggleIsVisible: () => void
 }
 
 const ReceiverListItem = ({onPressViewDetail, index}: ReceiverListItem) => {
@@ -93,14 +86,7 @@ const HoldingListItem = ({onPressViewDetail, index}: HoldingListItem) => {
   )
 }
 
-const HoldingDetailItem = ({
-  onPressLeftArrow,
-  onPressRightArrow,
-  cntList,
-  setIsDetail,
-  toggleAddressModalVisible,
-  toggleCancelModalVisible,
-}: HoldingDetailItem) => {
+const HoldingDetailItem = ({onPressLeftArrow, onPressRightArrow, cntList, setIsDetail}: HoldingDetailItem) => {
   return (
     <View>
       <View style={[theme.styles.rowSpaceBetween, {marginTop: 16}]}>
@@ -111,41 +97,12 @@ const HoldingDetailItem = ({
         </View>
         <XIcon size={20} onPress={() => setIsDetail(false)} />
       </View>
-      <HoldingSharingDetail toggleAddressModalVisible={toggleAddressModalVisible} toggleCancelModalVisible={toggleCancelModalVisible} />
+      <HoldingSharingDetail />
     </View>
   )
 }
 
-const CancelModal = ({isVisible, toggleIsVisible}: ModalProps) => {
-  return (
-    <Modal isVisible={isVisible} onBackdropPress={toggleIsVisible} backdropColor={theme.gray800} backdropOpacity={0.6}>
-      <View style={styles.shareModal}>
-        <View style={[theme.styles.rowSpaceBetween]}>
-          <Text style={[theme.styles.bold16]}>취소하기</Text>
-          <XIcon onPress={toggleIsVisible} />
-        </View>
-        <View style={{width: '100%', height: 1, marginVertical: 16, backgroundColor: theme.gray200}} />
-        <View style={{marginBottom: 16}}>
-          <Text style={{fontSize: 16, marginBottom: 12}}>취소사유</Text>
-          <TextInput placeholder="취소사유를 입력해주세요." style={styles.modalTextInput} autoCorrect={false}></TextInput>
-        </View>
-        <RoundButton label="확인" enabled />
-      </View>
-    </Modal>
-  )
-}
-const AddressModal = ({isVisible, toggleIsVisible}: ModalProps) => {
-  return (
-    <Modal isVisible={isVisible} onBackdropPress={toggleIsVisible} backdropColor={theme.gray800} backdropOpacity={0.6}>
-      <Text>adf</Text>
-    </Modal>
-  )
-}
-
 export const HoldingSharing = () => {
-  const [cancelModalVisible, toggleCancelModalVisible] = useToggle() // 취소 모달창 띄울지
-  const [addressModalVisible, toggleAddressModalVisible] = useToggle() // 운송장 등록 모달창 띄울지
-
   const navigation = useNavigation()
   // const onPressViewDetail = useCallback(() => {
   //   navigation.navigate('HoldingSharingDetail')
@@ -179,21 +136,11 @@ export const HoldingSharing = () => {
         </View>
         <View style={{width: '100%', height: 1, backgroundColor: theme.gray200, marginVertical: 10}} />
         {isDetail ? (
-          <HoldingDetailItem
-            onPressLeftArrow={onPressLeftArrow}
-            onPressRightArrow={onPressRightArrow}
-            cntList={cntList}
-            setIsDetail={setIsDetail}
-            toggleAddressModalVisible={toggleAddressModalVisible}
-            toggleCancelModalVisible={toggleCancelModalVisible}
-          />
+          <HoldingDetailItem onPressLeftArrow={onPressLeftArrow} onPressRightArrow={onPressRightArrow} cntList={cntList} setIsDetail={setIsDetail} />
         ) : (
           <HoldingListItem onPressViewDetail={onPressViewDetail} index={cntList} />
         )}
       </ScrollView>
-
-      <CancelModal isVisible={cancelModalVisible} toggleIsVisible={toggleCancelModalVisible} />
-      <AddressModal isVisible={addressModalVisible} toggleIsVisible={toggleAddressModalVisible} />
 
       <FloatingBottomButton
         label="공지 보내기"
