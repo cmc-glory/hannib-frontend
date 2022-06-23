@@ -1,11 +1,32 @@
-import React from 'react'
-import {View, Pressable, ScrollView, Text, StyleSheet, Dimensions} from 'react-native'
+import React, {useState} from 'react'
+import {View, Pressable, ScrollView, Text, StyleSheet, Dimensions, TextInput} from 'react-native'
 import FastImage from 'react-native-fast-image'
 import {SafeAreaView} from 'react-native-safe-area-context'
-import {StackHeader, Button} from '../../components/utils'
+import {StackHeader, Button, RoundButton} from '../../components/utils'
 import BouncyCheckbox from 'react-native-bouncy-checkbox'
-import {DownArrowIcon, RightArrowIcon, Tag} from '../../components/utils'
+import Modal from 'react-native-modal'
+import {NotTakenModal} from '../../components/MyPageStack/NotTakenModal'
+import {AddressModal} from '../../components/MyPageStack/AddressModal'
+import {CheckFinishedModal} from '../../components/MyPageStack/CheckFinishedModal'
+import {CancelModal} from '../../components/MyPageStack/CancelModal'
+
+import {DownArrowIcon, RightArrowIcon, Tag, XIcon} from '../../components/utils'
 import * as theme from '../../theme'
+import {useToggle} from '../../hooks'
+
+type AddressModal = {
+  isVisible: boolean
+  toggleIsVisible: () => void
+  sendMethod: string
+  setSendMethod: (mthd: string) => void
+}
+
+type Buttons = {
+  toggleCancelModalVisible: () => void
+  toggleAddressModalVisible: () => void
+  toggleCheckFinishedModalVisible: () => void
+  toggleNotTakenModalVisible: () => void
+}
 
 const GoodsListItem = () => {
   return (
@@ -19,33 +40,53 @@ const GoodsListItem = () => {
   )
 }
 
+let holdingSharingState = 'offlineNotFinished' //'onlineNotSent', 'onlineSent', 'offlineFinished', 'offlineNotFinished'
+const Buttons = ({toggleAddressModalVisible, toggleCancelModalVisible, toggleCheckFinishedModalVisible, toggleNotTakenModalVisible}: Buttons) => {
+  switch (holdingSharingState) {
+    case 'onlineNotSent':
+      return (
+        <View style={{...theme.styles.rowSpaceBetween, width: '100%'}}>
+          <Button label="취소하기" selected={false} style={{width: BUTTON_WIDTH}} onPress={toggleCancelModalVisible} />
+          <Button label="운송장 등록" selected={true} style={{width: BUTTON_WIDTH}} onPress={toggleAddressModalVisible} />
+        </View>
+      )
+    case 'onlineSent':
+      return (
+        <View style={{...theme.styles.rowSpaceBetween, width: '100%'}}>
+          <Button label="취소하기" selected={false} style={{width: BUTTON_WIDTH}} onPress={toggleCancelModalVisible} />
+          <Button label="운송장 등록 완료" selected={false} style={{width: BUTTON_WIDTH}} />
+        </View>
+      )
+    case 'offlineFinished':
+      return <Button label="미수령" selected={false} style={{width: '100%'}}></Button>
+    case 'offlineNotFinished':
+      return (
+        <View style={{width: '100%'}}>
+          <View style={{...theme.styles.rowSpaceBetween, width: '100%', marginBottom: 10}}>
+            <Button label="취소하기" selected={false} style={{width: BUTTON_WIDTH}} onPress={toggleCancelModalVisible} />
+            <Button label="수령 체크" selected={true} style={{width: BUTTON_WIDTH}} onPress={toggleCheckFinishedModalVisible} />
+          </View>
+          <Pressable style={{marginTop: 7}} onPress={toggleNotTakenModalVisible}>
+            <Text style={{fontSize: 12, fontWeight: '400', color: theme.main}}>혹시 미수령인가요?</Text>
+          </Pressable>
+        </View>
+      )
+  }
+}
+
 const BUTTON_WIDTH = (Dimensions.get('window').width - theme.PADDING_SIZE * 2 - 10) / 2
+const MODAL_BUTTON_WIDTH = (Dimensions.get('window').width - theme.PADDING_SIZE * 2 - 50) / 2
 
 export const HoldingSharingDetail = () => {
-  return (
-    <SafeAreaView style={{flex: 1}}>
-      <StackHeader goBack title="진행한 나눔"></StackHeader>
-      <ScrollView contentContainerStyle={[theme.styles.wrapper, {flex: 1}]}>
-        <FastImage source={{uri: 'http://localhost:8081/src/assets/images/detail_image_example.png'}} style={styles.thumbnailImage}>
-          <View style={styles.thumbnailImageOverlay} />
-          <View style={{padding: theme.PADDING_SIZE, alignSelf: 'stretch', justifyContent: 'space-between', zIndex: 1}}>
-            <Text style={{color: theme.white, marginBottom: 5}}>BTS</Text>
-            <Text style={[theme.styles.bold16, {color: theme.white}]}>BTS 키링 나눔</Text>
-          </View>
-        </FastImage>
+  const [cancelModalVisible, toggleCancelModalVisible] = useToggle() // 취소 모달창 띄울지
+  const [addressModalVisible, toggleAddressModalVisible] = useToggle() // 운송장 등록 모달창 띄울지
+  const [checkFinishedModalVisible, toggleCheckFinishedModalVisible] = useToggle() // 수령 체크 모달창 띄울지
+  const [notTakenModalVisible, toggleNotTakenModalVisible] = useToggle()
+  const [sendMethod, setSendMethod] = useState<string>('post') //post : 우편, registeredMail : 등기
 
-        <View style={{marginTop: 16}}>
-          <GoodsListItem />
-          <GoodsListItem />
-          <GoodsListItem />
-        </View>
-        <View style={{width: '100%', height: 1, backgroundColor: theme.gray200, marginVertical: 10}} />
-        <View style={[{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', marginVertical: 16}]}>
-          <View style={[theme.styles.rowFlexStart]}>
-            <Text>전체 보기</Text>
-            <DownArrowIcon />
-          </View>
-        </View>
+  return (
+    <View style={{flex: 1, marginTop: 16}}>
+      <ScrollView>
         <View style={styles.receiverInfoContainer}>
           <View style={[theme.styles.rowSpaceBetween, {marginBottom: 20}]}>
             <Text style={{color: theme.gray500}}>2022.06.30 22:01:52</Text>
@@ -71,12 +112,24 @@ export const HoldingSharingDetail = () => {
             <Text style={styles.receiverInfoText}>010-2229-7345</Text>
           </View>
         </View>
-        <View style={{...theme.styles.rowSpaceBetween, width: '100%', position: 'absolute', bottom: 10}}>
-          <Button label="취소하기" selected={false} style={{width: BUTTON_WIDTH}} />
-          <Button label="운송장 등록" selected={true} style={{width: BUTTON_WIDTH}} />
+        <View style={{...theme.styles.rowSpaceBetween, width: '100%'}}>
+          <Buttons
+            toggleAddressModalVisible={toggleAddressModalVisible}
+            toggleCancelModalVisible={toggleCancelModalVisible}
+            toggleCheckFinishedModalVisible={toggleCheckFinishedModalVisible}
+            toggleNotTakenModalVisible={toggleNotTakenModalVisible}
+          />
         </View>
+        {/* db 나오면 타입 받고 타입에 따라 보여주기
+        <Pressable style={{marginTop: 7}}>
+          <Text style={{fontSize: 12, fontWeight: '400', color: theme.main}}>혹시 미수령인가요?</Text>
+        </Pressable> */}
       </ScrollView>
-    </SafeAreaView>
+      <CancelModal isVisible={cancelModalVisible} toggleIsVisible={toggleCancelModalVisible} />
+      <AddressModal isVisible={addressModalVisible} toggleIsVisible={toggleAddressModalVisible} sendMethod={sendMethod} setSendMethod={setSendMethod} />
+      <CheckFinishedModal isVisible={checkFinishedModalVisible} toggleIsVisible={toggleCheckFinishedModalVisible} />
+      <NotTakenModal isVisible={notTakenModalVisible} toggleIsVisible={toggleNotTakenModalVisible} />
+    </View>
   )
 }
 
@@ -113,5 +166,17 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     position: 'absolute',
     zIndex: 1,
+  },
+  shareModal: {
+    backgroundColor: theme.white,
+    borderRadius: 8,
+    padding: theme.PADDING_SIZE,
+  },
+  modalTextInput: {
+    borderWidth: 1,
+    borderColor: theme.gray200,
+    borderRadius: 4,
+    paddingVertical: 14,
+    paddingHorizontal: 18,
   },
 })

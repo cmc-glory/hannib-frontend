@@ -1,16 +1,42 @@
-import React, {useCallback} from 'react'
+import React, {useCallback, useState} from 'react'
 import {View, Pressable, ScrollView, Text, StyleSheet} from 'react-native'
 import FastImage from 'react-native-fast-image'
 import {SafeAreaView} from 'react-native-safe-area-context'
-import {StackHeader, FloatingBottomButton, DownArrowIcon, RightArrowIcon, SharingPreview, GoodsListItem} from '../../components/utils'
+import {
+  StackHeader,
+  FloatingBottomButton,
+  DownArrowIcon,
+  LeftArrowIcon,
+  RightArrowIcon,
+  SharingPreview,
+  GoodsListItem,
+  XIcon,
+  RoundButton,
+} from '../../components/utils'
 import BouncyCheckbox from 'react-native-bouncy-checkbox'
-//import {DownArrowIcon, RightArrowIcon} from '../../components/utils'
+import Modal from 'react-native-modal'
+import {useToggle} from '../../hooks'
 import * as theme from '../../theme'
 import {useNavigation} from '@react-navigation/native'
+import {HoldingSharingDetail} from './HoldingSharingDetail'
+import {TextInput} from 'react-native-gesture-handler'
 
 type ReceiverListItem = {
   onPressViewDetail: () => void
   index: number //db나오면 수정
+}
+
+type HoldingListItem = {
+  onPressViewDetail: () => void
+  index: number
+}
+
+type HoldingDetailItem = {
+  isOnline: boolean
+  onPressLeftArrow: () => void
+  onPressRightArrow: () => void
+  cntList: number
+  setIsDetail: (bool: boolean) => void
 }
 
 const ReceiverListItem = ({onPressViewDetail, index}: ReceiverListItem) => {
@@ -42,11 +68,62 @@ const ReceiverListItem = ({onPressViewDetail, index}: ReceiverListItem) => {
   )
 }
 
+const HoldingListItem = ({onPressViewDetail, index}: HoldingListItem) => {
+  return (
+    <View>
+      <View style={[theme.styles.rowSpaceBetween, {marginVertical: 16}]}>
+        <Text>전체 선택 해제</Text>
+        <View style={[theme.styles.rowFlexStart]}>
+          <Text>전체 보기</Text>
+          <DownArrowIcon />
+        </View>
+      </View>
+      <View>
+        {/* 리스트 api 필요 */}
+        <ReceiverListItem onPressViewDetail={onPressViewDetail} index={1} />
+        <ReceiverListItem onPressViewDetail={onPressViewDetail} index={2} />
+      </View>
+    </View>
+  )
+}
+
+const HoldingDetailItem = ({onPressLeftArrow, onPressRightArrow, cntList, setIsDetail}: HoldingDetailItem) => {
+  return (
+    <View>
+      <View style={[theme.styles.rowSpaceBetween, {marginTop: 16}]}>
+        <View style={[theme.styles.rowSpaceBetween, {width: 85}]}>
+          <LeftArrowIcon size={24} onPress={onPressLeftArrow} />
+          <Text> {cntList} / 12 </Text>
+          <RightArrowIcon size={24} onPress={onPressRightArrow} />
+        </View>
+        <XIcon size={20} onPress={() => setIsDetail(false)} />
+      </View>
+      <HoldingSharingDetail />
+    </View>
+  )
+}
+
 export const HoldingSharing = () => {
   const navigation = useNavigation()
-  const onPressViewDetail = useCallback(() => {
-    navigation.navigate('HoldingSharingDetail')
-  }, [])
+  // const onPressViewDetail = useCallback(() => {
+  //   navigation.navigate('HoldingSharingDetail')
+  // }, [])
+  const onPressViewDetail = () => {
+    setIsDetail(true)
+  }
+
+  const onPressLeftArrow = () => {
+    if (cntList == 1) setCntList(12)
+    else setCntList(cntList - 1)
+  }
+  const onPressRightArrow = () => {
+    if (cntList == 12) setCntList(1)
+    else setCntList(cntList + 1)
+  }
+  // 우선 숫자만 바뀌게 해둠. db 들어오면 바꿔야함.
+
+  const [isDetail, setIsDetail] = useState<boolean>(false)
+  const [cntList, setCntList] = useState<number>(1)
   return (
     <SafeAreaView style={{flex: 1}}>
       <StackHeader goBack title="진행한 나눔"></StackHeader>
@@ -59,18 +136,19 @@ export const HoldingSharing = () => {
           <GoodsListItem type="holding" />
         </View>
         <View style={{width: '100%', height: 1, backgroundColor: theme.gray200, marginVertical: 10}} />
-        <View style={[theme.styles.rowSpaceBetween, {marginVertical: 16}]}>
-          <Text>전체 선택 해제</Text>
-          <View style={[theme.styles.rowFlexStart]}>
-            <Text>전체 보기</Text>
-            <DownArrowIcon />
-          </View>
-        </View>
-        <View>
-          <ReceiverListItem onPressViewDetail={onPressViewDetail} index={1} />
-          <ReceiverListItem onPressViewDetail={onPressViewDetail} index={2} />
-        </View>
+        {isDetail ? (
+          <HoldingDetailItem
+            isOnline={true}
+            onPressLeftArrow={onPressLeftArrow}
+            onPressRightArrow={onPressRightArrow}
+            cntList={cntList}
+            setIsDetail={setIsDetail}
+          />
+        ) : (
+          <HoldingListItem onPressViewDetail={onPressViewDetail} index={cntList} />
+        )}
       </ScrollView>
+
       <FloatingBottomButton
         label="공지 보내기"
         enabled
@@ -82,4 +160,17 @@ export const HoldingSharing = () => {
   )
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  shareModal: {
+    backgroundColor: theme.white,
+    borderRadius: 8,
+    padding: theme.PADDING_SIZE,
+  },
+  modalTextInput: {
+    borderWidth: 1,
+    borderColor: theme.gray200,
+    borderRadius: 4,
+    paddingVertical: 14,
+    paddingHorizontal: 18,
+  },
+})
