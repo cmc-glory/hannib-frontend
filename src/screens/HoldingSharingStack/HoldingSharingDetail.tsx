@@ -5,24 +5,20 @@ import {SafeAreaView} from 'react-native-safe-area-context'
 import {StackHeader, Button, RoundButton} from '../../components/utils'
 import BouncyCheckbox from 'react-native-bouncy-checkbox'
 import Modal from 'react-native-modal'
+import {NotTakenModal} from '../../components/MyPageStack/NotTakenModal'
+import {AddressModal} from '../../components/MyPageStack/AddressModal'
+import {CheckFinishedModal} from '../../components/MyPageStack/CheckFinishedModal'
+import {CancelModal} from '../../components/MyPageStack/CancelModal'
+
 import {DownArrowIcon, RightArrowIcon, Tag, XIcon} from '../../components/utils'
 import * as theme from '../../theme'
 import {useToggle} from '../../hooks'
-
-type ModalProps = {
-  isVisible: boolean
-  toggleIsVisible: () => void
-}
 
 type AddressModal = {
   isVisible: boolean
   toggleIsVisible: () => void
   sendMethod: string
   setSendMethod: (mthd: string) => void
-}
-
-type DetailInfo = {
-  isOnline: boolean
 }
 
 type Buttons = {
@@ -41,109 +37,6 @@ const GoodsListItem = () => {
         <Text style={{color: theme.secondary}}>30</Text>
       </View>
     </View>
-  )
-}
-
-const CancelModal = ({isVisible, toggleIsVisible}: ModalProps) => {
-  return (
-    <Modal isVisible={isVisible} onBackdropPress={toggleIsVisible} backdropColor={theme.gray800} backdropOpacity={0.6}>
-      <View style={styles.shareModal}>
-        <View style={[theme.styles.rowSpaceBetween]}>
-          <Text style={[theme.styles.bold16]}>취소하기</Text>
-          <XIcon onPress={toggleIsVisible} />
-        </View>
-        <View style={{width: '100%', height: 1, marginVertical: 16, backgroundColor: theme.gray200}} />
-        <View style={{marginBottom: 16}}>
-          <Text style={{fontSize: 16, marginBottom: 12}}>취소사유</Text>
-          <TextInput placeholder="취소사유를 입력해주세요." style={styles.modalTextInput} autoCorrect={false}></TextInput>
-        </View>
-        <RoundButton label="확인" onPress={toggleIsVisible} enabled />
-      </View>
-    </Modal>
-  )
-}
-
-const AddressModal = ({isVisible, toggleIsVisible, sendMethod, setSendMethod}: AddressModal) => {
-  return (
-    <Modal isVisible={isVisible} onBackdropPress={toggleIsVisible} backdropColor={theme.gray800} backdropOpacity={0.6}>
-      <View style={styles.shareModal}>
-        <View style={[theme.styles.rowSpaceBetween]}>
-          <Text style={[theme.styles.bold16]}>운송장 등록</Text>
-          <XIcon onPress={toggleIsVisible} />
-        </View>
-        <View style={{width: '100%', height: 1, marginVertical: 16, backgroundColor: theme.gray200}} />
-        <View style={{marginBottom: 16}}>
-          <Text style={{fontSize: 16, marginBottom: 12}}>전달 방식</Text>
-          <View style={{...theme.styles.rowSpaceBetween, marginBottom: 16}}>
-            <Button
-              label="우편"
-              selected={true}
-              style={{width: MODAL_BUTTON_WIDTH}}
-              onPress={() => {
-                setSendMethod('post')
-              }}
-            />
-            <Button
-              label="등기"
-              selected={false}
-              style={{width: MODAL_BUTTON_WIDTH}}
-              onPress={() => {
-                setSendMethod('registeredMail')
-              }}
-            />
-          </View>
-          {sendMethod == 'post' ? (
-            <View style={{...theme.styles.rowFlexStart}}>
-              <BouncyCheckbox size={20} fillColor={theme.secondary} style={{width: 20}} />
-              <Text style={{marginLeft: 8}}>나머지도 동일하게 우편전송으로 처리</Text>
-            </View>
-          ) : (
-            <View>
-              <TextInput placeholder="택배사" style={[styles.modalTextInput, {marginBottom: 10}]} autoCorrect={false}></TextInput>
-              <TextInput placeholder="운송장 번호" style={styles.modalTextInput} autoCorrect={false}></TextInput>
-            </View>
-          )}
-        </View>
-        <RoundButton label="확인" onPress={toggleIsVisible} enabled />
-      </View>
-    </Modal>
-  )
-}
-
-const CheckFinishedModal = ({isVisible, toggleIsVisible}: ModalProps) => {
-  return (
-    <Modal isVisible={isVisible} onBackdropPress={toggleIsVisible} backdropColor={theme.gray800} backdropOpacity={0.6}>
-      <View style={styles.shareModal}>
-        <View style={[{flexDirection: 'row', justifyContent: 'flex-end', marginBottom: 16}]}>
-          <XIcon onPress={toggleIsVisible} />
-        </View>
-
-        <View style={{marginBottom: 16, alignItems: 'center'}}>
-          <Text style={[theme.styles.bold20, {marginBottom: 8}]}>전달 완료 하셨나요?</Text>
-          <Text style={{marginHorizontal: 24, fontSize: 16, lineHeight: 24, textAlign: 'center'}}>전달완료 처리 진행하시겠습니까?</Text>
-        </View>
-        <RoundButton label="확인" onPress={toggleIsVisible} enabled />
-      </View>
-    </Modal>
-  )
-}
-const NotTakenModal = ({isVisible, toggleIsVisible}: ModalProps) => {
-  return (
-    <Modal isVisible={isVisible} onBackdropPress={toggleIsVisible} backdropColor={theme.gray800} backdropOpacity={0.6}>
-      <View style={styles.shareModal}>
-        <View style={[{flexDirection: 'row', justifyContent: 'flex-end', marginBottom: 16}]}>
-          <XIcon onPress={toggleIsVisible} />
-        </View>
-
-        <View style={{marginBottom: 16, alignItems: 'center'}}>
-          <Text style={[theme.styles.bold20, {marginBottom: 8}]}>미수령 처리 하시겠습니까?</Text>
-          <Text style={{marginHorizontal: 24, fontSize: 16, lineHeight: 24, textAlign: 'center'}}>
-            미수령 처리 진행시, 해당 수령자는 미수령처리로 경고가 들어갑니다. 정말로 미수령처리 하시겠습니까?
-          </Text>
-        </View>
-        <RoundButton label="확인" onPress={toggleIsVisible} enabled />
-      </View>
-    </Modal>
   )
 }
 
@@ -184,7 +77,7 @@ const Buttons = ({toggleAddressModalVisible, toggleCancelModalVisible, toggleChe
 const BUTTON_WIDTH = (Dimensions.get('window').width - theme.PADDING_SIZE * 2 - 10) / 2
 const MODAL_BUTTON_WIDTH = (Dimensions.get('window').width - theme.PADDING_SIZE * 2 - 50) / 2
 
-export const HoldingSharingDetail = ({isOnline}: DetailInfo) => {
+export const HoldingSharingDetail = () => {
   const [cancelModalVisible, toggleCancelModalVisible] = useToggle() // 취소 모달창 띄울지
   const [addressModalVisible, toggleAddressModalVisible] = useToggle() // 운송장 등록 모달창 띄울지
   const [checkFinishedModalVisible, toggleCheckFinishedModalVisible] = useToggle() // 수령 체크 모달창 띄울지
