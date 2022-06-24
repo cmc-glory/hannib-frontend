@@ -23,9 +23,6 @@ type ContentProps = {
 const window = Dimensions.get('screen')
 
 export function GoodsDetailContent({headerHeight, scrollY}: ContentProps) {
-  const navigation = useNavigation()
-  const [layout, onLayout] = useLayout()
-
   return (
     <View
       style={[

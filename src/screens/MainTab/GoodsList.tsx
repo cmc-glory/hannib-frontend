@@ -30,7 +30,7 @@ const GoodsLists = () => {
   const [bannerInfo, setBannerInfo] = useState({
     imageUri: 'http://localhost:8081/src/assets/images/aespa.jpeg',
     title: 'SEVENTEEN [BE THE SUN] - SEOUL',
-    sharingid: '',
+    sharingid: '123445',
   })
 
   React.useEffect(() => {

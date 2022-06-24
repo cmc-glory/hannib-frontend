@@ -36,7 +36,10 @@ declare namespace ReactNavigation {
     }
     GoodsRequestOffline: undefined
     GoodsRequestOnline: undefined
-    GoodsStackNavigator: undefined
+    GoodsStackNavigator?: {
+      screen: string
+      params: any
+    }
     SplashScreen: undefined
     LoginStackNavigator: undefined
     SelectCategory: {
@@ -93,5 +96,7 @@ declare namespace ReactNavigation {
       writerid: string
     }
     HoldingSharingList: undefined
+    ParticipatingSharingList: undefined
+    ParticipatingSharingStackNavigator: undefined
   }
 }

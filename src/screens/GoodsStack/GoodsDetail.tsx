@@ -1,11 +1,12 @@
 import React, {useState, useRef} from 'react'
 import {View, ScrollView, StyleSheet, Dimensions, Animated} from 'react-native'
 import {getStatusBarHeight} from 'react-native-status-bar-height'
-import {useNavigation} from '@react-navigation/native'
+import {useNavigation, useRoute} from '@react-navigation/native'
 import {HeaderImage, GoodsDetailContent, GoodsDetailHeader} from '../../components/GoodsStack'
 import {useAnimatedValue, useMonitorAnimatedValue} from '../../hooks'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import LinearGradient from 'react-native-linear-gradient'
+import {GoodsDetailRouteProps} from '../../navigation/GoodsStackNavigator'
 import * as theme from '../../theme'
 
 const IMAGE_HEIGHT = 350
@@ -14,6 +15,7 @@ const WIDTH = Dimensions.get('window').width
 
 export const GoodsDetail = () => {
   const navigation = useNavigation()
+  const route = useRoute<GoodsDetailRouteProps>()
   const scrollViewRef = useRef<ScrollView>(null)
   const [headerHeight, setHeaderHeight] = useState(350)
   const [scrollEnabled, setScrollEnabled] = useState(true)
@@ -23,6 +25,8 @@ export const GoodsDetail = () => {
   const [headerInvert, setHeaderInvert] = useState(false)
   //const realScrollY = useMonitorAnimatedValue(scrollY)
   //console.log(realScrollY)
+
+  console.log('goods detail route params : ', route.params)
 
   return (
     <SafeAreaView edges={['bottom']} style={{flex: 1, position: 'relative'}}>

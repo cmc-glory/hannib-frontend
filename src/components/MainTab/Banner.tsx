@@ -1,6 +1,6 @@
 import React, {useCallback} from 'react'
-import {View, Text, StyleSheet} from 'react-native'
-
+import {View, Text, Pressable, StyleSheet} from 'react-native'
+import {useNavigation} from '@react-navigation/native'
 import FastImage from 'react-native-fast-image'
 import {RightArrowWhiteIcon} from '../utils'
 import * as theme from '../../theme'
@@ -12,8 +12,17 @@ type BannerProps = {
 }
 
 export const Banner = ({imageUri, title, sharingid}: BannerProps) => {
+  const navigation = useNavigation()
+  const onPressBanner = useCallback(() => {
+    navigation.navigate('GoodsStackNavigator', {
+      screen: 'GoodsDetail',
+      params: {
+        sharingid: sharingid,
+      },
+    })
+  }, [])
   return (
-    <View style={styles.container}>
+    <Pressable style={styles.container} onPress={onPressBanner}>
       <FastImage source={{uri: imageUri}} style={styles.bannerImage}></FastImage>
       <View style={[styles.bannerOverlay, styles.absolute]}></View>
       <View style={[styles.absolute, styles.textContainer]}>
@@ -23,7 +32,7 @@ export const Banner = ({imageUri, title, sharingid}: BannerProps) => {
           <RightArrowWhiteIcon size={20} />
         </View>
       </View>
-    </View>
+    </Pressable>
   )
 }
 

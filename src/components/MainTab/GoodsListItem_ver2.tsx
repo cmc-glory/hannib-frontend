@@ -3,7 +3,6 @@ import {View, Text, Pressable, TextInput, Image, StyleSheet, Dimensions} from 'r
 import FastImage from 'react-native-fast-image'
 import {useNavigation} from '@react-navigation/native'
 import Modal from 'react-native-modal'
-import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5'
 import moment from 'moment'
 import * as theme from '../../theme'
 import type {ISharingInfo} from '../../types'
@@ -18,16 +17,22 @@ type SecretModalProps = {
   setSecretModalVisible: React.Dispatch<React.SetStateAction<boolean>>
 
   secretKey: string | undefined
+  sharingid: string
 }
 
-const SecretModal = ({secretModalVisible, setSecretModalVisible, secretKey}: SecretModalProps) => {
+const SecretModal = ({secretModalVisible, setSecretModalVisible, secretKey, sharingid}: SecretModalProps) => {
   const [secretSuccess, setSecretSuccess] = useState<boolean | null>()
   const [secretInput, setSecretInput] = useState<string>('')
   const navigation = useNavigation()
   const onPressCheck = () => {
     if (secretInput == secretKey) {
       setSecretInput('')
-      navigation.navigate('GoodsStackNavigator')
+      navigation.navigate('GoodsStackNavigator', {
+        screen: 'GoodsDetail',
+        params: {
+          sharingid: sharingid,
+        },
+      })
       setSecretSuccess(true)
       setSecretModalVisible(false)
     } else {
@@ -71,7 +76,7 @@ const SecretModal = ({secretModalVisible, setSecretModalVisible, secretKey}: Sec
 
 export const GoodsListItemVer2 = ({item}: {item: ISharingInfo}) => {
   // 나눔 게시글 아이템 구조분해 할당
-  const {type, title, writer, uri, isSecret, secretKey} = item
+  const {id, type, title, writer, uri, isSecret, secretKey} = item
 
   const now = moment()
   const openDate = moment(item.openDate, 'YYYYMMDDHHmmss')
@@ -93,13 +98,18 @@ export const GoodsListItemVer2 = ({item}: {item: ISharingInfo}) => {
     if (isSecret == true) {
       setSecretModalVisible(true)
     } else {
-      navigation.navigate('GoodsStackNavigator')
+      navigation.navigate('GoodsStackNavigator', {
+        screen: 'GoodsDetail',
+        params: {
+          sharingid: id,
+        },
+      })
     }
   }, [])
 
   return (
     <>
-      <SecretModal secretModalVisible={secretModalVisible} setSecretModalVisible={setSecretModalVisible} secretKey={secretKey} />
+      <SecretModal secretModalVisible={secretModalVisible} setSecretModalVisible={setSecretModalVisible} secretKey={secretKey} sharingid={id} />
       <Pressable onPress={onPressItem} style={[styles.container]}>
         {isBefore && (
           <View style={styles.overlay}>
