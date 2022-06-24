@@ -2,7 +2,7 @@ import React from 'react'
 import {StyleProp, ImageStyle, TouchableOpacity, Pressable} from 'react-native'
 import {useNavigation} from '@react-navigation/native'
 import FastImage from 'react-native-fast-image'
-import BellIcon from '../../assets/Icon/Bell.svg'
+import BellSvg from '../../assets/Icon/Bell.svg'
 import ClockIcon from '../../assets/Icon/Time.svg'
 import LocationSvg from '../../assets/Icon/Location.svg'
 import MagnifierIcon from '../../assets/Icon/Magnifier.svg'
@@ -47,6 +47,7 @@ import StarUnselectedSvg from '../../assets/Icon/unselected/Star.svg'
 import StarSelectedSvg from '../../assets/Icon/selected/Star.svg'
 import SwitchFalseSvg from '../../assets/Icon/SwitchFalse.svg'
 import SwitchTrueSvg from '../../assets/Icon/SwitchTrue.svg'
+import RightArrowWhiteSvg from '../../assets/Icon/RightArrowWhite.svg'
 import * as theme from '../../theme'
 
 type IconProps = {
@@ -59,6 +60,14 @@ type IconPropss = {
   onPress?: () => void
   style?: any
   size?: number
+}
+
+export const RightArrowWhiteIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
+  return (
+    <Pressable onPress={onPress} style={style}>
+      <RightArrowWhiteSvg width={size} height={size} />
+    </Pressable>
+  )
 }
 
 export const SwitchFalseIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
@@ -232,11 +241,11 @@ export const XIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
   )
 }
 
-export const Bell = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
+export const BellIcon = ({style, size = theme.ICON_SIZE, onPress}: IconPropss) => {
   const navigation = useNavigation()
   return (
     <Pressable onPress={() => navigation.navigate('NotificationStackNavigator')} style={style}>
-      <BellIcon width={size} height={size} />
+      <BellSvg width={size} height={size} />
     </Pressable>
   )
 }

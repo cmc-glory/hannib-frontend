@@ -13,62 +13,6 @@ const {width} = Dimensions.get('window')
 
 var IMAGE_SIZE = (width - theme.PADDING_SIZE * 3) / 2
 
-type SecretModalProps = {
-  secretModalVisible: boolean
-  setSecretModalVisible: React.Dispatch<React.SetStateAction<boolean>>
-
-  secretKey: string | undefined
-}
-
-const SecretModal = ({secretModalVisible, setSecretModalVisible, secretKey}: SecretModalProps) => {
-  const [secretSuccess, setSecretSuccess] = useState<boolean | null>()
-  const [secretInput, setSecretInput] = useState<string>('')
-  const navigation = useNavigation()
-  const onPressCheck = () => {
-    if (secretInput == secretKey) {
-      setSecretInput('')
-      navigation.navigate('GoodsStackNavigator')
-      setSecretSuccess(true)
-      setSecretModalVisible(false)
-    } else {
-      setSecretSuccess(false)
-    }
-  }
-
-  return (
-    <Modal isVisible={secretModalVisible} backdropColor={theme.gray800} backdropOpacity={0.6} onBackdropPress={() => setSecretModalVisible(false)}>
-      <View style={styles.secretModalContainer}>
-        <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
-          <XIcon onPress={() => setSecretModalVisible(false)} />
-        </View>
-        <View style={{marginTop: theme.PADDING_SIZE, alignItems: 'center'}}>
-          <Text style={[{fontFamily: 'Pretendard-Bold', fontSize: 18, marginBottom: 8}]}>비밀번호가 걸려있습니다.</Text>
-          <Text style={{color: theme.gray500, fontSize: 14}}>공유받은 비밀번호를 입력해주세요.</Text>
-        </View>
-        <View style={{marginVertical: 16, height: 68, justifyContent: 'space-between'}}>
-          <TextInput
-            style={[theme.styles.input, {color: theme.gray800}, secretSuccess == false && {borderColor: theme.red}]}
-            placeholder="시크릿 코드를 입력해 주세요"
-            placeholderTextColor={theme.gray300}
-            value={secretInput}
-            onChangeText={text => {
-              setSecretInput(text)
-              setSecretSuccess(null)
-            }}
-          />
-          {secretSuccess == false && <Text style={{color: theme.red, fontSize: 12}}>비밀번호가 맞지 않습니다.</Text>}
-        </View>
-
-        <Pressable
-          style={[secretInput == '' ? theme.styles.disabledButton : theme.styles.button, {justifyContent: 'center', alignItems: 'center', paddingVertical: 14}]}
-          onPress={onPressCheck}>
-          <Text style={[theme.styles.bold16, {color: theme.white}]}>확인</Text>
-        </Pressable>
-      </View>
-    </Modal>
-  )
-}
-
 export const ParticipatingSharingItem = ({item}: {item: ISharingInfo}) => {
   // 나눔 게시글 아이템 구조분해 할당
   const {type, title, writer, uri, isSecret, secretKey} = item
@@ -107,7 +51,6 @@ export const ParticipatingSharingItem = ({item}: {item: ISharingInfo}) => {
 
   return (
     <>
-      <SecretModal secretModalVisible={secretModalVisible} setSecretModalVisible={setSecretModalVisible} secretKey={secretKey} />
       <Pressable onPress={() => onPressItem(type)} style={[styles.container]}>
         {isBefore && (
           <View style={styles.overlay}>

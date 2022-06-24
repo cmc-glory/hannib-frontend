@@ -3,7 +3,7 @@ import {View, Text, Modal, Pressable, ScrollView, StyleSheet, Animated, useWindo
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {TabView, SceneMap, TabBar} from 'react-native-tab-view'
 import {getStatusBarHeight} from 'react-native-status-bar-height'
-import {Bell, Setting, StackHeader, TopTabBar} from '../../components/utils'
+import {BellIcon, Setting, StackHeader, TopTabBar} from '../../components/utils'
 import {Profile, Follow, SettingsModal, LogoutModal} from '../../components/MyPageStack'
 import {HoldingSharingTab} from './HoldingSharingTab'
 import {ParticipatingSharingTab} from './ParticipatingSharingTab'
@@ -54,7 +54,7 @@ export const MyPage = () => {
     <SafeAreaView style={{height: '100%'}} edges={['top', 'left', 'right']}>
       <StackHeader title="마이페이지">
         <View style={{flexDirection: 'row', alignItems: 'center', width: 65, justifyContent: 'space-between'}}>
-          <Bell />
+          <BellIcon />
           <Setting onPress={() => setSettingsModalVisible(settingsModalVisible => !settingsModalVisible)} />
         </View>
       </StackHeader>

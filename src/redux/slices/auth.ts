@@ -5,14 +5,14 @@ import {IUserCategory} from '../../types'
 //Each slice file should define a type for its initial state value,
 // so that createSlice can correctly infer the type of state in each case reducer.
 
-interface User {
+export interface User {
   email: string
   name: string
   userCategory: IUserCategory[]
   profileImageUri: string
 }
 
-interface Auth {
+export interface Auth {
   isLogggedIn: boolean
   user: User
   accessToken: string

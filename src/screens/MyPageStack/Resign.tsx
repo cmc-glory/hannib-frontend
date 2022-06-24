@@ -1,7 +1,9 @@
-import React, {useCallback, useState} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import {View, Text, TouchableOpacity, TextInput, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
+import {useAppSelector, useUserSelector} from '../../hooks'
 import {useToggle} from '../../hooks'
+import {ResignModal} from '../../components/MyPageStack'
 import {StackHeader, CheckboxIcon, EmptyCheckboxIcon, RoundButton} from '../../components/utils'
 import * as theme from '../../theme'
 
@@ -14,7 +16,7 @@ const reasons: IResignReason[] = [
   {key: '사용 빈도가 낮아서', value: '사용 빈도가 낮아서'},
   {key: '이용이 불편해서', value: '이용이 불편해서'},
   {key: '원하는 상품이 없어서', value: '원하는 상품이 없어서'},
-  {key: '기타문제', value: '기타문제'},
+  {key: '기타 문제', value: '기타 문제'},
 ]
 
 type RadioButtons = {
@@ -43,20 +45,35 @@ const RadioButtons = ({reasons, selectedReason, setSelectedReason}: RadioButtons
 }
 
 export const Resign = () => {
-  const [selectedReason, setSelectedReason] = useState<string>('사용 빈도가 낮아서')
-  const [reasonEtc, setReasonEtc] = useState<string>('')
-  const [agreed, toggleAgreed] = useToggle()
+  const [selectedReason, setSelectedReason] = useState<string>('사용 빈도가 낮아서') // 탈퇴 사유
+  const [reasonEtc, setReasonEtc] = useState<string>('') // 기타 문제
+  const [agreed, toggleAgreed] = useToggle() // 유의사항 확인 및 동의
+  const [resignModalVisible, setResignModalVisible] = useState<boolean>(false) // 탈퇴하기 확인 모달 띄울지
+  const [resign, setResign] = useState<boolean>(false) // 마지막 탈퇴 모달에 동의
+
+  const user = useAppSelector(state => state.auth.user)
+  console.log('user : ', user)
 
   const checkButtonEnabled = useCallback(() => {
     return agreed
   }, [agreed])
   const onPressResign = useCallback(() => {
+    setResignModalVisible(true)
     // 사유, 기타 내용, userid 백에 전송
   }, [selectedReason, reasonEtc])
+
+  useEffect(() => {
+    // 마지막 탈퇴 동의까지 하면
+    if (resign) {
+      // 백에 탈퇴 api 전송
+      console.log('resign')
+    }
+  }, [resign])
 
   return (
     <SafeAreaView style={[theme.styles.safeareaview]}>
       <StackHeader x title="회원 탈퇴" goBack />
+      <ResignModal resignModalVisbile={resignModalVisible} setResignModalVisible={setResignModalVisible} resign={resign} setResign={setResign} />
       <View style={styles.container}>
         <Text style={[theme.styles.bold20]}>사유를 선택해 주세요</Text>
         <RadioButtons reasons={reasons} selectedReason={selectedReason} setSelectedReason={setSelectedReason} />

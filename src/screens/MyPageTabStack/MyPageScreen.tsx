@@ -4,7 +4,7 @@ import FastImage from 'react-native-fast-image'
 import {SafeAreaView} from 'react-native'
 import {useNavigation} from '@react-navigation/native'
 import {LogoutModal} from '../../components/MainTab'
-import {StackHeader, Bell, RightArrowIcon} from '../../components/utils'
+import {StackHeader, BellIcon, RightArrowIcon} from '../../components/utils'
 import {useAppSelector} from '../../hooks'
 import * as theme from '../../theme'
 
@@ -72,7 +72,7 @@ export const MyPageScreen = () => {
   return (
     <SafeAreaView style={[theme.styles.safeareaview]}>
       <StackHeader title="마이페이지" goBack={false}>
-        <Bell />
+        <BellIcon />
       </StackHeader>
       <LogoutModal logoutModalVisible={logoutModalVisible} setLogoutModalVisible={setLogoutModalVisible} />
       <ScrollView>

@@ -30,7 +30,11 @@ export const SplashScreen = () => {
                 email: result.email,
                 name: result.name,
                 profileImageUri: result.profileImageUri,
-                userCategory: [],
+                userCategory: [
+                  {id: '1', name: '세븐틴'},
+                  {id: '2', name: '에스파'},
+                  {id: '3', name: '아이브'},
+                ],
               }),
             )
           })

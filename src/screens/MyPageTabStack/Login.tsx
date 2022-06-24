@@ -4,7 +4,7 @@ import FastImage from 'react-native-fast-image'
 import {useNavigation} from '@react-navigation/native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useDispatch} from 'react-redux'
-import {StackHeader, Bell} from '../../components/utils'
+import {StackHeader, BellIcon} from '../../components/utils'
 import {GoogleSignin, GoogleSigninButton} from '@react-native-google-signin/google-signin'
 import auth from '@react-native-firebase/auth'
 import {
@@ -96,7 +96,7 @@ export const Login = () => {
   return (
     <SafeAreaView style={[theme.styles.safeareaview]}>
       <StackHeader title="마이페이지">
-        <Bell />
+        <BellIcon />
       </StackHeader>
       <View style={styles.container}>
         <View style={{marginTop: -32}}>
