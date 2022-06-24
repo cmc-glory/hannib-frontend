@@ -14,13 +14,6 @@ import {DownArrowIcon, RightArrowIcon, Tag, XIcon} from '../../components/utils'
 import * as theme from '../../theme'
 import {useToggle} from '../../hooks'
 
-type AddressModal = {
-  isVisible: boolean
-  toggleIsVisible: () => void
-  sendMethod: string
-  setSendMethod: (mthd: string) => void
-}
-
 type ButtonsProp = {
   toggleCancelModalVisible: () => void
   toggleAddressModalVisible: () => void
@@ -71,7 +64,8 @@ const Buttons = ({toggleAddressModalVisible, toggleCancelModalVisible, toggleChe
           </Pressable>
         </View>
       )
-    default : return <View></View>
+    default:
+      return <View></View>
   }
 }
 
