@@ -5,7 +5,7 @@ export type IHashtag = {
   content: string
 }
 
-export type ISharingType = 'offline' | 'online' | ''
+export type ISharingType = 'offline' | 'online'
 
 export type IProductInfo = {
   name: string

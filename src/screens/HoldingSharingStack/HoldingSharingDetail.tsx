@@ -21,7 +21,7 @@ type AddressModal = {
   setSendMethod: (mthd: string) => void
 }
 
-type Buttons = {
+type ButtonsProp = {
   toggleCancelModalVisible: () => void
   toggleAddressModalVisible: () => void
   toggleCheckFinishedModalVisible: () => void
@@ -41,7 +41,7 @@ const GoodsListItem = () => {
 }
 
 let holdingSharingState = 'offlineNotFinished' //'onlineNotSent', 'onlineSent', 'offlineFinished', 'offlineNotFinished'
-const Buttons = ({toggleAddressModalVisible, toggleCancelModalVisible, toggleCheckFinishedModalVisible, toggleNotTakenModalVisible}: Buttons) => {
+const Buttons = ({toggleAddressModalVisible, toggleCancelModalVisible, toggleCheckFinishedModalVisible, toggleNotTakenModalVisible}: ButtonsProp) => {
   switch (holdingSharingState) {
     case 'onlineNotSent':
       return (
@@ -71,6 +71,7 @@ const Buttons = ({toggleAddressModalVisible, toggleCancelModalVisible, toggleChe
           </Pressable>
         </View>
       )
+    default : return <View></View>
   }
 }
 

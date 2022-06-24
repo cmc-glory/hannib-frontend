@@ -69,7 +69,7 @@ const SecretModal = ({secretModalVisible, setSecretModalVisible, secretKey}: Sec
   )
 }
 
-export const GoodsListItemVer2 = ({item}: {item: ISharingInfo}) => {
+export const ParticipatingSharingItem = ({item}: {item: ISharingInfo}) => {
   // 나눔 게시글 아이템 구조분해 할당
   const {type, title, writer, uri, isSecret, secretKey} = item
 
@@ -89,18 +89,26 @@ export const GoodsListItemVer2 = ({item}: {item: ISharingInfo}) => {
   }, [])
 
   // 상세 페이지로 이동
-  const onPressItem = useCallback(() => {
+  const onPressItem = useCallback((type: 'online' | 'offline') => {
     if (isSecret == true) {
       setSecretModalVisible(true)
     } else {
-      navigation.navigate('GoodsStackNavigator')
+      if (type == 'online') {
+        navigation.navigate('ParticipatingSharingStackNavigator', {
+          screen: 'ParticipatingSharingOnline',
+        })
+      } else {
+        navigation.navigate('ParticipatingSharingStackNavigator', {
+          screen: 'ParticipatingSharingOffline',
+        })
+      }
     }
   }, [])
 
   return (
     <>
       <SecretModal secretModalVisible={secretModalVisible} setSecretModalVisible={setSecretModalVisible} secretKey={secretKey} />
-      <Pressable onPress={onPressItem} style={[styles.container]}>
+      <Pressable onPress={() => onPressItem(type)} style={[styles.container]}>
         {isBefore && (
           <View style={styles.overlay}>
             <Text style={[styles.overlayText, {marginBottom: 2.5}]}>{openDate.format('YYYY MM')}</Text>

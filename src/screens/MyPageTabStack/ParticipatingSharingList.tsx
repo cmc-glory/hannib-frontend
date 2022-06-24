@@ -3,11 +3,11 @@ import {View, FlatList, Text, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useAppSelector} from '../../hooks'
 import {StackHeader} from '../../components/utils'
-import {HoldingSharingItem} from '../../components/MyPageTabStack'
+import {ParticipatingSharingItem} from '../../components/MyPageTabStack'
 import * as theme from '../../theme'
 import {ISharingInfo} from '../../types'
 
-export const HoldingSharingList = () => {
+export const ParticipatingSharingList = () => {
   const [sharings, setSharings] = useState<ISharingInfo[]>([])
   const [refreshing, setRefreshing] = useState<boolean>(false)
 
@@ -35,12 +35,12 @@ export const HoldingSharingList = () => {
 
   return (
     <SafeAreaView style={theme.styles.safeareaview} edges={['top', 'left', 'right']}>
-      <StackHeader title="진행한 나눔" goBack />
+      <StackHeader title="참여한 나눔" goBack />
       <View style={styles.container}>
         <FlatList
           contentContainerStyle={{paddingHorizontal: theme.PADDING_SIZE, paddingVertical: 10}}
           data={sharings}
-          renderItem={({item}) => <HoldingSharingItem item={item}></HoldingSharingItem>}
+          renderItem={({item}) => <ParticipatingSharingItem item={item}></ParticipatingSharingItem>}
           refreshing={refreshing}
           numColumns={2}
           columnWrapperStyle={{justifyContent: 'space-between', marginBottom: 20}}
