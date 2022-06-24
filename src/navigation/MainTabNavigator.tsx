@@ -7,7 +7,7 @@ import GoodsList from '../screens/MainTab/GoodsList'
 import CommunityStackNavigator from './CommunityStackNavigator'
 import ChattingStackNavigator from './ChattingStackNavigator'
 import CalendarStackNavigator from './CalendarStackNavigator'
-import {MyPage} from '../screens/MainTab/MyPage'
+import MyPageTabStackNavigator from './MyPageTabStackNavigator'
 import {Favorites} from '../screens/MainTab/Favorites'
 //import MyPageStackNavigator from './MyPageStackNavigator'
 
@@ -68,22 +68,6 @@ function BottomTab() {
         }}
         component={Favorites}
       />
-      {/* <Tab.Screen
-        name="CommunityStackNavigator"
-        options={{
-          title: '커뮤니티',
-          tabBarIcon: ({focused}) => (focused ? <CommunityIconFocused /> : <CommunityIcon />),
-        }}
-        component={CommunityStackNavigator}
-      />
-      <Tab.Screen
-        name="ChattingStackNavigator"
-        options={{
-          title: '채팅',
-          tabBarIcon: ({focused}) => (focused ? <ChattingIconFocused /> : <ChattingIcon />),
-        }}
-        component={ChattingStackNavigator}
-      /> */}
       <Tab.Screen
         name="CalendarStackNavigator"
         options={{
@@ -93,12 +77,12 @@ function BottomTab() {
         component={CalendarStackNavigator}
       />
       <Tab.Screen
-        name="MyPage"
+        name="MyPageTabStackNavigator"
         options={{
           title: 'MY',
           tabBarIcon: ({focused}) => (focused ? <AccountIconFocused /> : <AccountIcon />),
         }}
-        component={MyPage}
+        component={MyPageTabStackNavigator}
       />
     </Tab.Navigator>
   )

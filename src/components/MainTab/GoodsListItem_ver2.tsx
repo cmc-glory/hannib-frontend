@@ -69,7 +69,7 @@ const SecretModal = ({secretModalVisible, setSecretModalVisible, secretKey}: Sec
   )
 }
 
-export const GoodsListItemVer2 = ({item}: {item: ISharingInfo}) => {
+export const GoodsListItemVer2 = ({item, showWriter = true}: {item: ISharingInfo; showWriter?: boolean}) => {
   // 나눔 게시글 아이템 구조분해 할당
   const {type, title, writer, uri, isSecret, secretKey} = item
 
@@ -114,9 +114,9 @@ export const GoodsListItemVer2 = ({item}: {item: ISharingInfo}) => {
           <FastImage style={[styles.image, {width: IMAGE_SIZE, height: IMAGE_SIZE}]} source={{uri: imageUri}}></FastImage>
         </View>
         <View style={{marginTop: 10}}>
-          <Tag label={type == 'offline' ? '블루스퀘어' : '우편'} />
+          <Tag label={type == 'offline' ? '오프라인' : '우편'} />
           <Text style={[styles.title, {width: IMAGE_SIZE}]}>{title}</Text>
-          <Text style={[styles.writerName]}>{writer}</Text>
+          {showWriter && <Text style={[styles.writerName]}>{writer}</Text>}
         </View>
       </Pressable>
     </>

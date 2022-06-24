@@ -61,6 +61,10 @@ export const MyPageScreen = () => {
     setLogoutModalVisible(true)
   }, [])
 
+  const onPressHoldingSharing = useCallback(() => {
+    navigation.navigate('HoldingSharingList')
+  }, [])
+
   return (
     <SafeAreaView style={[theme.styles.safeareaview]}>
       <StackHeader title="마이페이지" goBack={false}>
@@ -84,7 +88,7 @@ export const MyPageScreen = () => {
         <Separator />
         <View style={styles.wrapper}>
           <Text style={[theme.styles.bold16, {marginBottom: 8, marginTop: 16}]}>나눔 관리</Text>
-          <MyPageItem label="진행한 나눔" numSharing={16} onPress={() => {}} />
+          <MyPageItem label="진행한 나눔" numSharing={16} onPress={onPressHoldingSharing} />
           <SeparatorLight />
           <MyPageItem label="참여한 나눔" numSharing={16} onPress={() => {}} />
         </View>

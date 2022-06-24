@@ -92,5 +92,6 @@ declare namespace ReactNavigation {
     WriterProfile: {
       writerid: string
     }
+    HoldingSharingList: undefined
   }
 }

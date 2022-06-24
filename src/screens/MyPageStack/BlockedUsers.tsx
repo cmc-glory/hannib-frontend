@@ -63,7 +63,7 @@ export const BlockedUsers = () => {
 
   return (
     <SafeAreaView style={[theme.styles.safeareaview]}>
-      <StackHeader goBack title="차단된 계정 리스트" />
+      <StackHeader goBack title="차단된 계정 리스트" x />
       <View style={[{padding: theme.PADDING_SIZE}]}>
         {blockedUsers.map((user, index) => (
           <BlockedUserItem item={user} key={user.id} index={index} onPress={onPressCheckbox} />
