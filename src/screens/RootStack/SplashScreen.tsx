@@ -12,7 +12,7 @@ export const SplashScreen = () => {
   useEffect(() => {
     getString('accessToken').then(accessToken => {
       console.log('accessToken :', accessToken)
-      if (accessToken == null) {
+      if (accessToken == '' || accessToken == undefined) {
         // access token이 없으면 회원 가입 페이지로 이동
         navigation.navigate('LoginStackNavigator')
       } else {

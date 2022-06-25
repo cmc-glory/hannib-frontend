@@ -4,5 +4,12 @@
   {"id": "2", "maincategory": "singer", "name": "BTS", "uri": "http://localhost:8081/src/assets/images/bts.jpeg"},
   {"id": "3", "maincategory": "actor", "name": "주우재", "uri": "http://localhost:8081/src/assets/images/joowoojae.jpeg"},
   {"id": "4", "maincategory": "actor", "name": "박진영", "uri": "http://localhost:8081/src/assets/images/parkjinyoung.jpeg"},
-  {"id": "5", "maincategory": "actor", "name": "이도현", "uri": "http://localhost:8081/src/assets/images/leedohyeon.png"}
+  {"id": "5", "maincategory": "actor", "name": "이도현", "uri": "http://localhost:8081/src/assets/images/leedohyeon.png"},
+  {"id": "6", "maincategory": "singer", "name": "NCT DREAM", "uri": "http://localhost:8081/src/assets/images/nctdream.jpeg"},
+  {"id": "7", "maincategory": "singer", "name": "레드벨벳", "uri": "http://localhost:8081/src/assets/images/redvelvet.jpeg"},
+  {"id": "8", "maincategory": "singer", "name": "Stray Kids", "uri": "http://localhost:8081/src/assets/images/straykids.jpeg"},
+  {"id": "9", "maincategory": "singer", "name": "블랙핑크", "uri": "http://localhost:8081/src/assets/images/blackpink.jpeg"},
+  {"id": "10", "maincategory": "singer", "name": "ITZY", "uri": "http://localhost:8081/src/assets/images/itzy.jpeg"},
+  {"id": "11", "maincategory": "singer", "name": "몬스타엑스", "uri": "http://localhost:8081/src/assets/images/monstax.jpeg"},
+  {"id": "12", "maincategory": "singer", "name": "워너원", "uri": "http://localhost:8081/src/assets/images/wannaone.png"}
 ]

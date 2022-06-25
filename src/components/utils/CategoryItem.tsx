@@ -8,20 +8,38 @@ import {CheckboxMainIcon} from './Icon'
 const Check = () => {
   return (
     <View style={[styles.checkView]}>
-      {/* <FastImage style={styles.checkImage} source={require('../../assets/Icon/Check.png')} /> */}
       <CheckboxMainIcon />
     </View>
   )
 }
 
-export const CategoryItem = ({category, onPress}: {category: IStar; onPress: (category: IStar) => void}) => {
-  const {name, uri, selected} = category
+export const CategoryItem = ({
+  category,
+  onPress,
+  selectedStars,
+  imageSize,
+  imageBorder,
+  circleSize,
+  circleBorder,
+  index,
+}: {
+  category: IStar
+  onPress: (category: IStar) => void
+  selectedStars: IStar[]
+  imageSize: number
+  imageBorder: number
+  circleSize: number
+  circleBorder: number
+  index: number
+}) => {
+  const {name, uri, id} = category
+  const selected: boolean = selectedStars.map(item => item.id).includes(id)
 
   return (
-    <Pressable style={[styles.container]} onPress={() => onPress(category)}>
+    <Pressable style={[styles.container, index % 3 != 2 && {marginRight: 16}]} onPress={() => onPress(category)}>
       {selected && <Check />}
-      <View style={[styles.selectedCircle, selected && {backgroundColor: theme.main}]}>
-        <FastImage style={[styles.image]} source={{uri: uri}}></FastImage>
+      <View style={[styles.selectedCircle, {width: circleSize, height: circleSize, borderRadius: circleBorder}, selected && {backgroundColor: theme.main}]}>
+        <FastImage style={[styles.image, {width: imageSize, height: imageSize, borderRadius: imageBorder}]} source={{uri: uri}}></FastImage>
       </View>
 
       <Text style={[styles.artistname]}>{name}</Text>
@@ -31,9 +49,9 @@ export const CategoryItem = ({category, onPress}: {category: IStar; onPress: (ca
 
 const styles = StyleSheet.create({
   selectedCircle: {
-    borderRadius: 53,
-    width: 106,
-    height: 106,
+    //borderRadius: 53,
+    //width: 106,
+    //height: 106,
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',
@@ -54,9 +72,9 @@ const styles = StyleSheet.create({
     zIndex: 6,
   },
   image: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    //width: 100,
+    //height: 100,
+    //borderRadius: 50,
     overflow: 'hidden',
     zIndex: 5,
     position: 'absolute',

@@ -1,9 +1,9 @@
 import React, {useMemo, useState, useEffect, useCallback} from 'react'
-import {View, StyleSheet, Dimensions, FlatList, Alert} from 'react-native'
+import {View, Text, StyleSheet, Dimensions, FlatList, Alert} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation, useRoute} from '@react-navigation/native'
 import {SelectCategoryRouteProps} from '../../navigation/LoginStackNavigator'
-import {StackHeader, Button, CategoryItem, FloatingBottomButton, CheckboxMainIcon} from '../../components/utils'
+import {StackHeader, Button, CategoryItem, FloatingBottomButton, XIcon} from '../../components/utils'
 import {SearchStar, EmptyResult} from '../../components/LoginStack'
 import * as theme from '../../theme'
 import {IStar} from '../../types'
@@ -12,6 +12,26 @@ import {useAppSelector, useAppDispatch} from '../../hooks'
 import {storeString} from '../../hooks'
 
 const BUTTON_GAP = 10
+
+type SelectedStarTagProps = {
+  item: IStar
+  onPressRemove: (id: string) => void
+}
+
+const IMAGE_SIZE = (Dimensions.get('window').width - 40 - 32 - 18) / 3
+const IMAGE_BORDER = IMAGE_SIZE / 2
+const CIRCLE_SIZE = IMAGE_SIZE + 6
+const CIRCLE_BORDER = CIRCLE_SIZE / 2
+
+const SelectedStarTag = ({item, onPressRemove}: SelectedStarTagProps) => {
+  const {name, id} = item
+  return (
+    <View style={[theme.styles.rowSpaceBetween, styles.tagContainer]}>
+      <Text>{name}</Text>
+      <XIcon size={20} onPress={() => onPressRemove(id)} />
+    </View>
+  )
+}
 
 export const SelectCategory = () => {
   const navigation = useNavigation()
@@ -71,6 +91,7 @@ export const SelectCategory = () => {
       login({
         email,
         name,
+        profileImageUri: profileImage.uri,
         userCategory: selectedStars.map(category => {
           return {id: category.id, name: category.name}
         }),
@@ -84,68 +105,83 @@ export const SelectCategory = () => {
     (category: IStar) => {
       const {id} = category
 
+      const selected: boolean = selectedStars.map(item => item.id).includes(id)
       // 최대 선택 개수 초과
       if (selectedStars.length == 5) {
-        const found = selectedStars.filter(star => star.id == id) // 5개 중 하나 선택 해제하는 경우
-
-        if (found.length == 0) {
+        if (!selected) {
           // 선택된 5개 외에 다른 걸 선택한 경우
           Alert.alert('최대 5명까지 선택 가능합니다')
           return
         }
       }
 
-      if (singerSelected) {
-        const tempSinger = singers.map(star => {
-          if (star.id == id) {
-            star.selected = !star.selected
-            star.selected ? setSelectedStars([...selectedStars, category]) : setSelectedStars(selectedStars.filter(selectedStar => selectedStar.id !== id))
-          }
-          return star
-        })
-        setSingers(tempSinger)
-        setStars(tempSinger)
+      if (selected) {
+        setSelectedStars(selectedStars => selectedStars.filter(item => item.id != id))
       } else {
-        const tempActor = actors.map(star => {
-          if (star.id == id) {
-            star.selected = !star.selected
-            star.selected ? setSelectedStars([...selectedStars, category]) : setSelectedStars(selectedStars.filter(selectedStar => selectedStar.id !== id))
-          }
-          return star
-        })
-        setActors(tempActor)
-        setStars(tempActor)
+        setSelectedStars(selectedStars => [...selectedStars, category])
       }
     },
-    [stars],
+    [stars, selectedStars],
   )
+
+  const onPressRemove = useCallback((id: string) => {
+    setSelectedStars(selectedStars => selectedStars.filter(item => item.id != id))
+  }, [])
 
   return (
     <SafeAreaView style={styles.rootContainer}>
       <StackHeader title="카테고리" />
-      <View style={[theme.styles.wrapper, {flex: 1}]}>
+      <View style={[theme.styles.wrapper]}>
         <View style={[styles.mainCategoryContainer]}>
           <Button selected={singerSelected} label="가수" style={{width: BUTTON_WIDTH}} onPress={onPressSinger} />
           <Button selected={!singerSelected} label="배우" style={{width: BUTTON_WIDTH}} onPress={onPressActor} />
         </View>
+        <View style={[theme.styles.rowFlexStart, {flexWrap: 'wrap'}]}>
+          {selectedStars.map(item => (
+            <SelectedStarTag key={item.name + item.id} item={item} onPressRemove={onPressRemove} />
+          ))}
+        </View>
         <SearchStar starsAll={starsAll} setStars={setStars} />
+      </View>
+      <View style={{flex: 1}}>
         {stars.length == 0 ? (
           <EmptyResult />
         ) : (
           <FlatList
             data={stars}
-            renderItem={({item}) => <CategoryItem category={item} onPress={onPressCategory} />}
+            renderItem={({item, index}) => (
+              <CategoryItem
+                category={item}
+                onPress={onPressCategory}
+                selectedStars={selectedStars}
+                imageSize={IMAGE_SIZE}
+                imageBorder={IMAGE_BORDER}
+                circleSize={CIRCLE_SIZE}
+                circleBorder={CIRCLE_BORDER}
+                index={index}
+              />
+            )}
             numColumns={3}
-            columnWrapperStyle={{justifyContent: 'space-between', marginVertical: 10}}
+            columnWrapperStyle={{justifyContent: 'flex-start', marginVertical: 10}}
+            contentContainerStyle={{paddingHorizontal: theme.PADDING_SIZE}}
           />
         )}
       </View>
+
       <FloatingBottomButton label="선택 완료" enabled={selectedStars.length != 0} onPress={onPressSelectCompletion} />
     </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
+  tagContainer: {
+    backgroundColor: theme.gray50,
+    marginRight: 8,
+    height: 32,
+    paddingHorizontal: 12,
+    borderRadius: 26,
+    marginBottom: 8,
+  },
   rootContainer: {
     flex: 1,
     backgroundColor: theme.white,

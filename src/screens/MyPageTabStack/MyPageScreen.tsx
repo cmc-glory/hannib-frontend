@@ -36,6 +36,7 @@ const MyPageItem = ({label, numSharing, onPress}: MyPageItem) => {
 export const MyPageScreen = () => {
   const navigation = useNavigation()
   const user = useAppSelector(state => state.auth.user)
+  console.log(user)
 
   const [logoutModalVisible, setLogoutModalVisible] = useState<boolean>(false)
 
@@ -79,7 +80,7 @@ export const MyPageScreen = () => {
         <View style={[theme.styles.rowFlexStart, styles.profileContainer]}>
           <FastImage
             style={styles.profileImage}
-            source={{uri: user.profileImageUri == '' ? 'http://localhost:8081/src/assets/images/no-image.jpeg' : user.profileImageUri}}
+            source={{uri: user.profileImageUri == undefined ? 'http://localhost:8081/src/assets/images/noUser.png' : user.profileImageUri}}
           />
           <View style={{alignSelf: 'stretch', justifyContent: 'center'}}>
             <Text style={[theme.styles.bold20, {color: theme.gray700, marginBottom: 8}]}>{user.name}</Text>

@@ -1,6 +1,7 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {createDraftSafeSelector} from '@reduxjs/toolkit'
 import {IUserCategory} from '../../types'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 //Each slice file should define a type for its initial state value,
 // so that createSlice can correctly infer the type of state in each case reducer.
@@ -9,7 +10,7 @@ export interface User {
   email: string
   name: string
   userCategory: IUserCategory[]
-  profileImageUri: string
+  profileImageUri: string | undefined
 }
 
 export interface Auth {
@@ -49,6 +50,7 @@ export const authSlice = createSlice({
       state.refreshToken = action.payload
     },
     logout: state => {
+      AsyncStorage.removeItem('accessToken')
       return initialState
     },
   },

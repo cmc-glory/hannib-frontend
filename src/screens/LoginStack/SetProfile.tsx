@@ -14,7 +14,7 @@ export const SetProfile = () => {
   const navigation = useNavigation()
   const route = useRoute<SetProfileRouteProps>()
   const [name, setName] = useState<string>('') // 사용자가 입력한 닉네임.
-  const [profileImage, setProfileImage] = useState<Asset>()
+  const [profileImage, setProfileImage] = useState<string | undefined>('http://localhost:8081/src/assets/images/noUser.png')
 
   // 이미지 상관 없이 닉네임이 null이 아닐 때만
   const checkButtonEnabled = useCallback((name: string) => {
@@ -34,7 +34,7 @@ export const SetProfile = () => {
     } else if (response.errorMessage) {
       console.log('errorMessage', response.errorMessage)
     } else if (response.assets) {
-      setProfileImage(response?.assets[0])
+      setProfileImage(response?.assets[0].uri)
     }
   }, [])
 
@@ -46,7 +46,7 @@ export const SetProfile = () => {
           {profileImage == undefined ? (
             <Pressable style={[styles.image, styles.selectImage]} onPress={onImageLibraryPress}></Pressable>
           ) : (
-            <FastImage source={{uri: profileImage.uri}} style={styles.image}></FastImage>
+            <FastImage source={{uri: profileImage}} style={styles.image}></FastImage>
           )}
 
           <SelectImageIcon style={styles.cameraIcon} onPress={onImageLibraryPress} />
