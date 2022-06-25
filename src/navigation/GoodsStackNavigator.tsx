@@ -4,7 +4,9 @@ import type {NativeStackScreenProps} from '@react-navigation/native-stack'
 import {GoodsDetail, GoodsRequestOffline, GoodsReqeustOnline, WriteQnA, QnAList, WriterProfile} from '../screens/GoodsStack'
 
 type GoodsStackNavigatorParamList = {
-  GoodsDetail: undefined
+  GoodsDetail: {
+    sharingid: string
+  }
   GoodsRequestOffline: undefined
   GoodsRequestOnline: undefined
   QnAList: {
@@ -23,6 +25,9 @@ type GoodsStackNavigatorParamList = {
 }
 
 const Stack = createStackNavigator<GoodsStackNavigatorParamList>()
+
+type GoodsDetailProps = NativeStackScreenProps<GoodsStackNavigatorParamList, 'GoodsDetail'>
+export type GoodsDetailRouteProps = GoodsDetailProps['route']
 
 type QnAListProps = NativeStackScreenProps<GoodsStackNavigatorParamList, 'QnAList'>
 export type QnAListRouteProps = QnAListProps['route']

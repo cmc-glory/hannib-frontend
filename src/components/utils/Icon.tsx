@@ -5,7 +5,7 @@ import FastImage from 'react-native-fast-image'
 import BellSvg from '../../assets/Icon/Bell.svg'
 import ClockIcon from '../../assets/Icon/Time.svg'
 import LocationSvg from '../../assets/Icon/Location.svg'
-import MagnifierIcon from '../../assets/Icon/Magnifier.svg'
+import MagnifierSvg from '../../assets/Icon/Magnifier.svg'
 import SettingIcon from '../../assets/Icon/Setting.svg'
 //import CheckIcon from '../../assets/Icon/check.svg'
 //import MenuWhiteSvg from '../../assets/Icon/MenuShite.svg'
@@ -266,10 +266,10 @@ export const LocationIcon = ({onPress, style, size = theme.ICON_SIZE}: IconProps
   )
 }
 
-export const Magnifier = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
+export const MagnifierIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
   return (
     <Pressable onPress={onPress} style={style}>
-      <MagnifierIcon width={size} height={size} />
+      <MagnifierSvg width={size} height={size} />
     </Pressable>
   )
 }

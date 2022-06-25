@@ -98,5 +98,6 @@ declare namespace ReactNavigation {
     HoldingSharingList: undefined
     ParticipatingSharingList: undefined
     ParticipatingSharingStackNavigator: undefined
+    GoodsList: undefined
   }
 }

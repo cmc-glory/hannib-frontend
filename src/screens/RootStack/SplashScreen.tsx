@@ -38,9 +38,10 @@ export const SplashScreen = () => {
               }),
             )
           })
-
-        // access token이 있으면 메인탭으로 이동
-        navigation.navigate('MainTabNavigator')
+          .then(() => {
+            // access token이 있으면 메인탭으로 이동
+            navigation.navigate('MainTabNavigator')
+          })
       }
     })
   }, [])

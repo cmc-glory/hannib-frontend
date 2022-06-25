@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react'
-import {View, Text, Pressable, TextInput, Image, StyleSheet, Dimensions} from 'react-native'
+import {View, Text, Pressable, TextInput, StyleSheet, Alert, Dimensions} from 'react-native'
 import FastImage from 'react-native-fast-image'
 import {useNavigation} from '@react-navigation/native'
 import Modal from 'react-native-modal'
@@ -107,6 +107,11 @@ export const GoodsListItemVer2 = ({item}: {item: ISharingInfo}) => {
     }
   }, [])
 
+  const onPressFavorite = useCallback(() => {
+    // 즐겨찾기 버튼 클릭했을 때
+    Alert.alert('즐겨찾기 클릭')
+  }, [])
+
   return (
     <>
       <SecretModal secretModalVisible={secretModalVisible} setSecretModalVisible={setSecretModalVisible} secretKey={secretKey} sharingid={id} />
@@ -119,7 +124,7 @@ export const GoodsListItemVer2 = ({item}: {item: ISharingInfo}) => {
         )}
         <View style={{width: IMAGE_SIZE}}>
           <View style={[styles.imageHeader, {width: IMAGE_SIZE}]}>
-            <StarUnfilledIcon />
+            <StarUnfilledIcon onPress={onPressFavorite} size={24} />
           </View>
           <FastImage style={[styles.image, {width: IMAGE_SIZE, height: IMAGE_SIZE}]} source={{uri: imageUri}}></FastImage>
         </View>

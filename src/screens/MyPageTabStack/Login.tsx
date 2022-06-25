@@ -64,6 +64,10 @@ export const Login = () => {
           }),
         )
       })
+      .then(() => {
+        console.log('here')
+        navigation.navigate('GoodsList')
+      })
   }
 
   const SignInWithGoogle = async () => {
@@ -90,6 +94,9 @@ export const Login = () => {
             userCategory: [],
           }),
         )
+      })
+      .then(() => {
+        navigation.navigate('GoodsList')
       })
   }
 

@@ -53,7 +53,8 @@ const styles = StyleSheet.create({
   },
   bannerImage: {
     width: '100%',
-    height: '100%',
+    height: 84,
+    resizeMode: 'cover',
   },
   container: {
     height: 84,

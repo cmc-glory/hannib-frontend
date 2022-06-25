@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import {View, Text, TextInput, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
-import {Magnifier, StackHeader} from '../../components/utils'
+import {MagnifierIcon, StackHeader} from '../../components/utils'
 import {RecentSearch} from '../../components/SearchStack'
 import * as theme from '../../theme'
 
@@ -20,7 +20,7 @@ export const Search = () => {
         />
         {keyword == '' && (
           <View style={styles.maginifier}>
-            <Magnifier />
+            <MagnifierIcon />
           </View>
         )}
         <RecentSearch />
