@@ -5,6 +5,9 @@ declare module '*.svg' {
   export default content
 }
 
+declare module '@env' {
+  export const API_URL: string
+}
 declare namespace ReactNavigation {
   interface RootParamList {
     Login: undefined

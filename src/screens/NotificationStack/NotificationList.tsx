@@ -1,29 +1,92 @@
-import React, {useCallback} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {View, Text, ScrollView, Pressable, StyleSheet} from 'react-native'
+import {useQuery} from 'react-query'
+import moment from 'moment'
 import {useNavigation} from '@react-navigation/native'
 import {StackHeader} from '../../components/utils'
+import {queryKeys, getNotificationsAll} from '../../api'
 import * as theme from '../../theme'
+import {INotification, INotificationType} from '../../types'
 
-const NotificationItem = () => {
+type NotificationItemProps = {
+  item: INotification
+}
+
+const getNotificationContent = (type: INotificationType, relatedSharingTitle: string) => {
+  let content = ''
+  switch (type) {
+    case '게시글 수정': {
+      content = "'" + relatedSharingTitle + "'" + '게시글이 수정되었습니다. 게시글을 확인해 주세요!'
+      break
+    }
+    case '공지사항 등록': {
+      content = "'" + relatedSharingTitle + "'" + '에 새로운 공지사항이 등록됐습니다.'
+      break
+    }
+    case '나눔 신청 취소': {
+      content = "'" + relatedSharingTitle + "'" + '나눔 신청이 아래와 같은 사유로 취소됐습니다.'
+      break
+    }
+    case '나눔 취소': {
+      content = "'" + relatedSharingTitle + "'" + '나눔이 아래와 같은 사유로 취소됐습니다.'
+      break
+    }
+    case '문의글 답변': {
+      content = "'" + relatedSharingTitle + "'" + '문의글에 답변이 등록되었습니다.'
+      break
+    }
+    case '문의글 등록': {
+      content = "'" + relatedSharingTitle + "'" + '나눔에 새 문의글이 작성되었습니다.'
+      break
+    }
+    case '미수령 알림': {
+      content = "'" + relatedSharingTitle + "'" + '미수령 알림'
+      break
+    }
+    case '신고하기로 인한 삭제': {
+      content = "'" + relatedSharingTitle + "'" + '게시글이 신고하기를 이유로 삭제되었습니다.'
+      break
+    }
+
+    case '운송장 등록': {
+      content = "'" + relatedSharingTitle + "'" + '이 배송이 시작됐습니다! 운송장을 확인해보세요.'
+      break
+    }
+    default: {
+      break
+    }
+  }
+  return content
+}
+
+const NotificationItem = ({item}: NotificationItemProps) => {
+  const {writer, date, type, isRead, relatedSharingTitle, cancelReason} = item
+  console.log(cancelReason)
   const navigation = useNavigation()
   const onPress = useCallback(() => {
     navigation.navigate('NotificationContent')
   }, [])
   return (
-    <Pressable style={[styles.NotificationItemContaienr]} onPress={onPress}>
-      <View style={[styles.NotificationItemHeaderView]}>
-        <Text style={[styles.NotificationItemHeaderText]}>춤추는 고양이</Text>
-        <Text style={[styles.NotificationItemHeaderText]}>2022.06.15 18:00</Text>
-      </View>
+    <Pressable style={[styles.NotificationItemContaienr, !isRead && {backgroundColor: theme.main50}]} onPress={onPress}>
       <View>
-        <Text style={[styles.NotificationItemContentText]}>우편 발송 공지사항</Text>
+        <Text style={{fontFamily: 'Pretendard-Bold', color: theme.gray800}}>{type}</Text>
+        <Text style={[styles.NotificationItemContentText]}>{getNotificationContent(type, relatedSharingTitle)}</Text>
+        {cancelReason !== undefined && <Text style={styles.cancelReason}>{cancelReason}</Text>}
+      </View>
+      <View style={[styles.NotificationItemHeaderView]}>
+        <Text style={[styles.NotificationItemHeaderText]}>{writer}</Text>
+
+        <Text style={[styles.NotificationItemHeaderText]}>{moment(date).format('YYYY.MM.DD HH:mm')}</Text>
       </View>
     </Pressable>
   )
 }
 
 export const NotificationList = () => {
+  const {data, isLoading, error} = useQuery(queryKeys.notifications, getNotificationsAll)
+  console.log(data)
+
   return (
     <SafeAreaView style={styles.rootContainer}>
       <StackHeader title="알림" goBack />
@@ -31,15 +94,19 @@ export const NotificationList = () => {
         <View style={[styles.guideView, theme.styles.wrapper]}>
           <Text style={[styles.guideText]}>* 30일이 지난 알림은 자동으로 삭제됩니다</Text>
         </View>
-        <NotificationItem />
-        <NotificationItem />
-        <NotificationItem />
-        <NotificationItem />
+        {data?.map((item: INotification) => (
+          <NotificationItem item={item} key={item.id} />
+        ))}
       </ScrollView>
     </SafeAreaView>
   )
 }
 const styles = StyleSheet.create({
+  cancelReason: {
+    color: theme.gray700,
+    marginTop: 8,
+    marginBottom: 16,
+  },
   rootContainer: {
     flex: 1,
     backgroundColor: theme.white,
@@ -47,14 +114,13 @@ const styles = StyleSheet.create({
   container: {},
   guideText: {
     color: theme.secondary,
+    fontSize: 12,
   },
   guideView: {
     height: 60,
     justifyContent: 'center',
   },
   NotificationItemContaienr: {
-    backgroundColor: theme.main50,
-    height: 84,
     padding: theme.PADDING_SIZE,
     borderBottomWidth: 0.5,
     borderBottomColor: theme.gray200,
@@ -72,5 +138,7 @@ const styles = StyleSheet.create({
   },
   NotificationItemContentText: {
     color: theme.gray700,
+    fontFamily: 'Pretendard-Medium',
+    marginVertical: 8,
   },
 })

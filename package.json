@@ -46,6 +46,7 @@
     "react-native-bouncy-checkbox": "^2.1.10",
     "react-native-calendars": "^1.1284.0",
     "react-native-collapsible-tab-view": "^4.5.2",
+    "react-native-dotenv": "^3.3.1",
     "react-native-fast-image": "^8.5.11",
     "react-native-gesture-handler": "^2.4.2",
     "react-native-global-font": "^1.0.3",
@@ -70,6 +71,7 @@
     "react-native-uuid": "^2.0.1",
     "react-native-vector-icons": "^9.1.0",
     "react-native-webview": "^11.22.1",
+    "react-query": "^3.39.1",
     "react-redux": "^8.0.2",
     "redux-logger": "^3.0.6",
     "styled-components": "^5.3.5"

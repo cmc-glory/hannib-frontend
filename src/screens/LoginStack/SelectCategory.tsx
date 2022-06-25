@@ -136,12 +136,13 @@ export const SelectCategory = () => {
           <Button selected={singerSelected} label="가수" style={{width: BUTTON_WIDTH}} onPress={onPressSinger} />
           <Button selected={!singerSelected} label="배우" style={{width: BUTTON_WIDTH}} onPress={onPressActor} />
         </View>
+
+        <SearchStar starsAll={starsAll} setStars={setStars} />
         <View style={[theme.styles.rowFlexStart, {flexWrap: 'wrap'}]}>
           {selectedStars.map(item => (
             <SelectedStarTag key={item.name + item.id} item={item} onPressRemove={onPressRemove} />
           ))}
         </View>
-        <SearchStar starsAll={starsAll} setStars={setStars} />
       </View>
       <View style={{flex: 1}}>
         {stars.length == 0 ? (

@@ -141,7 +141,7 @@ const QnAListItem = ({item, isOwner}: QnAListItemProps) => {
 export const QnAList = () => {
   const navigation = useNavigation()
   const [qnas, setQnas] = useState<IQnAList[]>([]) // 문의 목록 state
-  const [isOwner, setIsOwner] = useState<boolean>(true)
+  const [isOwner, setIsOwner] = useState<boolean>(false)
   useEffect(() => {
     // qna list 받아오기
     fetch('http://localhost:8081/src/data/dummyQnA.json', {
@@ -170,7 +170,7 @@ export const QnAList = () => {
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
       <StackHeader goBack title="문의" />
-      <ScrollView style={[styles.container]}>
+      <ScrollView style={[styles.container]} contentOffset={{x: 0, y: 200}}>
         <SharingPreview uri="http://localhost:8081/src/assets/images/detail_image_example.png" category="BTS" title="BTS 키링 나눔" />
         {!isOwner && (
           <Pressable style={[styles.writeButton]} onPress={onPressWrite}>

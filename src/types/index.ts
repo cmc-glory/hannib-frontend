@@ -92,3 +92,26 @@ export type IUserCategory = {
   id: string
   name: string
 }
+
+export type INotificationType =
+  | '나눔 취소'
+  | '나눔 신청 취소'
+  | '공지사항 등록'
+  | '운송장 등록'
+  | '문의글 등록'
+  | '문의글 답변'
+  | '게시글 수정'
+  | '신고하기로 인한 삭제'
+  | '미수령 알림'
+
+export type INotification = {
+  id: string // 해당 알림의 id
+  writer: string // 알림을 보낸 사람
+  date: Date | undefined // 알림 작성 날짜
+  type: INotificationType // 알림 타입
+  isRead: boolean // 읽었는지
+  relatedid: string // 관련 게시글 id
+  relatedSharingid: string // 관련 상품 id
+  relatedSharingTitle: string
+  cancelReason?: string
+}

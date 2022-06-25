@@ -4,6 +4,8 @@ import {Alert} from 'react-native'
 import {SafeAreaProvider} from 'react-native-safe-area-context'
 import {NavigationContainer} from '@react-navigation/native'
 import messaging from '@react-native-firebase/messaging'
+import {useQuery, useMutation, useQueryClient, QueryClient, QueryClientProvider} from 'react-query'
+import {ReactQueryDevtools} from 'react-query/devtools'
 import {setCustomText} from 'react-native-global-props'
 import {GoogleSignin} from '@react-native-google-signin/google-signin'
 import {gray800} from './src/theme'
@@ -24,6 +26,7 @@ async function requestUserPermission() {
     console.log('Authorization status:', authStatus)
   }
 }
+const queryClient = new QueryClient()
 
 const customTextProps = {
   style: {
@@ -67,13 +70,15 @@ const App = () => {
   unsubscribe()
 
   return (
-    <ReduxProvider store={store}>
-      <SafeAreaProvider style={{flex: 1, backgroundColor: 'white'}}>
-        <NavigationContainer>
-          <RootStackNavigtor />
-        </NavigationContainer>
-      </SafeAreaProvider>
-    </ReduxProvider>
+    <QueryClientProvider client={queryClient}>
+      <ReduxProvider store={store}>
+        <SafeAreaProvider style={{flex: 1, backgroundColor: 'white'}}>
+          <NavigationContainer>
+            <RootStackNavigtor />
+          </NavigationContainer>
+        </SafeAreaProvider>
+      </ReduxProvider>
+    </QueryClientProvider>
   )
 }
 
