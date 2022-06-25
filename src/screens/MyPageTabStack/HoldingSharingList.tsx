@@ -3,6 +3,7 @@ import {View, FlatList, Text, StyleSheet, Pressable} from 'react-native'
 import Modal from 'react-native-modal'
 import {getStatusBarHeight} from 'react-native-status-bar-height'
 import {SafeAreaView} from 'react-native-safe-area-context'
+import {EditDeleteModal} from '../../components/MyPageStack/EditDeleteModal'
 import {useAppSelector, useToggle} from '../../hooks'
 import {MenuIcon, StackHeader} from '../../components/utils'
 import {HoldingSharingItem} from '../../components/MyPageTabStack'
@@ -11,35 +12,10 @@ import {ISharingInfo} from '../../types'
 
 const STATUSBAR_HEIGHT = getStatusBarHeight()
 
-type MenuModalProps = {
-  moreVisible: boolean
-  toggleMoreVisible: () => void
-  //onPressDelete: () => void
-}
-
-const MenuModal = ({moreVisible, toggleMoreVisible}: MenuModalProps) => {
-  return (
-    <Modal
-      animationInTiming={150}
-      animationOutTiming={150}
-      backdropOpacity={0}
-      animationIn={'fadeIn'}
-      animationOut="fadeOut"
-      isVisible={moreVisible}
-      onBackdropPress={toggleMoreVisible}
-      backdropColor={theme.gray800}>
-      <Pressable style={styles.menuModal}>
-        <Text style={{color: theme.gray800, height: 40}}>수정하기</Text>
-        <Text style={{color: theme.gray800}}>신고하기</Text>
-      </Pressable>
-    </Modal>
-  )
-}
-
 export const HoldingSharingList = () => {
   const [sharings, setSharings] = useState<ISharingInfo[]>([])
   const [refreshing, setRefreshing] = useState<boolean>(false)
-  const [moreVisible, toggleMoreVisible] = useToggle()
+  const [moreVisible, toggleMoreVisible] = useToggle() //수정, 삭제하기 모달 띄울지
 
   const user = useAppSelector(state => state.auth.user) // user.id로 이 user가 진행한 나눔 목록 불러옴
 
@@ -66,7 +42,6 @@ export const HoldingSharingList = () => {
   return (
     <SafeAreaView style={theme.styles.safeareaview} edges={['top', 'left', 'right']}>
       <StackHeader title="진행한 나눔" goBack>
-        <MenuModal moreVisible={moreVisible} toggleMoreVisible={toggleMoreVisible} />
         <MenuIcon onPress={toggleMoreVisible}></MenuIcon>
       </StackHeader>
       <View style={styles.container}>
@@ -80,6 +55,7 @@ export const HoldingSharingList = () => {
           onRefresh={onRefresh}
         />
       </View>
+      <EditDeleteModal isVisible={moreVisible} toggleIsVisible={toggleMoreVisible} />
     </SafeAreaView>
   )
 }

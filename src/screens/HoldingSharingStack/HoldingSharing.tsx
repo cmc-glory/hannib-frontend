@@ -1,6 +1,5 @@
 import React, {useCallback, useState} from 'react'
 import {View, Pressable, ScrollView, Text, StyleSheet} from 'react-native'
-import FastImage from 'react-native-fast-image'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {
   StackHeader,
@@ -11,15 +10,14 @@ import {
   SharingPreview,
   GoodsListItem,
   XIcon,
-  RoundButton,
+  MenuIcon,
 } from '../../components/utils'
 import BouncyCheckbox from 'react-native-bouncy-checkbox'
-import Modal from 'react-native-modal'
 import {useToggle} from '../../hooks'
 import * as theme from '../../theme'
 import {useNavigation} from '@react-navigation/native'
 import {HoldingSharingDetail} from './HoldingSharingDetail'
-import {TextInput} from 'react-native-gesture-handler'
+import {EditDeleteModal} from '../../components/MyPageStack/EditDeleteModal'
 
 type ReceiverListItem = {
   onPressViewDetail: () => void
@@ -104,6 +102,7 @@ const HoldingDetailItem = ({onPressLeftArrow, onPressRightArrow, cntList, setIsD
 }
 
 export const HoldingSharing = () => {
+  const [editDeleteModalVisible, toggleeditDeleteModalVisible] = useToggle() //수정, 삭제하기 모달 띄울지
   const navigation = useNavigation()
   // const onPressViewDetail = useCallback(() => {
   //   navigation.navigate('HoldingSharingDetail')
@@ -126,7 +125,9 @@ export const HoldingSharing = () => {
   const [cntList, setCntList] = useState<number>(1)
   return (
     <SafeAreaView style={{flex: 1}}>
-      <StackHeader goBack title="진행한 나눔"></StackHeader>
+      <StackHeader title="진행한 나눔" goBack>
+        <MenuIcon onPress={toggleeditDeleteModalVisible}></MenuIcon>
+      </StackHeader>
       <ScrollView contentContainerStyle={[theme.styles.wrapper]}>
         <SharingPreview uri="http://localhost:8081/src/assets/images/detail_image_example.png" category="BTS" title="BTS 키링 나눔" />
 
@@ -156,6 +157,7 @@ export const HoldingSharing = () => {
           navigation.navigate('SendNotice')
         }}
       />
+      <EditDeleteModal isVisible={editDeleteModalVisible} toggleIsVisible={toggleeditDeleteModalVisible} />
     </SafeAreaView>
   )
 }
