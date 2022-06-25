@@ -11,13 +11,14 @@ import {
   GoodsListItem,
   XIcon,
   MenuIcon,
+  BottomSheet,
 } from '../../components/utils'
 import BouncyCheckbox from 'react-native-bouncy-checkbox'
 import {useToggle} from '../../hooks'
 import * as theme from '../../theme'
 import {useNavigation} from '@react-navigation/native'
 import {HoldingSharingDetail} from './HoldingSharingDetail'
-import {EditDeleteModal} from '../../components/MyPageStack/EditDeleteModal'
+import {EditDeleteModal, HoldingSharingBottomSheetContent, HoldingSharingFilterTab} from '../../components/MyPageStack'
 
 type ReceiverListItem = {
   onPressViewDetail: () => void
@@ -27,6 +28,12 @@ type ReceiverListItem = {
 type HoldingListItem = {
   onPressViewDetail: () => void
   index: number
+  showStateFilterBottomSheet: boolean
+  setShowStateFilterBottomSheet: React.Dispatch<React.SetStateAction<boolean>>
+  locationFilter: 0 | 1 | 2
+  setLocationFilter: React.Dispatch<React.SetStateAction<0 | 1 | 2>>
+  stateFilter: '전체보기' | '수령완료' | '미수령'
+  setStateFilter: React.Dispatch<React.SetStateAction<'전체보기' | '수령완료' | '미수령'>>
 }
 
 type HoldingDetailItem = {
@@ -66,14 +73,31 @@ const ReceiverListItem = ({onPressViewDetail, index}: ReceiverListItem) => {
   )
 }
 
-const HoldingListItem = ({onPressViewDetail, index}: HoldingListItem) => {
+const HoldingListItem = ({
+  onPressViewDetail,
+  index,
+  locationFilter,
+  setLocationFilter,
+  stateFilter,
+  setStateFilter,
+  showStateFilterBottomSheet,
+  setShowStateFilterBottomSheet,
+}: HoldingListItem) => {
   return (
     <View>
-      <View style={[theme.styles.rowSpaceBetween, {marginVertical: 16}]}>
-        <Text>전체 선택 해제</Text>
+      <View style={[theme.styles.rowSpaceBetween]}>
+        <Pressable>
+          <Text>전체 선택 해제</Text>
+        </Pressable>
         <View style={[theme.styles.rowFlexStart]}>
-          <Text>전체 보기</Text>
-          <DownArrowIcon />
+          <HoldingSharingFilterTab
+            locationFilter={locationFilter}
+            setLocationFilter={setLocationFilter}
+            stateFilter={stateFilter}
+            setStateFilter={setStateFilter}
+            showStateFilterBottomSheet={showStateFilterBottomSheet}
+            setShowStateFilterBottomSheet={setShowStateFilterBottomSheet}
+          />
         </View>
       </View>
       <View>
@@ -84,13 +108,13 @@ const HoldingListItem = ({onPressViewDetail, index}: HoldingListItem) => {
     </View>
   )
 }
-
 const HoldingDetailItem = ({onPressLeftArrow, onPressRightArrow, cntList, setIsDetail}: HoldingDetailItem) => {
   return (
     <View>
       <View style={[theme.styles.rowSpaceBetween, {marginTop: 16}]}>
         <View style={[theme.styles.rowSpaceBetween, {width: 85}]}>
           <LeftArrowIcon size={24} onPress={onPressLeftArrow} />
+
           <Text> {cntList} / 12 </Text>
           <RightArrowIcon size={24} onPress={onPressRightArrow} />
         </View>
@@ -103,10 +127,11 @@ const HoldingDetailItem = ({onPressLeftArrow, onPressRightArrow, cntList, setIsD
 
 export const HoldingSharing = () => {
   const [editDeleteModalVisible, toggleeditDeleteModalVisible] = useToggle() //수정, 삭제하기 모달 띄울지
+  const [showStateFilterBottomSheet, setShowStateFilterBottomSheet] = useState<boolean>(false) // 전체보기, 수령완료, 미수령 필터링 탭 띄울지
+  const [stateFilter, setStateFilter] = useState<'전체보기' | '수령완료' | '미수령'>('전체보기')
+  const [locationFilter, setLocationFilter] = useState<0 | 1 | 2>(0) // 전체(0), 우편(1), 오프라인(2)
+
   const navigation = useNavigation()
-  // const onPressViewDetail = useCallback(() => {
-  //   navigation.navigate('HoldingSharingDetail')
-  // }, [])
   const onPressViewDetail = () => {
     setIsDetail(true)
   }
@@ -146,7 +171,16 @@ export const HoldingSharing = () => {
             setIsDetail={setIsDetail}
           />
         ) : (
-          <HoldingListItem onPressViewDetail={onPressViewDetail} index={cntList} />
+          <HoldingListItem
+            onPressViewDetail={onPressViewDetail}
+            index={cntList}
+            showStateFilterBottomSheet={showStateFilterBottomSheet}
+            setShowStateFilterBottomSheet={setShowStateFilterBottomSheet}
+            locationFilter={locationFilter}
+            setLocationFilter={setLocationFilter}
+            stateFilter={stateFilter}
+            setStateFilter={setStateFilter}
+          />
         )}
       </ScrollView>
 
@@ -158,6 +192,9 @@ export const HoldingSharing = () => {
         }}
       />
       <EditDeleteModal isVisible={editDeleteModalVisible} toggleIsVisible={toggleeditDeleteModalVisible} />
+      <BottomSheet modalVisible={showStateFilterBottomSheet} setModalVisible={setShowStateFilterBottomSheet}>
+        <HoldingSharingBottomSheetContent stateFilter={stateFilter} setStateFilter={setStateFilter} />
+      </BottomSheet>
     </SafeAreaView>
   )
 }
