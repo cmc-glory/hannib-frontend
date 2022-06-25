@@ -13,3 +13,11 @@ export const getNotificationsAll = async () => {
 
   return data
 }
+
+export const setNotificationRead = async (id: string) => {
+  const {data} = await apiClient.put('/dummyNotification.json', {
+    id: id,
+  })
+
+  return data
+}

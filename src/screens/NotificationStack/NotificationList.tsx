@@ -1,16 +1,17 @@
 import React, {useCallback, useEffect, useState} from 'react'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {View, Text, ScrollView, Pressable, StyleSheet} from 'react-native'
-import {useQuery} from 'react-query'
+import {useQuery, useMutation, useQueryClient, UseMutateFunction} from 'react-query'
 import moment from 'moment'
 import {useNavigation} from '@react-navigation/native'
 import {StackHeader} from '../../components/utils'
-import {queryKeys, getNotificationsAll} from '../../api'
+import {queryKeys, getNotificationsAll, setNotificationRead} from '../../api'
 import * as theme from '../../theme'
 import {INotification, INotificationType} from '../../types'
 
 type NotificationItemProps = {
   item: INotification
+  mutate: UseMutateFunction<any, unknown, string, unknown>
 }
 
 const getNotificationContent = (type: INotificationType, relatedSharingTitle: string) => {
@@ -60,15 +61,95 @@ const getNotificationContent = (type: INotificationType, relatedSharingTitle: st
   return content
 }
 
-const NotificationItem = ({item}: NotificationItemProps) => {
-  const {writer, date, type, isRead, relatedSharingTitle, cancelReason} = item
-  console.log(cancelReason)
+const getNotificationRedirection = (type: INotificationType, relatedSharingid: string) => {
+  let instance = undefined
+  switch (type) {
+    case '게시글 수정': {
+      instance = [
+        'GoodsStackNavigator',
+        {
+          screen: 'GoodsDetail',
+          params: {
+            id: relatedSharingid,
+          },
+        },
+      ]
+      break
+    }
+    case '공지사항 등록': {
+      instance = [
+        'NotificationContent',
+        {
+          id: relatedSharingid,
+        },
+      ]
+      break
+    }
+    case '나눔 신청 취소': {
+      break
+    }
+    case '나눔 취소': {
+      break
+    }
+    case '문의글 답변': {
+      instance = [
+        'QnAList',
+        {
+          id: relatedSharingid,
+        },
+      ]
+
+      break
+    }
+    case '문의글 등록': {
+      instance = [
+        'QnAList',
+        {
+          id: relatedSharingid,
+        },
+      ]
+      break
+    }
+    case '미수령 알림': {
+      break
+    }
+    case '신고하기로 인한 삭제': {
+      break
+    }
+
+    case '운송장 등록': {
+      instance = [
+        'QnAList',
+        {
+          id: relatedSharingid,
+        },
+      ]
+
+      break
+    }
+    default: {
+      break
+    }
+  }
+  return instance
+}
+
+const NotificationItem = ({item, mutate}: NotificationItemProps) => {
   const navigation = useNavigation()
-  const onPress = useCallback(() => {
-    navigation.navigate('NotificationContent')
+
+  const {id, writer, date, type, isRead, relatedSharingTitle, relatedSharingid, cancelReason} = item
+
+  const onPressNotification = useCallback((id: string) => {
+    mutate(id)
+    const redirectionInstance = getNotificationRedirection(type, relatedSharingid)
+    //console.log(redirection)
+    if (redirectionInstance !== undefined) {
+      navigation.navigate(redirectionInstance[0], redirectionInstance[1])
+    }
   }, [])
+
   return (
-    <Pressable style={[styles.NotificationItemContaienr, !isRead && {backgroundColor: theme.main50}]} onPress={onPress}>
+    <Pressable style={[styles.NotificationItemContaienr, !isRead && {backgroundColor: theme.main50}]} onPress={() => onPressNotification(id)}>
       <View>
         <Text style={{fontFamily: 'Pretendard-Bold', color: theme.gray800}}>{type}</Text>
         <Text style={[styles.NotificationItemContentText]}>{getNotificationContent(type, relatedSharingTitle)}</Text>
@@ -84,8 +165,14 @@ const NotificationItem = ({item}: NotificationItemProps) => {
 }
 
 export const NotificationList = () => {
+  const queryClient = useQueryClient()
   const {data, isLoading, error} = useQuery(queryKeys.notifications, getNotificationsAll)
-  console.log(data)
+
+  const {mutate} = useMutation(setNotificationRead, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('notifications')
+    },
+  })
 
   return (
     <SafeAreaView style={styles.rootContainer}>
@@ -95,7 +182,7 @@ export const NotificationList = () => {
           <Text style={[styles.guideText]}>* 30일이 지난 알림은 자동으로 삭제됩니다</Text>
         </View>
         {data?.map((item: INotification) => (
-          <NotificationItem item={item} key={item.id} />
+          <NotificationItem item={item} key={item.id} mutate={mutate} />
         ))}
       </ScrollView>
     </SafeAreaView>
@@ -140,5 +227,6 @@ const styles = StyleSheet.create({
     color: theme.gray700,
     fontFamily: 'Pretendard-Medium',
     marginVertical: 8,
+    fontSize: 16,
   },
 })
