@@ -54,7 +54,9 @@ declare namespace ReactNavigation {
       id: string // 작성한 게시글의 id. "등록한 게시글로 이동"에서 사용한다.
     }
     NotificationStackNavigator: undefined
-    NotificationContent: undefined
+    NotificationContent: {
+      id: string
+    }
     SearchStackNavigator: undefined
     Search: undefined
     SearchContent: undefined

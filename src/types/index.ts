@@ -115,3 +115,8 @@ export type INotification = {
   relatedSharingTitle: string
   cancelReason?: string
 }
+
+export type ISearch = {
+  recentSearch: string[]
+  famousSearch: string[]
+}

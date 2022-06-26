@@ -1,12 +1,17 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import {View, Text, TextInput, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
+import {useQuery} from 'react-query'
+import {queryKeys, getSearchData} from '../../api'
 import {MagnifierIcon, StackHeader} from '../../components/utils'
 import {RecentSearch} from '../../components/SearchStack'
 import * as theme from '../../theme'
 
 export const Search = () => {
   const [keyword, setKeyword] = useState<string>('')
+  const [recentSearch, setRecentSearch] = useState<string[]>([])
+  const {data, isLoading, error} = useQuery(queryKeys.notifications, getSearchData)
+
   return (
     <SafeAreaView>
       <StackHeader title="검색" goBack />
@@ -23,7 +28,7 @@ export const Search = () => {
             <MagnifierIcon />
           </View>
         )}
-        <RecentSearch />
+        <RecentSearch recentSearch={data?.recentSearch} />
       </View>
     </SafeAreaView>
   )
