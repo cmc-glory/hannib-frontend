@@ -1,18 +1,26 @@
-import React from 'react'
+import {useNavigation} from '@react-navigation/native'
+import React, {useCallback} from 'react'
 import {View, Text, StyleSheet, Dimensions} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
+import {CancelModal} from '../../components/MyPageStack/CancelModal'
 import {StackHeader, SharingPreview, GoodsListItem, Button} from '../../components/utils'
+import {useToggle} from '../../hooks'
 import * as theme from '../../theme'
 const BUTTON_WIDTH = (Dimensions.get('window').width - theme.PADDING_SIZE * 2 - 10) / 2
 
-const participateState: string = 'completed'
-const Buttons = () => {
+const participateState: string = 'proceeding'
+
+type Buttons = {
+  onPressWriteQnA: () => void
+  toggleCancelModalVisible: () => void
+}
+const Buttons = ({onPressWriteQnA, toggleCancelModalVisible}: Buttons) => {
   switch (participateState) {
     case 'proceeding':
       return (
         <View style={{...theme.styles.rowSpaceBetween, width: '100%'}}>
-          <Button label="취소하기" selected={false} style={{width: BUTTON_WIDTH}} />
-          <Button label="문의하기" selected={true} style={{width: BUTTON_WIDTH}} />
+          <Button label="취소하기" selected={false} style={{width: BUTTON_WIDTH}} onPress={toggleCancelModalVisible} />
+          <Button label="문의하기" selected={true} style={{width: BUTTON_WIDTH}} onPress={onPressWriteQnA} />
         </View>
       )
     case 'completed':
@@ -23,6 +31,21 @@ const Buttons = () => {
 }
 
 export const ParticipatingSharingOffline = () => {
+  const [cancelModalVisible, toggleCancelModalVisible] = useToggle() // 취소 모달창 띄울지
+  const navigation = useNavigation()
+
+  const onPressWriteQnA = useCallback(() => {
+    navigation.navigate('WriteQnA', {
+      postid: '1', // 해당 나눔 게시글의 id
+      userid: '1', // 문의글을 남기는 사용자의 id,
+      imageuri: 'http://localhost:8081/src/assets/images/detail_image_example.png', // 썸네일 uri
+      category: 'bts', // 카테고리
+      title: 'BTS 키링 나눔', // 나눔 제목
+    })
+    // navigation.navigate('MyPageStackNavigator', {
+    //   screen: 'WriteQnA',
+    // })
+  }, [])
   return (
     <SafeAreaView style={styles.rootContainer}>
       <StackHeader title="참여한 나눔" goBack />
@@ -58,9 +81,10 @@ export const ParticipatingSharingOffline = () => {
         </View>
 
         <View style={{...theme.styles.rowSpaceBetween, width: '100%'}}>
-          <Buttons />
+          <Buttons onPressWriteQnA={onPressWriteQnA} toggleCancelModalVisible={toggleCancelModalVisible} />
         </View>
       </View>
+      <CancelModal isVisible={cancelModalVisible} toggleIsVisible={toggleCancelModalVisible} />
     </SafeAreaView>
   )
 }
