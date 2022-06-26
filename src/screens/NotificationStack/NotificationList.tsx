@@ -142,7 +142,6 @@ const NotificationItem = ({item, mutate}: NotificationItemProps) => {
   const onPressNotification = useCallback((id: string) => {
     mutate(id)
     const redirectionInstance = getNotificationRedirection(type, relatedSharingid)
-    //console.log(redirection)
     if (redirectionInstance !== undefined) {
       navigation.navigate(redirectionInstance[0], redirectionInstance[1])
     }

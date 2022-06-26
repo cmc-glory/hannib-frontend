@@ -1,5 +1,5 @@
-import React, {useEffect, useState, useCallback} from 'react'
-import {View, Text, FlatList, ScrollView, Pressable, StyleSheet} from 'react-native'
+import React, {useEffect, useRef, useState, useCallback} from 'react'
+import {View, Text, FlatList, ScrollView, Pressable, StyleSheet, Dimensions} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {StackHeader} from '../../components/utils'
 import {GoodsListItemVer2} from '../../components/MainTab'
@@ -9,14 +9,31 @@ import * as theme from '../../theme'
 type CategoryItemProps = {
   name: string
   id: string
-  onPressCategory: (id: string) => void
+  onPressCategory: (id: string, index: number) => void
   selectedCategory: string
+  currentIndex: number
+  selectedIndex: number
+  scrollRef: React.RefObject<ScrollView>
 }
+const screenHalf = Dimensions.get('window').width / 2
 
-const CategoryItem = ({name, id, onPressCategory, selectedCategory}: CategoryItemProps) => {
+const CategoryItem = ({name, id, onPressCategory, selectedCategory, currentIndex, selectedIndex, scrollRef}: CategoryItemProps) => {
   const selected = id == selectedCategory
   return (
-    <Pressable onPress={() => onPressCategory(id)} style={[styles.categoryButton, selected ? styles.selectedCategoryButton : styles.unselectedCategoryButton]}>
+    <Pressable
+      onPress={e => {
+        console.log(e.nativeEvent)
+        const pageX = e.nativeEvent.pageX
+        const locationX = e.nativeEvent.locationX
+        const x = currentIndex <= selectedIndex ? pageX - locationX - 40 : pageX + locationX + 40
+        scrollRef.current?.scrollTo({
+          x: x,
+          y: 0,
+        })
+
+        onPressCategory(id, currentIndex)
+      }}
+      style={[styles.categoryButton, selected ? styles.selectedCategoryButton : styles.unselectedCategoryButton]}>
       <Text style={selected ? styles.selectedCategoryText : styles.unselectedCategoryText}>{name}</Text>
     </Pressable>
   )
@@ -26,6 +43,8 @@ export const Favorites = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('0') // 선택된 카테고리의 id값 저장. (처음엔 전체의 id값)
   const [sharings, setSharings] = useState<ISharingInfo[]>([]) // 나눔 리스트
   const [refreshing, setRefreshing] = useState<boolean>(false) // 새로고침 로딩 끝났는지
+  const [selectedIndex, setSelectedIndex] = useState<number>(0)
+  const scrollRef = useRef<ScrollView>(null)
 
   useEffect(() => {
     fetch('http://localhost:8081/src/data/dummySharings.json')
@@ -35,9 +54,9 @@ export const Favorites = () => {
       })
   }, [])
 
-  const onPressCategory = useCallback((id: string) => {
+  const onPressCategory = useCallback((id: string, currentIndex: number) => {
     setSelectedCategory(id)
-
+    setSelectedIndex(currentIndex)
     // 해당 id에 일치하는 나눔 리스트만 state에 저장.
   }, [])
 
@@ -56,13 +75,61 @@ export const Favorites = () => {
     <SafeAreaView style={[theme.styles.safeareaview]} edges={['top', 'left', 'right']}>
       <StackHeader title="찜한 리스트" />
       <View style={styles.container}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{marginBottom: 10}}>
-          <CategoryItem id="0" name="전체" onPressCategory={onPressCategory} selectedCategory={selectedCategory} />
-          <CategoryItem id="1" name="BTS" onPressCategory={onPressCategory} selectedCategory={selectedCategory} />
-          <CategoryItem id="2" name="세븐틴" onPressCategory={onPressCategory} selectedCategory={selectedCategory} />
-          <CategoryItem id="3" name="아이브" onPressCategory={onPressCategory} selectedCategory={selectedCategory} />
-          <CategoryItem id="4" name="STACY" onPressCategory={onPressCategory} selectedCategory={selectedCategory} />
-          <CategoryItem id="5" name="르세라핌" onPressCategory={onPressCategory} selectedCategory={selectedCategory} />
+        <ScrollView ref={scrollRef} horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{marginBottom: 10}}>
+          <CategoryItem
+            currentIndex={0}
+            selectedIndex={selectedIndex}
+            id="0"
+            name="전체"
+            onPressCategory={onPressCategory}
+            selectedCategory={selectedCategory}
+            scrollRef={scrollRef}
+          />
+          <CategoryItem
+            currentIndex={1}
+            selectedIndex={selectedIndex}
+            id="1"
+            name="BTS"
+            onPressCategory={onPressCategory}
+            selectedCategory={selectedCategory}
+            scrollRef={scrollRef}
+          />
+          <CategoryItem
+            selectedIndex={selectedIndex}
+            currentIndex={2}
+            id="2"
+            name="세븐틴"
+            onPressCategory={onPressCategory}
+            selectedCategory={selectedCategory}
+            scrollRef={scrollRef}
+          />
+          <CategoryItem
+            selectedIndex={selectedIndex}
+            currentIndex={3}
+            id="3"
+            name="아이브"
+            onPressCategory={onPressCategory}
+            selectedCategory={selectedCategory}
+            scrollRef={scrollRef}
+          />
+          <CategoryItem
+            selectedIndex={selectedIndex}
+            currentIndex={4}
+            id="4"
+            name="STACY"
+            onPressCategory={onPressCategory}
+            selectedCategory={selectedCategory}
+            scrollRef={scrollRef}
+          />
+          <CategoryItem
+            selectedIndex={selectedIndex}
+            currentIndex={5}
+            id="5"
+            name="르세라핌"
+            onPressCategory={onPressCategory}
+            selectedCategory={selectedCategory}
+            scrollRef={scrollRef}
+          />
         </ScrollView>
       </View>
 
