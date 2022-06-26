@@ -20,9 +20,22 @@ import {useNavigation} from '@react-navigation/native'
 import {HoldingSharingDetail} from './HoldingSharingDetail'
 import {EditDeleteModal, HoldingSharingBottomSheetContent, HoldingSharingFilterTab} from '../../components/MyPageStack'
 
+const dataLists: Array<any> = [
+  {id: 123, data: 'aaa'},
+  {id: 4355435, data: 'bbb'},
+  {id: 12313, data: 'ccc'},
+  {id: 121241, data: 'ccc'},
+  {id: 7546, data: 'ccc'},
+  {id: 234324, data: 'ccc'},
+  {id: 2342343, data: 'ccc'},
+  {id: 7765754, data: 'ccc'},
+]
+
 type ReceiverListItem = {
+  data: any
   onPressViewDetail: () => void
   index: number //db나오면 수정
+  checkedItems: Array<any>
 }
 
 type HoldingListItem = {
@@ -34,6 +47,8 @@ type HoldingListItem = {
   setLocationFilter: React.Dispatch<React.SetStateAction<0 | 1 | 2>>
   stateFilter: '전체보기' | '수령완료' | '미수령'
   setStateFilter: React.Dispatch<React.SetStateAction<'전체보기' | '수령완료' | '미수령'>>
+  checkedItems: Array<any>
+  setCheckedItems: (list: Array<any>) => void
 }
 
 type HoldingDetailItem = {
@@ -44,12 +59,13 @@ type HoldingDetailItem = {
   setIsDetail: (bool: boolean) => void
 }
 
-const ReceiverListItem = ({onPressViewDetail, index}: ReceiverListItem) => {
+//개별 리스트 아이템
+const ReceiverListItem = ({data, onPressViewDetail, index, checkedItems}: ReceiverListItem) => {
   return (
     <View style={[theme.styles.rowFlexStart, {paddingVertical: 16, borderBottomWidth: 1, borderBottomColor: theme.gray200}]}>
       <View style={{maxWidth: 20, alignItems: 'center', marginRight: 12}}>
         <Text style={{marginBottom: 2, fontSize: 12}}>{index}</Text>
-        <BouncyCheckbox size={20} fillColor={theme.secondary} style={{width: 20}} />
+        <BouncyCheckbox size={20} fillColor={theme.secondary} style={{width: 20}} isChecked={checkedItems.includes(index) ? true : false} />
       </View>
 
       <View style={{alignSelf: 'stretch', justifyContent: 'space-between', flex: 1}}>
@@ -82,12 +98,46 @@ const HoldingListItem = ({
   setStateFilter,
   showStateFilterBottomSheet,
   setShowStateFilterBottomSheet,
+  checkedItems,
+  setCheckedItems,
 }: HoldingListItem) => {
+  const [allChecked, setAllChecked] = useState<boolean>(false)
+  const handleSingleCheck = (checked: Boolean, id: Number) => {
+    if (checked) {
+      setCheckedItems([...checkedItems, id])
+    } else {
+      // 체크 해제
+      setCheckedItems(checkedItems.filter(el => el !== id))
+    }
+  }
+  // 체크박스 전체 선택
+  const handleAllCheck = (checked: Boolean) => {
+    if (checked) {
+      console.log('wow')
+      const idArray: Array<any> = []
+      // 전체 체크 박스가 체크 되면 id를 가진 모든 elements를 배열에 넣어주어서,
+      // 전체 체크 박스 체크
+      dataLists.forEach(el => idArray.push(el.id))
+      setCheckedItems(idArray)
+      console.log('dataLists : ', dataLists)
+      console.log('checkedItems : ', checkedItems)
+      console.log('idArray : ', idArray)
+    }
+
+    // 반대의 경우 전체 체크 박스 체크 삭제
+    else {
+      setCheckedItems([])
+    }
+  }
   return (
     <View>
       <View style={[theme.styles.rowSpaceBetween]}>
-        <Pressable>
-          <Text>전체 선택 해제</Text>
+        <Pressable
+          onPress={() => {
+            setAllChecked(!allChecked)
+            handleAllCheck(allChecked)
+          }}>
+          <Text>전체 선택</Text>
         </Pressable>
         <View style={[theme.styles.rowFlexStart]}>
           <HoldingSharingFilterTab
@@ -102,8 +152,9 @@ const HoldingListItem = ({
       </View>
       <View>
         {/* 리스트 api 필요 */}
-        <ReceiverListItem onPressViewDetail={onPressViewDetail} index={1} />
-        <ReceiverListItem onPressViewDetail={onPressViewDetail} index={2} />
+        {dataLists.map((list, idx) => (
+          <ReceiverListItem data={list[idx]} onPressViewDetail={onPressViewDetail} index={idx + 1} key={list.id} checkedItems={checkedItems} />
+        ))}
       </View>
     </View>
   )
@@ -114,7 +165,6 @@ const HoldingDetailItem = ({onPressLeftArrow, onPressRightArrow, cntList, setIsD
       <View style={[theme.styles.rowSpaceBetween, {marginTop: 16}]}>
         <View style={[theme.styles.rowSpaceBetween, {width: 85}]}>
           <LeftArrowIcon size={24} onPress={onPressLeftArrow} />
-
           <Text> {cntList} / 12 </Text>
           <RightArrowIcon size={24} onPress={onPressRightArrow} />
         </View>
@@ -129,7 +179,37 @@ export const HoldingSharing = () => {
   const [editDeleteModalVisible, toggleeditDeleteModalVisible] = useToggle() //수정, 삭제하기 모달 띄울지
   const [showStateFilterBottomSheet, setShowStateFilterBottomSheet] = useState<boolean>(false) // 전체보기, 수령완료, 미수령 필터링 탭 띄울지
   const [stateFilter, setStateFilter] = useState<'전체보기' | '수령완료' | '미수령'>('전체보기')
-  const [locationFilter, setLocationFilter] = useState<0 | 1 | 2>(0) // 전체(0), 우편(1), 오프라인(2)
+  const [locationFilter, setLocationFilter] = useState<0 | 1 | 2>(0) // 전체보기(0), 수령완료(1), 미수령(2)
+  const [checkedItems, setCheckedItems] = useState<Array<any>>([])
+
+  // 전체 체크 클릭 시 발생하는 함수
+  // const onCheckedAll = useCallback(
+  //   checked => {
+  //     if (checked) {
+  //       const checkedListArray: Array<any> = []
+
+  //       dataLists.forEach(list => checkedListArray.push(list.id))
+
+  //       setCheckedList(checkedListArray)
+  //     } else {
+  //       setCheckedList([])
+  //     }
+  //   },
+  //   [dataLists],
+  // )
+
+  // // 개별 체크 클릭 시 발생하는 함수
+  // const onCheckedElement = useCallback(
+  //   (checked, list) => {
+  //     if (checked) {
+  //       setCheckedList([...checkedList, list])
+  //     } else {
+  //       setCheckedList(checkedList.filter(el => el !== list))
+  //     }
+  //   },
+  //   [checkedList],
+  // )
+  // 체크박스 전체 단일 개체 선택
 
   const navigation = useNavigation()
   const onPressViewDetail = () => {
@@ -180,6 +260,8 @@ export const HoldingSharing = () => {
             setLocationFilter={setLocationFilter}
             stateFilter={stateFilter}
             setStateFilter={setStateFilter}
+            setCheckedItems={setCheckedItems}
+            checkedItems={checkedItems}
           />
         )}
       </ScrollView>
@@ -199,17 +281,4 @@ export const HoldingSharing = () => {
   )
 }
 
-const styles = StyleSheet.create({
-  shareModal: {
-    backgroundColor: theme.white,
-    borderRadius: 8,
-    padding: theme.PADDING_SIZE,
-  },
-  modalTextInput: {
-    borderWidth: 1,
-    borderColor: theme.gray200,
-    borderRadius: 4,
-    paddingVertical: 14,
-    paddingHorizontal: 18,
-  },
-})
+const styles = StyleSheet.create({})
