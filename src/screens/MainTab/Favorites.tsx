@@ -15,7 +15,6 @@ type CategoryItemProps = {
   selectedIndex: number
   scrollRef: React.RefObject<ScrollView>
 }
-const screenHalf = Dimensions.get('window').width / 2
 
 const CategoryItem = ({name, id, onPressCategory, selectedCategory, currentIndex, selectedIndex, scrollRef}: CategoryItemProps) => {
   const selected = id == selectedCategory

@@ -8,7 +8,7 @@ import {useQuery, useQueryClient} from 'react-query'
 import * as theme from '../../theme'
 import {FloatingButton, DownArrowIcon, BellIcon, MagnifierIcon, BottomSheet} from '../../components/utils'
 import {GoodsFilterTab, GoodsListItemVer2, GoodsListBottomSheetContent, Banner, CategoryDropdown} from '../../components/MainTab'
-import {ISharingInfo, IUserCategory} from '../../types'
+import {ISharingInfo, IUserCategory, ISharingType} from '../../types'
 import {useAppSelector} from '../../hooks'
 import {getGoodsListAll, queryKeys} from '../../api'
 
@@ -19,7 +19,7 @@ const GoodsLists = () => {
   // states
   const [sharings, setSharings] = useState<ISharingInfo[]>([])
   const [refreshing, setRefreshing] = useState<boolean>(false) // 새로고침 state
-  const [locationFilter, setLocationFilter] = useState<0 | 1 | 2>(0) // 전체(0), 우편(1), 오프라인(2)
+  const [locationFilter, setLocationFilter] = useState<'all' | 'offline' | 'online'>('all')
   const [itemFilter, setItemFilter] = useState<'최신순' | '인기순' | '추천순'>('최신순')
   const [showItemFilterBottomShet, setShowItemFilterBottomSheet] = useState<boolean>(false) // 인기순, 최신순, 추천순 필터링 탭 띄울지
   const [showSelectCategoryModal, setShowSelectCategoryModal] = useState<boolean>(false) // 카테고리 선택하는 드롭다운 띄울지
@@ -33,6 +33,7 @@ const GoodsLists = () => {
   const {data} = useQuery(queryKeys.goodsList, getGoodsListAll, {
     onSuccess: () => {
       setRefreshing(false) // 새로고침중이면 로딩 종료
+      setSharings(data)
     },
   })
 
@@ -44,17 +45,34 @@ const GoodsLists = () => {
     queryClient.invalidateQueries(queryKeys.goodsList)
   }, [])
 
+  // 모집글 작성 버튼 클릭 시
   const onPressWrite = useCallback(() => {
     navigation.navigate('WriteGoodsStackNavigator')
   }, [])
 
+  // 검색 버튼 클릭시
   const onPressMagnifier = useCallback(() => {
     navigation.navigate('SearchStackNavigator')
   }, [])
 
+  // 카테고리(에스파, 세븐틴 등) 클릭시
   const onPressSelectCategory = useCallback(() => {
     setShowSelectCategoryModal(showSelectCategoryModal => !showSelectCategoryModal)
   }, [])
+
+  // 전체, 우편, 오프라인 클릭시
+  const onPressLocationFilter = useCallback((type: ISharingType | 'all') => {
+    if (type == 'all') {
+      setSharings(data)
+    } else {
+      setSharings(data.filter((item: ISharingInfo) => item.type == type))
+    }
+  }, [])
+
+  // 최신순, 인기순, 추천순 필터가 바뀔 때마다 새로 로드
+  useEffect(() => {
+    queryClient.invalidateQueries(queryKeys.goodsList)
+  }, [itemFilter])
 
   return (
     <SafeAreaView style={[styles.container]} edges={['top', 'left', 'right']}>
@@ -81,13 +99,12 @@ const GoodsLists = () => {
           locationFilter={locationFilter}
           setLocationFilter={setLocationFilter}
           itemFilter={itemFilter}
-          setItemFilter={setItemFilter}
-          showItemFilterBottomSheet={showItemFilterBottomShet}
           setShowItemFilterBottomSheet={setShowItemFilterBottomSheet}
+          onPressLocationFilter={onPressLocationFilter}
         />
         <FlatList
           contentContainerStyle={{paddingHorizontal: theme.PADDING_SIZE}}
-          data={data}
+          data={sharings}
           renderItem={({item}) => <GoodsListItemVer2 item={item}></GoodsListItemVer2>}
           refreshing={refreshing}
           numColumns={2}
