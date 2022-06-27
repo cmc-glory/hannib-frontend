@@ -1,12 +1,15 @@
-import React, {useState, useRef} from 'react'
+import React, {useState, useEffect, useRef} from 'react'
 import {View, ScrollView, StyleSheet, Dimensions, Animated} from 'react-native'
 import {getStatusBarHeight} from 'react-native-status-bar-height'
 import {useNavigation, useRoute} from '@react-navigation/native'
+import {useQuery} from 'react-query'
 import {HeaderImage, GoodsDetailContent, GoodsDetailHeader} from '../../components/GoodsStack'
 import {useAnimatedValue, useMonitorAnimatedValue} from '../../hooks'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import LinearGradient from 'react-native-linear-gradient'
 import {GoodsDetailRouteProps} from '../../navigation/GoodsStackNavigator'
+import {ISharingDetail} from '../../types'
+import {queryKeys, getGoodsDetail} from '../../api'
 import * as theme from '../../theme'
 
 const IMAGE_HEIGHT = 350
@@ -16,17 +19,18 @@ const WIDTH = Dimensions.get('window').width
 export const GoodsDetail = () => {
   const navigation = useNavigation()
   const route = useRoute<GoodsDetailRouteProps>()
+
+  const [sharingDetail, setSharingDetail] = useState<ISharingDetail>()
   const scrollViewRef = useRef<ScrollView>(null)
   const [headerHeight, setHeaderHeight] = useState(350)
-  const [scrollEnabled, setScrollEnabled] = useState(true)
   const scrollY = useAnimatedValue(0)
-  const realScrollY = useMonitorAnimatedValue(scrollY)
-  const [y, setY] = useState<number>(realScrollY)
   const [headerInvert, setHeaderInvert] = useState(false)
-  //const realScrollY = useMonitorAnimatedValue(scrollY)
-  //console.log(realScrollY)
 
-  console.log('goods detail route params : ', route.params)
+  const {data} = useQuery(queryKeys.goodsDetail, getGoodsDetail, {
+    onSuccess: data => {
+      //setSharingDetail(data)
+    },
+  })
 
   return (
     <SafeAreaView edges={['bottom']} style={{flex: 1, position: 'relative'}}>
@@ -57,25 +61,9 @@ export const GoodsDetail = () => {
             useNativeDriver: false,
           })
         }}>
-        <HeaderImage />
-        <GoodsDetailContent headerHeight={headerHeight} scrollY={scrollY} />
+        <HeaderImage images={data?.images} />
+        <GoodsDetailContent headerHeight={headerHeight} />
       </ScrollView>
     </SafeAreaView>
   )
 }
-const styles = StyleSheet.create({
-  image: {
-    width: '100%',
-    height: 350,
-    resizeMode: 'cover',
-  },
-  headerContainer: {
-    width: '100%',
-    //position: 'absolute',
-    height: 360,
-  },
-
-  contentContainer: {
-    minHeight: 1200,
-  },
-})

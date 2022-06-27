@@ -2827,6 +2827,11 @@
   "resolved" "https://registry.npmjs.org/base64-js/-/base64-js-1.5.1.tgz"
   "version" "1.5.1"
 
+"better-react-native-image-viewing@^0.2.3":
+  "integrity" "sha512-76mc4i+KAqp7OZPpkyvD31MpJqpP2c3K/PdVlMRevk1Jbg3UH3SpxiHjmHSQ2TBEd1fHAkB6JsHNmIASsP87Pg=="
+  "resolved" "https://registry.npmjs.org/better-react-native-image-viewing/-/better-react-native-image-viewing-0.2.3.tgz"
+  "version" "0.2.3"
+
 "big-integer@^1.6.16", "big-integer@1.6.x":
   "integrity" "sha512-GPEid2Y9QU1Exl1rpO9B2IPJGHPSupF5GnVIP0blYvNOMer2bTvSWs1jGOUg04hTmu67nmLsQ9TBo1puaotBHg=="
   "resolved" "https://registry.npmjs.org/big-integer/-/big-integer-1.6.51.tgz"

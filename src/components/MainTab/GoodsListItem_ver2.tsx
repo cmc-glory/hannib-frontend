@@ -107,6 +107,9 @@ export const GoodsListItemVer2 = ({item}: {item: ISharingInfo}) => {
 
   // 상세 페이지로 이동
   const onPressItem = useCallback(() => {
+    if (isBefore) {
+      return // 오픈 전인 경우엔 이동 X
+    }
     if (isSecret == true) {
       setSecretModalVisible(true)
     } else {

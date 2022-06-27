@@ -1,15 +1,14 @@
 import React, {useState, useCallback, useEffect} from 'react'
-import {RefreshControl, View, Text, FlatList, Pressable, Animated, StyleSheet, Dimensions} from 'react-native'
+import {View, RefreshControl, ScrollView, Text, FlatList, Pressable, Animated, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation} from '@react-navigation/native'
-import IconIcons from 'react-native-vector-icons/Ionicons'
 import {useQuery, useQueryClient} from 'react-query'
 
 import * as theme from '../../theme'
-import {FloatingButton, DownArrowIcon, BellIcon, MagnifierIcon, BottomSheet, FloatingButtonIcon} from '../../components/utils'
+import {DownArrowIcon, BellIcon, MagnifierIcon, BottomSheet, FloatingButtonIcon} from '../../components/utils'
 import {GoodsFilterTab, GoodsListItemVer2, GoodsListBottomSheetContent, Banner, CategoryDropdown} from '../../components/MainTab'
 import {ISharingInfo, IUserCategory, ISharingType} from '../../types'
-import {useAppSelector} from '../../hooks'
+import {useAppSelector, useAnimatedValue, useToggle, useAnimatedStyle} from '../../hooks'
 import {getGoodsListAll, queryKeys} from '../../api'
 
 const GoodsLists = () => {
@@ -24,14 +23,29 @@ const GoodsLists = () => {
   const [showItemFilterBottomShet, setShowItemFilterBottomSheet] = useState<boolean>(false) // 인기순, 최신순, 추천순 필터링 탭 띄울지
   const [showSelectCategoryModal, setShowSelectCategoryModal] = useState<boolean>(false) // 카테고리 선택하는 드롭다운 띄울지
   const [userCategory, setUserCategory] = useState<IUserCategory>(user.userCategory[0]) // 현재 사용자가 선택한 카테고리.
+  const [filterTabOpened, toggleFilterTabOpened] = useToggle()
   const [bannerInfo, setBannerInfo] = useState({
     imageUri: 'http://localhost:8081/src/assets/images/aespa.jpeg',
     title: 'SEVENTEEN [BE THE SUN] - SEOUL',
     sharingid: '123445',
   })
 
+  const animatedValue = useAnimatedValue() // 스크롤 업 다운할때마다 필터를 숨기거나 보여줌
+  const animatedHeight = animatedValue.interpolate({
+    inputRange: [0, 84],
+    outputRange: [0, -84],
+    extrapolate: 'clamp',
+  })
+
+  const bannerAnimation = Animated.timing(animatedValue, {
+    toValue: filterTabOpened ? 0 : 1,
+    duration: 200,
+    useNativeDriver: false,
+  })
+
   const {data} = useQuery(queryKeys.goodsList, getGoodsListAll, {
-    onSuccess: () => {
+    onSuccess: data => {
+      console.log('success')
       setRefreshing(false) // 새로고침중이면 로딩 종료
       setSharings(data)
     },
@@ -69,10 +83,18 @@ const GoodsLists = () => {
     }
   }, [])
 
+  // const toggleBannerTab = useCallback(() => {
+  //   bannerAnimation.start(toggleFilterTabOpened)
+  // }, [filterTabOpened])
+
   // 최신순, 인기순, 추천순 필터가 바뀔 때마다 새로 로드
   useEffect(() => {
     queryClient.invalidateQueries(queryKeys.goodsList)
   }, [itemFilter])
+
+  const animatedStyle = useAnimatedStyle({
+    transform: [{translateY: animatedHeight}],
+  })
 
   return (
     <SafeAreaView style={[styles.container]} edges={['top', 'left', 'right']}>
@@ -94,7 +116,7 @@ const GoodsLists = () => {
         categories={user.userCategory}
       />
       <View style={{flex: 1}}>
-        <Banner imageUri={bannerInfo.imageUri} title={bannerInfo.title} sharingid={bannerInfo.sharingid} />
+        <Banner imageUri={bannerInfo.imageUri} title={bannerInfo.title} sharingid={bannerInfo.sharingid} animatedHeight={animatedHeight} />
         <GoodsFilterTab
           locationFilter={locationFilter}
           setLocationFilter={setLocationFilter}
@@ -103,7 +125,7 @@ const GoodsLists = () => {
           onPressLocationFilter={onPressLocationFilter}
         />
         <FlatList
-          contentContainerStyle={{paddingHorizontal: theme.PADDING_SIZE}}
+          contentContainerStyle={[{paddingHorizontal: theme.PADDING_SIZE, paddingVertical: 6}]}
           data={sharings}
           renderItem={({item}) => <GoodsListItemVer2 item={item}></GoodsListItemVer2>}
           refreshing={refreshing}
@@ -112,7 +134,8 @@ const GoodsLists = () => {
           onRefresh={onRefresh}
         />
       </View>
-      <FloatingButtonIcon style={styles.floatingButton} />
+
+      <FloatingButtonIcon style={styles.floatingButton} onPress={onPressWrite} />
       <BottomSheet modalVisible={showItemFilterBottomShet} setModalVisible={setShowItemFilterBottomSheet}>
         <GoodsListBottomSheetContent itemFilter={itemFilter} setItemFilter={setItemFilter} />
       </BottomSheet>

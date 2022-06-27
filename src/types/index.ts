@@ -42,6 +42,27 @@ export type ISharingInfo = {
   isFavorite: boolean
 }
 
+export type ISharingDetail = {
+  id: string
+  images: string[] | undefined
+  type: ISharingType
+  title: string
+  writeName: string
+  writerid: string
+  writerProfileImageUri: string
+  date: Date | undefined
+  isSecret: boolean
+  isFavorite: boolean
+  favoriteNum: number
+  products: IProductInfo[]
+  schedule?: {
+    time: Date | undefined
+    location: string
+  }
+  description: string
+  qnaNum: number
+}
+
 export type IAdditionalQuestion = {
   id: string
   necessary: boolean

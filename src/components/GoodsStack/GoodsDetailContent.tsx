@@ -4,7 +4,7 @@ import {useNavigation} from '@react-navigation/native'
 import FastImage from 'react-native-fast-image'
 import {getStatusBarHeight} from 'react-native-status-bar-height'
 
-import {Tag, ProductTag, StarFilledIcon} from '../utils'
+import {Tag, StarFilledIcon} from '../utils'
 import {NoticeBanner} from './NoticeBanner'
 import {RelatedSharing} from './RelatedSharing'
 import {GoodsContentDetail} from './GoodsContentDetail'
@@ -16,13 +16,12 @@ import * as theme from '../../theme'
 
 type ContentProps = {
   headerHeight: number
-  scrollY: Animated.Value
   // animatedBorder: Animated.AnimatedInterpolation
 }
 
 const window = Dimensions.get('screen')
 
-export function GoodsDetailContent({headerHeight, scrollY}: ContentProps) {
+export function GoodsDetailContent({headerHeight}: ContentProps) {
   return (
     <View
       style={[
@@ -37,7 +36,6 @@ export function GoodsDetailContent({headerHeight, scrollY}: ContentProps) {
       ]}>
       <View style={styles.padding}>
         <View style={[theme.styles.rowFlexStart]}>
-          <Tag label="나눔"></Tag>
           <Tag label="우편"></Tag>
         </View>
         <View style={[{marginVertical: 16}, theme.styles.rowSpaceBetween]}>

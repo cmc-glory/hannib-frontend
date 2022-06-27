@@ -78,7 +78,7 @@ export const GoodsFilterTab = ({locationFilter, setLocationFilter, itemFilter, s
       <View>
         <Pressable style={[styles.sortButton]} onPress={onPressItemFilter}>
           <Text style={[styles.sortText]}>{itemFilter}</Text>
-          <DownArrowIcon size={20} style={{marginLeft: 3}} />
+          <DownArrowIcon size={20} style={{marginLeft: 3}} onPress={onPressItemFilter} />
         </Pressable>
       </View>
     </View>
@@ -116,11 +116,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginVertical: 16,
+    paddingVertical: 10,
     paddingHorizontal: theme.PADDING_SIZE,
+    backgroundColor: 'white',
   },
   button: {
-    paddingVertical: 6,
+    height: 32,
     paddingHorizontal: 12,
     borderRadius: 5,
     borderWidth: 1,
@@ -131,6 +132,7 @@ const styles = StyleSheet.create({
   sortButton: {
     flexDirection: 'row',
     alignItems: 'center',
+    height: 32,
   },
   sortText: {
     color: theme.gray800,

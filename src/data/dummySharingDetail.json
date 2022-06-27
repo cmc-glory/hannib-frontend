@@ -1,0 +1,21 @@
+{
+  "id": "0000",
+  "images": [
+    "http://localhost:8081/src/assets/images/detail_image_example.png",
+    "http://localhost:8081/src/assets/images/detail_image_example2.jpeg",
+    "http://localhost:8081/src/assets/images/detail_image_example3.jpeg"
+  ],
+  "type": "offline",
+  "title": "BTS 키링 나눔😽",
+  "writerName": "춤추는 고양이",
+  "writerid": "user@email.com",
+  "writerProfileImageUri": "http://localhost:8081/src/assets/images/aespa.jpeg",
+  "date": "2022-06-20T13:28:56.782Z",
+  "isSecret": true,
+  "isFavorite": true,
+  "favoriteNum": 8,
+  "products": [{"name": "BTS 진 컨셉의 하트 키링", "quantity": 30, "id": "0000"}],
+  "schedule": [{"time": "2022-06-20T13:28:56.782Z", "location": "블루스퀘어"}],
+  "description": "BTS 뷔 컨셉의 하트키링이에용~~~~ 예뻐용 ",
+  "qnaNum": 2
+}

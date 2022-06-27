@@ -1,12 +1,11 @@
 import React from 'react'
-import {StyleSheet, Dimensions} from 'react-native'
+import {StyleSheet, View, Dimensions} from 'react-native'
 import {Carousel} from '../utils/Carousel'
 
 const {width} = Dimensions.get('window')
 
 type HeaderImageProps = {
-  style?: any
-  imageHeight?: number
+  images: string[] | undefined
 }
 
 const images = [
@@ -15,9 +14,9 @@ const images = [
   'http://localhost:8081/src/assets/images/detail_image_example3.jpeg',
 ]
 
-export const HeaderImage = ({style, imageHeight}: HeaderImageProps) => {
-  const [visible, setIsVisible] = React.useState(true)
-  return <Carousel imageUrls={images} imageWidth={width} />
+export const HeaderImage = ({images}: HeaderImageProps) => {
+  console.log('images : ', images)
+  return images === undefined ? <View></View> : <Carousel imageUrls={images} imageWidth={width} />
 }
 const styles = StyleSheet.create({
   image: {

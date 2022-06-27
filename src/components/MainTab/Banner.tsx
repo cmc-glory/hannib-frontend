@@ -1,18 +1,23 @@
 import React, {useCallback} from 'react'
-import {View, Text, Pressable, StyleSheet} from 'react-native'
+import {View, Text, Pressable, StyleSheet, Animated} from 'react-native'
 import {useNavigation} from '@react-navigation/native'
 import FastImage from 'react-native-fast-image'
 import {RightArrowWhiteIcon} from '../utils'
 import * as theme from '../../theme'
+import {useAnimatedStyle} from '../../hooks'
 
 type BannerProps = {
   imageUri: string
   title: string
   sharingid: string
+  animatedHeight: Animated.AnimatedInterpolation
 }
 
-export const Banner = ({imageUri, title, sharingid}: BannerProps) => {
+export const Banner = ({imageUri, title, sharingid, animatedHeight}: BannerProps) => {
   const navigation = useNavigation()
+  const animatedStyle = useAnimatedStyle({
+    transform: [{translateY: animatedHeight}],
+  })
   const onPressBanner = useCallback(() => {
     navigation.navigate('GoodsStackNavigator', {
       screen: 'GoodsDetail',
@@ -40,7 +45,7 @@ const styles = StyleSheet.create({
   absolute: {
     position: 'absolute',
     width: '100%',
-    height: '100%',
+    //height: '100%',
   },
   textContainer: {
     justifyContent: 'space-between',
@@ -57,6 +62,6 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   container: {
-    height: 84,
+    marginBottom: 6,
   },
 })

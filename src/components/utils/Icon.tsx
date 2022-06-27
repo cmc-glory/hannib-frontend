@@ -49,6 +49,7 @@ import SwitchFalseSvg from '../../assets/Icon/SwitchFalse.svg'
 import SwitchTrueSvg from '../../assets/Icon/SwitchTrue.svg'
 import RightArrowWhiteSvg from '../../assets/Icon/RightArrowWhite.svg'
 import FloatingButtonSvg from '../../assets/Icon/FloatingButton.svg'
+import LockSvg from '../../assets/Icon/Lock key.svg'
 import * as theme from '../../theme'
 
 type IconProps = {
@@ -61,6 +62,14 @@ type IconPropss = {
   onPress?: () => void
   style?: any
   size?: number
+}
+
+export const LockIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
+  return (
+    <Pressable onPress={onPress} style={style}>
+      <LockSvg width={size} height={size} />
+    </Pressable>
+  )
 }
 
 export const FloatingButtonIcon = ({onPress, style, size = 62}: IconPropss) => {
