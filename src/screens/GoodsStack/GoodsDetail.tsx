@@ -1,10 +1,10 @@
-import React, {useState, useEffect, useRef} from 'react'
-import {View, ScrollView, StyleSheet, Dimensions, Animated} from 'react-native'
+import React, {useState, useRef} from 'react'
+import {View, ScrollView, Dimensions, Animated} from 'react-native'
 import {getStatusBarHeight} from 'react-native-status-bar-height'
 import {useNavigation, useRoute} from '@react-navigation/native'
 import {useQuery} from 'react-query'
 import {HeaderImage, GoodsDetailContent, GoodsDetailHeader} from '../../components/GoodsStack'
-import {useAnimatedValue, useMonitorAnimatedValue} from '../../hooks'
+import {useAnimatedValue, useAppSelector} from '../../hooks'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import LinearGradient from 'react-native-linear-gradient'
 import {GoodsDetailRouteProps} from '../../navigation/GoodsStackNavigator'
@@ -17,6 +17,7 @@ const TOP_HEIGHT = getStatusBarHeight() + 48
 const WIDTH = Dimensions.get('window').width
 
 export const GoodsDetail = () => {
+  const userid = useAppSelector(state => state.auth.user.email)
   const navigation = useNavigation()
   const route = useRoute<GoodsDetailRouteProps>()
 
@@ -43,7 +44,7 @@ export const GoodsDetail = () => {
           style={{position: 'absolute', width: WIDTH, height: TOP_HEIGHT, zIndex: 99}}></LinearGradient>
       )}
 
-      <GoodsDetailHeader inverted={headerInvert} />
+      <GoodsDetailHeader inverted={headerInvert} userid={userid} writerid={data?.writerid} />
 
       <ScrollView
         bounces={false}
@@ -62,7 +63,7 @@ export const GoodsDetail = () => {
           })
         }}>
         <HeaderImage images={data?.images} />
-        <GoodsDetailContent headerHeight={headerHeight} data={data} />
+        {data !== undefined && <GoodsDetailContent headerHeight={headerHeight} data={data} />}
       </ScrollView>
     </SafeAreaView>
   )

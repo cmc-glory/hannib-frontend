@@ -86,14 +86,15 @@ const styles = StyleSheet.create({
     width: 144,
     height: 40,
     justifyContent: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 12,
     backgroundColor: theme.white,
-    left: 0,
+    left: -12,
   },
   container: {
     position: 'absolute',
     top: MARGIN_TOP,
     zIndex: 100,
+    left: 20,
   },
   borderTop: {
     borderTopLeftRadius: 4,

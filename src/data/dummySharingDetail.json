@@ -1,14 +1,14 @@
 {
   "id": "0000",
   "images": [
-    "http://localhost:8081/src/assets/images/detail_image_example.png",
-    "http://localhost:8081/src/assets/images/detail_image_example2.jpeg",
-    "http://localhost:8081/src/assets/images/detail_image_example3.jpeg"
+    "http://localhost:8081/src/assets/images/detail_image_example6.jpeg",
+    "http://localhost:8081/src/assets/images/detail_image_example7.jpeg",
+    "http://localhost:8081/src/assets/images/detail_image_example8.jpeg"
   ],
   "type": "offline",
   "title": "BTS 키링 나눔😽",
   "writerName": "춤추는 고양이",
-  "writerid": "user@email.com",
+  "writerid": "js7056@naver.com",
   "writerProfileImageUri": "http://localhost:8081/src/assets/images/aespa.jpeg",
   "date": "2022-06-20T13:28:56.782Z",
   "isSecret": true,

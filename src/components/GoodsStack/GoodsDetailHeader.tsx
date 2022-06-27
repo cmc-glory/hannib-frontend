@@ -5,6 +5,7 @@ import {useNavigation} from '@react-navigation/native'
 import {getStatusBarHeight} from 'react-native-status-bar-height'
 import Clipboard from '@react-native-clipboard/clipboard'
 
+import {DeleteModal} from './DeleteModal'
 import * as theme from '../../theme'
 import {useToggle, useAsyncState} from '../../hooks'
 import {LeftArrowIcon, ShareIcon, XIcon, MenuIcon, LeftArrowWhiteIcon, ShareWhiteIcon, MenuWhiteIcon} from '../utils'
@@ -15,11 +16,19 @@ type MenuModalProps = {
   moreVisible: boolean
   setMoreVisible: (x: any) => Promise<any>
   onPressReportIssue: () => void
+  isWriter: boolean
+  setDeleteModalVisible: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 type ShareModalProps = {
   shareVisible: boolean
   toggleShareVisible: () => void
+}
+
+type GoodsDetailHeaderProps = {
+  inverted?: boolean
+  userid: string
+  writerid: string
 }
 
 const ShareModal = ({shareVisible, toggleShareVisible}: ShareModalProps) => {
@@ -52,7 +61,20 @@ const ShareModal = ({shareVisible, toggleShareVisible}: ShareModalProps) => {
   )
 }
 
-const MenuModal = ({moreVisible, setMoreVisible, onPressReportIssue}: MenuModalProps) => {
+const MenuModal = ({moreVisible, setMoreVisible, onPressReportIssue, isWriter, setDeleteModalVisible}: MenuModalProps) => {
+  const [deletePressed, setDeletePressed] = useState<boolean>(false)
+  const onPressEdit = useCallback(() => {
+    setMoreVisible(false)
+
+    Alert.alert('수정하기 클릭')
+  }, [])
+
+  const onPressDelete = useCallback(() => {
+    setDeletePressed(true)
+    setMoreVisible(false)
+
+    //Alert.alert('삭제하기 클릭')
+  }, [])
   return (
     <Modal
       isVisible={moreVisible}
@@ -60,20 +82,41 @@ const MenuModal = ({moreVisible, setMoreVisible, onPressReportIssue}: MenuModalP
       animationInTiming={150}
       animationOutTiming={150}
       backdropOpacity={0}
+      onModalHide={() => {
+        if (deletePressed) {
+          setDeleteModalVisible(true)
+          setDeletePressed(false)
+        }
+      }}
       animationIn={'fadeIn'}
       animationOut="fadeOut">
-      <Pressable style={styles.menuModal} onPress={onPressReportIssue}>
-        <Text style={{color: theme.gray800}}>신고하기</Text>
-      </Pressable>
+      {isWriter ? (
+        <View style={styles.menuModalWrapper}>
+          <Pressable style={styles.menuModalButton} onPress={onPressEdit}>
+            <Text>수정하기</Text>
+          </Pressable>
+          <Pressable style={styles.menuModalButton} onPress={onPressDelete}>
+            <Text>삭제하기</Text>
+          </Pressable>
+        </View>
+      ) : (
+        <View style={styles.menuModalWrapper}>
+          <Pressable style={styles.menuModalButton} onPress={onPressReportIssue}>
+            <Text style={{color: theme.gray800}}>신고하기</Text>
+          </Pressable>
+        </View>
+      )}
     </Modal>
   )
 }
 
-export const GoodsDetailHeader = ({inverted}: {inverted?: boolean}) => {
+export const GoodsDetailHeader = ({inverted, userid, writerid}: GoodsDetailHeaderProps) => {
   const navigation = useNavigation()
   const [shareVisible, toggleShareVisible] = useToggle() // 공유 모달창 띄울지
   //const [moreVisible, toggleMoreVisible] = useToggle() // 메뉴 모달창 띄울지
   const [moreVisible, setMoreVisible] = useAsyncState(false)
+  const [deleteModalVisible, setDeleteModalVisible] = useState<boolean>(false)
+  const isWriter = userid == writerid
 
   const onPressGoback = useCallback(() => {
     navigation.goBack()
@@ -86,6 +129,7 @@ export const GoodsDetailHeader = ({inverted}: {inverted?: boolean}) => {
 
   return (
     <View style={[styles.container]}>
+      <DeleteModal deleteModalVisible={deleteModalVisible} setDeleteModalVisible={setDeleteModalVisible} />
       {inverted ? (
         <LeftArrowIcon onPress={onPressGoback} style={{marginRight: 10}} />
       ) : (
@@ -94,7 +138,13 @@ export const GoodsDetailHeader = ({inverted}: {inverted?: boolean}) => {
 
       <ShareModal shareVisible={shareVisible} toggleShareVisible={toggleShareVisible} />
       <View style={{flexDirection: 'row', alignItems: 'center', width: 65, justifyContent: 'space-between'}}>
-        <MenuModal moreVisible={moreVisible} setMoreVisible={setMoreVisible} onPressReportIssue={onPressReportIssue} />
+        <MenuModal
+          moreVisible={moreVisible}
+          setMoreVisible={setMoreVisible}
+          onPressReportIssue={onPressReportIssue}
+          isWriter={isWriter}
+          setDeleteModalVisible={setDeleteModalVisible}
+        />
         {inverted ? (
           <>
             <ShareIcon onPress={toggleShareVisible} />
@@ -126,26 +176,21 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     padding: theme.PADDING_SIZE,
   },
-  menuModal: {
-    //backgroundColor: theme.white,
-    backgroundColor: theme.white,
-    position: 'absolute',
-    width: 144,
+  menuModalButton: {
     height: 40,
     padding: 10,
     justifyContent: 'center',
     zIndex: 1,
+  },
+  menuModalWrapper: {
+    backgroundColor: theme.white,
+    position: 'absolute',
+    width: 144,
     right: 0,
     borderRadius: 4,
     top: STATUSBAR_HEIGHT + 28,
-    // shadowColor: theme.gray500,
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 0,
-    // },
-    // shadowOpacity: 0.32,
-    // shadowRadius: 32,
-    // elevation: 1,
+    borderColor: theme.gray200,
+    borderWidth: 1,
   },
   container: {
     width: '100%',

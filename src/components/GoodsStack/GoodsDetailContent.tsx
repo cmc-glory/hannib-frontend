@@ -59,22 +59,22 @@ export function GoodsDetailContent({headerHeight, data}: ContentProps) {
       <View style={styles.padding}>
         <View style={[theme.styles.rowFlexStart]}>
           <Tag label="우편"></Tag>
-          {data.isSecret && <LockIcon />}
+          {data?.isSecret && <LockIcon />}
         </View>
         <View style={[{marginVertical: 16}, theme.styles.rowSpaceBetween]}>
-          <Text style={[styles.title]}>{data.title}</Text>
+          <Text style={[styles.title]}>{data?.title}</Text>
           <View style={{alignItems: 'center'}}>
-            {data.isFavorite ? <StarFilledIcon size={30} onPress={onPressRemoveFavorite} /> : <StarUnfilledIcon size={30} onPress={onPressAddFavorite} />}
-            <Text style={{color: theme.gray500, fontSize: 12, fontFamily: 'Pretendard-Medium'}}>{data.favoriteNum}</Text>
+            {data?.isFavorite ? <StarFilledIcon size={30} onPress={onPressRemoveFavorite} /> : <StarUnfilledIcon size={30} onPress={onPressAddFavorite} />}
+            <Text style={{color: theme.gray500, fontSize: 12, fontFamily: 'Pretendard-Medium'}}>{data?.favoriteNum}</Text>
           </View>
         </View>
-        <Text style={[styles.date]}>{moment(data.date).format('YYYY.MM.DD')}</Text>
-        <SharingGoodsInfo products={data.products} />
-        {data.type == 'offline' && data.schedule != undefined && <SharingTimeLocation schedules={data.schedule} />}
+        <Text style={[styles.date]}>{moment(data?.date).format('YYYY.MM.DD')}</Text>
+        <SharingGoodsInfo products={data?.products} />
+        {data?.type == 'offline' && data?.schedule != undefined && <SharingTimeLocation schedules={data?.schedule} />}
       </View>
       <NoticeBanner postid="1111" />
-      <GoodsContentDetail description={data.description} />
-      <WriterProfileBanner writername={data.writerName} writerid={data.writerid} writerProfileImageUri={data.writerProfileImageUri} />
+      <GoodsContentDetail description={data?.description} />
+      <WriterProfileBanner writername={data?.writerName} writerid={data?.writerid} writerProfileImageUri={data?.writerProfileImageUri} />
 
       <View style={[styles.padding]}>
         <RelatedSharing />
