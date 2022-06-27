@@ -62,7 +62,7 @@ export const GoodsDetail = () => {
           })
         }}>
         <HeaderImage images={data?.images} />
-        <GoodsDetailContent headerHeight={headerHeight} />
+        <GoodsDetailContent headerHeight={headerHeight} data={data} />
       </ScrollView>
     </SafeAreaView>
   )

@@ -1,27 +1,49 @@
-import React, {useCallback, useEffect} from 'react'
-import {View, StyleSheet, ScrollView, Text, Animated, Pressable, Dimensions} from 'react-native'
-import {useNavigation} from '@react-navigation/native'
-import FastImage from 'react-native-fast-image'
-import {getStatusBarHeight} from 'react-native-status-bar-height'
+import React, {useCallback} from 'react'
+import {View, StyleSheet, Text, Dimensions} from 'react-native'
+import moment from 'moment'
+import {useMutation} from 'react-query'
 
-import {Tag, StarFilledIcon} from '../utils'
+import {Tag, StarFilledIcon, StarUnfilledIcon, LockIcon} from '../utils'
 import {NoticeBanner} from './NoticeBanner'
 import {RelatedSharing} from './RelatedSharing'
 import {GoodsContentDetail} from './GoodsContentDetail'
 import {SharingTimeLocation} from './SharingTimeLocation'
 import {WriterProfileBanner} from './WriterProfileBanner'
 import {SharingGoodsInfo} from './SharingGoodsInfo'
-import {useLayout} from '../../hooks'
+import {ISharingDetail} from '../../types'
+import {addFavorite, removeFavorite} from '../../api'
 import * as theme from '../../theme'
 
 type ContentProps = {
   headerHeight: number
-  // animatedBorder: Animated.AnimatedInterpolation
+  data: ISharingDetail
 }
 
 const window = Dimensions.get('screen')
 
-export function GoodsDetailContent({headerHeight}: ContentProps) {
+export function GoodsDetailContent({headerHeight, data}: ContentProps) {
+  const addFavoriteQuery = useMutation(addFavorite, {
+    onSuccess: () => {},
+  })
+  // 찜 해제
+  const removeFavoriteQuery = useMutation(removeFavorite, {
+    onSuccess: () => {},
+  })
+
+  const onPressAddFavorite = useCallback(() => {
+    // 즐겨찾기 버튼 클릭했을 때
+    data.isFavorite = true // 프론트 단에서만 즐겨찾기 여부 수정.
+    data.favoriteNum += 1
+    addFavoriteQuery.mutate('1111') // 인자에는 query params 넣기
+  }, [])
+
+  const onPressRemoveFavorite = useCallback(() => {
+    // 즐겨찾기 버튼 클릭했을 때
+    data.isFavorite = false //  프론트 단에서만 즐겨찾기 여부 수정. (invalidate query로 새로 가져오기 X)
+    data.favoriteNum -= 1
+    addFavoriteQuery.mutate('1111') // 인자에는 query params 넣기
+  }, [])
+
   return (
     <View
       style={[
@@ -37,21 +59,22 @@ export function GoodsDetailContent({headerHeight}: ContentProps) {
       <View style={styles.padding}>
         <View style={[theme.styles.rowFlexStart]}>
           <Tag label="우편"></Tag>
+          {data.isSecret && <LockIcon />}
         </View>
         <View style={[{marginVertical: 16}, theme.styles.rowSpaceBetween]}>
-          <Text style={[styles.title]}>BTS 키링 나눔</Text>
+          <Text style={[styles.title]}>{data.title}</Text>
           <View style={{alignItems: 'center'}}>
-            <StarFilledIcon size={30} />
-            <Text style={{color: theme.gray500, fontSize: 12, fontFamily: 'Pretendard-Medium'}}>456</Text>
+            {data.isFavorite ? <StarFilledIcon size={30} onPress={onPressRemoveFavorite} /> : <StarUnfilledIcon size={30} onPress={onPressAddFavorite} />}
+            <Text style={{color: theme.gray500, fontSize: 12, fontFamily: 'Pretendard-Medium'}}>{data.favoriteNum}</Text>
           </View>
         </View>
-        <Text style={[styles.date]}>2022.06.07</Text>
-        <SharingGoodsInfo />
-        <SharingTimeLocation />
+        <Text style={[styles.date]}>{moment(data.date).format('YYYY.MM.DD')}</Text>
+        <SharingGoodsInfo products={data.products} />
+        {data.type == 'offline' && data.schedule != undefined && <SharingTimeLocation schedules={data.schedule} />}
       </View>
-      <NoticeBanner />
-      <GoodsContentDetail />
-      <WriterProfileBanner />
+      <NoticeBanner postid="1111" />
+      <GoodsContentDetail description={data.description} />
+      <WriterProfileBanner writername={data.writerName} writerid={data.writerid} writerProfileImageUri={data.writerProfileImageUri} />
 
       <View style={[styles.padding]}>
         <RelatedSharing />

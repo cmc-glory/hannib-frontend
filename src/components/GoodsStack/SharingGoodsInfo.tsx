@@ -1,23 +1,22 @@
 import React from 'react'
 import {View, Text, StyleSheet} from 'react-native'
 import {ProductTag} from '../utils'
+import {IProductInfo} from '../../types'
 import * as theme from '../../theme'
 
-export const SharingGoodsInfo = () => {
+type SharingGoodsInfoProps = {
+  products: IProductInfo[]
+}
+
+export const SharingGoodsInfo = ({products}: SharingGoodsInfoProps) => {
   return (
     <View style={[{marginVertical: 16}]}>
-      <View style={[styles.tagContainer, {marginBottom: 10}]}>
-        <ProductTag label="BTS 진 컨셉의 하트 키링" />
-        <Text style={[styles.quantityText]}>30개</Text>
-      </View>
-      <View style={[styles.tagContainer, {marginBottom: 10}]}>
-        <ProductTag label="BTS 지민 컨셉의 스페이드 키링" />
-        <Text style={[styles.quantityText]}>30개</Text>
-      </View>
-      <View style={[styles.tagContainer, {marginBottom: 10}]}>
-        <ProductTag label="BTS 뷔 컨셉의 클로버 키링" />
-        <Text style={[styles.quantityText]}>30개</Text>
-      </View>
+      {products.map(item => (
+        <View style={[styles.tagContainer, {marginBottom: 10}]} key={item.id}>
+          <ProductTag label={item.name} />
+          <Text style={[styles.quantityText]}>{item.quantity}개</Text>
+        </View>
+      ))}
     </View>
   )
 }

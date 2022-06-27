@@ -1,5 +1,5 @@
 import React, {useState, useCallback} from 'react'
-import {View, Text, TouchableOpacity, TextInput, StyleSheet} from 'react-native'
+import {View, Text, Pressable, TouchableOpacity, TextInput, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation} from '@react-navigation/native'
 import {StackHeader, RoundButton} from '../../components/utils'
@@ -31,7 +31,12 @@ const RadioButtons = ({issues, selectedIssue, setSelectedIssue}: RadioButtons) =
   return (
     <View>
       {issues.map(item => (
-        <View key={item.key} style={[theme.styles.rowFlexStart, {marginBottom: 16}]}>
+        <Pressable
+          key={item.key}
+          style={[theme.styles.rowFlexStart, {marginBottom: 16}]}
+          onPress={() => {
+            setSelectedIssue(item.key)
+          }}>
           <TouchableOpacity
             style={[styles.radioCircle, {borderColor: selectedIssue == item.key ? theme.secondary : theme.gray300}]}
             onPress={() => {
@@ -40,7 +45,7 @@ const RadioButtons = ({issues, selectedIssue, setSelectedIssue}: RadioButtons) =
             {selectedIssue === item.key && <View style={styles.selectedRb} />}
           </TouchableOpacity>
           <Text style={styles.radioText}>{item.value}</Text>
-        </View>
+        </Pressable>
       ))}
     </View>
   )

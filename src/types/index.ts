@@ -47,7 +47,7 @@ export type ISharingDetail = {
   images: string[] | undefined
   type: ISharingType
   title: string
-  writeName: string
+  writerName: string
   writerid: string
   writerProfileImageUri: string
   date: Date | undefined
@@ -58,7 +58,7 @@ export type ISharingDetail = {
   schedule?: {
     time: Date | undefined
     location: string
-  }
+  }[]
   description: string
   qnaNum: number
 }
