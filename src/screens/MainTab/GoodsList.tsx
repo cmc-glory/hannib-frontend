@@ -3,22 +3,18 @@ import {RefreshControl, View, Text, FlatList, Pressable, Animated, StyleSheet, D
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation} from '@react-navigation/native'
 import IconIcons from 'react-native-vector-icons/Ionicons'
+import {useQuery, useQueryClient} from 'react-query'
 
 import * as theme from '../../theme'
 import {FloatingButton, DownArrowIcon, BellIcon, MagnifierIcon, BottomSheet} from '../../components/utils'
-import {GoodsListItem, GoodsFilterTab, GoodsListItemVer2, GoodsListBottomSheetContent, Banner, CategoryDropdown} from '../../components/MainTab'
+import {GoodsFilterTab, GoodsListItemVer2, GoodsListBottomSheetContent, Banner, CategoryDropdown} from '../../components/MainTab'
 import {ISharingInfo, IUserCategory} from '../../types'
-import {useAppSelector, useAnimatedValue, useMonitorAnimatedValue} from '../../hooks'
-
-const wait = (timeout: any) => {
-  return new Promise(resolve => setTimeout(resolve, timeout))
-}
-
-const screenHeight = Dimensions.get('window').height
-const screenWidth = Dimensions.get('window').width
+import {useAppSelector} from '../../hooks'
+import {getGoodsListAll, queryKeys} from '../../api'
 
 const GoodsLists = () => {
   const navigation = useNavigation()
+  const queryClient = useQueryClient()
   const user = useAppSelector(state => state.auth.user)
   // states
   const [sharings, setSharings] = useState<ISharingInfo[]>([])
@@ -34,15 +30,18 @@ const GoodsLists = () => {
     sharingid: '123445',
   })
 
+  const {data} = useQuery(queryKeys.goodsList, getGoodsListAll, {
+    onSuccess: () => {
+      setRefreshing(false) // 새로고침중이면 로딩 종료
+    },
+  })
+
   // callbacks
+
+  // 새로고침침 pull up이 일어났을 때
   const onRefresh = useCallback(() => {
     setRefreshing(true)
-    fetch('http://localhost:8081/src/data/dummySharings.json')
-      .then(res => res.json())
-      .then(result => {
-        setSharings(result)
-        setRefreshing(false)
-      })
+    queryClient.invalidateQueries(queryKeys.goodsList)
   }, [])
 
   const onPressWrite = useCallback(() => {
@@ -55,14 +54,6 @@ const GoodsLists = () => {
 
   const onPressSelectCategory = useCallback(() => {
     setShowSelectCategoryModal(showSelectCategoryModal => !showSelectCategoryModal)
-  }, [])
-
-  useEffect(() => {
-    fetch('http://localhost:8081/src/data/dummySharings.json')
-      .then(res => res.json())
-      .then(result => {
-        setSharings(result)
-      })
   }, [])
 
   return (
@@ -96,7 +87,7 @@ const GoodsLists = () => {
         />
         <FlatList
           contentContainerStyle={{paddingHorizontal: theme.PADDING_SIZE}}
-          data={sharings}
+          data={data}
           renderItem={({item}) => <GoodsListItemVer2 item={item}></GoodsListItemVer2>}
           refreshing={refreshing}
           numColumns={2}

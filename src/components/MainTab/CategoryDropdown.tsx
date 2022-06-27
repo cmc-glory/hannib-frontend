@@ -1,6 +1,7 @@
 import React, {useCallback} from 'react'
 import {View, Pressable, Text, StyleSheet} from 'react-native'
 import Modal from 'react-native-modal'
+import uuid from 'react-native-uuid'
 import {getStatusBarHeight} from 'react-native-status-bar-height'
 import {isIphoneX} from 'react-native-iphone-x-helper'
 import {IUserCategory} from '../../types'
@@ -18,27 +19,33 @@ type CategoryDropdownProps = {
 
 type CategoryItemProps = {
   userCategory: IUserCategory
-  setUserCategory: React.Dispatch<React.SetStateAction<IUserCategory>>
   currentCategory: IUserCategory
-  setShowCategoryModal: React.Dispatch<React.SetStateAction<boolean>>
   borderTop?: boolean
   borderBottom?: boolean
   onPressItem: (category: IUserCategory) => void
 }
 
-const CategoryItem = ({userCategory, setUserCategory, currentCategory, setShowCategoryModal, borderTop, borderBottom, onPressItem}: CategoryItemProps) => {
+const CategoryItem = ({userCategory, currentCategory, borderTop, borderBottom, onPressItem}: CategoryItemProps) => {
   const selected: boolean = userCategory.id == currentCategory.id
   return (
-    <Pressable onPress={()=>onPressItem(currentCategory)} style={[styles.itemContainer, selected && {backgroundColor: theme.main50}, borderTop && styles.borderTop, borderBottom && styles.borderBottom]}>
-      <Text>{currentCategory.name}</Text>
+    <Pressable
+      onPress={() => onPressItem(currentCategory)}
+      style={[styles.itemContainer, selected && {backgroundColor: theme.main50}, borderTop && styles.borderTop, borderBottom && styles.borderBottom]}>
+      <Text style={[selected && {fontFamily: 'Pretendard-Bold'}]}>{currentCategory.name}</Text>
     </Pressable>
   )
 }
 
 export const CategoryDropdown = ({showCategoryModal, setShowCategoryModal, userCategory, setUserCategory, categories}: CategoryDropdownProps) => {
-  const onPressItem = useCallback((category : IUserCategory)=>{
+  const onPressItem = useCallback((category: IUserCategory) => {
     setUserCategory(category)
     setShowCategoryModal(false)
+  }, [])
+
+  const onPressEditCategory = useCallback(() => {
+    setShowCategoryModal(false)
+
+    // 카테고리 수정하기로 이동하는 네비게이션 필요
   }, [])
   return (
     <Modal
@@ -52,55 +59,23 @@ export const CategoryDropdown = ({showCategoryModal, setShowCategoryModal, userC
       style={{margin: 0}}>
       <View style={[styles.container]}>
         {categories.length == 1 ? (
-          <CategoryItem
-            userCategory={userCategory}
-            setUserCategory={setUserCategory}
-            currentCategory={categories[0]}
-            setShowCategoryModal={setShowCategoryModal}
-            borderTop
-            onPressItem={onPressItem}
-            borderBottom
-          />
+          <CategoryItem userCategory={userCategory} currentCategory={categories[0]} borderTop onPressItem={onPressItem} borderBottom />
         ) : (
           categories.map((item, index) => {
             if (index == 0) {
-              return (
-                <CategoryItem
-                  key={item.id}
-                  userCategory={userCategory}
-                  setUserCategory={setUserCategory}
-                  currentCategory={item}
-                  setShowCategoryModal={setShowCategoryModal}
-                  onPressItem={onPressItem}
-                  borderTop
-                />
-              )
-            } else if (index == categories.length - 1) {
-              return (
-                <CategoryItem
-                  userCategory={userCategory}
-                  setUserCategory={setUserCategory}
-                  currentCategory={item}
-                  setShowCategoryModal={setShowCategoryModal}
-                  onPressItem={onPressItem}
-                  key={item.id}
-                  borderBottom
-                />
-              )
+              return <CategoryItem key={item.id} userCategory={userCategory} currentCategory={item} onPressItem={onPressItem} borderTop />
             } else {
-              return (
-                <CategoryItem
-                  userCategory={userCategory}
-                  setUserCategory={setUserCategory}
-                  currentCategory={item}
-                  setShowCategoryModal={setShowCategoryModal}
-                  onPressItem={onPressItem}
-                  key={item.id}
-                />
-              )
+              return <CategoryItem userCategory={userCategory} currentCategory={item} onPressItem={onPressItem} key={item.id} />
             }
           })
         )}
+        <CategoryItem
+          userCategory={userCategory}
+          currentCategory={{name: '수정하기', id: String(uuid.v1())}}
+          borderTop
+          borderBottom
+          onPressItem={onPressEditCategory}
+        />
       </View>
     </Modal>
   )

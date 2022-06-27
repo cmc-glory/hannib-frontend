@@ -18,3 +18,9 @@ export const removeFavorite = async (id: string) => {
 
   return data
 }
+
+export const getGoodsListAll = async () => {
+  const {data} = await apiClient.get('/dummySharings.json')
+
+  return data
+}

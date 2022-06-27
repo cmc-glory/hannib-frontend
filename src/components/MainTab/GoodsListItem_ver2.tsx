@@ -3,10 +3,12 @@ import {View, Text, Pressable, TextInput, StyleSheet, Alert, Dimensions} from 'r
 import FastImage from 'react-native-fast-image'
 import {useNavigation} from '@react-navigation/native'
 import Modal from 'react-native-modal'
+import {useMutation} from 'react-query'
 import moment from 'moment'
 import * as theme from '../../theme'
 import type {ISharingInfo} from '../../types'
 import {Tag, XIcon, StarUnfilledIcon, StarFilledIcon} from '../utils'
+import {addFavorite, removeFavorite} from '../../api'
 
 const {width} = Dimensions.get('window')
 
@@ -76,7 +78,7 @@ const SecretModal = ({secretModalVisible, setSecretModalVisible, secretKey, shar
 
 export const GoodsListItemVer2 = ({item}: {item: ISharingInfo}) => {
   // 나눔 게시글 아이템 구조분해 할당
-  const {id, type, title, writer, uri, isSecret, secretKey} = item
+  const {id, type, title, writer, uri, isSecret, secretKey, isFavorite} = item
 
   const now = moment()
   const openDate = moment(item.openDate, 'YYYYMMDDHHmmss')
@@ -88,6 +90,16 @@ export const GoodsListItemVer2 = ({item}: {item: ISharingInfo}) => {
   const [isBefore, setIsBefore] = useState(false)
 
   const [secretModalVisible, setSecretModalVisible] = useState(false)
+
+  // ------------- react queries -------------
+  // 찜 추가
+  const addFavoriteQuery = useMutation(addFavorite, {
+    onSuccess: () => {},
+  })
+  // 찜 해제
+  const removeFavoriteQuery = useMutation(removeFavorite, {
+    onSuccess: () => {},
+  })
 
   useEffect(() => {
     setIsBefore(now < openDate ? true : false)
@@ -107,9 +119,16 @@ export const GoodsListItemVer2 = ({item}: {item: ISharingInfo}) => {
     }
   }, [])
 
-  const onPressFavorite = useCallback(() => {
+  const onPressAddFavorite = useCallback(() => {
     // 즐겨찾기 버튼 클릭했을 때
-    Alert.alert('즐겨찾기 클릭')
+    item.isFavorite = true // 프론트 단에서만 즐겨찾기 여부 수정.
+    addFavoriteQuery.mutate('1111') // 인자에는 query params 넣기
+  }, [])
+
+  const onPressRemoveFavorite = useCallback(() => {
+    // 즐겨찾기 버튼 클릭했을 때
+    item.isFavorite = false //  프론트 단에서만 즐겨찾기 여부 수정. (invalidate query로 새로 가져오기 X)
+    addFavoriteQuery.mutate('1111') // 인자에는 query params 넣기
   }, [])
 
   return (
@@ -118,14 +137,19 @@ export const GoodsListItemVer2 = ({item}: {item: ISharingInfo}) => {
       <Pressable onPress={onPressItem} style={[styles.container]}>
         {isBefore && (
           <View style={styles.overlay}>
-            <Text style={[styles.overlayText, {marginBottom: 2.5}]}>{openDate.format('YYYY MM')}</Text>
+            <View style={[styles.imageHeader, {width: IMAGE_SIZE}]}>
+              {isFavorite ? <StarFilledIcon onPress={onPressRemoveFavorite} size={24} /> : <StarUnfilledIcon onPress={onPressAddFavorite} size={24} />}
+            </View>
+            <Text style={[styles.overlayText, {marginBottom: 2.5}]}>{openDate.format('YY/MM/DD HH:MM')}</Text>
             <Text style={styles.overlayText}>오픈 예정</Text>
           </View>
         )}
         <View style={{width: IMAGE_SIZE}}>
-          <View style={[styles.imageHeader, {width: IMAGE_SIZE}]}>
-            <StarUnfilledIcon onPress={onPressFavorite} size={24} />
-          </View>
+          {!isBefore && (
+            <View style={[styles.imageHeader, {width: IMAGE_SIZE}]}>
+              {isFavorite ? <StarFilledIcon onPress={onPressRemoveFavorite} size={24} /> : <StarUnfilledIcon onPress={onPressAddFavorite} size={24} />}
+            </View>
+          )}
           <FastImage style={[styles.image, {width: IMAGE_SIZE, height: IMAGE_SIZE}]} source={{uri: imageUri}}></FastImage>
         </View>
         <View style={{marginTop: 10}}>

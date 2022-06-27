@@ -5,27 +5,50 @@
     "type": "online",
     "title": "키링 나눔",
     "writer": "춤추는 찻잔",
-    "openDate": "Mon Jun 13 2022 10:45:14 GMT+0900 (한국 표준시)",
+    "openDate": "2022-06-20T13:28:56.782Z",
     "isSecret": true,
-    "secretKey": "1234"
+    "secretKey": "1234",
+    "isFavorite": false
   },
   {
     "id": "1",
     "uri": "http://localhost:8081/src/assets/images/detail_image_example2.jpeg",
     "type": "offline",
-    "title": "생카 운영",
+    "title": "생카 운영🎂",
     "writer": "달리는 곰",
-    "openDate": "Mon Jun 13 2022 10:45:14 GMT+0900 (한국 표준시)",
-    "isSecret": false
+    "openDate": "2022-06-20T13:28:56.782Z",
+    "isSecret": false,
+    "isFavorite": false
   },
   {
     "id": "2",
-    "uri": null,
+    "uri": "http://localhost:8081/src/assets/images/detail_image_example6.jpeg",
     "type": "online",
-    "title": "Lorem ipsum dolor sit amet, consectetur",
-    "writer": "nickname",
-    "openDate": "Mon Jun 13 2022 10:45:14 GMT+0900 (한국 표준시)",
-    "isSecret": false
+    "title": "산리오 큐티 롤스티커(6종)",
+    "writer": "산리오 덕후",
+    "openDate": "2022-06-20T13:28:56.782Z",
+    "isSecret": false,
+    "isFavorite": true
+  },
+  {
+    "id": "6",
+    "uri": "http://localhost:8081/src/assets/images/detail_image_example7.jpeg",
+    "type": "online",
+    "title": "시나모롤 페이스 쿠션",
+    "writer": "산리오 덕후",
+    "openDate": "2022-08-20T13:28:56.782Z",
+    "isSecret": false,
+    "isFavorite": true
+  },
+  {
+    "id": "7",
+    "uri": "http://localhost:8081/src/assets/images/detail_image_example8.jpeg",
+    "type": "offline",
+    "title": "기여운 스마트폰 그립톡💎",
+    "writer": "기운찬 식탁",
+    "openDate": "2022-06-20T13:28:56.782Z",
+    "isSecret": false,
+    "isFavorite": false
   },
   {
     "id": "3",
@@ -33,8 +56,9 @@
     "type": "offline",
     "title": "최고심 마우스패드",
     "writer": "잠자는 커피",
-    "openDate": "Mon Jun 20 2022 10:45:14 GMT+0900 (한국 표준시)",
-    "isSecret": false
+    "openDate": "2022-06-20T13:28:56.782Z",
+    "isSecret": false,
+    "isFavorite": false
   },
   {
     "id": "4",
@@ -42,8 +66,9 @@
     "type": "offline",
     "title": "최고심 패브릭 포스터",
     "writer": "잠자는 커피",
-    "openDate": "Mon Jun 13 2022 10:45:14 GMT+0900 (한국 표준시)",
-    "isSecret": false
+    "openDate": "2022-06-20T13:28:56.782Z",
+    "isSecret": false,
+    "isFavorite": false
   },
   {
     "id": "5",
@@ -51,7 +76,8 @@
     "type": "offline",
     "title": "그림 커미션",
     "writer": "혼나는 고구마",
-    "openDate": "Mon Jun 13 2022 10:45:14 GMT+0900 (한국 표준시)",
-    "isSecret": false
+    "openDate": "2022-06-20T13:28:56.782Z",
+    "isSecret": false,
+    "isFavorite": false
   }
 ]

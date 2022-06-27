@@ -39,6 +39,7 @@ export type ISharingInfo = {
   openDate: Date
   isSecret: boolean
   secretKey?: string
+  isFavorite: boolean
 }
 
 export type IAdditionalQuestion = {
