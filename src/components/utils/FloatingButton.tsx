@@ -1,6 +1,6 @@
 import React from 'react'
-import {View, Text, Platform, TouchableOpacity, StyleSheet} from 'react-native'
-import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs'
+import {Pressable, StyleSheet} from 'react-native'
+import FastImage from 'react-native-fast-image'
 import {main} from '../../theme'
 
 type FloatingButtonProps = {
@@ -10,11 +10,10 @@ type FloatingButtonProps = {
 }
 
 export const FloatingButton = ({onPress, children}: FloatingButtonProps) => {
-  const tabBarHeight = useBottomTabBarHeight()
   return (
-    <TouchableOpacity style={[styles.container]} onPress={onPress}>
-      {children}
-    </TouchableOpacity>
+    <Pressable onPress={onPress}>
+      <FastImage source={require('../../assets/images/FloatingButton.png')} style={styles.container} />
+    </Pressable>
   )
 }
 

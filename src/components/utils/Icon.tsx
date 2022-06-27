@@ -48,6 +48,7 @@ import StarSelectedSvg from '../../assets/Icon/selected/Star.svg'
 import SwitchFalseSvg from '../../assets/Icon/SwitchFalse.svg'
 import SwitchTrueSvg from '../../assets/Icon/SwitchTrue.svg'
 import RightArrowWhiteSvg from '../../assets/Icon/RightArrowWhite.svg'
+import FloatingButtonSvg from '../../assets/Icon/FloatingButton.svg'
 import * as theme from '../../theme'
 
 type IconProps = {
@@ -60,6 +61,14 @@ type IconPropss = {
   onPress?: () => void
   style?: any
   size?: number
+}
+
+export const FloatingButtonIcon = ({onPress, style, size = 62}: IconPropss) => {
+  return (
+    <Pressable onPress={onPress} style={style}>
+      <FloatingButtonSvg width={size} height={size} />
+    </Pressable>
+  )
 }
 
 export const RightArrowWhiteIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {

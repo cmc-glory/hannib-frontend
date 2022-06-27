@@ -6,7 +6,7 @@ import IconIcons from 'react-native-vector-icons/Ionicons'
 import {useQuery, useQueryClient} from 'react-query'
 
 import * as theme from '../../theme'
-import {FloatingButton, DownArrowIcon, BellIcon, MagnifierIcon, BottomSheet} from '../../components/utils'
+import {FloatingButton, DownArrowIcon, BellIcon, MagnifierIcon, BottomSheet, FloatingButtonIcon} from '../../components/utils'
 import {GoodsFilterTab, GoodsListItemVer2, GoodsListBottomSheetContent, Banner, CategoryDropdown} from '../../components/MainTab'
 import {ISharingInfo, IUserCategory, ISharingType} from '../../types'
 import {useAppSelector} from '../../hooks'
@@ -112,9 +112,7 @@ const GoodsLists = () => {
           onRefresh={onRefresh}
         />
       </View>
-      <FloatingButton onPress={onPressWrite}>
-        <IconIcons name="add-outline" color={theme.white} size={32} />
-      </FloatingButton>
+      <FloatingButtonIcon style={styles.floatingButton} />
       <BottomSheet modalVisible={showItemFilterBottomShet} setModalVisible={setShowItemFilterBottomSheet}>
         <GoodsListBottomSheetContent itemFilter={itemFilter} setItemFilter={setItemFilter} />
       </BottomSheet>
@@ -125,6 +123,20 @@ const GoodsLists = () => {
 export default GoodsLists
 
 const styles = StyleSheet.create({
+  floatingButton: {
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+    shadowColor: theme.gray800,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.24,
+    elevation: 5,
+  },
+
   title: {
     fontFamily: 'Pretendard-Bold',
     fontSize: 20,
