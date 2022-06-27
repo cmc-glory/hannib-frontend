@@ -32,10 +32,13 @@ const dataLists: Array<any> = [
 ]
 
 type ReceiverListItem = {
-  data: any
+  id: number
   onPressViewDetail: () => void
   index: number //db나오면 수정
   checkedItems: Array<any>
+  bouncyCheckboxRef: any
+  checkboxState: boolean
+  setCheckboxState: (bool: boolean) => void
 }
 
 type HoldingListItem = {
@@ -60,12 +63,20 @@ type HoldingDetailItem = {
 }
 
 //개별 리스트 아이템
-const ReceiverListItem = ({data, onPressViewDetail, index, checkedItems}: ReceiverListItem) => {
+const ReceiverListItem = ({onPressViewDetail, index, checkedItems, id, bouncyCheckboxRef, checkboxState, setCheckboxState}: ReceiverListItem) => {
   return (
     <View style={[theme.styles.rowFlexStart, {paddingVertical: 16, borderBottomWidth: 1, borderBottomColor: theme.gray200}]}>
       <View style={{maxWidth: 20, alignItems: 'center', marginRight: 12}}>
         <Text style={{marginBottom: 2, fontSize: 12}}>{index}</Text>
-        <BouncyCheckbox size={20} fillColor={theme.secondary} style={{width: 20}} isChecked={checkedItems.includes(index) ? true : false} />
+        <BouncyCheckbox
+          disableBuiltInState
+          size={20}
+          fillColor={theme.secondary}
+          style={{width: 20}}
+          isChecked={checkboxState}
+          ref={(ref: any) => (bouncyCheckboxRef = ref)}
+          //onPress={(isChecked: boolean = false) => setCheckboxState(!checkboxState)}
+        />
       </View>
 
       <View style={{alignSelf: 'stretch', justifyContent: 'space-between', flex: 1}}>
@@ -101,41 +112,45 @@ const HoldingListItem = ({
   checkedItems,
   setCheckedItems,
 }: HoldingListItem) => {
+  let bouncyCheckboxRef: BouncyCheckbox | null = null
+  const [checkboxState, setCheckboxState] = useState<boolean>(false)
   const [allChecked, setAllChecked] = useState<boolean>(false)
-  const handleSingleCheck = (checked: Boolean, id: Number) => {
-    if (checked) {
-      setCheckedItems([...checkedItems, id])
-    } else {
-      // 체크 해제
-      setCheckedItems(checkedItems.filter(el => el !== id))
-    }
-  }
-  // 체크박스 전체 선택
-  const handleAllCheck = (checked: Boolean) => {
-    if (checked) {
-      console.log('wow')
-      const idArray: Array<any> = []
-      // 전체 체크 박스가 체크 되면 id를 가진 모든 elements를 배열에 넣어주어서,
-      // 전체 체크 박스 체크
-      dataLists.forEach(el => idArray.push(el.id))
-      setCheckedItems(idArray)
-      console.log('dataLists : ', dataLists)
-      console.log('checkedItems : ', checkedItems)
-      console.log('idArray : ', idArray)
-    }
+  // const handleSingleCheck = (checked: Boolean, id: Number) => {
+  //   if (checked) {
+  //     setCheckedItems([...checkedItems, id])
+  //   } else {
+  //     // 체크 해제
+  //     setCheckedItems(checkedItems.filter(el => el !== id))
+  //   }
+  // }
+  // // 체크박스 전체 선택
+  // const handleAllCheck = (checked: Boolean) => {
+  //   if (checked) {
+  //     console.log('wow')
+  //     const idArray: Array<any> = []
+  //     // 전체 체크 박스가 체크 되면 id를 가진 모든 elements를 배열에 넣어주어서,
+  //     // 전체 체크 박스 체크
+  //     dataLists.forEach(el => idArray.push(el.id))
+  //     setCheckedItems(idArray)
+  //     console.log('checkedItems : ', checkedItems)
+  //     console.log('idArray : ', idArray)
+  //     bouncyCheckboxRef?.onPress()
+  //   }
 
-    // 반대의 경우 전체 체크 박스 체크 삭제
-    else {
-      setCheckedItems([])
-    }
-  }
+  //   // 반대의 경우 전체 체크 박스 체크 삭제
+  //   else {
+  //     setCheckedItems([])
+  //   }
+  //   console.log('dataLists : ', dataLists)
+  //   console.log('checkedItems : ', checkedItems)
+  // }
   return (
     <View>
       <View style={[theme.styles.rowSpaceBetween]}>
         <Pressable
           onPress={() => {
-            setAllChecked(!allChecked)
-            handleAllCheck(allChecked)
+            //bouncyCheckboxRef?.onPress()
+            setCheckboxState(!checkboxState)
           }}>
           <Text>전체 선택</Text>
         </Pressable>
@@ -153,7 +168,16 @@ const HoldingListItem = ({
       <View>
         {/* 리스트 api 필요 */}
         {dataLists.map((list, idx) => (
-          <ReceiverListItem data={list[idx]} onPressViewDetail={onPressViewDetail} index={idx + 1} key={list.id} checkedItems={checkedItems} />
+          <ReceiverListItem
+            bouncyCheckboxRef={bouncyCheckboxRef}
+            id={list.id}
+            onPressViewDetail={onPressViewDetail}
+            index={idx + 1}
+            key={list.id}
+            checkedItems={checkedItems}
+            checkboxState={checkboxState}
+            setCheckboxState={setCheckboxState}
+          />
         ))}
       </View>
     </View>
