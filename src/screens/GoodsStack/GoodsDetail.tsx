@@ -1,8 +1,9 @@
-import React, {useState, useRef} from 'react'
+import React, {useState, useRef, useCallback} from 'react'
 import {View, ScrollView, Dimensions, Animated} from 'react-native'
 import {getStatusBarHeight} from 'react-native-status-bar-height'
 import {useNavigation, useRoute} from '@react-navigation/native'
 import {useQuery} from 'react-query'
+import {FloatingBottomButton} from '../../components/utils'
 import {HeaderImage, GoodsDetailContent, GoodsDetailHeader} from '../../components/GoodsStack'
 import {useAnimatedValue, useAppSelector} from '../../hooks'
 import {SafeAreaView} from 'react-native-safe-area-context'
@@ -32,6 +33,15 @@ export const GoodsDetail = () => {
       //setSharingDetail(data)
     },
   })
+
+  const onPressRequest = useCallback(() => {
+    console.log('data type : ', data?.type)
+    if (data?.type == 'online') {
+      navigation.navigate('GoodsRequestOnline')
+    } else {
+      navigation.navigate('GoodsRequestOffline')
+    }
+  }, [data])
 
   return (
     <SafeAreaView edges={['bottom']} style={{flex: 1, position: 'relative'}}>
@@ -65,6 +75,7 @@ export const GoodsDetail = () => {
         <HeaderImage images={data?.images} />
         {data !== undefined && <GoodsDetailContent headerHeight={headerHeight} data={data} />}
       </ScrollView>
+      <FloatingBottomButton label="신청하기" enabled onPress={onPressRequest} />
     </SafeAreaView>
   )
 }

@@ -4,4 +4,5 @@ export const queryKeys = {
   popularSearch: ['popularSearch'],
   goodsList: ['goodsList'],
   goodsDetail: ['goodsDetail'],
+  goodsRequestInfo: ['goodsRequestInfo'],
 }

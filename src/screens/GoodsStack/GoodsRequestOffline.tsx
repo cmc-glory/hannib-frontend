@@ -1,12 +1,33 @@
 import React, {useCallback, useState} from 'react'
-import {View, Text, Pressable, TextInput, TouchableOpacity, Platform, StyleSheet} from 'react-native'
+import {View, ScrollView, Text, Pressable, TextInput, TouchableOpacity, Platform, StyleSheet, Animated} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import moment from 'moment'
-import DateTimePickerModal from 'react-native-modal-datetime-picker'
-import {StackHeader, FloatingBottomButton, CheckboxIcon, DownArrowIcon} from '../../components/utils'
+import {useQuery} from 'react-query'
+import KeyboardManager from 'react-native-keyboard-manager'
+import {StackHeader, FloatingBottomButton, CheckboxIcon, DownArrowIcon, SeparatorBold} from '../../components/utils'
 import * as theme from '../../theme'
-import {useAutoFocus, AutoFocusProvider} from '../../contexts'
-import {IRequestForm, IProductInfo} from '../../types'
+import {useAnimatedValue, useToggle, useAnimatedStyle} from '../../hooks'
+import {IRequestForm, IProductInfo, ISharingRequestInfo} from '../../types'
+import {queryKeys, getGoodsRequestInfo} from '../../api'
+
+if (Platform.OS === 'ios') {
+  KeyboardManager.setEnable(true)
+  KeyboardManager.setEnableDebugging(false)
+  KeyboardManager.setKeyboardDistanceFromTextField(10)
+  KeyboardManager.setLayoutIfNeededOnUpdate(true)
+  KeyboardManager.setEnableAutoToolbar(false)
+  KeyboardManager.setToolbarDoneBarButtonItemText('확인')
+  KeyboardManager.setToolbarManageBehaviourBy('subviews') // "subviews" | "tag" | "position"
+  KeyboardManager.setToolbarPreviousNextButtonEnable(false)
+  KeyboardManager.setToolbarTintColor('#007aff') // Only #000000 format is supported
+  KeyboardManager.setToolbarBarTintColor('#FFFFFF') // Only #000000 format is supported
+  KeyboardManager.setShouldShowToolbarPlaceholder(true)
+  KeyboardManager.setOverrideKeyboardAppearance(false)
+  KeyboardManager.setKeyboardAppearance('default') // "default" | "light" | "dark"
+  KeyboardManager.setShouldResignOnTouchOutside(true)
+  KeyboardManager.setShouldPlayInputClicks(true)
+  KeyboardManager.resignFirstResponder()
+}
 
 const BUTTON_SIZE = 24
 
@@ -42,81 +63,128 @@ const ItemQuantity = ({item, index, selectedItems, setSelectedItems}: ItemQuanti
 }
 
 export const GoodsRequestOffline = () => {
+  const [info, setInfo] = useState<ISharingRequestInfo>({
+    products: [],
+    schedule: [],
+    title: '',
+  })
+  const [scheduleLength, setScheduleLength] = useState<number>(1)
+
+  useQuery(queryKeys.goodsRequestInfo, getGoodsRequestInfo, {
+    onSuccess: data => {
+      setInfo(data)
+      setRequestForm({...requestForm, receiveDate: data.schedule[0].time})
+      setScheduleLength(data.schedule ? data.schedule.length : 1)
+    },
+  })
+
   const [requestForm, setRequestForm] = useState<IRequestForm>({
-    recieveDate: '',
+    receiveDate: '',
     twitterid: '',
     name: '',
-    address: {
-      postcode: '',
-      roadAddress: '',
-      detailedAddress: '',
-    },
     phonenumber: '',
   })
 
+  const [opened, toggleOpened] = useToggle()
+
+  const animatedValue = useAnimatedValue()
+
+  const open = Animated.timing(animatedValue, {
+    // Select box 토글 애니메이션
+    toValue: opened == true ? 0 : 1,
+    duration: 200,
+    useNativeDriver: false,
+  })
+
+  console.log('scheduleLength: ', scheduleLength)
+
+  const animatedHeight = animatedValue.interpolate({
+    // select box 높이
+    inputRange: [0, 1],
+    outputRange: [0, theme.INPUT_HEIGHT * scheduleLength],
+    extrapolate: 'clamp',
+  })
+
+  const animatedInputHeight = animatedValue.interpolate({
+    // select box 높이
+    inputRange: [0, 1],
+    outputRange: [0, theme.INPUT_HEIGHT],
+    extrapolate: 'clamp',
+  })
+
+  const animatedRotation = animatedValue.interpolate({
+    // select arrow 회전 애니메이션
+    inputRange: [0, 1],
+    outputRange: ['0deg', '180deg'],
+  })
+
+  const animatedArrowStyle = useAnimatedStyle({transform: [{rotate: animatedRotation}]})
+  const animatedSelectionBoxStyle = useAnimatedStyle({height: animatedHeight, borderWidth: animatedValue}, [animatedHeight])
+  const animatedSelectionInputStyle = useAnimatedStyle({height: animatedInputHeight})
+  const animatedTextStyle = useAnimatedStyle({opacity: animatedValue})
+
+  const onPressOpen = useCallback(() => {
+    // select box누르면 애니메이션 시작
+    open.start(toggleOpened)
+  }, [opened])
+
+  const onPressDate = useCallback(
+    (date: Date | undefined) => {
+      // 카테고리 선택하면, set하고 닫음
+      open.start(toggleOpened)
+      setRequestForm({...requestForm, receiveDate: date})
+      //setMainCategory(mainCategory => (mainCategory == '가수' ? '배우' : '가수'))
+    },
+    [opened],
+  )
+
   const [selectedItems, setSelectedItems] = useState<boolean[]>(new Array(items.length).fill(false)) // 선택한 상품들
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false) // 나눔 수령일 선택 모달 띄울지
-  const [selectedDate, setSelectedDate] = useState(null)
-
-  const showDatePicker = () => {
-    //console.log('here')
-    setDatePickerVisibility(true)
-  }
-
-  const hideDatePicker = () => {
-    setDatePickerVisibility(false)
-  }
-
-  const handleConfirm = (date: any) => {
-    //console.warn('A date has been picked: ', date)
-    setRequestForm({...requestForm, recieveDate: moment(date).format('YYYY MM D HH:mm')})
-    hideDatePicker()
-  }
-
-  const [date, setDate] = useState(new Date())
-  const onChangeText = useCallback(() => {}, [])
 
   const onPressRequest = useCallback(() => {}, [])
-  const focus = useAutoFocus()
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
       <StackHeader title="신청하기" goBack />
-      <AutoFocusProvider>
+      <ScrollView>
         <View style={{marginBottom: 20, marginTop: 10}}>
-          <Text style={[theme.styles.wrapper, styles.title]}>BTS 키링 나눔</Text>
+          <Text style={[theme.styles.wrapper, styles.title]}>{info.title}</Text>
           <View style={[theme.styles.wrapper]}>
             <Text style={[theme.styles.bold16]}>상품 선택</Text>
-            {items.map((item, index) => (
+            {info.products.map((item, index) => (
               <ItemQuantity item={item} key={item.id} index={index} selectedItems={selectedItems} setSelectedItems={setSelectedItems} />
             ))}
           </View>
         </View>
+        <SeparatorBold />
 
         <View style={[{padding: theme.PADDING_SIZE}]}>
           <Text style={[theme.styles.bold16]}>정보 입력</Text>
           <View style={[styles.spacing]}>
             <Text style={styles.inputLabel}>나눔 수령일</Text>
-            <DateTimePickerModal
-              isVisible={isDatePickerVisible}
-              mode="datetime"
-              onConfirm={handleConfirm}
-              onCancel={hideDatePicker}
-              display={Platform.OS == 'ios' ? 'inline' : 'default'}
-            />
-
-            <Pressable onPress={showDatePicker}>
-              {requestForm.recieveDate == '' && <DownArrowIcon style={{position: 'absolute', right: 16, top: 12}} />}
-              <TextInput
-                onPressIn={() => Platform.OS == 'ios' && showDatePicker()}
-                editable={false}
-                underlineColorAndroid="transparent"
-                value={requestForm.recieveDate}
-                onChange={(e: any) => setRequestForm({...requestForm, recieveDate: e.nativeEvent.text})}
-                style={[theme.styles.input, styles.input]}
-                placeholder="나눔 수령일 선택"
-                onFocus={focus}
-                placeholderTextColor={theme.gray200}></TextInput>
+            <Pressable
+              onPress={onPressOpen}
+              style={[
+                styles.input,
+                theme.styles.rowSpaceBetween,
+                {height: theme.INPUT_HEIGHT},
+                styles.borderTopRadius,
+                opened == false && styles.borderBottomRadius,
+              ]}>
+              <Text style={{marginLeft: 16}}>{moment(requestForm.receiveDate).format('YYYY.MM.DD HH:mm')}</Text>
+              <Animated.View style={{...animatedArrowStyle, marginRight: 16}}>
+                <DownArrowIcon onPress={onPressOpen} />
+              </Animated.View>
             </Pressable>
+            <Animated.View style={[{marginTop: -1, borderColor: theme.gray300}, animatedSelectionBoxStyle, styles.borderBottomRadius]}>
+              {info.schedule?.map((schedule, index) => (
+                <Animated.View
+                  key={index}
+                  style={[{...animatedSelectionInputStyle, justifyContent: 'center'}, index !== scheduleLength - 1 && styles.inputItemSeparator]}>
+                  <Pressable onPress={() => onPressDate(schedule.time)}>
+                    <Animated.Text style={{marginLeft: 16, ...animatedTextStyle}}>{moment(schedule.time).format('YYYY.MM.DD HH:mm')}</Animated.Text>
+                  </Pressable>
+                </Animated.View>
+              ))}
+            </Animated.View>
           </View>
           <View style={[styles.spacing]}>
             <Text style={styles.inputLabel}>이름</Text>
@@ -125,7 +193,6 @@ export const GoodsRequestOffline = () => {
               onChange={(e: any) => setRequestForm({...requestForm, name: e.nativeEvent.text})}
               style={[theme.styles.input, styles.input]}
               placeholder="이름"
-              onFocus={focus}
               placeholderTextColor={theme.gray200}
               underlineColorAndroid="transparent"
             />
@@ -137,7 +204,6 @@ export const GoodsRequestOffline = () => {
               onChange={(e: any) => setRequestForm({...requestForm, twitterid: e.nativeEvent.text})}
               style={[theme.styles.input, styles.input]}
               placeholder="트위터 아이디"
-              onFocus={focus}
               placeholderTextColor={theme.gray200}
             />
           </View>
@@ -145,22 +211,36 @@ export const GoodsRequestOffline = () => {
           <View style={[{marginBottom: 30}, styles.spacing]}>
             <Text style={styles.inputLabel}>전화번호</Text>
             <TextInput
+              keyboardType="number-pad"
               value={requestForm.phonenumber}
               onChange={(e: any) => setRequestForm({...requestForm, phonenumber: e.nativeEvent.text})}
               style={[theme.styles.input, styles.input]}
-              placeholder="전화번호"
-              onFocus={focus}
+              placeholder="- 제외하고 입력"
               placeholderTextColor={theme.gray200}
             />
           </View>
         </View>
-      </AutoFocusProvider>
+      </ScrollView>
+
       <FloatingBottomButton label="제출하기" />
     </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
+  inputItemSeparator: {
+    borderBottomColor: theme.gray100,
+    borderBottomWidth: 1,
+  },
+  borderTopRadius: {
+    borderTopLeftRadius: 4,
+    borderTopRightRadius: 4,
+  },
+  borderBottomRadius: {
+    borderBottomEndRadius: 4,
+    borderBottomStartRadius: 4,
+    //borderBottomRightRadius: 40,
+  },
   inputLabel: {
     fontSize: 16,
     fontFamily: 'Pretendard-Medium',
@@ -177,7 +257,10 @@ const styles = StyleSheet.create({
   spacing: {
     marginTop: 24,
   },
-  input: {},
+  input: {
+    borderColor: theme.gray300,
+    borderWidth: 1,
+  },
   title: {
     fontFamily: 'Pretendard-Bold',
     fontSize: 20,

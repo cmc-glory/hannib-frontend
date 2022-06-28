@@ -15,10 +15,10 @@ export type IProductInfo = {
 }
 
 export type IRequestForm = {
-  recieveDate: string
+  receiveDate: string | Date | undefined
   name: string
   twitterid: string
-  address: {postcode: string; roadAddress: string; detailedAddress: string}
+  address?: {postcode: string; roadAddress: string; detailedAddress: string}
   phonenumber: string
 }
 
@@ -61,6 +61,15 @@ export type ISharingDetail = {
   }[]
   description: string
   qnaNum: number
+}
+
+export type ISharingRequestInfo = {
+  products: IProductInfo[]
+  schedule?: {
+    time: Date | undefined
+    location: string
+  }[]
+  title: string
 }
 
 export type IAdditionalQuestion = {

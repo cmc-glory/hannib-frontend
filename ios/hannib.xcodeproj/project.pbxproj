@@ -18,6 +18,7 @@
 		8280AE455AF343278995B997 /* Pretendard-SemiBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 2247430531364D8D9CF1A09C /* Pretendard-SemiBold.otf */; };
 		828EBDE2ABCC490C8BFB5154 /* Pretendard-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 69BD540576184133A0B6E63F /* Pretendard-Medium.otf */; };
 		8D55C0BBE9A64191A8FCEAAE /* Pretendard-ExtraLight.otf in Resources */ = {isa = PBXBuildFile; fileRef = 692EC3C140134301BE05AC35 /* Pretendard-ExtraLight.otf */; };
+		A35BC22B286AD5CB006B6610 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35BC22A286AD5CB006B6610 /* File.swift */; };
 		A3643E0428499323003CB607 /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A3643DF428499323003CB607 /* Fontisto.ttf */; };
 		A3643E0528499323003CB607 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A3643DF528499323003CB607 /* Octicons.ttf */; };
 		A3643E0628499323003CB607 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A3643DF628499323003CB607 /* Feather.ttf */; };
@@ -74,6 +75,8 @@
 		81372A9A900344A9AE0F1D71 /* Pretendard-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Pretendard-Bold.otf"; path = "../src/assets/fonts/Pretendard-Bold.otf"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = hannib/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-hannib-hannibTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-hannib-hannibTests.release.xcconfig"; path = "Target Support Files/Pods-hannib-hannibTests/Pods-hannib-hannibTests.release.xcconfig"; sourceTree = "<group>"; };
+		A35BC229286AD5CA006B6610 /* hannib-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "hannib-Bridging-Header.h"; sourceTree = "<group>"; };
+		A35BC22A286AD5CB006B6610 /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		A3643DF428499323003CB607 /* Fontisto.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fontisto.ttf; sourceTree = "<group>"; };
 		A3643DF528499323003CB607 /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Octicons.ttf; sourceTree = "<group>"; };
 		A3643DF628499323003CB607 /* Feather.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Feather.ttf; sourceTree = "<group>"; };
@@ -183,6 +186,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				A35BC22A286AD5CB006B6610 /* File.swift */,
 				13B07FAE1A68108700A75B9A /* hannib */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* hannibTests */,
@@ -190,6 +194,7 @@
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
 				805049186D9440528E57D89E /* Resources */,
+				A35BC229286AD5CA006B6610 /* hannib-Bridging-Header.h */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -300,7 +305,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						LastSwiftMigration = 1120;
+						LastSwiftMigration = 1330;
 					};
 				};
 			};
@@ -542,6 +547,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
+				A35BC22B286AD5CB006B6610 /* File.swift in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -561,6 +567,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5B7EB9410499542E8C5724F5 /* Pods-hannib-hannibTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				DEVELOPMENT_TEAM = 5G4XS99S66;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -589,6 +596,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 89C6BE57DB24E9ADA2F236DE /* Pods-hannib-hannibTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				DEVELOPMENT_TEAM = 5G4XS99S66;
@@ -631,6 +639,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.cmc.hannib;
 				PRODUCT_NAME = hannib;
+				SWIFT_OBJC_BRIDGING_HEADER = "hannib-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -657,6 +666,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.cmc.hannib;
 				PRODUCT_NAME = hannib;
+				SWIFT_OBJC_BRIDGING_HEADER = "hannib-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

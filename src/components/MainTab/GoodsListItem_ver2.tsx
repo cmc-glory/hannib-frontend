@@ -131,7 +131,7 @@ export const GoodsListItemVer2 = ({item}: {item: ISharingInfo}) => {
   const onPressRemoveFavorite = useCallback(() => {
     // 즐겨찾기 버튼 클릭했을 때
     item.isFavorite = false //  프론트 단에서만 즐겨찾기 여부 수정. (invalidate query로 새로 가져오기 X)
-    addFavoriteQuery.mutate('1111') // 인자에는 query params 넣기
+    removeFavoriteQuery.mutate('1111') // 인자에는 query params 넣기
   }, [])
 
   return (
