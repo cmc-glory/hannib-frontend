@@ -22,15 +22,17 @@ type ReceiverListItem = {
   onPressViewDetail: () => void
   index: number //db나오면 수정
   checkedItems: Array<any>
-  bouncyCheckboxRef: any
-  checkboxState: boolean
-  setCheckboxState: (bool: boolean) => void
+  handleSingleCheck: (id: number) => void
 }
 
 //개별 리스트 아이템
-export const ReceiverListItem = ({onPressViewDetail, index, checkedItems, id, bouncyCheckboxRef, checkboxState, setCheckboxState}: ReceiverListItem) => {
+export const ReceiverListItem = ({onPressViewDetail, index, checkedItems, id, handleSingleCheck}: ReceiverListItem) => {
   return (
-    <View style={[theme.styles.rowFlexStart, {paddingVertical: 16, borderBottomWidth: 1, borderBottomColor: theme.gray200}]}>
+    <Pressable
+      onPress={() => {
+        handleSingleCheck(id)
+      }}
+      style={[theme.styles.rowFlexStart, {paddingVertical: 16, borderBottomWidth: 1, borderBottomColor: theme.gray200}]}>
       <View style={{maxWidth: 20, alignItems: 'center', marginRight: 12}}>
         <Text style={{marginBottom: 2, fontSize: 12}}>{index}</Text>
         <BouncyCheckbox
@@ -38,9 +40,10 @@ export const ReceiverListItem = ({onPressViewDetail, index, checkedItems, id, bo
           size={20}
           fillColor={theme.secondary}
           style={{width: 20}}
-          isChecked={checkboxState}
-          ref={(ref: any) => (bouncyCheckboxRef = ref)}
-          onPress={(isChecked: boolean = false) => setCheckboxState(!checkboxState)}
+          isChecked={checkedItems.includes(id)}
+          onPress={() => {
+            handleSingleCheck(id)
+          }}
         />
       </View>
 
@@ -61,6 +64,6 @@ export const ReceiverListItem = ({onPressViewDetail, index, checkedItems, id, bo
         <Text style={{color: theme.gray500}}>상세보기</Text>
         <RightArrowIcon />
       </Pressable>
-    </View>
+    </Pressable>
   )
 }

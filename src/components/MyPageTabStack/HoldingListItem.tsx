@@ -1,18 +1,5 @@
-import React, {useCallback, useState} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import {View, Pressable, ScrollView, Text, StyleSheet} from 'react-native'
-import {SafeAreaView} from 'react-native-safe-area-context'
-import {
-  StackHeader,
-  FloatingBottomButton,
-  DownArrowIcon,
-  LeftArrowIcon,
-  RightArrowIcon,
-  SharingPreview,
-  GoodsListItem,
-  XIcon,
-  MenuIcon,
-  BottomSheet,
-} from '../../components/utils'
 import BouncyCheckbox from 'react-native-bouncy-checkbox'
 import {useToggle} from '../../hooks'
 import * as theme from '../../theme'
@@ -46,47 +33,44 @@ export const HoldingListItem = ({
   checkedItems,
   setCheckedItems,
 }: HoldingListItem) => {
-  let bouncyCheckboxRef: BouncyCheckbox | null = null
-  const [checkboxState, setCheckboxState] = useState<boolean>(false)
   const [allChecked, setAllChecked] = useState<boolean>(false)
-  const handleSingleCheck = (checked: Boolean, id: Number) => {
-    if (checked) {
-      setCheckedItems([...checkedItems, id])
+  const handleSingleCheck = (id: number) => {
+    if (checkedItems.includes(id)) {
+      //체크 해제
+      setCheckedItems(checkedItems.filter(checkedId => checkedId !== id))
     } else {
-      // 체크 해제
-      setCheckedItems(checkedItems.filter(el => el !== id))
+      //체크
+      setCheckedItems([...checkedItems, id])
     }
   }
+
   // 체크박스 전체 선택
-  const handleAllCheck = (checked: Boolean) => {
+  const handleAllCheck = (checked: boolean) => {
     if (checked) {
-      console.log('wow')
       const idArray: Array<any> = []
-      // 전체 체크 박스가 체크 되면 id를 가진 모든 elements를 배열에 넣어주어서,
-      // 전체 체크 박스 체크
       dataLists.forEach(el => idArray.push(el.id))
       setCheckedItems(idArray)
-      console.log('checkedItems : ', checkedItems)
-      console.log('idArray : ', idArray)
-      bouncyCheckboxRef?.onPress()
+      setAllChecked(true)
     }
-
-    // 반대의 경우 전체 체크 박스 체크 삭제
+    // 전체 체크 박스 체크 삭제
     else {
       setCheckedItems([])
+      setAllChecked(false)
     }
-    console.log('dataLists : ', dataLists)
-    console.log('checkedItems : ', checkedItems)
   }
+  useEffect(() => {
+    if (checkedItems.length == dataLists.length) setAllChecked(true)
+    else setAllChecked(false)
+  }, [allChecked, checkedItems])
+
   return (
     <View>
       <View style={[theme.styles.rowSpaceBetween]}>
         <Pressable
           onPress={() => {
-            //bouncyCheckboxRef?.onPress()
-            setCheckboxState(!checkboxState)
+            handleAllCheck(!allChecked)
           }}>
-          <Text>전체 선택</Text>
+          {allChecked ? <Text>전체 선택 해제</Text> : <Text>전체 선택</Text>}
         </Pressable>
         <View style={[theme.styles.rowFlexStart]}>
           <HoldingSharingFilterTab
@@ -103,14 +87,12 @@ export const HoldingListItem = ({
         {/* 리스트 api 필요 */}
         {dataLists.map((list, idx) => (
           <ReceiverListItem
-            bouncyCheckboxRef={bouncyCheckboxRef}
             id={list.id}
             onPressViewDetail={onPressViewDetail}
             index={idx + 1}
             key={list.id}
             checkedItems={checkedItems}
-            checkboxState={checkboxState}
-            setCheckboxState={setCheckboxState}
+            handleSingleCheck={handleSingleCheck}
           />
         ))}
       </View>

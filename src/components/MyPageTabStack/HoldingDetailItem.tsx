@@ -1,24 +1,8 @@
 import React, {useCallback, useState} from 'react'
 import {View, Pressable, ScrollView, Text, StyleSheet} from 'react-native'
-import {SafeAreaView} from 'react-native-safe-area-context'
-import {
-  StackHeader,
-  FloatingBottomButton,
-  DownArrowIcon,
-  LeftArrowIcon,
-  RightArrowIcon,
-  SharingPreview,
-  GoodsListItem,
-  XIcon,
-  MenuIcon,
-  BottomSheet,
-} from '../../components/utils'
-import BouncyCheckbox from 'react-native-bouncy-checkbox'
-import {useToggle} from '../../hooks'
+import {LeftArrowIcon, RightArrowIcon, XIcon} from '../../components/utils'
 import * as theme from '../../theme'
-import {useNavigation} from '@react-navigation/native'
-import {EditDeleteModal, HoldingSharingBottomSheetContent, HoldingSharingFilterTab} from '../../components/MyPageStack'
-import {HoldingListItem} from '../../components/MyPageTabStack'
+import {HoldingSharingDetail} from './HoldingSharingDetail'
 
 type HoldingDetailItem = {
   isOnline: boolean
