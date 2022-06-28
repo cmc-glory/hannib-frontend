@@ -16,10 +16,18 @@ export type IProductInfo = {
 
 export type IRequestForm = {
   product: {productid: string}[]
-  receiveDate: string | Date | undefined
-  twitterid: string
+  receiveDate?: string | Date | undefined
+  twitterid?: string
   address?: {postcode: string; roadAddress: string; detailedAddress: string}
   phonenumber: string
+  name?: string
+  additionalQuestions: IAdditionalQuestion[]
+}
+
+export type IRequestFormOnline = {
+  product: {productid: string}[]
+  address: {postcode: string; roadAddress: string; detailedAddress: string}
+  name: string
 }
 
 export type IStar = {
@@ -70,6 +78,7 @@ export type ISharingRequestInfo = {
     location: string
   }[]
   title: string
+  additionalQuestions: IAdditionalQuestion[]
 }
 
 export type IAdditionalQuestion = {

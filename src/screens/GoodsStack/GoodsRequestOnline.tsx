@@ -1,27 +1,14 @@
-import React, {useCallback, useState, useRef} from 'react'
-import {
-  View,
-  Text,
-  ScrollView,
-  Pressable,
-  TextInput,
-  TouchableOpacity,
-  NativeSyntheticEvent,
-  TextInputChangeEventData,
-  StyleSheet,
-  Platform,
-} from 'react-native'
+import React, {useCallback, useState} from 'react'
+import {View, Text, ScrollView, TextInput, NativeSyntheticEvent, TextInputChangeEventData, StyleSheet, Platform} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import KeyboardManager from 'react-native-keyboard-manager'
 import {useQuery} from 'react-query'
 
-import {StackHeader, FloatingBottomButton, CheckboxIcon, NeccesaryField, SeparatorBold} from '../../components/utils'
-import {FindAddress, ProductInfo} from '../../components/GoodsStack'
-import {IRequestFormOnline, IProductInfo, ISharingRequestInfo} from '../../types'
+import {StackHeader, FloatingBottomButton, NeccesaryField, SeparatorBold} from '../../components/utils'
+import {FindAddress, ProductInfo, MakeNewField} from '../../components/GoodsStack'
+import {IRequestFormOnline, ISharingRequestInfo} from '../../types'
 import {queryKeys, getGoodsRequestInfo} from '../../api'
 import * as theme from '../../theme'
-
-const BUTTON_SIZE = 24
 
 // ***************************** ios keyboard settings *****************************
 if (Platform.OS === 'ios') {
@@ -43,53 +30,11 @@ if (Platform.OS === 'ios') {
   KeyboardManager.resignFirstResponder()
 }
 
-type makeNewFieldProps = {
-  id: string
-  label: string
-  necessary: boolean
-  refInputs: React.MutableRefObject<string[]>
-  index: number
-}
-
-type setInputValueProps = {
-  index: number
-  value: string
-  refInputs: React.MutableRefObject<string[]>
-  setTextValue: React.Dispatch<React.SetStateAction<string>>
-}
-
-const setInputValue = (
-  index: number,
-  value: string,
-  refInputs: React.MutableRefObject<string[]>,
-  setTextValue: React.Dispatch<React.SetStateAction<string>>,
-) => {
-  const inputs = refInputs.current
-  inputs[index] = value
-  setTextValue(value)
-}
-
-const MakeNewField = ({label, necessary, refInputs, index}: makeNewFieldProps) => {
-  const [textValue, setTextValue] = useState<string>('')
-  refInputs.current.push('')
-  return (
-    <View style={styles.spacing}>
-      <View style={[theme.styles.rowFlexStart]}>
-        <Text style={[theme.styles.label]}>{label} (추가질문사항)</Text>
-        {necessary && <NeccesaryField />}
-      </View>
-      <TextInput
-        style={[theme.styles.input]}
-        value={refInputs.current[index]}
-        placeholder="추가 질문사항을 입력해 주세요."
-        placeholderTextColor={theme.gray300}
-        onChangeText={value => setInputValue(index, value, refInputs, setTextValue)}></TextInput>
-    </View>
-  )
-}
-
 export const GoodsReqeustOnline = () => {
-  const refInputs = useRef<string[]>([])
+  // ***************************** utils *****************************
+  const [answers, setAnswers] = useState<string[]>([])
+
+  // ***************************** states *****************************
   const [info, setInfo] = useState<ISharingRequestInfo>({
     products: [],
     title: '',
@@ -103,14 +48,12 @@ export const GoodsReqeustOnline = () => {
       detailedAddress: '',
     },
     product: [],
-    additionalQuestions: [],
   })
   const [selectedItems, setSelectedItems] = useState<any>({}) // 선택한 상품들
 
   // ***************************** react query *****************************
   useQuery(queryKeys.goodsRequestInfo, getGoodsRequestInfo, {
     onSuccess: data => {
-      console.log('data :', data)
       setInfo(data)
       setRequestForm({
         ...requestForm,
@@ -121,7 +64,34 @@ export const GoodsReqeustOnline = () => {
     },
   })
 
-  const onPressRequest = useCallback(() => {}, [])
+  // ***************************** callbacks *****************************
+  const isButtonEnabled = useCallback(() => {
+    // 기본 필수 정보 중에 하나라도 안 채워진 게 있으면 false 리턴
+    if (
+      requestForm.name == '' ||
+      requestForm.address.detailedAddress == '' ||
+      requestForm.address.postcode == '' ||
+      requestForm.address.roadAddress == '' ||
+      requestForm.product.length == 0
+    ) {
+      return false
+    }
+    // 추가 질문 사항 중 필수 질문에 대한 input이 비어 있으면 false 리턴
+    for (var i = 0; i < info.additionalQuestions.length; i++) {
+      if (info.additionalQuestions[i].necessary == true && answers[i] == '') {
+        return false
+      }
+    }
+    return true
+  }, [requestForm, answers, info])
+
+  const onPressRequest = useCallback(
+    (requestForm: IRequestFormOnline) => {
+      console.log(answers)
+      console.log(requestForm)
+    },
+    [requestForm, answers],
+  )
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
       <StackHeader title="신청하기" goBack />
@@ -149,10 +119,9 @@ export const GoodsReqeustOnline = () => {
 
           <View style={[styles.spacing]}>
             <View style={[theme.styles.rowFlexStart]}>
-              <Text style={styles.inputLabel}>이름</Text>
+              <Text style={theme.styles.label}>이름</Text>
               <NeccesaryField />
             </View>
-
             <TextInput
               value={requestForm.name}
               onChange={(e: NativeSyntheticEvent<TextInputChangeEventData>) => setRequestForm({...requestForm, name: e.nativeEvent.text})}
@@ -164,36 +133,22 @@ export const GoodsReqeustOnline = () => {
           </View>
           <View style={[styles.spacing]}>
             <View style={[theme.styles.rowFlexStart]}>
-              <Text style={styles.inputLabel}>주소</Text>
+              <Text style={theme.styles.label}>주소</Text>
               <NeccesaryField />
             </View>
-
             <FindAddress requestForm={requestForm} setRequestForm={setRequestForm} />
           </View>
           {info.additionalQuestions.map((item, index) => (
-            <MakeNewField id={item.id} label={item.content} necessary={item.necessary} refInputs={refInputs} index={index} />
+            <MakeNewField id={item.id} label={item.content} necessary={item.necessary} index={index} answers={answers} setAnswers={setAnswers} />
           ))}
         </View>
       </ScrollView>
-      <FloatingBottomButton label="제출하기" />
+      <FloatingBottomButton label="제출하기" enabled={isButtonEnabled()} onPress={() => onPressRequest(requestForm)} />
     </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
-  inputLabel: {
-    fontSize: 16,
-    fontFamily: 'Pretendard-Medium',
-    marginBottom: 10,
-  },
-  checkbox: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: theme.gray300,
-    marginRight: 8,
-  },
   spacing: {
     marginTop: 24,
   },
@@ -202,30 +157,5 @@ const styles = StyleSheet.create({
     fontFamily: 'Pretendard-Bold',
     fontSize: 20,
     marginBottom: 16,
-  },
-  flexRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-
-  itemName: {
-    fontFamily: 'Pretendard-Medium',
-    color: theme.gray700,
-    fontSize: 16,
-    flex: 1,
-  },
-  ItemQuantity: {
-    color: theme.gray500,
-    marginRight: 5,
-  },
-  quantityButton: {
-    width: BUTTON_SIZE,
-    height: BUTTON_SIZE,
-    borderRadius: BUTTON_SIZE / 2,
-    borderColor: theme.black,
-    borderWidth: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: theme.white,
   },
 })

@@ -24,9 +24,12 @@ export const FindAddress = ({requestForm, setRequestForm}: FindAddressProps) => 
   const focus = useAutoFocus()
   const [modalVisible, setModalVisible] = useState<boolean>(false)
 
-  const onDetailAddressChange = useCallback((e: NativeSyntheticEvent<TextInputChangeEventData>) => {
-    setRequestForm({...requestForm, address: {...requestForm.address, detailedAddress: e.nativeEvent.text}})
-  }, [])
+  const onDetailAddressChange = useCallback(
+    (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
+      setRequestForm({...requestForm, address: {...requestForm.address, detailedAddress: e.nativeEvent.text}})
+    },
+    [requestForm],
+  )
 
   return (
     <View>
