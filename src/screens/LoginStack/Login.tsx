@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import {View, Text, StyleSheet, Platform, Pressable} from 'react-native'
 import FastImage from 'react-native-fast-image'
 import LinearGradient from 'react-native-linear-gradient'
@@ -15,6 +15,7 @@ import {
   unlink,
   loginWithKakaoAccount,
 } from '@react-native-seoul/kakao-login'
+import {AppleButton, appleAuth, AppleRequestResponse, AppleRequestScope} from '@invertase/react-native-apple-authentication'
 import {useNavigation} from '@react-navigation/native'
 import * as theme from '../../theme'
 
@@ -63,6 +64,44 @@ export const Login = () => {
     })
   }
 
+  useEffect(() => {
+    return appleAuth.onCredentialRevoked(async () => {
+      console.warn('If this function executes, User Credentials have been Revoked')
+    })
+  }, [])
+
+  const signInWithApple = async () => {
+    try {
+      const appleAuthRequestResponse: AppleRequestResponse = await appleAuth.performRequest({
+        requestedOperation: appleAuth.Operation.LOGIN,
+        requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
+      })
+
+      console.log('appleAuthRequestResponse', appleAuthRequestResponse)
+
+      const {user, nonce, identityToken} = appleAuthRequestResponse
+      const email: any = appleAuthRequestResponse.email
+
+      if (identityToken) {
+        console.log(nonce, identityToken)
+      } else {
+        console.log('NO TOKEN')
+      }
+
+      console.log(`Apple Authentication Completed, ${user}, ${email}`)
+
+      navigation.navigate('SetProfile', {
+        email: email,
+      })
+    } catch (error: any) {
+      if (error.code === appleAuth.Error.CANCELED) {
+        console.warn('User canceled Apple Sign in.')
+      } else {
+        console.error(error)
+      }
+    }
+  }
+
   return (
     <LinearGradient
       start={{x: 1, y: 0}}
@@ -87,8 +126,19 @@ export const Login = () => {
               style={{backgroundColor: theme.black}}
               textStyle={{color: theme.white}}
               source={require('../../assets/images/apple_logo.png')}
-              onPress={SignInWithGoogle}
+              onPress={signInWithApple}
             />
+            // <View>
+            //   <AppleButton
+            //     buttonStyle={AppleButton.Style.WHITE}
+            //     buttonType={AppleButton.Type.SIGN_IN}
+            //     style={{
+            //       width: 160,
+            //       height: 45,
+            //     }}
+            //     onPress={() => onAppleButtonPress()}
+            //   />
+            // </View>
           )}
           {!ios && (
             <LoginButton
