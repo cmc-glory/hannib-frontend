@@ -2,7 +2,7 @@ import React, {useCallback} from 'react'
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native'
 import {CheckboxIcon} from '../utils'
 import * as theme from '../../theme'
-import {IProductInfo, IRequestFormOnline} from '../../types'
+import {IProductInfo, IRequestFormOnline, IRequestFormOffline} from '../../types'
 
 type ProductInfoProps = {
   item: IProductInfo
@@ -13,7 +13,7 @@ type ProductInfoProps = {
   setRequestForm: React.Dispatch<React.SetStateAction<IRequestFormOnline>>
 }
 
-export const ProductInfo = ({item, selectedItems, setSelectedItems, requestForm, setRequestForm}: ProductInfoProps) => {
+export const ProductInfoOnline = ({item, selectedItems, setSelectedItems, requestForm, setRequestForm}: ProductInfoProps) => {
   const selected = selectedItems[item.id]
   const onPressCheckbox = useCallback(() => {
     setSelectedItems({...selectedItems, [item.id]: !selected})

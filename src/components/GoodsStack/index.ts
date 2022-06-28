@@ -5,5 +5,7 @@ export * from './NoticeBanner'
 export * from './RelatedSharing'
 export * from './FindAddress'
 //export * from './DeleteModal'
-export * from './ProductInfo'
+export * from './ProductInfoOnline'
+export * from './ProductInfoOffline'
+
 export * from './MakeNewField'

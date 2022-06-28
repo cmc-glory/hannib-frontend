@@ -3,9 +3,10 @@ import {View, Text, ScrollView, TextInput, NativeSyntheticEvent, TextInputChange
 import {SafeAreaView} from 'react-native-safe-area-context'
 import KeyboardManager from 'react-native-keyboard-manager'
 import {useQuery} from 'react-query'
+import {useNavigation} from '@react-navigation/native'
 
 import {StackHeader, FloatingBottomButton, NeccesaryField, SeparatorBold} from '../../components/utils'
-import {FindAddress, ProductInfo, MakeNewField} from '../../components/GoodsStack'
+import {FindAddress, ProductInfoOnline, MakeNewField} from '../../components/GoodsStack'
 import {IRequestFormOnline, ISharingRequestInfo} from '../../types'
 import {queryKeys, getGoodsRequestInfo} from '../../api'
 import * as theme from '../../theme'
@@ -35,7 +36,7 @@ if (Platform.OS === 'ios') {
 export const GoodsReqeustOnline = () => {
   // ***************************** utils *****************************
   const [answers, setAnswers] = useState<string[]>([])
-
+  const navigation = useNavigation()
   // ***************************** states *****************************
   const [info, setInfo] = useState<ISharingRequestInfo>({
     products: [],
@@ -68,6 +69,7 @@ export const GoodsReqeustOnline = () => {
       data.products.forEach((item: any) => {
         selectedItems[item.id] = false
       })
+      setAnswers(new Array(data.additionalQuestions.length).fill(''))
     },
   })
 
@@ -99,6 +101,7 @@ export const GoodsReqeustOnline = () => {
     (requestForm: IRequestFormOnline) => {
       console.log(answers)
       console.log(requestForm)
+      navigation.navigate('GoodsRequestComplete')
     },
     [requestForm, answers],
   )
@@ -126,7 +129,7 @@ export const GoodsReqeustOnline = () => {
           <View style={[theme.styles.wrapper]}>
             <Text style={[theme.styles.bold16]}>상품 선택</Text>
             {info.products.map(item => (
-              <ProductInfo
+              <ProductInfoOnline
                 item={item}
                 key={item.id}
                 selectedItems={selectedItems}

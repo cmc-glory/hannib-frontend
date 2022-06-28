@@ -8,8 +8,9 @@ import {useNavigation} from '@react-navigation/native'
 import {StackHeader, FloatingBottomButton, CheckboxIcon, DownArrowIcon, SeparatorBold, NeccesaryField} from '../../components/utils'
 import * as theme from '../../theme'
 import {useAnimatedValue, useToggle, useAnimatedStyle} from '../../hooks'
-import {IRequestForm, IProductInfo, ISharingRequestInfo} from '../../types'
+import {IRequestFormOffline, ISharingRequestInfo} from '../../types'
 import {queryKeys, getGoodsRequestInfo} from '../../api'
+import {ProductInfoOffline, MakeNewField} from '../../components/GoodsStack'
 
 // ***************************** ios keyboard settings *****************************
 if (Platform.OS === 'ios') {
@@ -33,59 +34,21 @@ if (Platform.OS === 'ios') {
 
 const BUTTON_SIZE = 24
 
-// ***************************** prop types *****************************
-type ItemQuantityProps = {
-  item: IProductInfo
-  key: string
-  index: number
-  selectedItems: any
-  setSelectedItems: React.Dispatch<React.SetStateAction<any>>
-  requestForm: IRequestForm
-  setRequestForm: React.Dispatch<React.SetStateAction<IRequestForm>>
-}
-
-const ItemQuantity = ({item, index, selectedItems, setSelectedItems, requestForm, setRequestForm}: ItemQuantityProps) => {
-  const selected = selectedItems[item.id]
-  const onPressCheckbox = useCallback(() => {
-    console.log(selectedItems)
-    //setRequestForm([])
-    setSelectedItems({...selectedItems, [item.id]: !selected})
-
-    // 선택된 상태면 제거
-    if (selected) {
-      const temp = requestForm.product.filter(productItem => productItem.productid != item.id)
-      setRequestForm({...requestForm, product: temp})
-    } else {
-      const temp = requestForm.product.concat({productid: item.id})
-      setRequestForm({...requestForm, product: temp})
-    }
-  }, [selectedItems, requestForm])
-  return (
-    <View style={[styles.flexRow, {marginTop: 16}]}>
-      {selected ? <CheckboxIcon onPress={onPressCheckbox} style={{marginRight: 8}} /> : <TouchableOpacity onPress={onPressCheckbox} style={styles.checkbox} />}
-      <Text style={[styles.itemName]}>{item.name}</Text>
-      <View style={[styles.flexRow]}>
-        <Text style={{marginRight: 5, color: theme.gray500}}>잔여 수량</Text>
-        <Text style={{color: theme.main}}>{item.quantity}</Text>
-      </View>
-    </View>
-  )
-}
-
 export const GoodsRequestOffline = () => {
+  // ***************************** utils *****************************
+  const [answers, setAnswers] = useState<string[]>([])
   // ***************************** states *****************************
   const [info, setInfo] = useState<ISharingRequestInfo>({
     products: [],
     schedule: [],
     title: '',
+    additionalQuestions: [],
   })
   const [selectedItems, setSelectedItems] = useState<any>({}) // 선택한 상품들
   const [scheduleLength, setScheduleLength] = useState<number>(1)
-  const [requestForm, setRequestForm] = useState<IRequestForm>({
+  const [requestForm, setRequestForm] = useState<IRequestFormOffline>({
     receiveDate: '',
-    phonenumber: '',
     product: [],
-    additionalQuestions: [],
   })
   const [opened, toggleOpened] = useToggle()
 
@@ -104,6 +67,7 @@ export const GoodsRequestOffline = () => {
       data.products.forEach((item: any) => {
         selectedItems[item.id] = false
       })
+      setAnswers(new Array(data.additionalQuestions.length).fill(''))
     },
   })
 
@@ -152,36 +116,29 @@ export const GoodsRequestOffline = () => {
     [opened],
   )
 
-  const isButtonEnabled = useCallback((requestForm: IRequestForm) => {
-    console.log(requestForm)
-    if (requestForm.receiveDate == '' || requestForm.twitterid == '' || requestForm.product.length == 0) {
+  const isButtonEnabled = useCallback(() => {
+    // 기본 필수 정보 중에 하나라도 안 채워진 게 있으면 false 리턴
+    if (requestForm.receiveDate == '' || requestForm.product.length == 0) {
       return false
-    } else {
-      return true
     }
-  }, [])
-
-  const onPressRequest = useCallback((requestForm: IRequestForm) => {
-    setRequestForm(requestForm => {
-      return requestForm
-    })
-    console.log(requestForm)
-    // back으로 전송하는 api
-
-    if (requestForm.phonenumber != '') {
-      const isPhoneValid = requestForm.phonenumber.match(/^[0-9]+$/) != null // 핸드폰 번호에 숫자만 있는지 검사
-      if (!isPhoneValid) {
-        Alert.alert('핸드폰번호를 확인해 주세요', '', [
-          {
-            text: '확인',
-          },
-        ])
-        return
+    // 추가 질문 사항 중 필수 질문에 대한 input이 비어 있으면 false 리턴
+    for (var i = 0; i < info.additionalQuestions.length; i++) {
+      console.log(info.additionalQuestions[i].necessary, answers[i])
+      if (info.additionalQuestions[i].necessary == true && answers[i] == '') {
+        return false
       }
     }
+    return true
+  }, [requestForm, answers, info])
 
-    navigation.navigate('GoodsRequestComplete')
-  }, [])
+  const onPressRequest = useCallback(
+    (requestForm: IRequestFormOffline) => {
+      console.log(answers)
+      console.log(requestForm)
+      navigation.navigate('GoodsRequestComplete')
+    },
+    [requestForm, answers],
+  )
 
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
@@ -192,10 +149,9 @@ export const GoodsRequestOffline = () => {
           <View style={[theme.styles.wrapper]}>
             <Text style={[theme.styles.bold16]}>상품 선택</Text>
             {info.products.map((item, index) => (
-              <ItemQuantity
+              <ProductInfoOffline
                 item={item}
                 key={item.id}
-                index={index}
                 selectedItems={selectedItems}
                 setSelectedItems={setSelectedItems}
                 requestForm={requestForm}
@@ -240,37 +196,13 @@ export const GoodsRequestOffline = () => {
               ))}
             </Animated.View>
           </View>
-
-          <View style={[styles.spacing]}>
-            <View style={theme.styles.rowFlexStart}>
-              <Text style={styles.inputLabel}>트위터 아이디</Text>
-              <NeccesaryField />
-            </View>
-
-            <TextInput
-              value={requestForm.twitterid}
-              onChange={(e: any) => setRequestForm({...requestForm, twitterid: e.nativeEvent.text})}
-              style={[theme.styles.input, styles.input]}
-              placeholder="트위터 아이디"
-              placeholderTextColor={theme.gray200}
-            />
-          </View>
-
-          <View style={[{marginBottom: 30}, styles.spacing]}>
-            <Text style={styles.inputLabel}>전화번호</Text>
-            <TextInput
-              keyboardType="number-pad"
-              value={requestForm.phonenumber}
-              onChange={(e: any) => setRequestForm({...requestForm, phonenumber: e.nativeEvent.text})}
-              style={[theme.styles.input, styles.input]}
-              placeholder="- 제외하고 입력"
-              placeholderTextColor={theme.gray200}
-            />
-          </View>
+          {info.additionalQuestions.map((item, index) => (
+            <MakeNewField id={item.id} label={item.content} necessary={item.necessary} index={index} answers={answers} setAnswers={setAnswers} />
+          ))}
         </View>
       </ScrollView>
 
-      <FloatingBottomButton label="제출하기" enabled={isButtonEnabled(requestForm)} onPress={() => onPressRequest(requestForm)} />
+      <FloatingBottomButton label="제출하기" enabled={isButtonEnabled()} onPress={() => onPressRequest(requestForm)} />
     </SafeAreaView>
   )
 }
