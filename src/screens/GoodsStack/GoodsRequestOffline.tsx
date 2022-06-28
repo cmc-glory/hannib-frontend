@@ -1,15 +1,17 @@
 import React, {useCallback, useState} from 'react'
-import {View, ScrollView, Text, Pressable, TextInput, TouchableOpacity, Platform, StyleSheet, Animated} from 'react-native'
+import {View, ScrollView, Text, Pressable, TextInput, TouchableOpacity, Platform, StyleSheet, Animated, Alert} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import moment from 'moment'
 import {useQuery} from 'react-query'
 import KeyboardManager from 'react-native-keyboard-manager'
+import {useNavigation} from '@react-navigation/native'
 import {StackHeader, FloatingBottomButton, CheckboxIcon, DownArrowIcon, SeparatorBold} from '../../components/utils'
 import * as theme from '../../theme'
 import {useAnimatedValue, useToggle, useAnimatedStyle} from '../../hooks'
 import {IRequestForm, IProductInfo, ISharingRequestInfo} from '../../types'
 import {queryKeys, getGoodsRequestInfo} from '../../api'
 
+// ***************************** ios keyboard settings *****************************
 if (Platform.OS === 'ios') {
   KeyboardManager.setEnable(true)
   KeyboardManager.setEnableDebugging(false)
@@ -30,6 +32,8 @@ if (Platform.OS === 'ios') {
 }
 
 const BUTTON_SIZE = 24
+
+// ***************************** prop types *****************************
 type ItemQuantityProps = {
   item: IProductInfo
   key: string
@@ -70,6 +74,10 @@ export const GoodsRequestOffline = () => {
     name: '',
     phonenumber: '',
   })
+  const [opened, toggleOpened] = useToggle()
+
+  // ***************************** navigation *****************************
+  const navigation = useNavigation()
 
   // ***************************** react query *****************************
   useQuery(queryKeys.goodsRequestInfo, getGoodsRequestInfo, {
@@ -82,7 +90,6 @@ export const GoodsRequestOffline = () => {
   })
 
   // ***************************** animations *****************************
-  const [opened, toggleOpened] = useToggle()
   const animatedValue = useAnimatedValue()
   const open = Animated.timing(animatedValue, {
     // Select box 토글 애니메이션
@@ -127,7 +134,30 @@ export const GoodsRequestOffline = () => {
     [opened],
   )
 
-  const onPressRequest = useCallback(() => {}, [])
+  const isButtonEnabled = useCallback(() => {
+    if (requestForm.receiveDate == '' || requestForm.twitterid == '' || requestForm.name == '' || requestForm.phonenumber == '') {
+      return false
+    } else {
+      return true
+    }
+  }, [requestForm])
+
+  const onPressRequest = useCallback((requestForm: IRequestForm) => {
+    console.log(requestForm)
+    // back으로 전송하는 api
+
+    const isPhoneValid = requestForm.phonenumber.match(/^[0-9]+$/) != null // 핸드폰 번호에 숫자만 있는지 검사
+    if (!isPhoneValid) {
+      Alert.alert('핸드폰번호를 확인해 주세요', '', [
+        {
+          text: '확인',
+        },
+      ])
+      return
+    }
+
+    navigation.navigate('GoodsRequestComplete')
+  }, [])
 
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
@@ -210,7 +240,7 @@ export const GoodsRequestOffline = () => {
         </View>
       </ScrollView>
 
-      <FloatingBottomButton label="제출하기" />
+      <FloatingBottomButton label="제출하기" enabled={isButtonEnabled()} onPress={() => onPressRequest(requestForm)} />
     </SafeAreaView>
   )
 }

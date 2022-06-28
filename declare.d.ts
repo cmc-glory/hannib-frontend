@@ -39,6 +39,7 @@ declare namespace ReactNavigation {
     }
     GoodsRequestOffline: undefined
     GoodsRequestOnline: undefined
+    GoodsRequestComplete: undefined
     GoodsStackNavigator?: {
       screen: string
       params: any

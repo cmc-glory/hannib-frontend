@@ -49,6 +49,7 @@ import SwitchFalseSvg from '../../assets/Icon/SwitchFalse.svg'
 import SwitchTrueSvg from '../../assets/Icon/SwitchTrue.svg'
 import RightArrowWhiteSvg from '../../assets/Icon/RightArrowWhite.svg'
 import FloatingButtonSvg from '../../assets/Icon/FloatingButton.svg'
+import CompleteSvg from '../../assets/Icon/Complete.svg'
 import LockSvg from '../../assets/Icon/Lock key.svg'
 import * as theme from '../../theme'
 
@@ -62,6 +63,14 @@ type IconPropss = {
   onPress?: () => void
   style?: any
   size?: number
+}
+
+export const CompleteIcon = ({onPress, style, size = 53}: IconPropss) => {
+  return (
+    <Pressable onPress={onPress} style={style}>
+      <CompleteSvg width={size} height={size} />
+    </Pressable>
+  )
 }
 
 export const LockIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {

@@ -1,7 +1,7 @@
 import React from 'react'
 import {createStackNavigator} from '@react-navigation/stack'
 import type {NativeStackScreenProps} from '@react-navigation/native-stack'
-import {GoodsDetail, GoodsRequestOffline, GoodsReqeustOnline, WriteQnA, QnAList, WriterProfile, NoticeList} from '../screens/GoodsStack'
+import {GoodsDetail, GoodsRequestOffline, GoodsReqeustOnline, WriteQnA, QnAList, WriterProfile, NoticeList, GoodsRequestComplete} from '../screens/GoodsStack'
 
 type GoodsStackNavigatorParamList = {
   GoodsDetail: {
@@ -25,6 +25,7 @@ type GoodsStackNavigatorParamList = {
   NoticeList: {
     postid: string
   }
+  GoodsRequestComplete : undefined
 }
 
 const Stack = createStackNavigator<GoodsStackNavigatorParamList>()
@@ -51,6 +52,7 @@ const GoodsStackNavigator = () => {
       <Stack.Screen name="WriteQnA" component={WriteQnA} />
       <Stack.Screen name="WriterProfile" component={WriterProfile} />
       <Stack.Screen name="NoticeList" component={NoticeList} />
+      <Stack.Screen name="GoodsRequestComplete" component={GoodsRequestComplete} />
     </Stack.Navigator>
   )
 }
