@@ -30,13 +30,6 @@ if (Platform.OS === 'ios') {
 }
 
 const BUTTON_SIZE = 24
-
-const items: IProductInfo[] = [
-  {id: '0', name: 'BTS 뷔 컨셉의 하트 키링', quantity: 30},
-  {id: '1', name: 'BTS 지민 컨셉의 스페이드 키링', quantity: 30},
-  {id: '2', name: 'BTS 진 컨셉의 클로버 키링', quantity: 30},
-]
-
 type ItemQuantityProps = {
   item: IProductInfo
   key: string
@@ -63,21 +56,14 @@ const ItemQuantity = ({item, index, selectedItems, setSelectedItems}: ItemQuanti
 }
 
 export const GoodsRequestOffline = () => {
+  // ***************************** states *****************************
   const [info, setInfo] = useState<ISharingRequestInfo>({
     products: [],
     schedule: [],
     title: '',
   })
+  const [selectedItems, setSelectedItems] = useState<boolean[]>([]) // 선택한 상품들
   const [scheduleLength, setScheduleLength] = useState<number>(1)
-
-  useQuery(queryKeys.goodsRequestInfo, getGoodsRequestInfo, {
-    onSuccess: data => {
-      setInfo(data)
-      setRequestForm({...requestForm, receiveDate: data.schedule[0].time})
-      setScheduleLength(data.schedule ? data.schedule.length : 1)
-    },
-  })
-
   const [requestForm, setRequestForm] = useState<IRequestForm>({
     receiveDate: '',
     twitterid: '',
@@ -85,44 +71,47 @@ export const GoodsRequestOffline = () => {
     phonenumber: '',
   })
 
+  // ***************************** react query *****************************
+  useQuery(queryKeys.goodsRequestInfo, getGoodsRequestInfo, {
+    onSuccess: data => {
+      setInfo(data)
+      setRequestForm({...requestForm, receiveDate: data.schedule[0].time})
+      setScheduleLength(data.schedule ? data.schedule.length : 1)
+      setSelectedItems(new Array(data.products.length).fill(false))
+    },
+  })
+
+  // ***************************** animations *****************************
   const [opened, toggleOpened] = useToggle()
-
   const animatedValue = useAnimatedValue()
-
   const open = Animated.timing(animatedValue, {
     // Select box 토글 애니메이션
     toValue: opened == true ? 0 : 1,
     duration: 200,
     useNativeDriver: false,
   })
-
-  console.log('scheduleLength: ', scheduleLength)
-
   const animatedHeight = animatedValue.interpolate({
     // select box 높이
     inputRange: [0, 1],
     outputRange: [0, theme.INPUT_HEIGHT * scheduleLength],
     extrapolate: 'clamp',
   })
-
   const animatedInputHeight = animatedValue.interpolate({
     // select box 높이
     inputRange: [0, 1],
     outputRange: [0, theme.INPUT_HEIGHT],
     extrapolate: 'clamp',
   })
-
   const animatedRotation = animatedValue.interpolate({
     // select arrow 회전 애니메이션
     inputRange: [0, 1],
     outputRange: ['0deg', '180deg'],
   })
-
   const animatedArrowStyle = useAnimatedStyle({transform: [{rotate: animatedRotation}]})
   const animatedSelectionBoxStyle = useAnimatedStyle({height: animatedHeight, borderWidth: animatedValue}, [animatedHeight])
-  const animatedSelectionInputStyle = useAnimatedStyle({height: animatedInputHeight})
-  const animatedTextStyle = useAnimatedStyle({opacity: animatedValue})
+  const animatedSelectionInputStyle = useAnimatedStyle({height: animatedInputHeight, opacity: animatedValue})
 
+  // ***************************** callbacks *****************************
   const onPressOpen = useCallback(() => {
     // select box누르면 애니메이션 시작
     open.start(toggleOpened)
@@ -138,9 +127,8 @@ export const GoodsRequestOffline = () => {
     [opened],
   )
 
-  const [selectedItems, setSelectedItems] = useState<boolean[]>(new Array(items.length).fill(false)) // 선택한 상품들
-
   const onPressRequest = useCallback(() => {}, [])
+
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
       <StackHeader title="신청하기" goBack />
@@ -180,7 +168,7 @@ export const GoodsRequestOffline = () => {
                   key={index}
                   style={[{...animatedSelectionInputStyle, justifyContent: 'center'}, index !== scheduleLength - 1 && styles.inputItemSeparator]}>
                   <Pressable onPress={() => onPressDate(schedule.time)}>
-                    <Animated.Text style={{marginLeft: 16, ...animatedTextStyle}}>{moment(schedule.time).format('YYYY.MM.DD HH:mm')}</Animated.Text>
+                    <Animated.Text style={{marginLeft: 16}}>{moment(schedule.time).format('YYYY.MM.DD HH:mm')}</Animated.Text>
                   </Pressable>
                 </Animated.View>
               ))}
