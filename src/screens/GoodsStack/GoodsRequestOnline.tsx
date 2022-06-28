@@ -1,5 +1,5 @@
-import React, {useCallback, useState} from 'react'
-import {View, Text, ScrollView, TextInput, NativeSyntheticEvent, TextInputChangeEventData, StyleSheet, Platform} from 'react-native'
+import React, {useCallback, useState, useRef} from 'react'
+import {View, Text, ScrollView, TextInput, NativeSyntheticEvent, TextInputChangeEventData, StyleSheet, Dimensions, Platform} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import KeyboardManager from 'react-native-keyboard-manager'
 import {useQuery} from 'react-query'
@@ -9,6 +9,8 @@ import {FindAddress, ProductInfo, MakeNewField} from '../../components/GoodsStac
 import {IRequestFormOnline, ISharingRequestInfo} from '../../types'
 import {queryKeys, getGoodsRequestInfo} from '../../api'
 import * as theme from '../../theme'
+
+const PHONE_INPUT_WIDTH = (Dimensions.get('window').width - theme.PADDING_SIZE * 2 - 16 * 2) / 3
 
 // ***************************** ios keyboard settings *****************************
 if (Platform.OS === 'ios') {
@@ -48,6 +50,11 @@ export const GoodsReqeustOnline = () => {
       detailedAddress: '',
     },
     product: [],
+    phonenumber: {
+      first: '',
+      second: '',
+      third: '',
+    },
   })
   const [selectedItems, setSelectedItems] = useState<any>({}) // 선택한 상품들
 
@@ -72,6 +79,9 @@ export const GoodsReqeustOnline = () => {
       requestForm.address.detailedAddress == '' ||
       requestForm.address.postcode == '' ||
       requestForm.address.roadAddress == '' ||
+      requestForm.phonenumber.first == '' ||
+      requestForm.phonenumber.second == '' ||
+      requestForm.phonenumber.third == '' ||
       requestForm.product.length == 0
     ) {
       return false
@@ -92,6 +102,21 @@ export const GoodsReqeustOnline = () => {
     },
     [requestForm, answers],
   )
+
+  const ref_input: Array<React.RefObject<TextInput>> = []
+  ref_input[0] = useRef(null)
+  ref_input[1] = useRef(null)
+  ref_input[2] = useRef(null)
+
+  const onFocusNext = useCallback((index: number) => {
+    if (ref_input[index + 1] && index < ref_input.length - 1) {
+      ref_input[index + 1].current?.focus()
+    }
+    if (ref_input[index + 1] && index == ref_input.length - 1) {
+      ref_input[index].current?.blur()
+    }
+  }, [])
+
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
       <StackHeader title="신청하기" goBack />
@@ -127,16 +152,81 @@ export const GoodsReqeustOnline = () => {
               onChange={(e: NativeSyntheticEvent<TextInputChangeEventData>) => setRequestForm({...requestForm, name: e.nativeEvent.text})}
               style={[theme.styles.input, styles.input]}
               placeholder="이름"
-              placeholderTextColor={theme.gray200}
+              placeholderTextColor={theme.gray300}
               underlineColorAndroid="transparent"
             />
           </View>
+
           <View style={[styles.spacing]}>
             <View style={[theme.styles.rowFlexStart]}>
               <Text style={theme.styles.label}>주소</Text>
               <NeccesaryField />
             </View>
             <FindAddress requestForm={requestForm} setRequestForm={setRequestForm} />
+          </View>
+          <View style={[styles.spacing]}>
+            <View style={[theme.styles.rowFlexStart]}>
+              <Text style={theme.styles.label}>전화번호</Text>
+              <NeccesaryField />
+            </View>
+            <View style={theme.styles.rowFlexStart}>
+              <TextInput
+                ref={ref_input[0]}
+                value={requestForm.phonenumber.first}
+                onChange={(e: NativeSyntheticEvent<TextInputChangeEventData>) => {
+                  const text = e.nativeEvent.text
+                  if (text.length == 3) {
+                    onFocusNext(0)
+                  }
+                  setRequestForm({...requestForm, phonenumber: {...requestForm.phonenumber, first: text}})
+                }}
+                style={[theme.styles.input, styles.input, {width: PHONE_INPUT_WIDTH}]}
+                placeholder="000"
+                placeholderTextColor={theme.gray300}
+                underlineColorAndroid="transparent"
+                keyboardType="number-pad"
+                maxLength={3}
+              />
+              <View style={{width: 16}}>
+                <Text style={{color: theme.gray500, textAlign: 'center'}}>-</Text>
+              </View>
+
+              <TextInput
+                ref={ref_input[1]}
+                value={requestForm.phonenumber.second}
+                onChange={(e: NativeSyntheticEvent<TextInputChangeEventData>) => {
+                  const text = e.nativeEvent.text
+                  if (text.length == 4) {
+                    onFocusNext(1)
+                  }
+                  setRequestForm({...requestForm, phonenumber: {...requestForm.phonenumber, second: text}})
+                }}
+                style={[theme.styles.input, styles.input, {width: PHONE_INPUT_WIDTH}]}
+                placeholder="0000"
+                placeholderTextColor={theme.gray300}
+                underlineColorAndroid="transparent"
+                keyboardType="number-pad"
+                maxLength={4}
+              />
+              <View style={{width: 16}}>
+                <Text style={{color: theme.gray500, textAlign: 'center'}}>-</Text>
+              </View>
+
+              <TextInput
+                ref={ref_input[2]}
+                value={requestForm.phonenumber.third}
+                onChange={(e: NativeSyntheticEvent<TextInputChangeEventData>) => {
+                  const text = e.nativeEvent.text
+                  setRequestForm({...requestForm, phonenumber: {...requestForm.phonenumber, third: text}})
+                }}
+                keyboardType="number-pad"
+                style={[theme.styles.input, styles.input, {width: PHONE_INPUT_WIDTH}]}
+                placeholder="0000"
+                placeholderTextColor={theme.gray300}
+                underlineColorAndroid="transparent"
+                maxLength={4}
+              />
+            </View>
           </View>
           {info.additionalQuestions.map((item, index) => (
             <MakeNewField id={item.id} label={item.content} necessary={item.necessary} index={index} answers={answers} setAnswers={setAnswers} />

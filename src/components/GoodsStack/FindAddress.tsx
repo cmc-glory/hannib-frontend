@@ -91,8 +91,9 @@ const styles = StyleSheet.create({
     width: POSTCODE_BUTTON_WIDTH,
     borderColor: theme.gray800,
     borderRadius: 4,
+    height: 46,
     borderWidth: 1,
-    height: theme.INPUT_HEIGHT,
+
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: theme.white,

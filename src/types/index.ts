@@ -27,6 +27,11 @@ export type IRequestForm = {
 export type IRequestFormOnline = {
   product: {productid: string}[]
   address: {postcode: string; roadAddress: string; detailedAddress: string}
+  phonenumber: {
+    first: string
+    second: string
+    thire: string
+  }
   name: string
 }
 

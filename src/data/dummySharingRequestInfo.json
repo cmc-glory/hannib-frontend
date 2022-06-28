@@ -10,8 +10,5 @@
     {"time": "2022-06-22T14:00:56.782Z", "location": "블루스퀘어"}
   ],
   "title": "BTS 키링 나눔",
-  "additionalQuestions": [
-    {"id": "0000", "necessary": true, "content": "트위터 아이디"},
-    {"id": "1111", "necessary": false, "content": "전화번호"}
-  ]
+  "additionalQuestions": [{"id": "0000", "necessary": true, "content": "트위터 아이디"}]
 }
