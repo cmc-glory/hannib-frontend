@@ -17,7 +17,7 @@ if (Platform.OS === 'ios') {
   KeyboardManager.setEnableDebugging(false)
   KeyboardManager.setKeyboardDistanceFromTextField(10)
   KeyboardManager.setLayoutIfNeededOnUpdate(true)
-  KeyboardManager.setEnableAutoToolbar(false)
+  KeyboardManager.setEnableAutoToolbar(true)
   KeyboardManager.setToolbarDoneBarButtonItemText('확인')
   KeyboardManager.setToolbarManageBehaviourBy('subviews') // "subviews" | "tag" | "position"
   KeyboardManager.setToolbarPreviousNextButtonEnable(false)
@@ -83,9 +83,9 @@ export const GoodsRequestOffline = () => {
   const [scheduleLength, setScheduleLength] = useState<number>(1)
   const [requestForm, setRequestForm] = useState<IRequestForm>({
     receiveDate: '',
-    twitterid: '',
     phonenumber: '',
     product: [],
+    additionalQuestions: [],
   })
   const [opened, toggleOpened] = useToggle()
 

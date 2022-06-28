@@ -1,142 +1,180 @@
-import React, {useCallback, useState} from 'react'
-import {View, Text, Pressable, TextInput, TouchableOpacity, NativeSyntheticEvent, TextInputChangeEventData, StyleSheet} from 'react-native'
+import React, {useCallback, useState, useRef} from 'react'
+import {
+  View,
+  Text,
+  ScrollView,
+  Pressable,
+  TextInput,
+  TouchableOpacity,
+  NativeSyntheticEvent,
+  TextInputChangeEventData,
+  StyleSheet,
+  Platform,
+} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
-import moment from 'moment'
-import DateTimePickerModal from 'react-native-modal-datetime-picker'
-import {StackHeader, FloatingBottomButton, CheckboxIcon, DownArrowIcon} from '../../components/utils'
-import {FindAddress} from '../../components/GoodsStack'
+import KeyboardManager from 'react-native-keyboard-manager'
+import {useQuery} from 'react-query'
+
+import {StackHeader, FloatingBottomButton, CheckboxIcon, NeccesaryField, SeparatorBold} from '../../components/utils'
+import {FindAddress, ProductInfo} from '../../components/GoodsStack'
+import {IRequestFormOnline, IProductInfo, ISharingRequestInfo} from '../../types'
+import {queryKeys, getGoodsRequestInfo} from '../../api'
 import * as theme from '../../theme'
-import {useAutoFocus, AutoFocusProvider} from '../../contexts'
-import {IRequestForm, IProductInfo} from '../../types'
 
 const BUTTON_SIZE = 24
 
-const items: IProductInfo[] = [
-  {id: '0', name: 'BTS 뷔 컨셉의 하트 키링', quantity: 30},
-  {id: '1', name: 'BTS 지민 컨셉의 스페이드 키링', quantity: 30},
-  {id: '2', name: 'BTS 진 컨셉의 클로버 키링', quantity: 30},
-]
-
-type ItemQuantityProps = {
-  item: IProductInfo
-  key: string
-  index: number
-  selectedItems: boolean[]
-  setSelectedItems: React.Dispatch<React.SetStateAction<boolean[]>>
+// ***************************** ios keyboard settings *****************************
+if (Platform.OS === 'ios') {
+  KeyboardManager.setEnable(true)
+  KeyboardManager.setEnableDebugging(false)
+  KeyboardManager.setKeyboardDistanceFromTextField(10)
+  KeyboardManager.setLayoutIfNeededOnUpdate(true)
+  KeyboardManager.setEnableAutoToolbar(true)
+  KeyboardManager.setToolbarDoneBarButtonItemText('확인')
+  KeyboardManager.setToolbarManageBehaviourBy('subviews') // "subviews" | "tag" | "position"
+  KeyboardManager.setToolbarPreviousNextButtonEnable(false)
+  KeyboardManager.setToolbarTintColor('#007aff') // Only #000000 format is supported
+  KeyboardManager.setToolbarBarTintColor('#FFFFFF') // Only #000000 format is supported
+  KeyboardManager.setShouldShowToolbarPlaceholder(true)
+  KeyboardManager.setOverrideKeyboardAppearance(false)
+  KeyboardManager.setKeyboardAppearance('default') // "default" | "light" | "dark"
+  KeyboardManager.setShouldResignOnTouchOutside(true)
+  KeyboardManager.setShouldPlayInputClicks(true)
+  KeyboardManager.resignFirstResponder()
 }
 
-const ItemQuantity = ({item, index, selectedItems, setSelectedItems}: ItemQuantityProps) => {
-  const selected = selectedItems[index]
-  const onPressCheckbox = useCallback(() => {
-    setSelectedItems([...selectedItems.slice(0, index), !selectedItems[index], ...selectedItems.slice(index + 1)])
-  }, [selectedItems])
+type makeNewFieldProps = {
+  id: string
+  label: string
+  necessary: boolean
+  refInputs: React.MutableRefObject<string[]>
+  index: number
+}
+
+type setInputValueProps = {
+  index: number
+  value: string
+  refInputs: React.MutableRefObject<string[]>
+  setTextValue: React.Dispatch<React.SetStateAction<string>>
+}
+
+const setInputValue = (
+  index: number,
+  value: string,
+  refInputs: React.MutableRefObject<string[]>,
+  setTextValue: React.Dispatch<React.SetStateAction<string>>,
+) => {
+  const inputs = refInputs.current
+  inputs[index] = value
+  setTextValue(value)
+}
+
+const MakeNewField = ({label, necessary, refInputs, index}: makeNewFieldProps) => {
+  const [textValue, setTextValue] = useState<string>('')
+  refInputs.current.push('')
   return (
-    <View style={[styles.flexRow, {marginTop: 16}]}>
-      {selected ? <CheckboxIcon onPress={onPressCheckbox} style={{marginRight: 8}} /> : <TouchableOpacity onPress={onPressCheckbox} style={styles.checkbox} />}
-      <Text style={[styles.itemName]}>{item.name}</Text>
-      <View style={[styles.flexRow]}>
-        <Text style={{marginRight: 5, color: theme.gray500}}>잔여 수량</Text>
-        <Text style={{color: theme.main}}>{item.quantity}</Text>
+    <View style={styles.spacing}>
+      <View style={[theme.styles.rowFlexStart]}>
+        <Text style={[theme.styles.label]}>{label} (추가질문사항)</Text>
+        {necessary && <NeccesaryField />}
       </View>
+      <TextInput
+        style={[theme.styles.input]}
+        value={refInputs.current[index]}
+        placeholder="추가 질문사항을 입력해 주세요."
+        placeholderTextColor={theme.gray300}
+        onChangeText={value => setInputValue(index, value, refInputs, setTextValue)}></TextInput>
     </View>
   )
 }
 
 export const GoodsReqeustOnline = () => {
-  const [requestForm, setRequestForm] = useState<IRequestForm>({
-    recieveDate: '',
-    twitterid: '',
+  const refInputs = useRef<string[]>([])
+  const [info, setInfo] = useState<ISharingRequestInfo>({
+    products: [],
+    title: '',
+    additionalQuestions: [],
+  })
+  const [requestForm, setRequestForm] = useState<IRequestFormOnline>({
     name: '',
     address: {
       postcode: '',
       roadAddress: '',
       detailedAddress: '',
     },
-    phonenumber: '',
+    product: [],
+    additionalQuestions: [],
+  })
+  const [selectedItems, setSelectedItems] = useState<any>({}) // 선택한 상품들
+
+  // ***************************** react query *****************************
+  useQuery(queryKeys.goodsRequestInfo, getGoodsRequestInfo, {
+    onSuccess: data => {
+      console.log('data :', data)
+      setInfo(data)
+      setRequestForm({
+        ...requestForm,
+      })
+      data.products.forEach((item: any) => {
+        selectedItems[item.id] = false
+      })
+    },
   })
 
-  const [selectedItems, setSelectedItems] = useState<boolean[]>(new Array(items.length).fill(false)) // 선택한 상품들
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false) // 나눔 수령일 선택 모달 띄울지
-  const [selectedDate, setSelectedDate] = useState(null)
-
-  const showDatePicker = () => {
-    //console.log('here')
-    setDatePickerVisibility(true)
-  }
-
-  const hideDatePicker = () => {
-    setDatePickerVisibility(false)
-  }
-
-  const handleConfirm = (date: any) => {
-    //console.warn('A date has been picked: ', date)
-    setRequestForm({...requestForm, recieveDate: moment(date).format('YYYY MM D HH:mm')})
-    hideDatePicker()
-  }
-
-  const [date, setDate] = useState(new Date())
-  const onChangeText = useCallback(() => {}, [])
-
   const onPressRequest = useCallback(() => {}, [])
-  const focus = useAutoFocus()
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
       <StackHeader title="신청하기" goBack />
-      <AutoFocusProvider>
+      <ScrollView>
         <View style={{marginBottom: 20, marginTop: 10}}>
           <Text style={[theme.styles.wrapper, styles.title]}>BTS 키링 나눔</Text>
           <View style={[theme.styles.wrapper]}>
             <Text style={[theme.styles.bold16]}>상품 선택</Text>
-            {items.map((item, index) => (
-              <ItemQuantity item={item} key={item.id} index={index} selectedItems={selectedItems} setSelectedItems={setSelectedItems} />
+            {info.products.map(item => (
+              <ProductInfo
+                item={item}
+                key={item.id}
+                selectedItems={selectedItems}
+                setSelectedItems={setSelectedItems}
+                requestForm={requestForm}
+                setRequestForm={setRequestForm}
+              />
             ))}
           </View>
         </View>
+        <SeparatorBold />
 
         <View style={[{padding: theme.PADDING_SIZE}]}>
           <Text style={[theme.styles.bold16]}>정보 입력</Text>
 
           <View style={[styles.spacing]}>
-            <Text style={styles.inputLabel}>이름</Text>
+            <View style={[theme.styles.rowFlexStart]}>
+              <Text style={styles.inputLabel}>이름</Text>
+              <NeccesaryField />
+            </View>
+
             <TextInput
               value={requestForm.name}
               onChange={(e: NativeSyntheticEvent<TextInputChangeEventData>) => setRequestForm({...requestForm, name: e.nativeEvent.text})}
               style={[theme.styles.input, styles.input]}
               placeholder="이름"
-              onFocus={focus}
               placeholderTextColor={theme.gray200}
               underlineColorAndroid="transparent"
             />
           </View>
           <View style={[styles.spacing]}>
-            <Text style={styles.inputLabel}>트위터 아이디</Text>
-            <TextInput
-              value={requestForm.twitterid}
-              onChange={(e: any) => setRequestForm({...requestForm, twitterid: e.nativeEvent.text})}
-              style={[theme.styles.input, styles.input]}
-              placeholder="트위터 아이디"
-              onFocus={focus}
-              placeholderTextColor={theme.gray200}
-            />
-          </View>
-          <View style={[styles.spacing]}>
-            <Text style={styles.inputLabel}>주소</Text>
+            <View style={[theme.styles.rowFlexStart]}>
+              <Text style={styles.inputLabel}>주소</Text>
+              <NeccesaryField />
+            </View>
+
             <FindAddress requestForm={requestForm} setRequestForm={setRequestForm} />
           </View>
-
-          <View style={[{marginBottom: 30}, styles.spacing]}>
-            <Text style={styles.inputLabel}>전화번호</Text>
-            <TextInput
-              value={requestForm.phonenumber}
-              onChange={(e: any) => setRequestForm({...requestForm, phonenumber: e.nativeEvent.text})}
-              style={[theme.styles.input, styles.input]}
-              placeholder="전화번호"
-              onFocus={focus}
-              placeholderTextColor={theme.gray200}
-            />
-          </View>
+          {info.additionalQuestions.map((item, index) => (
+            <MakeNewField id={item.id} label={item.content} necessary={item.necessary} refInputs={refInputs} index={index} />
+          ))}
         </View>
-      </AutoFocusProvider>
+      </ScrollView>
       <FloatingBottomButton label="제출하기" />
     </SafeAreaView>
   )

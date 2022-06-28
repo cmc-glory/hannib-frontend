@@ -33,7 +33,7 @@ export const Banner = ({imageUri, title, sharingid, animatedHeight}: BannerProps
       <View style={[styles.absolute, styles.textContainer]}>
         <Text style={[theme.styles.bold16, {color: theme.white}]}>{title}</Text>
         <View style={[theme.styles.rowFlexStart]}>
-          <Text style={[{fontFamily: 'Pretendard-Medium', fontSize: 16, color: theme.white}]}>나눔 보러가기</Text>
+          <Text style={[{fontFamily: 'Pretendard-Medium', fontSize: 16, color: theme.white}]}>배너 신청하기</Text>
           <RightArrowWhiteIcon size={20} />
         </View>
       </View>
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
   absolute: {
     position: 'absolute',
     width: '100%',
-    //height: '100%',
+    height: '100%',
   },
   textContainer: {
     justifyContent: 'space-between',

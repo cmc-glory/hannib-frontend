@@ -12,10 +12,21 @@ import {useAppSelector, useAnimatedValue, useToggle, useAnimatedStyle} from '../
 import {getGoodsListAll, queryKeys} from '../../api'
 
 const GoodsLists = () => {
+  // ******************** utils ********************
+
   const navigation = useNavigation()
   const queryClient = useQueryClient()
   const user = useAppSelector(state => state.auth.user)
-  // states
+
+  // ******************** react query ********************
+  const {data} = useQuery(queryKeys.goodsList, getGoodsListAll, {
+    onSuccess: data => {
+      setRefreshing(false) // 새로고침중이면 로딩 종료
+      setSharings(data)
+    },
+  })
+
+  // ******************** states ********************
   const [sharings, setSharings] = useState<ISharingInfo[]>([])
   const [refreshing, setRefreshing] = useState<boolean>(false) // 새로고침 state
   const [locationFilter, setLocationFilter] = useState<'all' | 'offline' | 'online'>('all')
@@ -23,13 +34,13 @@ const GoodsLists = () => {
   const [showItemFilterBottomShet, setShowItemFilterBottomSheet] = useState<boolean>(false) // 인기순, 최신순, 추천순 필터링 탭 띄울지
   const [showSelectCategoryModal, setShowSelectCategoryModal] = useState<boolean>(false) // 카테고리 선택하는 드롭다운 띄울지
   const [userCategory, setUserCategory] = useState<IUserCategory>(user.userCategory[0]) // 현재 사용자가 선택한 카테고리.
-  const [filterTabOpened, toggleFilterTabOpened] = useToggle()
   const [bannerInfo, setBannerInfo] = useState({
-    imageUri: 'http://localhost:8081/src/assets/images/aespa.jpeg',
-    title: 'SEVENTEEN [BE THE SUN] - SEOUL',
+    imageUri: 'http://localhost:8081/src/assets/images/sanrio2.jpeg',
+    title: '좋아하는 셀럽의 생일/공연 홍보 배너를 걸어보세요',
     sharingid: '123445',
   })
 
+  // ******************** animations ********************
   const animatedValue = useAnimatedValue() // 스크롤 업 다운할때마다 필터를 숨기거나 보여줌
   const animatedHeight = animatedValue.interpolate({
     inputRange: [0, 84],
@@ -37,45 +48,31 @@ const GoodsLists = () => {
     extrapolate: 'clamp',
   })
 
-  const bannerAnimation = Animated.timing(animatedValue, {
-    toValue: filterTabOpened ? 0 : 1,
-    duration: 200,
-    useNativeDriver: false,
-  })
+  // ******************** callbacks ********************
 
-  const {data} = useQuery(queryKeys.goodsList, getGoodsListAll, {
-    onSuccess: data => {
-      console.log('success')
-      setRefreshing(false) // 새로고침중이면 로딩 종료
-      setSharings(data)
-    },
-  })
-
-  // callbacks
-
-  // 새로고침침 pull up이 일어났을 때
   const onRefresh = useCallback(() => {
+    // 새로고침침 pull up이 일어났을 때
     setRefreshing(true)
     queryClient.invalidateQueries(queryKeys.goodsList)
   }, [])
 
-  // 모집글 작성 버튼 클릭 시
   const onPressWrite = useCallback(() => {
+    // 모집글 작성 버튼 클릭 시
     navigation.navigate('WriteGoodsStackNavigator')
   }, [])
 
-  // 검색 버튼 클릭시
   const onPressMagnifier = useCallback(() => {
+    // 검색 버튼 클릭시
     navigation.navigate('SearchStackNavigator')
   }, [])
 
-  // 카테고리(에스파, 세븐틴 등) 클릭시
   const onPressSelectCategory = useCallback(() => {
+    // 카테고리(에스파, 세븐틴 등) 클릭시
     setShowSelectCategoryModal(showSelectCategoryModal => !showSelectCategoryModal)
   }, [])
 
-  // 전체, 우편, 오프라인 클릭시
   const onPressLocationFilter = useCallback((type: ISharingType | 'all') => {
+    // 전체, 우편, 오프라인 클릭시
     if (type == 'all') {
       setSharings(data)
     } else {
@@ -83,18 +80,11 @@ const GoodsLists = () => {
     }
   }, [])
 
-  // const toggleBannerTab = useCallback(() => {
-  //   bannerAnimation.start(toggleFilterTabOpened)
-  // }, [filterTabOpened])
-
-  // 최신순, 인기순, 추천순 필터가 바뀔 때마다 새로 로드
+  // ******************** re-rendering ********************
   useEffect(() => {
+    // 최신순, 인기순, 추천순 필터가 바뀔 때마다 새로 로드
     queryClient.invalidateQueries(queryKeys.goodsList)
   }, [itemFilter])
-
-  const animatedStyle = useAnimatedStyle({
-    transform: [{translateY: animatedHeight}],
-  })
 
   return (
     <SafeAreaView style={[styles.container]} edges={['top', 'left', 'right']}>

@@ -5,7 +5,7 @@
     "http://localhost:8081/src/assets/images/detail_image_example7.jpeg",
     "http://localhost:8081/src/assets/images/detail_image_example8.jpeg"
   ],
-  "type": "offline",
+  "type": "online",
   "title": "BTS 키링 나눔😽",
   "writerName": "춤추는 고양이",
   "writerid": "js7056@naver.com",

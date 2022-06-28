@@ -15,7 +15,7 @@ export type IProductInfo = {
 }
 
 export type IRequestForm = {
-  product: {productid: string; selected: boolean}[]
+  product: {productid: string}[]
   receiveDate: string | Date | undefined
   twitterid: string
   address?: {postcode: string; roadAddress: string; detailedAddress: string}

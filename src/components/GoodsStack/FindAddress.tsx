@@ -5,19 +5,19 @@ import DaumPostcode from '@actbase/react-daum-postcode'
 import Modal from 'react-native-modal'
 import {NativeSyntheticEvent, TextInputChangeEventData} from 'react-native'
 
-import type {IRequestForm} from '../../types'
+import type {IRequestFormOnline} from '../../types'
 import {useAutoFocus} from '../../contexts'
 import * as theme from '../../theme'
 
 const MARGIN_SIZE = 10
 
 const WINDOW_WIDTH = Dimensions.get('window').width
-const POSTCODE_BUTTON_WIDTH = 120
+const POSTCODE_BUTTON_WIDTH = 96
 const POSTCODE_INPUT_WIDTH = WINDOW_WIDTH - theme.PADDING_SIZE * 2 - MARGIN_SIZE - POSTCODE_BUTTON_WIDTH
 
 type FindAddressProps = {
-  requestForm: IRequestForm
-  setRequestForm: React.Dispatch<React.SetStateAction<IRequestForm>>
+  requestForm: IRequestFormOnline
+  setRequestForm: React.Dispatch<React.SetStateAction<IRequestFormOnline>>
 }
 
 export const FindAddress = ({requestForm, setRequestForm}: FindAddressProps) => {
@@ -30,11 +30,11 @@ export const FindAddress = ({requestForm, setRequestForm}: FindAddressProps) => 
 
   return (
     <View>
-      <Modal isVisible={modalVisible} onBackdropPress={() => setModalVisible(false)}>
+      <Modal isVisible={modalVisible} onBackdropPress={() => setModalVisible(false)} style={{margin: 0}} backdropOpacity={0.6} backdropColor={theme.gray800}>
         <SafeAreaView>
           <ScrollView contentContainerStyle={{alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff'}}>
             <DaumPostcode
-              style={{width: WINDOW_WIDTH, height: 600, paddingHorizontal: 25, paddingTop: 15}}
+              style={{width: WINDOW_WIDTH, height: 600, paddingTop: 20}}
               jsOptions={{animation: true, hideMapBtn: true}}
               onError={err => {
                 console.log(err)
@@ -53,14 +53,14 @@ export const FindAddress = ({requestForm, setRequestForm}: FindAddressProps) => 
       </Modal>
       <View style={[styles.wrapper, styles.inputMargin]}>
         <View style={[theme.styles.input, styles.disabledInput, {width: POSTCODE_INPUT_WIDTH}, {justifyContent: 'center'}]}>
-          <Text style={styles.disabledText}>{requestForm?.address.postcode}</Text>
+          <TextInput style={styles.disabledText} editable={false} placeholder="우편번호" value={requestForm?.address.postcode}></TextInput>
         </View>
         <Pressable style={styles.postcodeButton} onPress={() => setModalVisible(true)}>
-          <Text style={{color: theme.main}}>우편번호 검색</Text>
+          <Text style={{color: theme.gray800, fontSize: 16}}>주소 찾기</Text>
         </Pressable>
       </View>
       <View style={[theme.styles.input, styles.disabledInput, styles.inputMargin, {justifyContent: 'center'}]}>
-        <Text style={styles.disabledText}>{requestForm?.address.roadAddress}</Text>
+        <TextInput style={styles.disabledText} editable={false} placeholder="도로명 주소" value={requestForm?.address.roadAddress}></TextInput>
       </View>
 
       <TextInput
@@ -86,13 +86,13 @@ const styles = StyleSheet.create({
   },
   postcodeButton: {
     width: POSTCODE_BUTTON_WIDTH,
-    borderColor: theme.main,
+    borderColor: theme.gray800,
     borderRadius: 4,
     borderWidth: 1,
     height: theme.INPUT_HEIGHT,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: theme.main50,
+    backgroundColor: theme.white,
   },
   disabledInput: {
     backgroundColor: theme.gray50,
