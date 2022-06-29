@@ -41,9 +41,7 @@ export const HoldingSharingList = () => {
 
   return (
     <SafeAreaView style={theme.styles.safeareaview} edges={['top', 'left', 'right']}>
-      <StackHeader title="진행한 나눔" goBack>
-        <MenuIcon onPress={toggleMoreVisible}></MenuIcon>
-      </StackHeader>
+      <StackHeader title="진행한 나눔" goBack />
       <View style={styles.container}>
         <FlatList
           contentContainerStyle={{paddingHorizontal: theme.PADDING_SIZE, paddingVertical: 10}}
