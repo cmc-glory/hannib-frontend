@@ -1,7 +1,9 @@
 import React, {useCallback, useMemo, useState} from 'react'
-import {View, Text, TextInput, ScrollView, StyleSheet} from 'react-native'
+import {View, Text, TextInput, ScrollView, StyleSheet, Platform} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {Switch} from 'react-native-paper'
+import KeyboardManager from 'react-native-keyboard-manager'
+
 import {useNavigation, useRoute} from '@react-navigation/native'
 import {useToggle} from '../../hooks'
 import {WriteGoodsOfflineRouteProps, WriteGoodsOfflineNavigationProps} from '../../navigation/WriteGoodsStackNavigator'
@@ -10,10 +12,35 @@ import {StepIndicator, ProductInfo, AdditionalQuestions, SelectTimeLocation} fro
 import * as theme from '../../theme'
 import {IAdditionalQuestion, IProductInfo, ISharingForm, IReceiveInfo} from '../../types'
 
+// ***************************** ios keyboard settings *****************************
+if (Platform.OS === 'ios') {
+  KeyboardManager.setEnable(true)
+  KeyboardManager.setEnableDebugging(false)
+  KeyboardManager.setKeyboardDistanceFromTextField(10)
+  KeyboardManager.setLayoutIfNeededOnUpdate(true)
+  KeyboardManager.setEnableAutoToolbar(true)
+  KeyboardManager.setToolbarDoneBarButtonItemText('확인')
+  KeyboardManager.setToolbarManageBehaviourBy('subviews') // "subviews" | "tag" | "position"
+  KeyboardManager.setToolbarPreviousNextButtonEnable(false)
+  KeyboardManager.setToolbarTintColor('#007aff') // Only #000000 format is supported
+  KeyboardManager.setToolbarBarTintColor('#FFFFFF') // Only #000000 format is supported
+  KeyboardManager.setShouldShowToolbarPlaceholder(true)
+  KeyboardManager.setOverrideKeyboardAppearance(false)
+  KeyboardManager.setKeyboardAppearance('default') // "default" | "light" | "dark"
+  KeyboardManager.setShouldResignOnTouchOutside(true)
+  KeyboardManager.setShouldPlayInputClicks(true)
+  KeyboardManager.resignFirstResponder()
+}
+
 export const WriteGoodsOffline = () => {
+  // ***************************** utils *****************************
   const navigation = useNavigation<WriteGoodsOfflineNavigationProps>()
   const route = useRoute<WriteGoodsOfflineRouteProps>()
+  const {images, categories, title, content, hashtags, type, isOpenDateBooked, openDate} = useMemo(() => {
+    return route.params
+  }, [])
 
+  // ***************************** states *****************************
   const [isSecretForm, toggleSecretForm] = useToggle(false) // 시크릿 폼 여부
   const [additionalQuestions, setAdditionalQuestions] = useState<IAdditionalQuestion[]>([])
   const [products, setProducts] = useState<IProductInfo[]>([]) // 상품 정보 state
@@ -21,9 +48,14 @@ export const WriteGoodsOffline = () => {
   const [receiveInfo, setReceiveInfo] = useState<IReceiveInfo[]>([])
 
   // 처음에 화면 로드될 때 이전 페이지 작성 정보 가져옴
-  const {images, categories, title, content, hashtags, type, isOpenDateBooked, openDate} = useMemo(() => {
-    return route.params
-  }, [])
+
+  // ***************************** callbacks *****************************
+  const isButtonEnabled = useCallback(() => {
+    if (receiveInfo.length == 0 || products.length == 0) {
+      return false
+    }
+    return true
+  }, [receiveInfo, products])
 
   const onPressNext = useCallback(() => {
     // 백에 전송할 나눔글 폼
@@ -81,7 +113,7 @@ export const WriteGoodsOffline = () => {
           />
         </View>
       </ScrollView>
-      <FloatingBottomButton label="다음" onPress={onPressNext} />
+      <FloatingBottomButton enabled={isButtonEnabled()} label="다음" onPress={onPressNext} />
     </SafeAreaView>
   )
 }

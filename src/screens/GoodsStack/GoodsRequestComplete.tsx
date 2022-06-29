@@ -5,6 +5,7 @@ import {SafeAreaView} from 'react-native-safe-area-context'
 import {getStatusBarHeight} from 'react-native-status-bar-height'
 import {isIphoneX, getBottomSpace} from 'react-native-iphone-x-helper'
 
+import {StepIndicator} from '../../components/WriteGoodsStack'
 import {StackHeader, CompleteIcon, RoundButton} from '../../components/utils'
 import * as theme from '../../theme'
 
@@ -21,12 +22,14 @@ export const GoodsRequestComplete = () => {
   }, [height])
 
   const onPressButton = useCallback(() => {
-    navigation.navigate('MainTabNavigator')
+    navigation.navigate('GoodsDetail')
   }, [])
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
       <StackHeader title="신청하기" goBack />
-      <View>
+
+      <View style={{paddingHorizontal: theme.PADDING_SIZE}}>
+        <StepIndicator step={3} />
         <View
           style={[styles.container, {top: MARGIN_TOP}]}
           onLayout={e => {
@@ -34,10 +37,11 @@ export const GoodsRequestComplete = () => {
           }}>
           <CompleteIcon />
           <View style={{marginVertical: 32, alignItems: 'center'}}>
-            <Text style={[theme.styles.bold20, {marginBottom: 8}]}>신청 완료</Text>
-            <Text style={{color: theme.gray700, fontSize: 16}}>신청폼 작성이 완료됐습니다.</Text>
+            <Text style={[theme.styles.bold20, {marginBottom: 8}]}>모집글 등록 완료</Text>
+            <Text style={{color: theme.gray700, fontSize: 16}}>모집글 작성이 완료됐습니다.</Text>
+            <Text style={{color: theme.gray700, fontSize: 16}}>게시글이 잘 등록됐는지 확인해보세요!</Text>
           </View>
-          <RoundButton label="메인 페이지로 이동" style={{alignSelf: 'stretch'}} enabled onPress={onPressButton} />
+          <RoundButton label="등록한 게시글로 이동" style={{alignSelf: 'stretch'}} enabled onPress={onPressButton} />
         </View>
       </View>
     </SafeAreaView>

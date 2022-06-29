@@ -3,7 +3,6 @@ import {View, Pressable, ScrollView, Text, StyleSheet} from 'react-native'
 import FastImage from 'react-native-fast-image'
 import moment from 'moment'
 import ImageView from 'react-native-image-viewing'
-import uuid from 'react-native-uuid'
 import type {ImageSource} from 'react-native-image-viewing/dist/@types'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation, useRoute} from '@react-navigation/native'
@@ -12,12 +11,6 @@ import {StackHeader, MenuIcon, Tag} from '../../components/utils'
 import {IReview} from '../../types'
 
 import * as theme from '../../theme'
-
-/*
- 'http://localhost:8081/src/assets/images/detail_image_example.png',
-  'http://localhost:8081/src/assets/images/detail_image_example2.jpeg',
-  'http://localhost:8081/src/assets/images/detail_image_example3.jpeg',
-*/
 
 const Separator = () => {
   return <View style={styles.separator} />

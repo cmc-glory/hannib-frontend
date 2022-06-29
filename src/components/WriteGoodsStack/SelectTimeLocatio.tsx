@@ -1,13 +1,14 @@
 import React, {useState, useCallback} from 'react'
 import {View, Text, TextInput, StyleSheet, Pressable, Platform} from 'react-native'
 import moment from 'moment'
-import {useToggle} from '../../hooks'
-import type {IReceiveInfo} from '../../types'
 import uuid from 'react-native-uuid'
 import DateTimePickerModal from 'react-native-modal-datetime-picker'
-import {PlusIcon, MinusIcon, CalendarIcon, LocationIcon, CheckboxIcon} from '../utils'
+import {useToggle} from '../../hooks'
+import type {IReceiveInfo} from '../../types'
+import {PlusIcon, MinusIcon, CalendarIcon, LocationIcon, CheckboxIcon, NeccesaryField} from '../utils'
 import * as theme from '../../theme'
 
+// ******************** component prop types  ********************
 type SelectTimeLocationProps = {
   receiveInfo: IReceiveInfo[]
   setReceiveInfo: React.Dispatch<React.SetStateAction<IReceiveInfo[]>>
@@ -22,20 +23,26 @@ const TimeLocationItem = ({item, onPressRemove}: TimeLocationItemProps) => {
   const {receiveDate, receivePlace, id} = item
   return (
     <View style={styles.wrapper}>
-      <TextInput
-        value={moment(receiveDate).format('YY.MM.D HH:mm')}
-        style={[theme.styles.input, styles.input, {flex: 3}]}
-        placeholder="수령일 선택"
-        placeholderTextColor={theme.gray300}
-        editable={false}
-      />
-      <TextInput
-        value={receivePlace}
-        style={[theme.styles.input, styles.input, {flex: 2}]}
-        placeholder="장소 입력"
-        placeholderTextColor={theme.gray300}
-        editable={false}
-      />
+      <View style={{flex: 3}}>
+        <TextInput
+          value={moment(receiveDate).format('YY.MM.D HH:mm')}
+          style={[theme.styles.input, styles.input]}
+          placeholder="수령일 선택"
+          placeholderTextColor={theme.gray300}
+          editable={false}
+        />
+      </View>
+
+      <View style={{flex: 2}}>
+        <TextInput
+          value={receivePlace}
+          style={[theme.styles.input, styles.input]}
+          placeholder="장소 입력"
+          placeholderTextColor={theme.gray300}
+          editable={false}
+        />
+      </View>
+
       <Pressable style={[theme.styles.plusMinusButton]} onPress={() => onPressRemove(id)}>
         <MinusIcon onPress={() => onPressRemove(id)} />
       </Pressable>
@@ -44,27 +51,35 @@ const TimeLocationItem = ({item, onPressRemove}: TimeLocationItemProps) => {
 }
 
 export const SelectTimeLocation = ({receiveInfo, setReceiveInfo}: SelectTimeLocationProps) => {
-  const [isAllSamePlace, toggleIsAllSamePlace] = useToggle() // 모두 같은 장소
+  // ******************** states ********************
+  const [isAllSamePlace, setIsAllSamePlace] = useState<boolean>() // 모두 같은 장소
   const [info, setInfo] = useState<IReceiveInfo>({
+    // 사용자가 입력한 위치, 시간 정보
     id: '',
     receiveDate: undefined,
     receivePlace: '',
   })
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false) // 나눔 수령일 선택 모달 띄울지
+
+  // ******************** callbacks ********************
   const showDatePicker = () => {
-    //console.log('here')
+    // date picker 띄우기
     setDatePickerVisibility(true)
   }
 
   const hideDatePicker = () => {
+    // date picker 숨기기
     setDatePickerVisibility(false)
   }
 
   const handleConfirm = (date: Date) => {
+    // date picker에서 날짜 선택시
     setInfo({...info, receiveDate: date})
     hideDatePicker()
   }
+
   const onPressAdd = useCallback(() => {
+    // 선택한 시간, 위치 정보 추가
     const {receiveDate, receivePlace} = info // 현재 state에서 수령일, 수령 장소 가져오고
 
     if (receiveDate == undefined || receivePlace == '') {
@@ -81,9 +96,30 @@ export const SelectTimeLocation = ({receiveInfo, setReceiveInfo}: SelectTimeLoca
       receivePlace: '',
     }) // state 초기화 해줌.
   }, [info])
+
   const onPressRemove = useCallback((id: string) => {
+    // 선택한 시간, 위치 정보 삭제
     setReceiveInfo(info => info.filter(item => item.id !== id))
   }, [])
+
+  const onPressAllSamePlace = useCallback(() => {
+    const temp = isAllSamePlace
+    setIsAllSamePlace(!temp)
+    if (temp == false) {
+      setReceiveInfo(
+        receiveInfo.map(item => {
+          return {...item, receivePlace: info.receivePlace}
+        }),
+      )
+    } else {
+      setReceiveInfo(
+        receiveInfo.map(item => {
+          return {...item, place: ''}
+        }),
+      )
+    }
+  }, [info, receiveInfo, isAllSamePlace])
+
   return (
     <View>
       <DateTimePickerModal
@@ -94,13 +130,17 @@ export const SelectTimeLocation = ({receiveInfo, setReceiveInfo}: SelectTimeLoca
         display={Platform.OS == 'ios' ? 'inline' : 'default'}
       />
 
-      <View style={[theme.styles.rowSpaceBetween, {marginBottom: 10}]}>
-        <Text style={[{fontFamily: 'Pretendard-Medium', fontSize: 16}]}>수령일 선택</Text>
+      <View style={[theme.styles.rowSpaceBetween]}>
         <View style={[theme.styles.rowFlexStart]}>
+          <Text style={[theme.styles.label]}>수령일 선택</Text>
+          <NeccesaryField />
+        </View>
+
+        <View style={[theme.styles.rowFlexStart, {marginBottom: 10}]}>
           {isAllSamePlace ? (
-            <CheckboxIcon onPress={toggleIsAllSamePlace} style={{marginRight: 8}} />
+            <CheckboxIcon onPress={onPressAllSamePlace} style={{marginRight: 8}} />
           ) : (
-            <Pressable style={styles.unchecked} onPress={toggleIsAllSamePlace} />
+            <Pressable style={styles.unchecked} onPress={onPressAllSamePlace} />
           )}
           <Text>모두 동일 장소</Text>
         </View>

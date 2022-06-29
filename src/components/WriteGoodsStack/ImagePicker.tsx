@@ -1,10 +1,10 @@
-import React, {useCallback, useState} from 'react'
-import {View, Text, Pressable, StyleSheet, Alert, TouchableOpacity} from 'react-native'
+import React, {useCallback} from 'react'
+import {View, Text, Pressable, StyleSheet, Alert} from 'react-native'
 import FastImage from 'react-native-fast-image'
 import type {Asset} from 'react-native-image-picker'
 import {launchImageLibrary} from 'react-native-image-picker'
 import * as theme from '../../theme'
-import {PlusIcon, RemoveButtonIcon} from '../utils'
+import {PlusIcon, RemoveButtonIcon, NeccesaryField} from '../utils'
 
 const IMAGE_SIZE = 64
 const BORDER_SIZE = IMAGE_SIZE / 2
@@ -71,7 +71,11 @@ export const ImagePicker = ({images, setImages}: ImagePickerProps) => {
 
   return (
     <View style={[styles.contianer]}>
-      <Text style={[theme.styles.label]}>대표 이미지 등록</Text>
+      <View style={[theme.styles.rowFlexStart]}>
+        <Text style={[theme.styles.label]}>대표 이미지 등록 (최대 5개)</Text>
+        <NeccesaryField />
+      </View>
+
       <View style={[styles.imageContainer]}>
         <Pressable onPress={onImageLibraryPress}>
           <View style={[styles.addImage, {marginBottom: 8}]}>

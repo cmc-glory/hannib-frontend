@@ -1,8 +1,7 @@
 import React, {useState, useCallback} from 'react'
-import {View, Text, TextInput, Pressable, TouchableOpacity, StyleSheet, Dimensions, Touchable} from 'react-native'
+import {View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions} from 'react-native'
 import uuid from 'react-native-uuid' // uuid
-import {PlusIcon, MinusIcon} from '../utils'
-import Icons from 'react-native-vector-icons/Ionicons'
+import {PlusIcon, MinusIcon, NeccesaryField} from '../utils'
 import {IProductInfo} from '../../types'
 import * as theme from '../../theme'
 
@@ -64,7 +63,10 @@ export const ProductInfo = ({productInfos, setProductInfos}: ProductInfoProps) =
   return (
     <View>
       <View style={[styles.header]}>
-        <Text style={[theme.styles.label]}>상품 정보</Text>
+        <View style={[theme.styles.rowFlexStart]}>
+          <Text style={[theme.styles.label]}>상품 정보</Text>
+          <NeccesaryField />
+        </View>
       </View>
       <View style={[styles.productInfoItemWrapper]}>
         <TextInput

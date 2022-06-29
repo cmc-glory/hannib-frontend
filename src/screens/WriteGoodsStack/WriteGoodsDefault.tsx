@@ -1,20 +1,40 @@
 import React, {useState, useCallback} from 'react'
-import {View, Text, TextInput, StyleSheet} from 'react-native'
+import {View, Text, ScrollView, TextInput, StyleSheet, Platform} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import type {Asset} from 'react-native-image-picker'
 import {useNavigation} from '@react-navigation/native'
+import KeyboardManager from 'react-native-keyboard-manager'
 
 import StackHeader from '../../components/utils/StackHeader'
-import {SelectCategory, ImagePicker, StepIndicator, HashTag, SetSharingType, BookSharingDate} from '../../components/WriteGoodsStack'
-import {FloatingBottomButton} from '../../components/utils'
+import {SelectCategory, ImagePicker, StepIndicator, SetSharingType, BookSharingDate} from '../../components/WriteGoodsStack'
+import {FloatingBottomButton, NeccesaryField} from '../../components/utils'
 import {useToggle} from '../../hooks'
-import type {IHashtag, ISharingType, ISharingForm, IProductInfo} from '../../types'
+import type {IHashtag, ISharingType} from '../../types'
 import * as theme from '../../theme'
 import {useAutoFocus, AutoFocusProvider} from '../../contexts'
 
+// ***************************** ios keyboard settings *****************************
+if (Platform.OS === 'ios') {
+  KeyboardManager.setEnable(true)
+  KeyboardManager.setEnableDebugging(false)
+  KeyboardManager.setKeyboardDistanceFromTextField(10)
+  KeyboardManager.setLayoutIfNeededOnUpdate(true)
+  KeyboardManager.setEnableAutoToolbar(true)
+  KeyboardManager.setToolbarDoneBarButtonItemText('확인')
+  KeyboardManager.setToolbarManageBehaviourBy('subviews') // "subviews" | "tag" | "position"
+  KeyboardManager.setToolbarPreviousNextButtonEnable(false)
+  KeyboardManager.setToolbarTintColor('#007aff') // Only #000000 format is supported
+  KeyboardManager.setToolbarBarTintColor('#FFFFFF') // Only #000000 format is supported
+  KeyboardManager.setShouldShowToolbarPlaceholder(true)
+  KeyboardManager.setOverrideKeyboardAppearance(false)
+  KeyboardManager.setKeyboardAppearance('default') // "default" | "light" | "dark"
+  KeyboardManager.setShouldResignOnTouchOutside(true)
+  KeyboardManager.setShouldPlayInputClicks(true)
+  KeyboardManager.resignFirstResponder()
+}
+
 export const WriteGoodsDefault = () => {
   const navigation = useNavigation()
-  const focus = useAutoFocus()
 
   const [images, setImages] = useState<Asset[]>([]) // 대표 이미지
   const [categories, setCategories] = useState<string[]>(['dd']) // 카테고리
@@ -62,26 +82,25 @@ export const WriteGoodsDefault = () => {
   return (
     <SafeAreaView edges={['top', 'bottom']} style={theme.styles.safeareaview}>
       <StackHeader goBack title="모집폼 작성" />
-      <AutoFocusProvider contentContainerStyle={[theme.styles.wrapper]}>
+      <ScrollView contentContainerStyle={[theme.styles.wrapper]}>
         <StepIndicator step={1} />
         <ImagePicker images={images} setImages={setImages} />
         <SelectCategory />
         <View style={[styles.itemWrapper]}>
-          <Text style={[theme.styles.label]}>제목</Text>
-          <TextInput
-            style={theme.styles.input}
-            onFocus={focus}
-            placeholder="제목 입력"
-            placeholderTextColor={theme.gray300}
-            value={title}
-            onChangeText={setTitle}
-          />
+          <View style={[theme.styles.rowFlexStart]}>
+            <Text style={[theme.styles.label]}>제목</Text>
+            <NeccesaryField />
+          </View>
+
+          <TextInput style={theme.styles.input} placeholder="제목 입력" placeholderTextColor={theme.gray300} value={title} onChangeText={setTitle} />
         </View>
         <View style={[styles.itemWrapper]}>
-          <Text style={[theme.styles.label]}>내용</Text>
+          <View style={[theme.styles.rowFlexStart]}>
+            <Text style={[theme.styles.label]}>내용</Text>
+            <NeccesaryField />
+          </View>
           <TextInput
             multiline={true}
-            onFocus={focus}
             style={[theme.styles.input, {height: 150, textAlignVertical: 'top', paddingTop: 16}]}
             placeholder="내용 입력"
             placeholderTextColor={theme.gray300}
@@ -94,11 +113,15 @@ export const WriteGoodsDefault = () => {
           <HashTag hashtags={hashtags} setHashtags={setHashtags} />
         </View> */}
         <View style={[styles.itemWrapper]}>
-          <Text style={[theme.styles.label]}>나눔 방식</Text>
+          <View style={[theme.styles.rowFlexStart]}>
+            <Text style={[theme.styles.label]}>나눔 방식</Text>
+            <NeccesaryField />
+          </View>
+
           <SetSharingType type={type} setType={setType} />
         </View>
         <BookSharingDate isOpenDateBooked={isOpenDateBooked} toggleOpenDate={toggleOpenDate} openDate={openDate} setOpenDate={setOpenDate} />
-      </AutoFocusProvider>
+      </ScrollView>
       <FloatingBottomButton label="다음" onPress={type == 'offline' ? onPressOffline : onPressOnline} enabled={checkNextButtonEnabled()} />
     </SafeAreaView>
   )

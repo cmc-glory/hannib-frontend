@@ -37,6 +37,7 @@ const BUTTON_SIZE = 24
 export const GoodsRequestOffline = () => {
   // ***************************** utils *****************************
   const [answers, setAnswers] = useState<string[]>([])
+  const navigation = useNavigation()
   // ***************************** states *****************************
   const [info, setInfo] = useState<ISharingRequestInfo>({
     products: [],
@@ -51,9 +52,6 @@ export const GoodsRequestOffline = () => {
     product: [],
   })
   const [opened, toggleOpened] = useToggle()
-
-  // ***************************** navigation *****************************
-  const navigation = useNavigation()
 
   // ***************************** react query *****************************
   useQuery(queryKeys.goodsRequestInfo, getGoodsRequestInfo, {
@@ -197,7 +195,7 @@ export const GoodsRequestOffline = () => {
             </Animated.View>
           </View>
           {info.additionalQuestions.map((item, index) => (
-            <MakeNewField id={item.id} label={item.content} necessary={item.necessary} index={index} answers={answers} setAnswers={setAnswers} />
+            <MakeNewField key={item.id} label={item.content} necessary={item.necessary} index={index} answers={answers} setAnswers={setAnswers} />
           ))}
         </View>
       </ScrollView>

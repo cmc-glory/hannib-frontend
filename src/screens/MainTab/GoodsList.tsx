@@ -36,7 +36,7 @@ const GoodsLists = () => {
   const [userCategory, setUserCategory] = useState<IUserCategory>(user.userCategory[0]) // 현재 사용자가 선택한 카테고리.
   const [bannerInfo, setBannerInfo] = useState({
     imageUri: 'http://localhost:8081/src/assets/images/sanrio2.jpeg',
-    title: '좋아하는 셀럽의 생일/공연 홍보 배너를 걸어보세요',
+    title: '응원하는 셀럽의 생일/공연 홍보 배너를 걸어보세요',
     sharingid: '123445',
   })
 

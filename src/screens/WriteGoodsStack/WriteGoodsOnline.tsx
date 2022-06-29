@@ -1,14 +1,36 @@
 import React, {useCallback, useMemo, useState} from 'react'
-import {View, Text, TextInput, ScrollView, StyleSheet} from 'react-native'
+import {View, Text, TextInput, ScrollView, StyleSheet, Platform} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {Switch} from 'react-native-paper'
 import {useNavigation, useRoute} from '@react-navigation/native'
+import KeyboardManager from 'react-native-keyboard-manager'
+
 import {WriteGoodsOnlineRouteProps} from '../../navigation/WriteGoodsStackNavigator'
 import {StackHeader, FloatingBottomButton} from '../../components/utils'
 import {StepIndicator, AdditionalQuestions, ProductInfo} from '../../components/WriteGoodsStack'
 import * as theme from '../../theme'
 import {useToggle} from '../../hooks/useToggle'
 import {IProductInfo, IAdditionalQuestion, ISharingForm} from '../../types'
+
+// ***************************** ios keyboard settings *****************************
+if (Platform.OS === 'ios') {
+  KeyboardManager.setEnable(true)
+  KeyboardManager.setEnableDebugging(false)
+  KeyboardManager.setKeyboardDistanceFromTextField(10)
+  KeyboardManager.setLayoutIfNeededOnUpdate(true)
+  KeyboardManager.setEnableAutoToolbar(true)
+  KeyboardManager.setToolbarDoneBarButtonItemText('확인')
+  KeyboardManager.setToolbarManageBehaviourBy('subviews') // "subviews" | "tag" | "position"
+  KeyboardManager.setToolbarPreviousNextButtonEnable(false)
+  KeyboardManager.setToolbarTintColor('#007aff') // Only #000000 format is supported
+  KeyboardManager.setToolbarBarTintColor('#FFFFFF') // Only #000000 format is supported
+  KeyboardManager.setShouldShowToolbarPlaceholder(true)
+  KeyboardManager.setOverrideKeyboardAppearance(false)
+  KeyboardManager.setKeyboardAppearance('default') // "default" | "light" | "dark"
+  KeyboardManager.setShouldResignOnTouchOutside(true)
+  KeyboardManager.setShouldPlayInputClicks(true)
+  KeyboardManager.resignFirstResponder()
+}
 
 export const WriteGoodsOnline = () => {
   const navigation = useNavigation()

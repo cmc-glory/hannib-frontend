@@ -4,7 +4,7 @@ import {NeccesaryField} from '../utils'
 import * as theme from '../../theme'
 
 type makeNewFieldProps = {
-  id: string
+  key: string
   label: string
   necessary: boolean
   index: number
