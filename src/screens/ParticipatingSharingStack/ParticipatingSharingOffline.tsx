@@ -2,19 +2,21 @@ import {useNavigation} from '@react-navigation/native'
 import React, {useCallback} from 'react'
 import {View, Text, StyleSheet, Dimensions} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
+import {Asset} from 'react-native-image-picker'
 import {CancelModal} from '../../components/MyPageStack/CancelModal'
 import {StackHeader, SharingPreview, GoodsListItem, Button} from '../../components/utils'
 import {useToggle} from '../../hooks'
 import * as theme from '../../theme'
 const BUTTON_WIDTH = (Dimensions.get('window').width - theme.PADDING_SIZE * 2 - 10) / 2
 
-const participateState: string = 'proceeding'
+const participateState: string = 'completed'
 
 type Buttons = {
   onPressWriteQnA: () => void
   toggleCancelModalVisible: () => void
+  onPressWriteReview: () => void
 }
-const Buttons = ({onPressWriteQnA, toggleCancelModalVisible}: Buttons) => {
+const Buttons = ({onPressWriteQnA, toggleCancelModalVisible, onPressWriteReview}: Buttons) => {
   switch (participateState) {
     case 'proceeding':
       return (
@@ -24,7 +26,7 @@ const Buttons = ({onPressWriteQnA, toggleCancelModalVisible}: Buttons) => {
         </View>
       )
     case 'completed':
-      return <Button label="후기 작성" selected={true} style={{width: '100%'}} />
+      return <Button label="후기 작성" selected={true} style={{width: '100%'}} onPress={onPressWriteReview} />
     case 'notTaken':
       return <Button label="미수령" selected={false} style={{width: '100%'}}></Button>
   }
@@ -42,9 +44,16 @@ export const ParticipatingSharingOffline = () => {
       category: 'bts', // 카테고리
       title: 'BTS 키링 나눔', // 나눔 제목
     })
-    // navigation.navigate('MyPageStackNavigator', {
-    //   screen: 'WriteQnA',
-    // })
+  }, [])
+
+  const onPressWriteReview = useCallback(() => {
+    navigation.navigate('WriteReview', {
+      postid: '1', // 해당 나눔 게시글의 id
+      userid: '1', // 문의글을 남기는 사용자의 id,
+      imageuri: 'http://localhost:8081/src/assets/images/detail_image_example.png', // 썸네일 uri
+      category: 'bts', // 카테고리
+      title: 'BTS 키링 나눔', // 나눔 제목
+    })
   }, [])
   return (
     <SafeAreaView style={styles.rootContainer}>
@@ -81,7 +90,7 @@ export const ParticipatingSharingOffline = () => {
         </View>
 
         <View style={{...theme.styles.rowSpaceBetween, width: '100%'}}>
-          <Buttons onPressWriteQnA={onPressWriteQnA} toggleCancelModalVisible={toggleCancelModalVisible} />
+          <Buttons onPressWriteQnA={onPressWriteQnA} toggleCancelModalVisible={toggleCancelModalVisible} onPressWriteReview={onPressWriteReview} />
         </View>
       </View>
       <CancelModal isVisible={cancelModalVisible} toggleIsVisible={toggleCancelModalVisible} />
