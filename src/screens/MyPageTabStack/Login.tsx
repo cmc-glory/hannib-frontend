@@ -127,7 +127,7 @@ export const Login = () => {
             )}
             {!ios && (
               <LoginButton
-                style={{backgroundColor: theme.white}}
+                style={{backgroundColor: theme.white, borderWidth: 1, borderColor: theme.gray200}}
                 onPress={SignInWithGoogle}
                 label="Google로 로그인"
                 source={require('../../assets/images/google_logo.png')}

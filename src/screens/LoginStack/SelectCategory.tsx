@@ -27,8 +27,8 @@ const SelectedStarTag = ({item, onPressRemove}: SelectedStarTagProps) => {
   const {name, id} = item
   return (
     <View style={[theme.styles.rowSpaceBetween, styles.tagContainer]}>
-      <Text>{name}</Text>
-      <XIcon size={20} onPress={() => onPressRemove(id)} />
+      <Text style={[theme.styles.text14]}>{name}</Text>
+      <XIcon size={16} onPress={() => onPressRemove(id)} style={{marginLeft: 8}} />
     </View>
   )
 }
@@ -168,7 +168,6 @@ export const SelectCategory = () => {
           />
         )}
       </View>
-
       <FloatingBottomButton label="선택 완료" enabled={selectedStars.length != 0} onPress={onPressSelectCompletion} />
     </SafeAreaView>
   )

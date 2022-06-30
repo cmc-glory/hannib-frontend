@@ -1,15 +1,13 @@
 import React from 'react'
-import {View, Text, StyleSheet, Platform} from 'react-native'
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 
 import GoodsList from '../screens/MainTab/GoodsList'
-
-import CommunityStackNavigator from './CommunityStackNavigator'
-import ChattingStackNavigator from './ChattingStackNavigator'
+import {isIphoneX} from 'react-native-iphone-x-helper'
 import CalendarStackNavigator from './CalendarStackNavigator'
 import MyPageTabStackNavigator from './MyPageTabStackNavigator'
 import {Favorites} from '../screens/MainTab/Favorites'
-//import MyPageStackNavigator from './MyPageStackNavigator'
+
+const iphoneX = isIphoneX()
 
 import {
   HomeIcon,
@@ -42,14 +40,15 @@ function BottomTab() {
         tabBarInactiveTintColor: theme.gray800,
         headerShown: false,
         tabBarStyle: {
-          //borderTopWidth: 0,
-          //borderColor: '#fff',
           borderTopColor: theme.gray500,
-          //height: Platform.OS == 'android' ? 60 : 80,
+          height: 56,
+        },
+        tabBarLabelStyle: {
+          marginTop: 2,
         },
         tabBarItemStyle: {
           marginTop: 5,
-          marginBottom: Platform.OS == 'android' ? 5 : 0,
+          marginBottom: 8,
         },
       }}>
       <Tab.Screen

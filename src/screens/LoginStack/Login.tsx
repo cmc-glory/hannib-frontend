@@ -114,7 +114,6 @@ export const Login = () => {
           <Text style={[styles.title, theme.styles.bold16]}>한입과 함께 즐겁게 굿즈를 나눔하세요</Text>
         </View>
         <View style={[styles.loginButtonContainer]}>
-          require('../../assets/logo_white.png')
           <LoginButton
             label="Kakao로 로그인"
             style={{backgroundColor: '#fddc3f'}}
@@ -143,7 +142,7 @@ export const Login = () => {
           )}
           {!ios && (
             <LoginButton
-              style={{backgroundColor: theme.white}}
+              style={{backgroundColor: theme.white, borderWidth: 1, borderColor: theme.gray200}}
               onPress={SignInWithGoogle}
               label="Google로 로그인"
               source={require('../../assets/images/google_logo.png')}

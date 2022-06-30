@@ -11,7 +11,6 @@ export const EmptyResult = () => {
   }, [])
   return (
     <View style={styles.container}>
-      require( )
       <FastImage source={require('../../assets/images/NotExists.png')} style={styles.notExists} />
       <View style={{marginVertical: 32, alignItems: 'center'}}>
         <Text style={[theme.styles.bold20, {marginBottom: 8}]}>검색 결과가 존재하지 않습니다</Text>

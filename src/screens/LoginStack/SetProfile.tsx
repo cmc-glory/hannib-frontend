@@ -10,11 +10,15 @@ import {StackHeader, SelectImageIcon, FloatingBottomButton} from '../../componen
 import * as theme from '../../theme'
 import FastImage from 'react-native-fast-image'
 
+const names = ['test', '진실', 'ㅇㅇ']
+
 export const SetProfile = () => {
+  // ****************** utils  ******************
   const navigation = useNavigation()
   const route = useRoute<SetProfileRouteProps>()
   const [name, setName] = useState<string>('') // 사용자가 입력한 닉네임.
-  const [profileImage, setProfileImage] = useState<string | undefined>('http://localhost:8081/src/assets/images/noUser.png')
+  const [profileImage, setProfileImage] = useState<any>(require('../../assets/images/noUser.png'))
+  const [duplicated, setDuplicated] = useState<boolean>(false) // 이메일 중복 여부
 
   // 이미지 상관 없이 닉네임이 null이 아닐 때만
   const checkButtonEnabled = useCallback((name: string) => {
@@ -22,6 +26,12 @@ export const SetProfile = () => {
   }, [])
 
   const onPressNext = useCallback(() => {
+    // 중복 닉네임 판별
+    if (names.includes(name)) {
+      setDuplicated(true)
+      return
+    }
+
     navigation.navigate('SelectCategory', {email: route.params.email, name, profileImage})
   }, [name, profileImage])
 
@@ -34,7 +44,7 @@ export const SetProfile = () => {
     } else if (response.errorMessage) {
       console.log('errorMessage', response.errorMessage)
     } else if (response.assets) {
-      setProfileImage(response?.assets[0].uri)
+      setProfileImage({uri: response?.assets[0].uri})
     }
   }, [])
 
@@ -46,14 +56,24 @@ export const SetProfile = () => {
           {profileImage == undefined ? (
             <Pressable style={[styles.image, styles.selectImage]} onPress={onImageLibraryPress}></Pressable>
           ) : (
-            <FastImage source={{uri: profileImage}} style={styles.image}></FastImage>
+            <FastImage source={profileImage} style={styles.image}></FastImage>
           )}
 
           <SelectImageIcon style={styles.cameraIcon} onPress={onImageLibraryPress} />
         </View>
 
         <Text style={theme.styles.label}>닉네임</Text>
-        <TextInput style={theme.styles.input} placeholder="닉네임을 입력해 주세요." placeholderTextColor={theme.gray300} value={name} onChangeText={setName} />
+        <TextInput
+          style={[theme.styles.input, duplicated && {borderColor: theme.red}]}
+          placeholder="닉네임을 입력해 주세요."
+          placeholderTextColor={theme.gray300}
+          value={name}
+          onChangeText={text => {
+            setDuplicated(false)
+            setName(text)
+          }}
+        />
+        {duplicated && <Text style={[{color: theme.red, fontSize: 12, marginTop: 4}, theme.styles.text12]}>중복된 닉네임입니다.</Text>}
       </View>
       <FloatingBottomButton label="다음" enabled={checkButtonEnabled(name)} onPress={onPressNext} />
     </SafeAreaView>

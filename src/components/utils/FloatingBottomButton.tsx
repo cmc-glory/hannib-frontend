@@ -1,6 +1,10 @@
 import React from 'react'
-import {Pressable, Text, StyleSheet, Platform} from 'react-native'
+import {Pressable, Text, StyleSheet, Dimensions} from 'react-native'
+import {isIphoneX} from 'react-native-iphone-x-helper'
 import * as theme from '../../theme'
+
+const iphoneX = isIphoneX()
+const BUTTON_WIDTH = Dimensions.get('window').width - theme.PADDING_SIZE * 2
 
 type FloatingBottoButtonProps = {
   label: string
@@ -20,11 +24,15 @@ export const FloatingBottomButton = ({label, onPress, enabled = false}: Floating
 
 const styles = StyleSheet.create({
   container: {
+    position: 'absolute',
+    zIndex: 10,
+    bottom: iphoneX ? 0 : 10,
+    width: BUTTON_WIDTH,
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 14,
-    marginTop: 10,
-    marginBottom: Platform.OS == 'android' ? 10 : 0,
+    //marginTop: 10,
+    //marginBottom: iphoneX ? 0 : 10,
   },
   label: {
     color: theme.white,

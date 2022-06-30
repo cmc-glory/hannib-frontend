@@ -1,10 +1,8 @@
 import React, {useCallback} from 'react'
-import {View, Text, StyleSheet, Linking} from 'react-native'
+import {View, ScrollView, Text, StyleSheet, Linking} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
-import {StackHeader, RoundButton} from '../../components/utils'
+import {StackHeader, FloatingBottomButton} from '../../components/utils'
 import * as theme from '../../theme'
-
-import {openInbox} from 'react-native-email-link'
 
 export const CustomerService = () => {
   // ******************** callbacks ********************
@@ -14,7 +12,7 @@ export const CustomerService = () => {
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
       <StackHeader title="문의하기" goBack />
-      <View style={[styles.container]}>
+      <ScrollView style={[styles.container]}>
         <View style={[styles.emailContainer]}>
           <Text style={{fontSize: 16}}>문의 이메일 : hannip.manager@gmail.com</Text>
         </View>
@@ -44,8 +42,8 @@ export const CustomerService = () => {
           <Text style={[theme.styles.bold16, {marginBottom: 16}]}>일반 문의</Text>
           <Text style={[theme.styles.text14]}>한입을 사용하시면서 불편한 점이나 아쉬운 점이 있으시다면 언제든 문의해주세요! 피드백은 언제나 환영합니다. </Text>
         </View>
-        <RoundButton enabled label="문의하기" onPress={onPressButton} />
-      </View>
+      </ScrollView>
+      <FloatingBottomButton enabled label="문의하기" onPress={onPressButton} />
     </SafeAreaView>
   )
 }

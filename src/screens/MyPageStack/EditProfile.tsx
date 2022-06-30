@@ -59,6 +59,7 @@ export const EditProfile = () => {
 
         <Text style={theme.styles.label}>닉네임</Text>
         <TextInput style={theme.styles.input} placeholder={user.name} placeholderTextColor={theme.gray300} value={name} onChangeText={setName} />
+        <Text style={[theme.styles.text14, {marginTop: 8, color: theme.gray500}]}>이번달 잔여 수정 가능 횟수 : 1회</Text>
       </View>
     </SafeAreaView>
   )
