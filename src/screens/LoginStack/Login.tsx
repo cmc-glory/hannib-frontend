@@ -110,10 +110,11 @@ export const Login = () => {
       style={{flex: 1}}>
       <SafeAreaView style={[theme.styles.wrapper, styles.rootContainer]}>
         <View style={[styles.titleContainer]}>
-          <FastImage source={{uri: 'http://localhost:8081/src/assets/logo_white.png'}} style={styles.logoWhite} />
+          <FastImage source={require('../../assets/logo_white.png')} style={styles.logoWhite} />
           <Text style={[styles.title, theme.styles.bold16]}>한입과 함께 즐겁게 굿즈를 나눔하세요</Text>
         </View>
         <View style={[styles.loginButtonContainer]}>
+          require('../../assets/logo_white.png')
           <LoginButton
             label="Kakao로 로그인"
             style={{backgroundColor: '#fddc3f'}}

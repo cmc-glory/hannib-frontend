@@ -11,13 +11,13 @@ export const EmptyResult = () => {
   }, [])
   return (
     <View style={styles.container}>
-      <FastImage source={{uri: 'http://localhost:8081/src/assets/images/NotExists.png'}} style={styles.notExists} />
+      require( )
+      <FastImage source={require('../../assets/images/NotExists.png')} style={styles.notExists} />
       <View style={{marginVertical: 32, alignItems: 'center'}}>
         <Text style={[theme.styles.bold20, {marginBottom: 8}]}>검색 결과가 존재하지 않습니다</Text>
         <Text style={{fontSize: 16, color: theme.gray700}}>원하는 카테고리가 없으시다면,</Text>
         <Text style={{fontSize: 16, color: theme.gray700}}>문의하기를 통해 추가가 가능합니다. </Text>
       </View>
-
       <Pressable style={[styles.button]} onPress={onPressAsk}>
         <Text style={{fontSize: 16}}>카테고리 문의하기</Text>
       </Pressable>

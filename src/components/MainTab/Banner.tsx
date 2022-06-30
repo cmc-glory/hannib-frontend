@@ -1,5 +1,5 @@
 import React, {useCallback} from 'react'
-import {View, Text, Pressable, StyleSheet, Animated} from 'react-native'
+import {View, Text, Pressable, StyleSheet, Animated, Linking} from 'react-native'
 import {useNavigation} from '@react-navigation/native'
 import FastImage from 'react-native-fast-image'
 import {RightArrowWhiteIcon} from '../utils'
@@ -18,13 +18,16 @@ export const Banner = ({imageUri, title, sharingid, animatedHeight}: BannerProps
   const animatedStyle = useAnimatedStyle({
     transform: [{translateY: animatedHeight}],
   })
-  const onPressBanner = useCallback(() => {
-    navigation.navigate('GoodsStackNavigator', {
-      screen: 'GoodsDetail',
-      params: {
-        sharingid: sharingid,
-      },
-    })
+  const onPressBanner = useCallback(async () => {
+    // navigation.navigate('GoodsStackNavigator', {
+    //   screen: 'GoodsDetail',
+    //   params: {
+    //     sharingid: sharingid,
+    //   },
+    // })
+    const url = 'https://naver.com'
+    await Linking.canOpenURL(url)
+    Linking.openURL(url)
   }, [])
   return (
     <Pressable style={styles.container} onPress={onPressBanner}>

@@ -1,5 +1,5 @@
 [
-  {"id": "0", "maincategory": "singer", "name": "aespa", "uri": "http://localhost:8081/src/assets/images/aespa.jpeg"},
+  {"id": "0", "maincategory": "singer", "name": "aespa", "uri": "../../assets/images/aespa.jpeg"},
   {"id": "1", "maincategory": "singer", "name": "IU", "uri": "http://localhost:8081/src/assets/images/iu.jpeg"},
   {"id": "2", "maincategory": "singer", "name": "BTS", "uri": "http://localhost:8081/src/assets/images/bts.jpeg"},
   {"id": "3", "maincategory": "actor", "name": "주우재", "uri": "http://localhost:8081/src/assets/images/joowoojae.jpeg"},
