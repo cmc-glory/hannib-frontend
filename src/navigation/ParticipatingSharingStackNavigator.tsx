@@ -24,8 +24,8 @@ type ParticipatingSharingStackNavigatorParamList = {
 
 const Stack = createStackNavigator<ParticipatingSharingStackNavigatorParamList>()
 
-// type WriteQnAProps = NativeStackScreenProps<ParticipatingSharingStackNavigatorParamList, 'WriteQnA'>
-// export type WriteQnARouteProps = WriteQnAProps['route']
+type WriteQnAProps = NativeStackScreenProps<ParticipatingSharingStackNavigatorParamList, 'WriteQnA'>
+export type WriteQnARouteProps = WriteQnAProps['route']
 
 type WriteReviewProps = NativeStackScreenProps<ParticipatingSharingStackNavigatorParamList, 'WriteReview'>
 export type WriteReviewPropsNavigationProps = WriteReviewProps['navigation']

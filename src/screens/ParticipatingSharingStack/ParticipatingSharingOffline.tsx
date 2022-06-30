@@ -7,6 +7,7 @@ import {CancelModal} from '../../components/MyPageStack/CancelModal'
 import {StackHeader, SharingPreview, GoodsListItem, Button} from '../../components/utils'
 import {useToggle} from '../../hooks'
 import * as theme from '../../theme'
+import {WriteReviewPropsNavigationProps} from '../../navigation/ParticipatingSharingStackNavigator'
 const BUTTON_WIDTH = (Dimensions.get('window').width - theme.PADDING_SIZE * 2 - 10) / 2
 
 const participateState: string = 'completed'
@@ -35,6 +36,7 @@ const Buttons = ({onPressWriteQnA, toggleCancelModalVisible, onPressWriteReview}
 export const ParticipatingSharingOffline = () => {
   const [cancelModalVisible, toggleCancelModalVisible] = useToggle() // 취소 모달창 띄울지
   const navigation = useNavigation()
+  const writeQnANavigation = useNavigation<WriteReviewPropsNavigationProps>()
 
   const onPressWriteQnA = useCallback(() => {
     navigation.navigate('WriteQnA', {
@@ -47,7 +49,7 @@ export const ParticipatingSharingOffline = () => {
   }, [])
 
   const onPressWriteReview = useCallback(() => {
-    navigation.navigate('WriteReview', {
+    writeQnANavigation.navigate('WriteReview', {
       postid: '1', // 해당 나눔 게시글의 id
       userid: '1', // 문의글을 남기는 사용자의 id,
       imageuri: 'http://localhost:8081/src/assets/images/detail_image_example.png', // 썸네일 uri
