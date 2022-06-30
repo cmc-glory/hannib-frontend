@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import {Calendar} from 'react-native-calendars'
 import {LocaleConfig} from 'react-native-calendars'
 import moment from 'moment'
-import {LeftArrowIcon, RightArrowIcon} from '../utils'
+import {LeftArrowCalendarIcon, RightArrowCalendarIcon} from '../utils'
 import * as theme from '../../theme'
 
 LocaleConfig.locales['fr'] = {
@@ -53,13 +53,13 @@ export const WixCalendar = () => {
       onDayLongPress={day => {
         console.log('selected day', day)
       }}
-      monthFormat={'yyyy MM'}
+      monthFormat={'yyyy.MM'}
       // Handler which gets executed when visible month changes in calendar. Default = undefined
       onMonthChange={month => {
         console.log('month changed', month)
       }}
       hideExtraDays={true}
-      renderArrow={direction => (direction == 'left' ? <LeftArrowIcon /> : <RightArrowIcon />)}
+      renderArrow={direction => (direction == 'left' ? <LeftArrowCalendarIcon /> : <RightArrowCalendarIcon />)}
       // Show week numbers to the left. Default = false
       showWeekNumbers={false}
       // Handler which gets executed when press arrow icon left. It receive a callback can go back month

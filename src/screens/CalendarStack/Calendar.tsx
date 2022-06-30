@@ -3,7 +3,7 @@ import {View, Text, ScrollView, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {WixCalendar, CalendarItem} from '../../components/CalendarStack'
 
-import {StackHeader, BellIcon} from '../../components/utils'
+import {StackHeader, BellIcon, SeparatorLight} from '../../components/utils'
 import * as theme from '../../theme'
 
 export const Calendar = () => {
@@ -12,10 +12,17 @@ export const Calendar = () => {
       <StackHeader title="일정">
         <BellIcon />
       </StackHeader>
-      <ScrollView style={{paddingHorizontal: 10}}>
-        <WixCalendar />
-        <CalendarItem />
-        <CalendarItem />
+      <ScrollView>
+        <View style={{paddingHorizontal: 10}}>
+          <WixCalendar />
+        </View>
+
+        <View style={{paddingHorizontal: theme.PADDING_SIZE}}>
+          <SeparatorLight style={{marginVertical: 20}} />
+
+          <CalendarItem />
+          <CalendarItem />
+        </View>
       </ScrollView>
     </SafeAreaView>
   )
