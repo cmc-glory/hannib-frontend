@@ -34,12 +34,15 @@ const MyPageItem = ({label, numSharing, onPress}: MyPageItem) => {
 }
 
 export const MyPageScreen = () => {
+  // ******************** utils ********************
   const navigation = useNavigation()
   const user = useAppSelector(state => state.auth.user)
   console.log(user)
 
+  // ******************** states ********************
   const [logoutModalVisible, setLogoutModalVisible] = useState<boolean>(false)
 
+  // ******************** callbacks ********************
   const onPressEditProfile = useCallback(() => {
     navigation.navigate('MyPageStackNavigator', {
       screen: 'EditProfile',
@@ -70,6 +73,12 @@ export const MyPageScreen = () => {
     navigation.navigate('ParticipatingSharingList')
   }, [])
 
+  const onPressCustomerService = useCallback(() => {
+    navigation.navigate('MyPageStackNavigator', {
+      screen: 'CustomerService',
+    })
+  }, [])
+
   return (
     <SafeAreaView style={[theme.styles.safeareaview]}>
       <StackHeader title="마이페이지" goBack={false}>
@@ -85,7 +94,7 @@ export const MyPageScreen = () => {
           <View style={{alignSelf: 'stretch', justifyContent: 'center'}}>
             <Text style={[theme.styles.bold20, {color: theme.gray700, marginBottom: 8}]}>{user.name}</Text>
             <Pressable style={[theme.styles.rowFlexStart]} onPress={onPressEditProfile}>
-              <Text style={{color: theme.gray500}}>프로필 수정</Text>
+              <Text style={[{color: theme.gray500}, theme.styles.text14]}>프로필 수정</Text>
               <RightArrowIcon size={20} onPress={onPressEditProfile} />
             </Pressable>
           </View>
@@ -104,7 +113,7 @@ export const MyPageScreen = () => {
           <SeparatorLight />
           <MyPageItem label="차단계정 관리" onPress={onPressBlockedUsers} />
           <SeparatorLight />
-          <MyPageItem label="고객센터 문의" onPress={() => {}} />
+          <MyPageItem label="고객센터 문의" onPress={onPressCustomerService} />
         </View>
         <Separator />
         <View style={[styles.wrapper]}>

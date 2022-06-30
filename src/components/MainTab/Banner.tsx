@@ -25,7 +25,7 @@ export const Banner = ({imageUri, title, sharingid, animatedHeight}: BannerProps
     //     sharingid: sharingid,
     //   },
     // })
-    const url = 'https://naver.com'
+    const url = 'https://www.instagram.com/'
     await Linking.canOpenURL(url)
     Linking.openURL(url)
   }, [])

@@ -2,12 +2,13 @@ import React from 'react'
 import {createStackNavigator} from '@react-navigation/stack'
 import type {NativeStackScreenProps} from '@react-navigation/native-stack'
 
-import {BlockedUsers, EditProfile, Resign} from '../screens/MyPageStack'
+import {BlockedUsers, EditProfile, Resign, CustomerService} from '../screens/MyPageStack'
 
 type MyPageStackNavigatorParamList = {
   BlockedUsers: undefined
   EditProfile: undefined
   Resign: undefined
+  CustomerService: undefined
 }
 
 const Stack = createStackNavigator<MyPageStackNavigatorParamList>()
@@ -18,6 +19,7 @@ const MyPageStackNavigator = () => {
       <Stack.Screen name="BlockedUsers" component={BlockedUsers} />
       <Stack.Screen name="EditProfile" component={EditProfile} />
       <Stack.Screen name="Resign" component={Resign} />
+      <Stack.Screen name="CustomerService" component={CustomerService} />
     </Stack.Navigator>
   )
 }

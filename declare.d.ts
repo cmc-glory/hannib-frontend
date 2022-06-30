@@ -113,5 +113,6 @@ declare namespace ReactNavigation {
     NoticeList: {
       postid: string
     }
+    CustomerService: undefined
   }
 }
