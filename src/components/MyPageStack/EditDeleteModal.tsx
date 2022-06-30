@@ -1,5 +1,5 @@
 import React from 'react'
-import {View, Text, StyleSheet, TextInput, Pressable} from 'react-native'
+import {View, Text, StyleSheet, TextInput, Pressable, Platform} from 'react-native'
 import {RoundButton} from '../../components/utils'
 import Modal from 'react-native-modal'
 import {DownArrowIcon, RightArrowIcon, Tag, XIcon} from '../../components/utils'
@@ -11,9 +11,11 @@ const STATUSBAR_HEIGHT = getStatusBarHeight()
 type ModalProps = {
   isVisible: boolean
   toggleIsVisible: () => void
+  deleteSharingModalVisible: boolean
+  toggleDeleteSharingModalVisible: () => void
 }
 
-export const EditDeleteModal = ({isVisible, toggleIsVisible}: ModalProps) => {
+export const EditDeleteModal = ({isVisible, toggleIsVisible, deleteSharingModalVisible, toggleDeleteSharingModalVisible}: ModalProps) => {
   return (
     <Modal
       animationInTiming={150}
@@ -24,10 +26,18 @@ export const EditDeleteModal = ({isVisible, toggleIsVisible}: ModalProps) => {
       isVisible={isVisible}
       onBackdropPress={toggleIsVisible}
       backdropColor={theme.gray800}>
-      <Pressable style={styles.menuModal}>
-        <Text style={{color: theme.gray800, height: 40}}>수정하기</Text>
-        <Text style={{color: theme.gray800}}>신고하기</Text>
-      </Pressable>
+      <View style={styles.menuModal}>
+        <Pressable>
+          <Text style={{color: theme.gray800, height: 40}}>수정하기</Text>
+        </Pressable>
+        <Pressable
+          onPress={() => {
+            toggleIsVisible()
+            setTimeout(() => toggleDeleteSharingModalVisible(), Platform.OS === 'ios' ? 300 : 0)
+          }}>
+          <Text style={{color: theme.gray800}}>삭제하기</Text>
+        </Pressable>
+      </View>
     </Modal>
   )
 }

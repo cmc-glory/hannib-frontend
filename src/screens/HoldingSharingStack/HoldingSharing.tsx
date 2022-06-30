@@ -5,7 +5,7 @@ import {StackHeader, FloatingBottomButton, SharingPreview, GoodsListItem, MenuIc
 import {useToggle} from '../../hooks'
 import * as theme from '../../theme'
 import {useNavigation} from '@react-navigation/native'
-import {EditDeleteModal, HoldingSharingBottomSheetContent} from '../../components/MyPageStack'
+import {EditDeleteModal, HoldingSharingBottomSheetContent, DeleteHoldingSharingModal} from '../../components/MyPageStack'
 import {HoldingListItem, HoldingDetailItem} from '../../components/MyPageTabStack'
 
 const dataLists: Array<any> = [
@@ -20,7 +20,8 @@ const dataLists: Array<any> = [
 ]
 
 export const HoldingSharing = () => {
-  const [editDeleteModalVisible, toggleeditDeleteModalVisible] = useToggle() //수정, 삭제하기 모달 띄울지
+  const [editDeleteModalVisible, toggleEditDeleteModalVisible] = useToggle() //수정, 삭제하기 모달 띄울지
+  const [deleteHoldingModalVisible, toggleDeleteHoldingModalVisible] = useToggle()
   const [showStateFilterBottomSheet, setShowStateFilterBottomSheet] = useState<boolean>(false) // 전체보기, 수령완료, 미수령 필터링 탭 띄울지
   const [stateFilter, setStateFilter] = useState<'전체보기' | '수령완료' | '미수령'>('전체보기')
   const [locationFilter, setLocationFilter] = useState<0 | 1 | 2>(0) // 전체보기(0), 수령완료(1), 미수령(2)
@@ -75,7 +76,7 @@ export const HoldingSharing = () => {
   return (
     <SafeAreaView style={{flex: 1}}>
       <StackHeader title="진행한 나눔" goBack>
-        <MenuIcon onPress={toggleeditDeleteModalVisible}></MenuIcon>
+        <MenuIcon onPress={toggleEditDeleteModalVisible}></MenuIcon>
       </StackHeader>
       <ScrollView contentContainerStyle={[theme.styles.wrapper]}>
         <SharingPreview uri="http://localhost:8081/src/assets/images/detail_image_example.png" category="BTS" title="BTS 키링 나눔" />
@@ -118,7 +119,14 @@ export const HoldingSharing = () => {
           navigation.navigate('SendNotice')
         }}
       />
-      <EditDeleteModal isVisible={editDeleteModalVisible} toggleIsVisible={toggleeditDeleteModalVisible} />
+
+      <EditDeleteModal
+        isVisible={editDeleteModalVisible}
+        toggleIsVisible={toggleEditDeleteModalVisible}
+        deleteSharingModalVisible={deleteHoldingModalVisible}
+        toggleDeleteSharingModalVisible={toggleDeleteHoldingModalVisible}
+      />
+      <DeleteHoldingSharingModal isVisible={deleteHoldingModalVisible} toggleIsVisible={toggleDeleteHoldingModalVisible} />
       <BottomSheet modalVisible={showStateFilterBottomSheet} setModalVisible={setShowStateFilterBottomSheet}>
         <HoldingSharingBottomSheetContent stateFilter={stateFilter} setStateFilter={setStateFilter} />
       </BottomSheet>
