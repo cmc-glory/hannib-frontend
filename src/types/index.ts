@@ -5,6 +5,21 @@ export type IHashtag = {
   content: string
 }
 
+export type ICalendar = {
+  sharingid: string
+  type: 'participating' | 'holding' // 참여, 진행
+  title: string
+  schedule: ISchedule[]
+  products: IProductInfo[]
+}
+
+export type IScheduleItem = {sharingid: string; place: string; products: IProductInfo[]; time: Date; title: string; type: 'holding' | 'participating'}
+
+export type ISchedule = {
+  time: Date | undefined
+  place: string
+}
+
 export type ISharingType = 'offline' | 'online'
 
 export type IProductInfo = {
@@ -14,14 +29,9 @@ export type IProductInfo = {
   productLimit?: number
 }
 
-export type IRequestForm = {
+export type IRequestFormOffline = {
   product: {productid: string}[]
-  receiveDate?: string | Date | undefined
-  twitterid?: string
-  address?: {postcode: string; roadAddress: string; detailedAddress: string}
-  phonenumber: string
-  name?: string
-  additionalQuestions: IAdditionalQuestion[]
+  receiveDate: string | Date | undefined
 }
 
 export type IRequestFormOnline = {
@@ -30,7 +40,7 @@ export type IRequestFormOnline = {
   phonenumber: {
     first: string
     second: string
-    thire: string
+    third: string
   }
   name: string
 }
@@ -78,10 +88,7 @@ export type ISharingDetail = {
 
 export type ISharingRequestInfo = {
   products: IProductInfo[]
-  schedule?: {
-    time: Date | undefined
-    location: string
-  }[]
+  schedule?: ISchedule[]
   title: string
   additionalQuestions: IAdditionalQuestion[]
 }

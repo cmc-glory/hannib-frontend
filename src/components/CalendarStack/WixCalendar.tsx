@@ -1,8 +1,9 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {Calendar} from 'react-native-calendars'
 import {LocaleConfig} from 'react-native-calendars'
 import moment from 'moment'
 import {LeftArrowCalendarIcon, RightArrowCalendarIcon} from '../utils'
+import {ICalendar, IScheduleItem} from '../../types'
 import * as theme from '../../theme'
 
 LocaleConfig.locales['fr'] = {
@@ -13,9 +14,30 @@ LocaleConfig.locales['fr'] = {
 }
 LocaleConfig.defaultLocale = 'fr'
 
-export const WixCalendar = () => {
-  const today = moment().format('YYYY-MM-DD')
-  const [markedDates, setMarkedStates] = useState([today])
+type WixCalendarProps = {
+  scheduleAll: Object | undefined
+}
+const today = moment().format('YYYY-MM-DD')
+
+export const WixCalendar = ({scheduleAll}: WixCalendarProps) => {
+  const [markedDates, setMarkedStates] = useState<any>({[today]: {selected: true, selectedColor: theme.main}})
+
+  useEffect(() => {
+    if (scheduleAll != undefined) {
+      Object.keys(scheduleAll).map(item =>
+        setMarkedStates((markedDates: any) => {
+          const temp = {
+            marked: true,
+            dotColor: item == today ? theme.white : theme.secondary,
+            selected: item == today ? true : false,
+            selectedColor: theme.main,
+          }
+
+          return {...markedDates, [item]: temp}
+        }),
+      )
+    }
+  }, [scheduleAll])
 
   return (
     <Calendar
@@ -74,12 +96,7 @@ export const WixCalendar = () => {
 
       // Enable the option to swipe between months. Default = false
       enableSwipeMonths={true}
-      markedDates={{
-        [markedDates[0]]: {
-          selected: true,
-          selectedColor: theme.main,
-        },
-      }}
+      markedDates={markedDates}
     />
   )
 }

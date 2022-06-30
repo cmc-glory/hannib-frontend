@@ -1,15 +1,21 @@
 import React from 'react'
 import {View, Text, StyleSheet} from 'react-native'
+import moment from 'moment'
 import {Tag, Clock, LocationIcon} from '../utils'
 import * as theme from '../../theme'
+import {ICalendar} from '../../types'
 
-export const CalendarItem = () => {
+type CalendarItemProps = {
+  item: ICalendar
+}
+
+export const CalendarItem = ({item}: CalendarItemProps) => {
   return (
     <View style={[styles.container]}>
       <View style={[styles.row, {marginBottom: 7}]}>
-        <Tag label="참여" />
+        <Tag label={item.type == 'participating' ? '참여' : '진행'} />
         <View style={[styles.row]}>
-          <Text style={styles.normal}>14:00 ~ 16:00</Text>
+          <Text style={styles.normal}></Text>
           <Clock />
         </View>
       </View>

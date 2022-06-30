@@ -5,4 +5,5 @@ export const queryKeys = {
   goodsList: ['goodsList'],
   goodsDetail: ['goodsDetail'],
   goodsRequestInfo: ['goodsRequestInfo'],
+  calendar: ['calendar'],
 }
