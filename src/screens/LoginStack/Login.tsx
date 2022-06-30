@@ -15,7 +15,8 @@ import {
   unlink,
   loginWithKakaoAccount,
 } from '@react-native-seoul/kakao-login'
-import {AppleButton, appleAuth, AppleRequestResponse, AppleRequestScope} from '@invertase/react-native-apple-authentication'
+import {appleAuth} from '@invertase/react-native-apple-authentication'
+import {AppleButton, AppleRequestResponse, AppleRequestScope, appleAuthAndroid} from '@invertase/react-native-apple-authentication'
 import {useNavigation} from '@react-navigation/native'
 import * as theme from '../../theme'
 
@@ -64,11 +65,12 @@ export const Login = () => {
     })
   }
 
-  useEffect(() => {
-    return appleAuth.onCredentialRevoked(async () => {
-      console.warn('If this function executes, User Credentials have been Revoked')
-    })
-  }, [])
+  appleAuth.isSupported &&
+    useEffect(() => {
+      return appleAuth.onCredentialRevoked(async () => {
+        console.warn('If this function executes, User Credentials have been Revoked')
+      })
+    }, [])
 
   const signInWithApple = async () => {
     try {
@@ -128,21 +130,10 @@ export const Login = () => {
               source={require('../../assets/images/apple_logo.png')}
               onPress={signInWithApple}
             />
-            // <View>
-            //   <AppleButton
-            //     buttonStyle={AppleButton.Style.WHITE}
-            //     buttonType={AppleButton.Type.SIGN_IN}
-            //     style={{
-            //       width: 160,
-            //       height: 45,
-            //     }}
-            //     onPress={() => onAppleButtonPress()}
-            //   />
-            // </View>
           )}
           {!ios && (
             <LoginButton
-              style={{backgroundColor: theme.white, borderWidth: 1, borderColor: theme.gray200}}
+              style={{backgroundColor: theme.white}}
               onPress={SignInWithGoogle}
               label="Google로 로그인"
               source={require('../../assets/images/google_logo.png')}

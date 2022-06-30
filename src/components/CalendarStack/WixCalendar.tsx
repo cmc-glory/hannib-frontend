@@ -1,13 +1,9 @@
 import React, {useState} from 'react'
-import {Text} from 'react-native'
-import {Calendar, CalendarList, Agenda} from 'react-native-calendars'
+import {Calendar} from 'react-native-calendars'
 import {LocaleConfig} from 'react-native-calendars'
 import moment from 'moment'
-import {CalendarHeader} from './CalendarHeader'
-import {Icon} from '../utils'
-import LeftArrow from '../../assets/Icon/Left arrow.svg'
+import {LeftArrowIcon, RightArrowIcon} from '../utils'
 import * as theme from '../../theme'
-import RightArrow from '../../assets/Icon/Right arrow.svg'
 
 LocaleConfig.locales['fr'] = {
   monthNames: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
@@ -63,13 +59,7 @@ export const WixCalendar = () => {
         console.log('month changed', month)
       }}
       hideExtraDays={true}
-      renderArrow={direction =>
-        direction == 'left' ? (
-          <LeftArrow width={theme.ICON_SIZE} height={theme.ICON_SIZE} fill={theme.gray700} />
-        ) : (
-          <RightArrow width={theme.ICON_SIZE} height={theme.ICON_SIZE} fill={theme.gray700} />
-        )
-      }
+      renderArrow={direction => (direction == 'left' ? <LeftArrowIcon /> : <RightArrowIcon />)}
       // Show week numbers to the left. Default = false
       showWeekNumbers={false}
       // Handler which gets executed when press arrow icon left. It receive a callback can go back month

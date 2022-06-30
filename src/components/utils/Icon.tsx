@@ -51,6 +51,9 @@ import RightArrowWhiteSvg from '../../assets/Icon/RightArrowWhite.svg'
 import FloatingButtonSvg from '../../assets/Icon/FloatingButton.svg'
 import CompleteSvg from '../../assets/Icon/Complete.svg'
 import LockSvg from '../../assets/Icon/Lock key.svg'
+import LeftArrowCalendarSvg from '../../assets/Icon/LeftArrowCalendar.svg'
+import RightArrowCalendarSvg from '../../assets/Icon/RightArrowCalendar.svg'
+
 import * as theme from '../../theme'
 
 type IconProps = {
@@ -63,6 +66,14 @@ type IconPropss = {
   onPress?: () => void
   style?: any
   size?: number
+}
+
+export const RightArrowCalendarIcon = ({size = theme.ICON_SIZE}: IconPropss) => {
+  return <RightArrowCalendarSvg width={size} height={size} />
+}
+
+export const LeftArrowCalendarIcon = ({size = theme.ICON_SIZE}: IconPropss) => {
+  return <LeftArrowCalendarSvg width={size} height={size} />
 }
 
 export const CompleteIcon = ({onPress, style, size = 53}: IconPropss) => {
