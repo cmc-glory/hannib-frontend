@@ -1,9 +1,9 @@
-import React, {useEffect, useState} from 'react'
-import {Calendar} from 'react-native-calendars'
+import React, {useEffect, useState, useMemo} from 'react'
+import {Dimensions} from 'react-native'
+import {CalendarList, Calendar} from 'react-native-calendars'
 import {LocaleConfig} from 'react-native-calendars'
 import moment from 'moment'
 import {LeftArrowCalendarIcon, RightArrowCalendarIcon} from '../utils'
-import {ICalendar, IScheduleItem} from '../../types'
 import * as theme from '../../theme'
 
 LocaleConfig.locales['kr'] = {
@@ -22,27 +22,66 @@ type WixCalendarProps = {
 const today = moment().format('YYYY-MM-DD')
 
 export const WixCalendar = ({scheduleAll, selectedDate, setSelectedDate}: WixCalendarProps) => {
-  const [markedDates, setMarkedStates] = useState<any>({[today]: {selected: true, selectedColor: theme.main}})
+  // ******************** utils  ********************
+  const customDot = useMemo(() => {
+    return {
+      customStyles: {
+        container: {
+          backgroundColor: theme.main,
+          elevation: 100,
+          borderColor: 'white',
+          borderWidth: 3,
+        },
+        text: {
+          color: theme.white,
+          marginTop: 3,
+        },
+      },
+    }
+  }, [])
+  // ******************** states  ********************
+  const [markedDates, setMarkedDates] = useState<any>()
+  const [currentDate, setCurrentDate] = useState<any>()
 
   useEffect(() => {
     if (scheduleAll != undefined) {
-      Object.keys(scheduleAll).map(item =>
-        setMarkedStates((markedDates: any) => {
-          const temp = {
-            marked: true,
-            dotColor: item == today ? theme.white : theme.secondary,
-            selected: item == today ? true : false,
-            selectedColor: theme.main,
-          }
+      var tempMarkedDates: any = {
+        [today]: {
+          selected: true,
+          //selectedColor: theme.main,
+          customStyles: {
+            container: {
+              backgroundColor: theme.main,
+            },
+            text: {
+              color: theme.white,
+            },
+          },
+        },
+      }
+      Object.keys(scheduleAll).forEach(item => {
+        const temp = {
+          marked: true,
+          dotColor: theme.secondary,
+        }
+        item == today ? (tempMarkedDates[item] = {...tempMarkedDates[item], temp}) : (tempMarkedDates[item] = temp)
+      })
 
-          return {...markedDates, [item]: temp}
-        }),
-      )
+      setMarkedDates(tempMarkedDates)
     }
   }, [scheduleAll])
 
+  useEffect(() => {
+    console.log('markedDates : ', markedDates)
+  }, [markedDates])
+
   return (
-    <Calendar
+    <CalendarList
+      horizontal={true}
+      // Enable paging on horizontal, default = false
+      pagingEnabled={true}
+      // Set custom calendarWidth.
+      calendarWidth={Dimensions.get('window').width - 20}
       theme={{
         arrowColor: theme.gray700,
         // 위에 title
@@ -61,6 +100,7 @@ export const WixCalendar = ({scheduleAll, selectedDate, setSelectedDate}: WixCal
         dayTextColor: theme.gray800,
         monthTextColor: theme.gray800,
         textSectionTitleColor: theme.gray800,
+        selectedDayTextColor: theme.gray800,
       }}
       headerStyle={{flexDirection: 'column'}}
       style={{marginHorizontal: 0, paddingHorizontal: 0}}
@@ -69,14 +109,38 @@ export const WixCalendar = ({scheduleAll, selectedDate, setSelectedDate}: WixCal
       maxDate={undefined}
       onDayPress={day => {
         setSelectedDate(day.dateString)
+        const isIn = markedDates[day.dateString] // 이미 marked dates state에 있는지
+        if (isIn) {
+          setCurrentDate({
+            [day.dateString]: {
+              ...markedDates[day.dateString],
+              selected: true,
+              selectedColor: theme.gray100,
+            },
+          })
+        } else {
+          setCurrentDate({
+            [day.dateString]: {
+              selected: true,
+              selectedColor: theme.gray100,
+            },
+          })
+        }
+        console.log(markedDates)
       }}
       onMonthChange={day => {
-        // 달이 바뀔 때 포커즈될 날짜 세팅
         if (day.dateString == today) {
           setSelectedDate(today)
         } else {
           setSelectedDate(day.dateString.slice(0, 7) + '01')
         }
+        setCurrentDate({
+          [day.dateString]: {
+            ...markedDates[day.dateString],
+            selected: true,
+            selectedColor: theme.gray100,
+          },
+        })
       }}
       monthFormat={'yyyy.MM'}
       hideExtraDays={true}
@@ -85,8 +149,9 @@ export const WixCalendar = ({scheduleAll, selectedDate, setSelectedDate}: WixCal
       onPressArrowLeft={subtractMonth => subtractMonth()}
       onPressArrowRight={addMonth => addMonth()}
       disableAllTouchEventsForDisabledDays={true}
-      enableSwipeMonths={true}
-      markedDates={markedDates}
+      enableSwipeMonths={false}
+      markedDates={{...markedDates, ...currentDate}}
+      markingType={'custom'}
     />
   )
 }
