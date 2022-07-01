@@ -35,6 +35,8 @@ export const SplashScreen = () => {
                   {id: '2', name: '에스파'},
                   {id: '3', name: '아이브'},
                 ],
+                holdingSharingCnt: result.holdingSharingCnt,
+                participateSharingCnt: result.participateSharingCnt,
               }),
             )
           })

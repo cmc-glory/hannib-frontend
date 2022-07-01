@@ -2,5 +2,7 @@
   "email": "js7056@naver.com",
   "name": "진실",
   "profileImageUri": "http://localhost:8081/src/assets/images/iu.jpeg",
-  "userCategory": []
+  "userCategory": [],
+  "holdingSharingCnt": 6,
+  "participateSharingCnt": 15
 }
