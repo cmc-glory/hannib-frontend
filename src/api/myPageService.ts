@@ -16,10 +16,8 @@ const apiImageClient = axios.create({
 })
 
 export const uploadProfileImage = async (formData: FormData) => {
-  console.log('******start*****')
   console.log(BASE_URL)
   const {data} = await apiImageClient.post('/api/img/profile', formData)
-  //const response = await fetch(BASE_URL + '/api/img/profile', {method: 'POST', headers: {'Content-Type': 'multipart/form-data'}, body: formData})
-  //console.log('******done*****')
+
   return data
 }
