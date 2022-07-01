@@ -13,7 +13,7 @@ export const Calendar = () => {
   // ******************** utils ********************
   const queryClient = useQueryClient()
   // ******************** states ********************
-  const [scheduleAll, setScheduleAll] = useState<Object>()
+  const [scheduleAll, setScheduleAll] = useState<any>()
   const today = useMemo(() => moment().format('YYYY-MM-DD'), [])
   const [selectedDate, setSelectedDate] = useState<string>(today)
   const [selectedSchedule, setSelectedSchedule] = useState<IScheduleItem[]>([])
@@ -37,6 +37,7 @@ export const Calendar = () => {
         })
       })
       setScheduleAll(temp)
+      setSelectedSchedule(temp[today])
       setRefreshing(false)
     },
   })
@@ -49,7 +50,11 @@ export const Calendar = () => {
     queryClient.invalidateQueries(queryKeys.calendar)
   }, [])
 
-  useEffect(() => {}, [selectedDate])
+  useEffect(() => {
+    if (scheduleAll !== undefined) {
+      setSelectedSchedule(scheduleAll[selectedDate])
+    }
+  }, [scheduleAll, selectedDate])
 
   return (
     <SafeAreaView style={styles.rootContainer} edges={['top', 'left', 'right']}>
@@ -58,15 +63,15 @@ export const Calendar = () => {
       </StackHeader>
       <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View style={{paddingHorizontal: 10}}>
-          <WixCalendar scheduleAll={scheduleAll} />
+          <WixCalendar scheduleAll={scheduleAll} selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
         </View>
 
         <View style={{paddingHorizontal: theme.PADDING_SIZE}}>
           <SeparatorLight style={{marginVertical: 20}} />
 
-          {/* {selectedSchedule.map(item => (
+          {selectedSchedule?.map(item => (
             <CalendarItem key={item.sharingid} item={item} />
-          ))} */}
+          ))}
         </View>
       </ScrollView>
     </SafeAreaView>

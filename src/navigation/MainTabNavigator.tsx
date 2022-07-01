@@ -1,23 +1,17 @@
-import React from 'react'
+import React, {useMemo} from 'react'
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 
 import GoodsList from '../screens/MainTab/GoodsList'
-import {isIphoneX} from 'react-native-iphone-x-helper'
+import {getBottomSpace} from 'react-native-iphone-x-helper'
 import CalendarStackNavigator from './CalendarStackNavigator'
 import MyPageTabStackNavigator from './MyPageTabStackNavigator'
 import {Favorites} from '../screens/MainTab/Favorites'
-
-const iphoneX = isIphoneX()
 
 import {
   HomeIcon,
   HomeIconFocused,
   StarTabIcon,
   StarTabIconFocused,
-  CommunityIcon,
-  CommunityIconFocused,
-  ChattingIcon,
-  ChattingIconFocused,
   CalendarTabIcon,
   CalendarTabIconFocused,
   AccountIcon,
@@ -29,6 +23,7 @@ import * as theme from '../theme'
 const Tab = createBottomTabNavigator()
 
 function BottomTab() {
+  const bottomSpace = useMemo(() => getBottomSpace(), [])
   return (
     <Tab.Navigator
       sceneContainerStyle={{
@@ -37,18 +32,22 @@ function BottomTab() {
       screenOptions={{
         tabBarShowLabel: true,
         tabBarActiveTintColor: theme.main,
-        tabBarInactiveTintColor: theme.gray800,
+        tabBarInactiveTintColor: theme.gray500,
         headerShown: false,
         tabBarStyle: {
           borderTopColor: theme.gray500,
-          height: 56,
+          height: 56 + bottomSpace,
         },
         tabBarLabelStyle: {
-          marginTop: 2,
+          lineHeight: 16,
+          fontSize: 12,
+        },
+        tabBarIconStyle: {
+          height: 24,
         },
         tabBarItemStyle: {
-          marginTop: 5,
-          marginBottom: 8,
+          marginTop: 4,
+          marginBottom: 6,
         },
       }}>
       <Tab.Screen
