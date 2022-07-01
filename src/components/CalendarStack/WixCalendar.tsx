@@ -16,29 +16,11 @@ LocaleConfig.defaultLocale = 'kr'
 
 type WixCalendarProps = {
   scheduleAll: Object | undefined
-  selectedDate: string
   setSelectedDate: React.Dispatch<React.SetStateAction<string>>
 }
 const today = moment().format('YYYY-MM-DD')
 
-export const WixCalendar = ({scheduleAll, selectedDate, setSelectedDate}: WixCalendarProps) => {
-  // ******************** utils  ********************
-  const customDot = useMemo(() => {
-    return {
-      customStyles: {
-        container: {
-          backgroundColor: theme.main,
-          elevation: 100,
-          borderColor: 'white',
-          borderWidth: 3,
-        },
-        text: {
-          color: theme.white,
-          marginTop: 3,
-        },
-      },
-    }
-  }, [])
+export const WixCalendar = ({scheduleAll, setSelectedDate}: WixCalendarProps) => {
   // ******************** states  ********************
   const [markedDates, setMarkedDates] = useState<any>()
   const [currentDate, setCurrentDate] = useState<any>()
@@ -48,7 +30,6 @@ export const WixCalendar = ({scheduleAll, selectedDate, setSelectedDate}: WixCal
       var tempMarkedDates: any = {
         [today]: {
           selected: true,
-          //selectedColor: theme.main,
           customStyles: {
             container: {
               backgroundColor: theme.main,
@@ -70,10 +51,6 @@ export const WixCalendar = ({scheduleAll, selectedDate, setSelectedDate}: WixCal
       setMarkedDates(tempMarkedDates)
     }
   }, [scheduleAll])
-
-  useEffect(() => {
-    console.log('markedDates : ', markedDates)
-  }, [markedDates])
 
   return (
     <CalendarList
@@ -115,18 +92,31 @@ export const WixCalendar = ({scheduleAll, selectedDate, setSelectedDate}: WixCal
             [day.dateString]: {
               ...markedDates[day.dateString],
               selected: true,
-              selectedColor: theme.gray100,
+              selectedColor: theme.gray200,
             },
           })
         } else {
           setCurrentDate({
             [day.dateString]: {
               selected: true,
-              selectedColor: theme.gray100,
+              selectedColor: theme.gray200,
             },
           })
         }
-        console.log(markedDates)
+      }}
+      onVisibleMonthsChange={day => {
+        if (day[0].dateString == today) {
+          setSelectedDate(today)
+        } else {
+          setSelectedDate(day[0].dateString.slice(0, 7) + '01')
+        }
+        setCurrentDate({
+          [day[0].dateString]: {
+            ...markedDates[day[0].dateString],
+            selected: true,
+            selectedColor: theme.gray200,
+          },
+        })
       }}
       onMonthChange={day => {
         if (day.dateString == today) {
@@ -138,7 +128,7 @@ export const WixCalendar = ({scheduleAll, selectedDate, setSelectedDate}: WixCal
           [day.dateString]: {
             ...markedDates[day.dateString],
             selected: true,
-            selectedColor: theme.gray100,
+            selectedColor: theme.gray200,
           },
         })
       }}

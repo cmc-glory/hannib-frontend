@@ -23,7 +23,6 @@ export const Calendar = () => {
   useQuery(queryKeys.calendar, getCalendarAll, {
     onSuccess: data => {
       var temp: any = {}
-      // temp : [date] :
       data.forEach((calendarItem: ICalendar) => {
         calendarItem.schedule.forEach(item => {
           const {time, place} = item
@@ -63,7 +62,7 @@ export const Calendar = () => {
       </StackHeader>
       <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View style={{paddingHorizontal: 10}}>
-          <WixCalendar scheduleAll={scheduleAll} selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
+          <WixCalendar scheduleAll={scheduleAll} setSelectedDate={setSelectedDate} />
         </View>
 
         <View style={{paddingHorizontal: theme.PADDING_SIZE}}>

@@ -53,10 +53,13 @@ export const authSlice = createSlice({
       AsyncStorage.removeItem('accessToken')
       return initialState
     },
+    updateProfileImage: (state, action: PayloadAction<string>) => {
+      state.user.profileImageUri = action.payload
+    },
   },
 })
 
 const selectSelf = (state: Auth) => state
 export const userSelector = createDraftSafeSelector(selectSelf, state => state.user)
 export default authSlice.reducer
-export const {login, storeAccessToken, storeRefreshToken, logout} = authSlice.actions
+export const {login, storeAccessToken, storeRefreshToken, logout, updateProfileImage} = authSlice.actions

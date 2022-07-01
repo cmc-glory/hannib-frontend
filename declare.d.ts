@@ -7,6 +7,7 @@ declare module '*.svg' {
 
 declare module '@env' {
   export const API_URL: string
+  export const BASE_URL: string
 }
 declare namespace ReactNavigation {
   interface RootParamList {
