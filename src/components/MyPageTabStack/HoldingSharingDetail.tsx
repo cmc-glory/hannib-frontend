@@ -29,21 +29,21 @@ const GoodsListItem = () => {
   )
 }
 
-let holdingSharingState = 'offlineNotFinished' //'onlineNotSent', 'onlineSent', 'offlineFinished', 'offlineNotFinished'
+let holdingSharingState = 'offlineFinished' //'onlineNotSent', 'onlineSent', 'offlineFinished', 'offlineNotFinished'
 const Buttons = ({toggleAddressModalVisible, toggleCancelModalVisible, toggleCheckFinishedModalVisible, toggleNotTakenModalVisible}: ButtonsProp) => {
   switch (holdingSharingState) {
     case 'onlineNotSent':
       return (
         <View style={{...theme.styles.rowSpaceBetween, width: '100%'}}>
-          <Button label="취소하기" selected={false} style={{width: BUTTON_WIDTH}} onPress={toggleCancelModalVisible} />
+          <Button label="취소하기" selected={false} style={{width: BUTTON_WIDTH}} onPress={toggleCancelModalVisible} isDefault={true} />
           <Button label="운송장 등록" selected={true} style={{width: BUTTON_WIDTH}} onPress={toggleAddressModalVisible} />
         </View>
       )
     case 'onlineSent':
       return (
         <View style={{...theme.styles.rowSpaceBetween, width: '100%'}}>
-          <Button label="취소하기" selected={false} style={{width: BUTTON_WIDTH}} onPress={toggleCancelModalVisible} />
-          <Button label="운송장 등록 완료" selected={false} style={{width: BUTTON_WIDTH}} />
+          <Button label="취소하기" selected={false} style={{width: BUTTON_WIDTH}} onPress={toggleCancelModalVisible} isDefault={true} />
+          <Button label="운송장 등록 완료" selected={false} style={{width: BUTTON_WIDTH}} isDefault={true} />
         </View>
       )
     case 'offlineFinished':
@@ -52,7 +52,7 @@ const Buttons = ({toggleAddressModalVisible, toggleCancelModalVisible, toggleChe
       return (
         <View style={{width: '100%'}}>
           <View style={{...theme.styles.rowSpaceBetween, width: '100%', marginBottom: 10}}>
-            <Button label="취소하기" selected={false} style={{width: BUTTON_WIDTH}} onPress={toggleCancelModalVisible} />
+            <Button label="취소하기" selected={false} style={{width: BUTTON_WIDTH}} onPress={toggleCancelModalVisible} isDefault={true} />
             <Button label="수령 체크" selected={true} style={{width: BUTTON_WIDTH}} onPress={toggleCheckFinishedModalVisible} />
           </View>
           <Pressable style={{marginTop: 7}} onPress={toggleNotTakenModalVisible}>

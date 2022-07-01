@@ -93,6 +93,7 @@ export const HoldingListItem = ({
             key={list.id}
             checkedItems={checkedItems}
             handleSingleCheck={handleSingleCheck}
+            isFinished={true}
           />
         ))}
       </View>

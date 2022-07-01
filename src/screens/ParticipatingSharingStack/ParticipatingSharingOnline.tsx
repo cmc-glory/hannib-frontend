@@ -26,7 +26,7 @@ const Buttons = ({toggleCancelModalVisible, onPressWriteQnA}: ButtonsProps) => {
     case 'proceeding':
       return (
         <View style={{...theme.styles.rowSpaceBetween, width: '100%'}}>
-          <Button label="취소하기" selected={false} style={{width: BUTTON_WIDTH}} onPress={toggleCancelModalVisible} />
+          <Button label="취소하기" selected={false} style={{width: BUTTON_WIDTH}} onPress={toggleCancelModalVisible} isDefault={true} />
           <Button label="문의하기" selected={true} style={{width: BUTTON_WIDTH}} onPress={onPressWriteQnA} />
         </View>
       )

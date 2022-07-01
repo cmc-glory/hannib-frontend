@@ -10,7 +10,7 @@ import * as theme from '../../theme'
 import {WriteReviewPropsNavigationProps} from '../../navigation/ParticipatingSharingStackNavigator'
 const BUTTON_WIDTH = (Dimensions.get('window').width - theme.PADDING_SIZE * 2 - 10) / 2
 
-const participateState: string = 'completed'
+const participateState: string = 'proceeding'
 
 type Buttons = {
   onPressWriteQnA: () => void
@@ -22,7 +22,7 @@ const Buttons = ({onPressWriteQnA, toggleCancelModalVisible, onPressWriteReview}
     case 'proceeding':
       return (
         <View style={{...theme.styles.rowSpaceBetween, width: '100%'}}>
-          <Button label="취소하기" selected={false} style={{width: BUTTON_WIDTH}} onPress={toggleCancelModalVisible} />
+          <Button label="취소하기" selected={false} style={{width: BUTTON_WIDTH}} onPress={toggleCancelModalVisible} isDefault={true} />
           <Button label="문의하기" selected={true} style={{width: BUTTON_WIDTH}} onPress={onPressWriteQnA} />
         </View>
       )
