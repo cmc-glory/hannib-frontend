@@ -3,7 +3,7 @@ import {StyleProp, ImageStyle, TouchableOpacity, Pressable} from 'react-native'
 import {useNavigation} from '@react-navigation/native'
 import FastImage from 'react-native-fast-image'
 import BellSvg from '../../assets/Icon/Bell.svg'
-import ClockIcon from '../../assets/Icon/Time.svg'
+import ClockSvg from '../../assets/Icon/Time.svg'
 import LocationSvg from '../../assets/Icon/Location.svg'
 import MagnifierSvg from '../../assets/Icon/Magnifier.svg'
 import SettingIcon from '../../assets/Icon/Setting.svg'
@@ -288,10 +288,10 @@ export const BellIcon = ({style, size = theme.ICON_SIZE, onPress}: IconPropss) =
   )
 }
 
-export const Clock = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
+export const ClockIcon = ({onPress, style, size = theme.ICON_SIZE}: IconPropss) => {
   return (
     <Pressable onPress={onPress} style={style}>
-      <ClockIcon width={size} height={size} />
+      <ClockSvg width={size} height={size} />
     </Pressable>
   )
 }

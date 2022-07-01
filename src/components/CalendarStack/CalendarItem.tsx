@@ -1,37 +1,38 @@
 import React from 'react'
 import {View, Text, StyleSheet} from 'react-native'
 import moment from 'moment'
-import {Tag, Clock, LocationIcon} from '../utils'
+import {Tag, ClockIcon, LocationIcon} from '../utils'
 import * as theme from '../../theme'
-import {ICalendar} from '../../types'
+import {IScheduleItem} from '../../types'
 
 type CalendarItemProps = {
-  item: ICalendar
+  item: IScheduleItem
 }
 
 export const CalendarItem = ({item}: CalendarItemProps) => {
   return (
     <View style={[styles.container]}>
-      <View style={[styles.row, {marginBottom: 7}]}>
+      <View style={[styles.row, {marginBottom: 10}]}>
         <Tag label={item.type == 'participating' ? '참여' : '진행'} />
         <View style={[styles.row]}>
-          <Text style={styles.normal}></Text>
-          <Clock />
+          <Text style={styles.normal}>{moment(item.time).format('HH:mm ~')}</Text>
+          <ClockIcon size={20} />
         </View>
       </View>
       <View>
-        <View style={[styles.row, {marginBottom: 8}]}>
-          <Text style={[theme.styles.bold16, {color: theme.gray700}]}>나눔 제목</Text>
+        <View style={[styles.row, {marginBottom: 4}]}>
+          <Text style={[theme.styles.bold16, {color: theme.gray700}]}>{item.title}</Text>
           <View style={styles.row}>
-            <Text style={styles.normal}>블루스퀘어</Text>
-            <LocationIcon />
+            <Text style={styles.normal}>{item.place}</Text>
+            <LocationIcon size={20} />
           </View>
         </View>
         <View>
-          <Text style={styles.goodsitem}>BTS 뷔 컨셉의 하트 키링</Text>
-          <Text style={styles.goodsitem}>BTS 뷔 컨셉의 하트 키링</Text>
-          <Text style={styles.goodsitem}>BTS 뷔 컨셉의 하트 키링</Text>
-          <Text style={styles.goodsitem}>BTS 뷔 컨셉의 하트 키링</Text>
+          {item.products.map(product => (
+            <Text key={product.id} style={[styles.goodsitem, theme.styles.text14]}>
+              {product.name} ({product.quantity})
+            </Text>
+          ))}
         </View>
       </View>
     </View>
@@ -53,7 +54,7 @@ const styles = StyleSheet.create({
   },
   normal: {
     color: theme.gray700,
-    marginRight: 10,
+    marginRight: 4,
   },
   goodsitem: {
     color: theme.gray700,

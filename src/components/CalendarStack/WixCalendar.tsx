@@ -6,20 +6,22 @@ import {LeftArrowCalendarIcon, RightArrowCalendarIcon} from '../utils'
 import {ICalendar, IScheduleItem} from '../../types'
 import * as theme from '../../theme'
 
-LocaleConfig.locales['fr'] = {
-  monthNames: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
-  monthNamesShort: ['Janv.', 'Févr.', 'Mars', 'Avril', 'Mai', 'Juin', 'Juil.', 'Août', 'Sept.', 'Oct.', 'Nov.', 'Déc.'],
-  dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+LocaleConfig.locales['kr'] = {
+  monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+  monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+  dayNames: ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'],
   dayNamesShort: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
 }
-LocaleConfig.defaultLocale = 'fr'
+LocaleConfig.defaultLocale = 'kr'
 
 type WixCalendarProps = {
   scheduleAll: Object | undefined
+  selectedDate: string
+  setSelectedDate: React.Dispatch<React.SetStateAction<string>>
 }
 const today = moment().format('YYYY-MM-DD')
 
-export const WixCalendar = ({scheduleAll}: WixCalendarProps) => {
+export const WixCalendar = ({scheduleAll, selectedDate, setSelectedDate}: WixCalendarProps) => {
   const [markedDates, setMarkedStates] = useState<any>({[today]: {selected: true, selectedColor: theme.main}})
 
   useEffect(() => {
@@ -63,38 +65,26 @@ export const WixCalendar = ({scheduleAll}: WixCalendarProps) => {
       headerStyle={{flexDirection: 'column'}}
       style={{marginHorizontal: 0, paddingHorizontal: 0}}
       hideArrows={false}
-      // Minimum date that can be selected, dates before minDate will be grayed out. Default = undefined
-      minDate={'2012-05-10'}
-      // Maximum date that can be selected, date,s after maxDate will be grayed out. Default = undefined
+      minDate={'2012-01-01'}
       maxDate={undefined}
-      // Handler which gets executed on day press. Default = undefined
       onDayPress={day => {
-        console.log('selected day', day)
+        setSelectedDate(day.dateString)
       }}
-      // Handler which gets executed on day long press. Default = undefined
-      onDayLongPress={day => {
-        console.log('selected day', day)
+      onMonthChange={day => {
+        // 달이 바뀔 때 포커즈될 날짜 세팅
+        if (day.dateString == today) {
+          setSelectedDate(today)
+        } else {
+          setSelectedDate(day.dateString.slice(0, 7) + '01')
+        }
       }}
       monthFormat={'yyyy.MM'}
-      // Handler which gets executed when visible month changes in calendar. Default = undefined
-      onMonthChange={month => {
-        console.log('month changed', month)
-      }}
       hideExtraDays={true}
       renderArrow={direction => (direction == 'left' ? <LeftArrowCalendarIcon /> : <RightArrowCalendarIcon />)}
-      // Show week numbers to the left. Default = false
       showWeekNumbers={false}
-      // Handler which gets executed when press arrow icon left. It receive a callback can go back month
       onPressArrowLeft={subtractMonth => subtractMonth()}
-      // Handler which gets executed when press arrow icon right. It receive a callback can go next month
       onPressArrowRight={addMonth => addMonth()}
-      // Disable left arrow. Default = false
-
-      // Disable all touch events for disabled days. can be override with disableTouchEvent in markedDates
       disableAllTouchEventsForDisabledDays={true}
-      // Replace default month and year title with custom one. the function receive a date as parameter
-
-      // Enable the option to swipe between months. Default = false
       enableSwipeMonths={true}
       markedDates={markedDates}
     />

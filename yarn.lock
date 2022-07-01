@@ -5891,7 +5891,7 @@
   "resolved" "https://registry.npmjs.org/lodash.wrap/-/lodash.wrap-4.1.1.tgz"
   "version" "4.1.1"
 
-"lodash@^4.17.10", "lodash@^4.17.11", "lodash@^4.17.14", "lodash@^4.17.15", "lodash@^4.17.21", "lodash@^4.7.0":
+"lodash@^4.0.0", "lodash@^4.17.10", "lodash@^4.17.11", "lodash@^4.17.14", "lodash@^4.17.15", "lodash@^4.17.21", "lodash@^4.7.0":
   "integrity" "sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg=="
   "resolved" "https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz"
   "version" "4.17.21"
@@ -7119,6 +7119,15 @@
   "integrity" "sha512-znKVSJQ71+NRTcOG9zuMXBRrUgFsUutGbQoOwasRyVlrJU4djX1Ny0CvCMgOy/Fh+lu9qdLtQFUQLfKwnWXt3Q=="
   "resolved" "https://registry.npmjs.org/react-native-bouncy-checkbox/-/react-native-bouncy-checkbox-2.1.10.tgz"
   "version" "2.1.10"
+
+"react-native-calendars-ts@^1.23.2":
+  "integrity" "sha512-EkVxzek8yePLYNvtE3qVbEMvnD2ZDM3P7dwTMKBvMw4DwGCxzd5knUJvHPYRlHPXJwqH0dhp3yCKbAM/WlSDAw=="
+  "resolved" "https://registry.npmjs.org/react-native-calendars-ts/-/react-native-calendars-ts-1.23.2.tgz"
+  "version" "1.23.2"
+  dependencies:
+    "lodash" "^4.0.0"
+    "prop-types" "^15.5.10"
+    "xdate" "^0.8.0"
 
 "react-native-calendars@^1.1284.0":
   "integrity" "sha512-H4XvACg3zh6q6XDl1ELTkCpMrKY7JWnd4ioB4IeAWoRMOQW+n/IVQmxZ4045ghTXjP4zIke3Tn1i3OmashzIbw=="
