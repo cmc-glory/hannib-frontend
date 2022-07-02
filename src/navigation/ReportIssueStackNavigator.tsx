@@ -24,10 +24,10 @@ export type ReportIssueStep3RouteProp = Props3['route']
 
 const ReportIssueStackNavigator = () => {
   return (
-    <Stack.Navigator screenOptions={{headerShown: false, cardStyle: {backgroundColor: 'white'}, cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS}}>
-      <Stack.Screen name="ReportIssueStep1" component={ReportIssueStep1} />
-      <Stack.Screen name="ReportIssueStep2" component={ReportIssueStep2} />
-      <Stack.Screen name="ReportIssueStep3" component={ReportIssueStep3} />
+    <Stack.Navigator screenOptions={{headerShown: false, cardStyle: {backgroundColor: 'white'}}}>
+      <Stack.Screen name="ReportIssueStep1" component={ReportIssueStep1} options={{cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS}} />
+      <Stack.Screen name="ReportIssueStep2" component={ReportIssueStep2} options={{cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS}} />
+      <Stack.Screen name="ReportIssueStep3" component={ReportIssueStep3} options={{cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS}} />
     </Stack.Navigator>
   )
 }

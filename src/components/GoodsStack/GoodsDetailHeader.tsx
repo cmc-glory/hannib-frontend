@@ -116,7 +116,8 @@ export const GoodsDetailHeader = ({inverted, userid, writerid}: GoodsDetailHeade
   //const [moreVisible, toggleMoreVisible] = useToggle() // 메뉴 모달창 띄울지
   const [moreVisible, setMoreVisible] = useAsyncState(false)
   const [deleteModalVisible, setDeleteModalVisible] = useState<boolean>(false)
-  const isWriter = userid == writerid
+  //const isWriter = userid == writerid
+  const isWriter = false
 
   const onPressGoback = useCallback(() => {
     navigation.goBack()

@@ -95,8 +95,13 @@ declare namespace ReactNavigation {
     SetProfile: {
       email?: string
     }
-    QnAList: {
-      id: string
+    QnAListCreator: {
+      // 문의글 (나눔글 작성자)
+      nanumId: string
+    }
+    QnAListUser: {
+      // 문의글 (나눔 신청자)
+      nanumId: string
     }
     WriteQnA: {
       postid: string

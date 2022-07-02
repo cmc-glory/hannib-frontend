@@ -54,7 +54,7 @@ export const WriteQnA = () => {
             placeholderTextColor={theme.gray300}
             textAlignVertical="top"
             multiline
-            style={[theme.styles.input, {paddingTop: 16, height: 150}]}
+            style={[theme.styles.input, {paddingTop: 16, height: 250}]}
             value={content}
             onChangeText={setContent}
           />

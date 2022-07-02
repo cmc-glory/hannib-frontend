@@ -67,7 +67,7 @@ export const ReportIssueStep1 = () => {
 
   return (
     <SafeAreaView style={[styles.rootContainer]}>
-      <StackHeader title="문제 신고하기" goBack />
+      <StackHeader title="문제 신고하기" goBack x />
       <View style={[styles.rootContainer, theme.styles.wrapper]}>
         <Text style={[theme.styles.bold20, {marginTop: 12, marginBottom: 24}]}>사유를 선택해 주세요</Text>
         <RadioButtons issues={issues} selectedIssue={selectedIssue} setSelectedIssue={setSelectedIssue} />

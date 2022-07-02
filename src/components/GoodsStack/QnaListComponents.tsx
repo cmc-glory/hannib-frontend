@@ -1,12 +1,11 @@
-import React, {useEffect, useCallback, useState} from 'react'
-import {View, Text, ScrollView, TextInput, Pressable, StyleSheet} from 'react-native'
-import {SafeAreaView} from 'react-native-safe-area-context'
-import {useNavigation} from '@react-navigation/native'
+import React, {useState, useCallback} from 'react'
+import {View, Pressable, TextInput, Text, StyleSheet} from 'react-native'
 import moment from 'moment'
-import {StackHeader, SharingPreview} from '../../components/utils'
-import * as theme from '../../theme'
-import {IQnAList} from '../../types'
+
+import {LockIcon, MenuIcon} from '../utils'
 import {useToggle} from '../../hooks'
+import {IQnAList} from '../../types'
+import * as theme from '../../theme'
 
 type QnAListItemProps = {
   item: IQnAList
@@ -23,6 +22,13 @@ type QuestionProps = {
   content: string
   writer: string
   date: Date | undefined
+  isSecret: boolean
+  isCreator: boolean
+}
+
+type WriteAnswerProps = {
+  writeAnswerPressed: boolean
+  toggleWriteAnswerPressed: () => void
 }
 
 const Answer = ({answer, answeredDate}: Answerprops) => {
@@ -40,10 +46,16 @@ const Answer = ({answer, answeredDate}: Answerprops) => {
   )
 }
 
-const Question = ({isAnswered, content, writer, date}: QuestionProps) => {
+const Question = ({isAnswered, content, writer, date, isSecret, isCreator}: QuestionProps) => {
   return (
     <View>
-      <Text style={[{fontSize: 12, marginBottom: 8, color: isAnswered ? theme.main : theme.gray500}]}>{isAnswered ? '답변완료' : '답변예정'}</Text>
+      <View style={[theme.styles.rowSpaceBetween, {marginBottom: 8}]}>
+        <View style={[theme.styles.rowFlexStart]}>
+          <Text style={[theme.styles.text12, {fontSize: 12, color: isAnswered ? theme.main : theme.gray500}]}>{isAnswered ? '답변완료' : '답변예정'}</Text>
+          {isSecret && <LockIcon size={20} style={{marginLeft: 4}} />}
+        </View>
+        <MenuIcon size={20} />
+      </View>
       <View style={[theme.styles.rowFlexStart, {marginBottom: 8}]}>
         <Text style={[styles.q, {alignSelf: 'flex-start'}]}>Q.</Text>
         <Text style={[styles.content, {flex: 1}]}>{content}</Text>
@@ -65,12 +77,12 @@ const QnASecret = () => {
   )
 }
 
-const WriteAnswer = () => {
+const WriteAnswer = ({writeAnswerPressed, toggleWriteAnswerPressed}: WriteAnswerProps) => {
   const [content, setContent] = useState<string>('')
   const onPressSubmitAnswer = useCallback(() => {
     // 문의글 id, 답변 내용 post.
+    // 완료 후에는 문의 글 list invalide queries
   }, [])
-  const [writeAnswerPressed, toggleWriteAnswerPressed] = useToggle()
   return (
     <View style={{marginTop: 16}}>
       {writeAnswerPressed ? (
@@ -96,23 +108,24 @@ const WriteAnswer = () => {
   )
 }
 
-const QnAListItem = ({item, isOwner}: QnAListItemProps) => {
+export const QnAListItem = ({item, isOwner}: QnAListItemProps) => {
   const {isSecret, isAnswered, writer, content, date, answer, answeredDate} = item
+  const [writeAnswerPressed, toggleWriteAnswerPressed] = useToggle()
 
   // 나눔글 작성자한테 보이는 화면
   if (isOwner) {
     if (isAnswered) {
       return (
         <View style={[styles.qnaListItemContainer]}>
-          <Question isAnswered={isAnswered} content={content} writer={writer} date={date} />
+          <Question isAnswered={isAnswered} content={content} writer={writer} date={date} isSecret={isSecret} isCreator={true} />
           <Answer answer={answer} answeredDate={answeredDate} />
         </View>
       )
     } else {
       return (
         <View style={[styles.qnaListItemContainer]}>
-          <Question isAnswered={isAnswered} content={content} writer={writer} date={date} />
-          <WriteAnswer />
+          <Question isAnswered={isAnswered} content={content} writer={writer} date={date} isSecret={isSecret} isCreator={true} />
+          <WriteAnswer writeAnswerPressed={writeAnswerPressed} toggleWriteAnswerPressed={toggleWriteAnswerPressed} />
         </View>
       )
     }
@@ -129,7 +142,7 @@ const QnAListItem = ({item, isOwner}: QnAListItemProps) => {
     } else {
       return (
         <View style={[styles.qnaListItemContainer]}>
-          <Question isAnswered={isAnswered} content={content} writer={writer} date={date} />
+          <Question isAnswered={isAnswered} content={content} writer={writer} date={date} isSecret={isSecret} isCreator={false} />
 
           {isAnswered && <Answer answer={answer} answeredDate={answeredDate} />}
         </View>
@@ -138,54 +151,35 @@ const QnAListItem = ({item, isOwner}: QnAListItemProps) => {
   }
 }
 
-export const QnAList = () => {
-  const navigation = useNavigation()
-  const [qnas, setQnas] = useState<IQnAList[]>([]) // 문의 목록 state
-  const [isOwner, setIsOwner] = useState<boolean>(false)
-  useEffect(() => {
-    // qna list 받아오기
-    fetch('http://localhost:8081/src/data/dummyQnA.json', {
-      method: 'get',
-    })
-      .then(res => res.json())
-      .then(result => {
-        setQnas(result)
-      })
-
-    // redux에서 사용자 id를 가져오고 writer인지를 체크.
-    // setIsOwner(true)
-  }, [])
-
-  // 문의글 작성으로 이동
-  const onPressWrite = useCallback(() => {
-    navigation.navigate('WriteQnA', {
-      postid: '1', // 해당 나눔 게시글의 id
-      userid: '1', // 문의글을 남기는 사용자의 id,
-      imageuri: 'http://localhost:8081/src/assets/images/detail_image_example.png', // 썸네일 uri
-      category: 'bts', // 카테고리
-      title: 'BTS 키링 나눔', // 나눔 제목
-    })
-  }, [])
-
-  return (
-    <SafeAreaView style={theme.styles.safeareaview}>
-      <StackHeader goBack title="문의" />
-      <ScrollView style={[styles.container]} contentOffset={{x: 0, y: 200}}>
-        <SharingPreview uri="http://localhost:8081/src/assets/images/detail_image_example.png" category="BTS" title="BTS 키링 나눔" />
-        {!isOwner && (
-          <Pressable style={[styles.writeButton]} onPress={onPressWrite}>
-            <Text style={[theme.styles.bold16, {color: theme.white}]}>문의 작성하기</Text>
-          </Pressable>
-        )}
-        {qnas.map(qna => (
-          <QnAListItem item={qna} key={qna.id} isOwner={isOwner} />
-        ))}
-      </ScrollView>
-    </SafeAreaView>
-  )
-}
-
 const styles = StyleSheet.create({
+  q: {
+    marginRight: 8,
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 16,
+  },
+  content: {
+    color: theme.gray700,
+    fontSize: 16,
+  },
+  writer: {
+    color: theme.gray500,
+    fontSize: 12,
+  },
+  date: {
+    color: theme.gray500,
+    fontSize: 12,
+  },
+  secret: {
+    color: theme.gray500,
+  },
+
+  qnaListItemContainer: {
+    padding: 16,
+    borderColor: theme.gray200,
+    borderWidth: 1,
+    borderRadius: 4,
+    marginTop: 16,
+  },
   submitAnswerButton: {
     height: 48,
     borderWidth: 1,
@@ -204,43 +198,5 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  writer: {
-    color: theme.gray500,
-    fontSize: 12,
-  },
-  date: {
-    color: theme.gray500,
-    fontSize: 12,
-  },
-  content: {
-    color: theme.gray700,
-    fontSize: 16,
-  },
-  secret: {
-    color: theme.gray500,
-  },
-  q: {
-    marginRight: 8,
-    fontFamily: 'Pretendard-Bold',
-    fontSize: 16,
-  },
-  qnaListItemContainer: {
-    padding: 16,
-    borderColor: theme.gray200,
-    borderWidth: 1,
-    borderRadius: 4,
-    marginTop: 16,
-  },
-  writeButton: {
-    height: 48,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: theme.main,
-    borderRadius: 4,
-    marginTop: 16,
-  },
-  container: {
-    paddingHorizontal: theme.PADDING_SIZE,
   },
 })

@@ -1,7 +1,17 @@
 import React from 'react'
 import {createStackNavigator} from '@react-navigation/stack'
 import type {NativeStackScreenProps} from '@react-navigation/native-stack'
-import {GoodsDetail, GoodsRequestOffline, GoodsReqeustOnline, WriteQnA, QnAList, WriterProfile, NoticeList, GoodsRequestComplete} from '../screens/GoodsStack'
+import {
+  GoodsDetail,
+  GoodsRequestOffline,
+  GoodsReqeustOnline,
+  WriteQnA,
+  QnAListCreator,
+  QnAListUser,
+  WriterProfile,
+  NoticeList,
+  GoodsRequestComplete,
+} from '../screens/GoodsStack'
 
 type GoodsStackNavigatorParamList = {
   GoodsDetail: {
@@ -9,8 +19,11 @@ type GoodsStackNavigatorParamList = {
   }
   GoodsRequestOffline: undefined
   GoodsRequestOnline: undefined
-  QnAList: {
-    id: string
+  QnAListUser: {
+    nanumId: string
+  }
+  QnAListCreator: {
+    nanumId: string
   }
   WriteQnA: {
     postid: string
@@ -25,7 +38,7 @@ type GoodsStackNavigatorParamList = {
   NoticeList: {
     postid: string
   }
-  GoodsRequestComplete : undefined
+  GoodsRequestComplete: undefined
 }
 
 const Stack = createStackNavigator<GoodsStackNavigatorParamList>()
@@ -33,8 +46,11 @@ const Stack = createStackNavigator<GoodsStackNavigatorParamList>()
 type GoodsDetailProps = NativeStackScreenProps<GoodsStackNavigatorParamList, 'GoodsDetail'>
 export type GoodsDetailRouteProps = GoodsDetailProps['route']
 
-type QnAListProps = NativeStackScreenProps<GoodsStackNavigatorParamList, 'QnAList'>
-export type QnAListRouteProps = QnAListProps['route']
+type QnAListCreatorProps = NativeStackScreenProps<GoodsStackNavigatorParamList, 'QnAListCreator'>
+export type QnAListCreatorRouteProps = QnAListCreatorProps['route']
+
+type QnAListUserProps = NativeStackScreenProps<GoodsStackNavigatorParamList, 'QnAListUser'>
+export type QnAListUserRouteProps = QnAListUserProps['route']
 
 type WriteQnAProps = NativeStackScreenProps<GoodsStackNavigatorParamList, 'WriteQnA'>
 export type WriteQnARouteProps = WriteQnAProps['route']
@@ -48,7 +64,8 @@ const GoodsStackNavigator = () => {
       <Stack.Screen name="GoodsDetail" component={GoodsDetail} />
       <Stack.Screen name="GoodsRequestOffline" component={GoodsRequestOffline} />
       <Stack.Screen name="GoodsRequestOnline" component={GoodsReqeustOnline} />
-      <Stack.Screen name="QnAList" component={QnAList} />
+      <Stack.Screen name="QnAListUser" component={QnAListUser} />
+      <Stack.Screen name="QnAListCreator" component={QnAListCreator} />
       <Stack.Screen name="WriteQnA" component={WriteQnA} />
       <Stack.Screen name="WriterProfile" component={WriterProfile} />
       <Stack.Screen name="NoticeList" component={NoticeList} />

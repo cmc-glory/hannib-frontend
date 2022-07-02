@@ -23,7 +23,7 @@ export const ReportIssueStep2 = () => {
 
   return (
     <SafeAreaView style={[styles.rootContainer]}>
-      <StackHeader title="문제 신고하기" goBack />
+      <StackHeader title="문제 신고하기" goBack x />
       <View style={[styles.container, theme.styles.wrapper]}>
         <Text style={[theme.styles.bold20, {marginTop: 12, marginBottom: 24}]}>신고가 완료되었습니다.</Text>
         <Pressable style={[styles.blockButton]} onPress={onPressBlockUser}>

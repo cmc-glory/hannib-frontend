@@ -4,6 +4,7 @@
     "isSecret": true,
     "isAnswered": false,
     "writer": "춤추는 고양이",
+    "writerId": "0000@email.com",
     "content": "글자 두줄로  채우기 하는 중인데 생각보다 두줄이 너무너무 길어요",
     "date": "2014-01-01T23:28:56.782Z"
   },
@@ -12,6 +13,7 @@
     "isSecret": false,
     "isAnswered": false,
     "writer": "달리는 찻잔",
+    "writerId": "1111@email.com",
     "content": "띠용띠용띠용띠용",
     "date": "2014-01-01T23:28:56.782Z"
   },
@@ -20,6 +22,7 @@
     "isSecret": false,
     "isAnswered": true,
     "writer": "잠자는 커피",
+    "writerId": "2222@email.com",
     "content": "하하하하하하ㅏ핳핳하ㅏ하하하",
     "date": "2014-01-01T23:28:56.782Z",
     "answer": "답변도 두줄로 작성중 만약에 초과되면 ... 으로 끝날 예정이고 확장버튼 있는건 어떠신지요",

@@ -4,6 +4,7 @@ import FastImage from 'react-native-fast-image'
 import {useNavigation} from '@react-navigation/native'
 import {RightArrowIcon} from '../utils'
 import * as theme from '../../theme'
+import {useAppSelector} from '../../hooks'
 
 type WriterProfileBannerProps = {
   writerid: string
@@ -12,15 +13,23 @@ type WriterProfileBannerProps = {
 }
 
 export const WriterProfileBanner = ({writerid, writerProfileImageUri, writername}: WriterProfileBannerProps) => {
+  // ******************** utils ********************
+  const userid = useAppSelector(state => state.auth.user.email)
   const navigation = useNavigation()
-
   const imageUri = useMemo(() => (writerProfileImageUri == '' ? require('../../assets/images/no_user.jpeg') : {uri: writerProfileImageUri}), [])
 
+  // ******************** callbacks ********************
   // 문의글 리스트로 이동하는 네비게이션
   const onPressQnA = useCallback(() => {
-    navigation.navigate('QnAList', {
-      id: '11111', // 해당 게시글 id
-    })
+    if (userid == writerid) {
+      navigation.navigate('QnAListCreator', {
+        nanumId: '111111',
+      })
+    } else {
+      navigation.navigate('QnAListUser', {
+        nanumId: '111111',
+      })
+    }
   }, [])
 
   const onPressWriterProfile = useCallback(() => {

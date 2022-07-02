@@ -17,7 +17,7 @@ export const ReportIssueStep3 = () => {
 
   return (
     <SafeAreaView style={[styles.rootContainer]}>
-      <StackHeader title="문제 신고하기" goBack />
+      <StackHeader title="문제 신고하기" goBack x />
       <View style={[theme.styles.wrapper, styles.container]}>
         <Text style={[theme.styles.bold20, {marginTop: 12, marginBottom: 24}]}>{userName}님을 차단했습니다</Text>
         {/* <Text style={{fontSize: 16, color: theme.gray700}}>신고해주셔서 감사합니다. </Text> */}
