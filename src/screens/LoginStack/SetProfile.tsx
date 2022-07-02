@@ -4,11 +4,12 @@ import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation, useRoute} from '@react-navigation/native'
 import {launchImageLibrary} from 'react-native-image-picker'
 import type {Asset} from 'react-native-image-picker'
+import FastImage from 'react-native-fast-image'
+
 import {SetProfileRouteProps} from '../../navigation/LoginStackNavigator'
 import {StackHeader, SelectImageIcon, FloatingBottomButton} from '../../components/utils'
-
+import NoUserSvg from '../../assets/Icon/noUser.svg'
 import * as theme from '../../theme'
-import FastImage from 'react-native-fast-image'
 
 const names = ['test', '진실', 'ㅇㅇ']
 
@@ -17,7 +18,7 @@ export const SetProfile = () => {
   const navigation = useNavigation()
   const route = useRoute<SetProfileRouteProps>()
   const [name, setName] = useState<string>('') // 사용자가 입력한 닉네임.
-  const [profileImage, setProfileImage] = useState<any>(require('../../assets/images/noUser.png'))
+  const [profileImage, setProfileImage] = useState<{uri: string}>()
   const [duplicated, setDuplicated] = useState<boolean>(false) // 이메일 중복 여부
 
   // 이미지 상관 없이 닉네임이 null이 아닐 때만
@@ -44,7 +45,7 @@ export const SetProfile = () => {
     } else if (response.errorMessage) {
       console.log('errorMessage', response.errorMessage)
     } else if (response.assets) {
-      setProfileImage({uri: response?.assets[0].uri})
+      response?.assets[0].uri && setProfileImage({uri: response?.assets[0].uri})
     }
   }, [])
 
@@ -54,7 +55,9 @@ export const SetProfile = () => {
       <View style={styles.container}>
         <View style={{alignSelf: 'center'}}>
           {profileImage == undefined ? (
-            <Pressable style={[styles.image, styles.selectImage]} onPress={onImageLibraryPress}></Pressable>
+            <Pressable style={[styles.image, styles.selectImage]} onPress={onImageLibraryPress}>
+              <NoUserSvg width={54} height={54} />
+            </Pressable>
           ) : (
             <FastImage source={profileImage} style={styles.image}></FastImage>
           )}
@@ -74,8 +77,8 @@ export const SetProfile = () => {
           }}
         />
         {duplicated && <Text style={[{color: theme.red, fontSize: 12, marginTop: 4}, theme.styles.text12]}>중복된 닉네임입니다.</Text>}
+        <FloatingBottomButton label="다음" enabled={checkButtonEnabled(name)} onPress={onPressNext} />
       </View>
-      <FloatingBottomButton label="다음" enabled={checkButtonEnabled(name)} onPress={onPressNext} />
     </SafeAreaView>
   )
 }

@@ -53,6 +53,7 @@ import CompleteSvg from '../../assets/Icon/Complete.svg'
 import LockSvg from '../../assets/Icon/Lock key.svg'
 import LeftArrowCalendarSvg from '../../assets/Icon/LeftArrowCalendar.svg'
 import RightArrowCalendarSvg from '../../assets/Icon/RightArrowCalendar.svg'
+import LogoWhiteSvg from '../../assets/Icon/LogoWhite.svg'
 
 import * as theme from '../../theme'
 
@@ -66,6 +67,10 @@ type IconPropss = {
   onPress?: () => void
   style?: any
   size?: number
+}
+
+export const LogoWhiteIcon = ({size = theme.ICON_SIZE}: IconPropss) => {
+  return <LogoWhiteSvg width={size} height={size} />
 }
 
 export const RightArrowCalendarIcon = ({size = theme.ICON_SIZE}: IconPropss) => {

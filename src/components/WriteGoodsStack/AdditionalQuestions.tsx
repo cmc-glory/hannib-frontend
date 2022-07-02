@@ -96,7 +96,7 @@ export const AdditionalQuestions = ({questions, setQuestions}: AdditionalQuestio
         </View>
         <TextInput
           style={[theme.styles.input, styles.spacing, {flex: 1}]}
-          placeholder="질문 제목"
+          placeholder="질문 제목 (ex 트위터 아이디)"
           placeholderTextColor={theme.gray300}
           value={questionForm.content}
           onChangeText={text => setQuestionForm({...questionForm, content: text})}

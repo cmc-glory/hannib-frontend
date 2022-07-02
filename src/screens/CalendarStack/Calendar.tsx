@@ -23,7 +23,6 @@ export const Calendar = () => {
   useQuery(queryKeys.calendar, getCalendarAll, {
     onSuccess: data => {
       var temp: any = {}
-      // temp : [date] :
       data.forEach((calendarItem: ICalendar) => {
         calendarItem.schedule.forEach(item => {
           const {time, place} = item
@@ -63,15 +62,20 @@ export const Calendar = () => {
       </StackHeader>
       <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View style={{paddingHorizontal: 10}}>
-          <WixCalendar scheduleAll={scheduleAll} selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
+          <WixCalendar scheduleAll={scheduleAll} setSelectedDate={setSelectedDate} />
         </View>
 
         <View style={{paddingHorizontal: theme.PADDING_SIZE}}>
           <SeparatorLight style={{marginVertical: 20}} />
 
-          {selectedSchedule?.map(item => (
-            <CalendarItem key={item.sharingid} item={item} />
-          ))}
+          {selectedSchedule !== undefined ? (
+            selectedSchedule.map(item => <CalendarItem key={item.sharingid} item={item} />)
+          ) : (
+            <View style={[theme.styles.rowFlexStart, styles.emptyContainer]}>
+              <Text style={{marginRight: 8}}>📅</Text>
+              <Text style={{fontFamily: 'Pretendard-Medium'}}>오늘은 일정이 없어요!</Text>
+            </View>
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -82,5 +86,12 @@ const styles = StyleSheet.create({
   rootContainer: {
     flex: 1,
     backgroundColor: theme.white,
+  },
+  emptyContainer: {
+    backgroundColor: theme.gray50,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 4,
+    marginBottom: theme.PADDING_SIZE,
   },
 })

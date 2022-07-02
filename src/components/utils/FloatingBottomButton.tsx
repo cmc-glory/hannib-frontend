@@ -24,14 +24,14 @@ export const FloatingBottomButton = ({label, onPress, enabled = false}: Floating
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
+    //position: 'absolute',
     zIndex: 10,
-    bottom: iphoneX ? 0 : 10,
+    marginBottom: iphoneX ? 0 : 10,
     width: BUTTON_WIDTH,
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 14,
-    //marginTop: 10,
+    marginTop: 10,
     //marginBottom: iphoneX ? 0 : 10,
   },
   label: {

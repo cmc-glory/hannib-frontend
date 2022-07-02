@@ -3,22 +3,14 @@ import {View, Text, StyleSheet, Platform, Pressable} from 'react-native'
 import FastImage from 'react-native-fast-image'
 import LinearGradient from 'react-native-linear-gradient'
 import {SafeAreaView} from 'react-native-safe-area-context'
-import {GoogleSignin, GoogleSigninButton} from '@react-native-google-signin/google-signin'
+import {GoogleSignin} from '@react-native-google-signin/google-signin'
 import auth from '@react-native-firebase/auth'
-import {
-  KakaoOAuthToken,
-  KakaoProfile,
-  KakaoProfileNoneAgreement,
-  getProfile as getKakaoProfile,
-  login,
-  logout,
-  unlink,
-  loginWithKakaoAccount,
-} from '@react-native-seoul/kakao-login'
+import {KakaoOAuthToken, KakaoProfile, getProfile as getKakaoProfile, login} from '@react-native-seoul/kakao-login'
 import {appleAuth} from '@invertase/react-native-apple-authentication'
-import {AppleButton, AppleRequestResponse, AppleRequestScope, appleAuthAndroid} from '@invertase/react-native-apple-authentication'
+import {AppleRequestResponse} from '@invertase/react-native-apple-authentication'
 import {useNavigation} from '@react-navigation/native'
 import * as theme from '../../theme'
+import {LogoWhiteIcon} from '../../components/utils'
 
 type LoginButtonProps = {
   label: string
@@ -112,7 +104,8 @@ export const Login = () => {
       style={{flex: 1}}>
       <SafeAreaView style={[theme.styles.wrapper, styles.rootContainer]}>
         <View style={[styles.titleContainer]}>
-          <FastImage source={require('../../assets/logo_white.png')} style={styles.logoWhite} />
+          {/* <FastImage source={require('../../assets/logo_white.png')} style={styles.logoWhite} /> */}
+          <LogoWhiteIcon size={82} />
           <Text style={[styles.title, theme.styles.bold16]}>한입과 함께 즐겁게 굿즈를 나눔하세요</Text>
         </View>
         <View style={[styles.loginButtonContainer]}>
@@ -140,11 +133,20 @@ export const Login = () => {
             />
           )}
         </View>
+        <Text style={styles.logoText}>hannip</Text>
       </SafeAreaView>
     </LinearGradient>
   )
 }
 const styles = StyleSheet.create({
+  logoText: {
+    fontFamily: 'Lexend-Bold',
+    color: theme.secondary,
+    fontSize: 20,
+    alignSelf: 'center',
+    position: 'absolute',
+    bottom: 56,
+  },
   logoWhite: {
     width: 79.33,
     height: 85,

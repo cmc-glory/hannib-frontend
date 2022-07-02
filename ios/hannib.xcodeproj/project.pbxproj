@@ -35,6 +35,7 @@
 		A3643E1128499323003CB607 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A3643E0128499323003CB607 /* EvilIcons.ttf */; };
 		A3643E1228499323003CB607 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A3643E0228499323003CB607 /* SimpleLineIcons.ttf */; };
 		A3643E1328499323003CB607 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A3643E0328499323003CB607 /* MaterialIcons.ttf */; };
+		A3805433286F58CF00951931 /* Lexend-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A3805432286F58CF00951931 /* Lexend-Bold.ttf */; };
 		A3D9C77C2845EF2500382B20 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A3D9C77B2845EF2500382B20 /* GoogleService-Info.plist */; };
 		A58FAEF87CF74AE09D2933A6 /* Pretendard-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 81372A9A900344A9AE0F1D71 /* Pretendard-Bold.otf */; };
 		B876693028AB4A0E83DA8D0C /* Pretendard-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = BCA620929C4943988213DEB8 /* Pretendard-Black.otf */; };
@@ -94,6 +95,8 @@
 		A3643E0128499323003CB607 /* EvilIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = EvilIcons.ttf; sourceTree = "<group>"; };
 		A3643E0228499323003CB607 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = SimpleLineIcons.ttf; sourceTree = "<group>"; };
 		A3643E0328499323003CB607 /* MaterialIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = MaterialIcons.ttf; sourceTree = "<group>"; };
+		A3805431286F580300951931 /* Lexend-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Lexend-Bold.ttf"; sourceTree = "<group>"; };
+		A3805432286F58CF00951931 /* Lexend-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Lexend-Bold.ttf"; sourceTree = "<group>"; };
 		A3D9C77B2845EF2500382B20 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		BCA620929C4943988213DEB8 /* Pretendard-Black.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Pretendard-Black.otf"; path = "../src/assets/fonts/Pretendard-Black.otf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -170,6 +173,7 @@
 				81372A9A900344A9AE0F1D71 /* Pretendard-Bold.otf */,
 				EEFBFB58EDAC49F1A6E28BB4 /* Pretendard-ExtraBold.otf */,
 				692EC3C140134301BE05AC35 /* Pretendard-ExtraLight.otf */,
+				A3805432286F58CF00951931 /* Lexend-Bold.ttf */,
 				1D8A23CFEDAE492C8995A677 /* Pretendard-Light.otf */,
 				69BD540576184133A0B6E63F /* Pretendard-Medium.otf */,
 				6D9DA9B889F94C47910A19AF /* Pretendard-Regular.otf */,
@@ -220,6 +224,7 @@
 				A3643DF628499323003CB607 /* Feather.ttf */,
 				A3643DF728499323003CB607 /* Entypo.ttf */,
 				A3643DF828499323003CB607 /* FontAwesome5_Brands.ttf */,
+				A3805431286F580300951931 /* Lexend-Bold.ttf */,
 				A3643DF928499323003CB607 /* MaterialCommunityIcons.ttf */,
 				A3643DFA28499323003CB607 /* AntDesign.ttf */,
 				A3643DFB28499323003CB607 /* Foundation.ttf */,
@@ -347,6 +352,7 @@
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				A3D9C77C2845EF2500382B20 /* GoogleService-Info.plist in Resources */,
 				B876693028AB4A0E83DA8D0C /* Pretendard-Black.otf in Resources */,
+				A3805433286F58CF00951931 /* Lexend-Bold.ttf in Resources */,
 				A58FAEF87CF74AE09D2933A6 /* Pretendard-Bold.otf in Resources */,
 				BCC25F07F0764E81B3A16263 /* Pretendard-ExtraBold.otf in Resources */,
 				A3643E0A28499323003CB607 /* AntDesign.ttf in Resources */,
