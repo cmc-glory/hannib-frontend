@@ -5,16 +5,21 @@ import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation, useRoute} from '@react-navigation/native'
 import {WriterProfileRouteProps} from '../../navigation/GoodsStackNavigator'
 import {StackHeader, MenuIcon, SeparatorBold} from '../../components/utils'
-import {HoldingProjectItem, ReviewItem} from '../../components/GoodsStack'
+import {HoldingProjectItem, ReviewItem, BlockUserModal} from '../../components/GoodsStack'
 import {IReview} from '../../types'
 import * as theme from '../../theme'
 
 export const WriterProfile = () => {
+  // ******************** utils  ********************
   const navigation = useNavigation()
   const route = useRoute<WriterProfileRouteProps>()
+
+  // ******************** states  ********************
   const [reviews, setReviews] = useState<IReview[]>([])
   const [isOpened, setIsOpened] = useState<boolean[]>([]) // index번째의 후기가 열렸는지 판단하는 state
+  const [blockUserModalVisible, setBlockUserModalVisible] = useState<boolean>(false)
 
+  // ******************** callbacks  ********************
   const onPressReview = useCallback((index: number) => {
     setIsOpened(isOpened => [...isOpened.slice(0, index), !isOpened[index], ...isOpened.slice(index + 1)])
   }, [])
@@ -40,8 +45,18 @@ export const WriterProfile = () => {
   return (
     <SafeAreaView style={[theme.styles.safeareaview]}>
       <StackHeader title="작가 프로필" goBack>
-        <MenuIcon />
+        <MenuIcon
+          onPress={() => {
+            setBlockUserModalVisible(blockUserModalVisible => !blockUserModalVisible)
+          }}
+        />
       </StackHeader>
+      <BlockUserModal
+        blockUserModalVisible={blockUserModalVisible}
+        setBlockUserModalVisible={setBlockUserModalVisible}
+        userName="춤추는 고양이"
+        userId="userid"
+      />
       <ScrollView>
         <View style={[theme.styles.rowFlexStart, styles.writerProfileContainer, theme.styles.wrapper]}>
           <FastImage source={{uri: 'http://localhost:8081/src/assets/images/iu.jpeg'}} style={[styles.profileImage]} />
