@@ -58,5 +58,6 @@ const styles = StyleSheet.create({
   },
   container: {
     paddingHorizontal: theme.PADDING_SIZE,
+    marginBottom: 24,
   },
 })

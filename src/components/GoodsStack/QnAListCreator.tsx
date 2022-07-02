@@ -1,66 +1,19 @@
-import React, {useState, useCallback} from 'react'
+import React, {useState, useCallback, useMemo, useEffect} from 'react'
 import {View, Text, TextInput, Pressable, StyleSheet} from 'react-native'
 import moment from 'moment'
 import * as theme from '../../theme'
 import {IQnAList} from '../../types'
-import {LockIcon, MenuIcon} from '../utils'
+import {LockIcon} from '../utils'
 import {useToggle} from '../../hooks'
+import {DeleteQnAModal} from './DeleteQnAModal'
 
 type QnAListCreatorItemProps = {
   item: IQnAList
 }
 
-type QuestionProps = {
-  item: IQnAList
-}
-
-type Answerprops = {
-  answer: string | undefined
-  answeredDate: Date | undefined
-}
-
 type WriteAnswerProps = {
   writeAnswerPressed: boolean
   toggleWriteAnswerPressed: () => void
-}
-
-const Question = ({item}: QuestionProps) => {
-  const {isSecret, isAnswered, writer, content, date, answer, answeredDate} = item
-
-  return (
-    <View>
-      <View style={[theme.styles.rowSpaceBetween, {marginBottom: 8}]}>
-        <View style={[theme.styles.rowFlexStart]}>
-          <Text style={[theme.styles.text12, {fontSize: 12, color: isAnswered ? theme.main : theme.gray500}]}>{isAnswered ? '답변완료' : '답변예정'}</Text>
-          {isSecret && <LockIcon size={20} style={{marginLeft: 4}} />}
-        </View>
-        <MenuIcon size={20} />
-      </View>
-      <View style={[theme.styles.rowFlexStart, {marginBottom: 8}]}>
-        <Text style={[styles.q, {alignSelf: 'flex-start'}]}>Q.</Text>
-        <Text style={[styles.content, {flex: 1}]}>{content}</Text>
-      </View>
-      <View style={[theme.styles.rowSpaceBetween]}>
-        <Text style={[styles.writer]}>{writer}</Text>
-        <Text style={[styles.date]}>{moment(date).format('YYYY.MM.DD HH:mm')}</Text>
-      </View>
-    </View>
-  )
-}
-
-const Answer = ({answer, answeredDate}: Answerprops) => {
-  return (
-    <View>
-      <View style={[theme.styles.rowFlexStart, {marginTop: 16, marginBottom: 8}]}>
-        <Text style={[styles.q, {alignSelf: 'flex-start', color: theme.main}]}>A.</Text>
-        <Text style={[styles.content, {flex: 1}]}>{answer}</Text>
-      </View>
-      <View style={[theme.styles.rowSpaceBetween]}>
-        <Text style={[styles.writer, {color: theme.main}]}>나눔진행자</Text>
-        <Text style={[styles.date]}>{moment(answeredDate).format('YYYY.MM.DD HH:mm')}</Text>
-      </View>
-    </View>
-  )
 }
 
 const WriteAnswer = ({writeAnswerPressed, toggleWriteAnswerPressed}: WriteAnswerProps) => {
@@ -96,12 +49,87 @@ const WriteAnswer = ({writeAnswerPressed, toggleWriteAnswerPressed}: WriteAnswer
 
 export const QnAListCreatorItem = ({item}: QnAListCreatorItemProps) => {
   const [writeAnswerPressed, toggleWriteAnswerPressed] = useToggle()
+  const {isSecret, isAnswered, writer, content, date, answer, answeredDate} = item
+
+  // ******************** states ********************
+  const [editPressed, setEditPressed] = useState<boolean>(false) // 수정하기 버튼 눌리면 에디터 띄움
+  const [deleteQnAModalVisible, setDeleteQnAModalVisible] = useState<boolean>(false) // 삭제하기 모달
+  const [editedContent, setEditedContent] = useState<string>()
+
+  useEffect(() => {
+    if (isAnswered) {
+      setEditedContent(answer)
+    }
+  }, [])
+
+  // ******************** callbacks ********************
+  const onPressEdit = useCallback(() => {
+    setEditPressed(true)
+  }, [])
+  const onPressDelete = useCallback(() => {
+    setDeleteQnAModalVisible(true)
+  }, [])
+
+  const onPressEditComplete = useCallback(() => {
+    setEditPressed(false)
+  }, [])
+
   return (
     <View style={[styles.qnaListItemContainer]}>
-      <Question item={item} />
+      <DeleteQnAModal deleteQnAModalVisible={deleteQnAModalVisible} setDeleteQnAModalVisible={setDeleteQnAModalVisible} />
+
+      <View>
+        <View style={[theme.styles.rowSpaceBetween, {marginBottom: 8}]}>
+          <View style={[theme.styles.rowFlexStart]}>
+            <Text style={[theme.styles.text12, {fontSize: 12, color: isAnswered ? theme.main : theme.gray500}]}>{isAnswered ? '답변완료' : '답변예정'}</Text>
+            {isSecret && <LockIcon size={20} style={{marginLeft: 4}} />}
+          </View>
+          {isAnswered == true && (
+            <View style={[theme.styles.rowFlexStart]}>
+              <Pressable style={{marginRight: 8}} onPress={onPressEdit}>
+                <Text style={styles.editText}>수정</Text>
+              </Pressable>
+              <Pressable onPress={onPressDelete}>
+                <Text style={styles.editText}>삭제</Text>
+              </Pressable>
+            </View>
+          )}
+        </View>
+        <View style={[theme.styles.rowFlexStart, {marginBottom: 8}]}>
+          <Text style={[styles.q, {alignSelf: 'flex-start'}]}>Q.</Text>
+          <Text style={[styles.content, {flex: 1}]}>{content}</Text>
+        </View>
+        <View style={[theme.styles.rowSpaceBetween]}>
+          <Text style={[styles.writer]}>{writer}</Text>
+          <Text style={[styles.date]}>{moment(date).format('YYYY.MM.DD HH:mm')}</Text>
+        </View>
+      </View>
 
       {item.isAnswered ? (
-        <Answer answer={item.answer} answeredDate={item.answeredDate} />
+        <View>
+          <View style={[theme.styles.rowFlexStart, {marginTop: 16, marginBottom: 8}]}>
+            <Text style={[styles.q, {alignSelf: 'flex-start', color: theme.main}]}>A.</Text>
+            {editPressed ? (
+              <View style={{flex: 1}}>
+                <TextInput
+                  textAlignVertical="top"
+                  multiline
+                  value={editedContent}
+                  onChangeText={setEditedContent}
+                  style={[theme.styles.input, {height: 150, paddingTop: 16}]}></TextInput>
+                <Pressable style={styles.editButton} onPress={onPressEditComplete}>
+                  <Text style={{color: theme.white}}>수정하기</Text>
+                </Pressable>
+              </View>
+            ) : (
+              <Text style={[styles.content, {flex: 1}]}>{editedContent}</Text>
+            )}
+          </View>
+          <View style={[theme.styles.rowSpaceBetween]}>
+            <Text style={[styles.writer, {color: theme.main}]}>나눔진행자</Text>
+            <Text style={[styles.date]}>{moment(answeredDate).format('YYYY.MM.DD HH:mm')}</Text>
+          </View>
+        </View>
       ) : (
         <WriteAnswer writeAnswerPressed={writeAnswerPressed} toggleWriteAnswerPressed={toggleWriteAnswerPressed} />
       )}
@@ -110,6 +138,20 @@ export const QnAListCreatorItem = ({item}: QnAListCreatorItemProps) => {
 }
 
 const styles = StyleSheet.create({
+  editButton: {
+    alignSelf: 'stretch',
+    height: 48,
+    backgroundColor: theme.black,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 4,
+    marginTop: 8,
+    marginBottom: 16,
+  },
+  editText: {
+    fontSize: 12,
+    lineHeight: 16,
+  },
   qnaListItemContainer: {
     padding: 16,
     borderColor: theme.gray200,

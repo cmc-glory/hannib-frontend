@@ -4,7 +4,6 @@ import Modal from 'react-native-modal'
 import {XIcon} from '../utils'
 import * as theme from '../../theme'
 import {useDispatch} from 'react-redux'
-import {logout} from '../../redux/slices/auth'
 
 type LogoutModalProps = {
   deleteQnAModalVisible: boolean

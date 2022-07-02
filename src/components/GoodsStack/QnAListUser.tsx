@@ -84,18 +84,7 @@ const Question = ({item, userId}: QuestionProps) => {
               value={editedContent}
               onChangeText={setEditedContent}
               style={[theme.styles.input, {height: 150, paddingTop: 16}]}></TextInput>
-            <Pressable
-              style={{
-                alignSelf: 'stretch',
-                height: 48,
-                backgroundColor: theme.black,
-                justifyContent: 'center',
-                alignItems: 'center',
-                borderRadius: 4,
-                marginTop: 8,
-                marginBottom: 16,
-              }}
-              onPress={onPressEditComplete}>
+            <Pressable style={styles.editButton} onPress={onPressEditComplete}>
               <Text style={{color: theme.white}}>수정하기</Text>
             </Pressable>
           </View>
@@ -142,6 +131,16 @@ export const QnAListUserItem = ({item, userId}: QnAListUserItemProps) => {
 }
 
 const styles = StyleSheet.create({
+  editButton: {
+    alignSelf: 'stretch',
+    height: 48,
+    backgroundColor: theme.black,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 4,
+    marginTop: 8,
+    marginBottom: 16,
+  },
   editText: {
     fontSize: 12,
     lineHeight: 16,

@@ -21,6 +21,7 @@ export const WriterProfileBanner = ({writerid, writerProfileImageUri, writername
   // ******************** callbacks ********************
   // 문의글 리스트로 이동하는 네비게이션
   const onPressQnA = useCallback(() => {
+    console.log(userid, writerid)
     if (userid == writerid) {
       navigation.navigate('QnAListCreator', {
         nanumId: '111111',
@@ -30,7 +31,7 @@ export const WriterProfileBanner = ({writerid, writerProfileImageUri, writername
         nanumId: '111111',
       })
     }
-  }, [])
+  }, [userid])
 
   const onPressWriterProfile = useCallback(() => {
     navigation.navigate('WriterProfile', {
