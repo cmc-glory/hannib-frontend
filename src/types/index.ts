@@ -86,6 +86,20 @@ export type ISharingDetail = {
   qnaNum: number
 }
 
+export type IParticipatingOfflineDetail = {
+  uri: string
+  type: ISharingType
+  state: string
+  category: string
+  title: string
+  products: IProductInfo[]
+  openDate: Date | undefined
+  receiverName: string
+  expectedReceiveDate: Date | undefined
+  finalReceiveDate: Date | undefined
+  location: string | undefined
+}
+
 export type ISharingRequestInfo = {
   products: IProductInfo[]
   schedule?: ISchedule[]

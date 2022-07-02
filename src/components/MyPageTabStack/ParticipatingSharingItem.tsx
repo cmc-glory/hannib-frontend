@@ -3,7 +3,6 @@ import {View, Text, Pressable, TextInput, Image, StyleSheet, Dimensions} from 'r
 import FastImage from 'react-native-fast-image'
 import {useNavigation} from '@react-navigation/native'
 import Modal from 'react-native-modal'
-import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5'
 import moment from 'moment'
 import * as theme from '../../theme'
 import type {ISharingInfo} from '../../types'
@@ -23,6 +22,7 @@ export const ParticipatingSharingItem = ({item}: {item: ISharingInfo}) => {
   // 이미지가 존재하면 이미지의 uri로, 없으면 기본 이미지로
   const imageUri = uri ? uri : 'http://localhost:8081/src/assets/images/no-image.jpeg'
   const navigation = useNavigation()
+  const offlineNavigation = useNavigation<ParticipatingSharingOfflineNavigationProps>()
 
   const [isBefore, setIsBefore] = useState(false)
 
@@ -40,10 +40,12 @@ export const ParticipatingSharingItem = ({item}: {item: ISharingInfo}) => {
       if (type == 'online') {
         navigation.navigate('ParticipatingSharingStackNavigator', {
           screen: 'ParticipatingSharingOnline',
+          params: {id: item.id},
         })
       } else {
         navigation.navigate('ParticipatingSharingStackNavigator', {
           screen: 'ParticipatingSharingOffline',
+          params: {id: item.id},
         })
       }
     }

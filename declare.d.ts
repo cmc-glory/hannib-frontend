@@ -70,11 +70,16 @@ declare namespace ReactNavigation {
     HoldingSharingStackNavigator: undefined
     HoldingSharingDetail: undefined
     SendNotice: undefined
-    ParticipatingSharingStackNavigator: {
-      screen: string
-    }
+    ParticipatingSharingStackNavigator:
+      | undefined
+      | {
+          screen: string
+          params?: any
+        }
     ParticipatingSharingOnline: undefined
-    ParticipatingSharingOffline: undefined
+    ParticipatingSharingOffline: {
+      id: string
+    }
     ReportIssueStackNavigator: undefined
     ReportIssueStep2: {
       issue: string

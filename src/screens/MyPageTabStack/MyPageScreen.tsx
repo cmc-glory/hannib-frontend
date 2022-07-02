@@ -38,7 +38,6 @@ export const MyPageScreen = () => {
   const navigation = useNavigation()
   const user = useAppSelector(state => state.auth.user)
   console.log('user : ', user)
-  console.log('user.holdingSharingCnt : ', user.holdingSharingCnt)
 
   // ******************** states ********************
   const [logoutModalVisible, setLogoutModalVisible] = useState<boolean>(false)

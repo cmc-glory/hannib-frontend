@@ -1,8 +1,9 @@
-import {useNavigation} from '@react-navigation/native'
-import React, {useCallback} from 'react'
+import {useNavigation, useRoute} from '@react-navigation/native'
+import React, {useCallback, useEffect, useMemo, useState} from 'react'
 import {View, Text, StyleSheet, Dimensions} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {Asset} from 'react-native-image-picker'
+import {IParticipatingOfflineDetail} from '../../types'
 import {CancelModal} from '../../components/MyPageStack/CancelModal'
 import {StackHeader, SharingPreview, GoodsListItem, Button} from '../../components/utils'
 import {useToggle} from '../../hooks'
@@ -10,7 +11,7 @@ import * as theme from '../../theme'
 import {WriteReviewPropsNavigationProps} from '../../navigation/ParticipatingSharingStackNavigator'
 const BUTTON_WIDTH = (Dimensions.get('window').width - theme.PADDING_SIZE * 2 - 10) / 2
 
-const participateState: string = 'proceeding'
+const participateState: string = 'notTaken'
 
 type Buttons = {
   onPressWriteQnA: () => void
@@ -34,10 +35,29 @@ const Buttons = ({onPressWriteQnA, toggleCancelModalVisible, onPressWriteReview}
 }
 
 export const ParticipatingSharingOffline = () => {
+  const route = useRoute()
+  const [detail, setDetail] = useState<IParticipatingOfflineDetail>()
   const [cancelModalVisible, toggleCancelModalVisible] = useToggle() // 취소 모달창 띄울지
   const navigation = useNavigation()
-  const writeQnANavigation = useNavigation<WriteReviewPropsNavigationProps>()
+  const writeReviewNavigation = useNavigation<WriteReviewPropsNavigationProps>()
 
+  //list 페이지에서 보낸 id
+  const id = useMemo(() => route.params, [])
+
+  // 컴포넌트가 마운트 되면 참여 나눔 상세 정보 가져옴
+  useEffect(() => {
+    fetch('http://localhost:8081/src/data/dummyParticipateOfflineDetail.json')
+      .then(res => res.json())
+      .then(result => {
+        setDetail(result)
+      })
+  }, [])
+
+  useEffect(() => {
+    //console.log('detail : ', detail)
+  }, [detail])
+
+  console.log(detail)
   const onPressWriteQnA = useCallback(() => {
     navigation.navigate('WriteQnA', {
       postid: '1', // 해당 나눔 게시글의 id
@@ -49,7 +69,7 @@ export const ParticipatingSharingOffline = () => {
   }, [])
 
   const onPressWriteReview = useCallback(() => {
-    writeQnANavigation.navigate('WriteReview', {
+    writeReviewNavigation.navigate('WriteReview', {
       postid: '1', // 해당 나눔 게시글의 id
       userid: '1', // 문의글을 남기는 사용자의 id,
       imageuri: 'http://localhost:8081/src/assets/images/detail_image_example.png', // 썸네일 uri
@@ -57,11 +77,16 @@ export const ParticipatingSharingOffline = () => {
       title: 'BTS 키링 나눔', // 나눔 제목
     })
   }, [])
+
   return (
     <SafeAreaView style={styles.rootContainer}>
       <StackHeader title="참여한 나눔" goBack />
       <View style={[styles.container, theme.styles.wrapper]}>
-        <SharingPreview uri="http://localhost:8081/src/assets/images/detail_image_example.png" category="BTS" title="BTS 키링 나눔" />
+        <SharingPreview
+          uri={detail?.uri ? detail.uri : 'http://localhost:8081/src/assets/images/detail_image_example.png'}
+          category={detail?.category ? detail.category : 'error'}
+          title={detail?.title ? detail.title : 'error'}
+        />
         <View style={{marginTop: 16}}>
           <GoodsListItem type="participating" />
           <GoodsListItem type="participating" />
@@ -78,7 +103,7 @@ export const ParticipatingSharingOffline = () => {
             </View> */}
             <View style={[theme.styles.rowSpaceBetween, styles.requestInfoWrapper]}>
               <Text style={styles.requestInfoLabel}>수령자명</Text>
-              <Text style={styles.requestInfoText}>수령자명</Text>
+              <Text style={styles.requestInfoText}>{detail?.receiverName}</Text>
             </View>
             <View style={[theme.styles.rowSpaceBetween, styles.requestInfoWrapper]}>
               <Text style={styles.requestInfoLabel}>{participateState == 'proceeding' ? '수령 예정일' : '최종 수령일'}</Text>
