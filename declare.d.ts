@@ -23,7 +23,6 @@ declare namespace ReactNavigation {
       categories: string[]
       title: string
       content: string
-      hashtags: string[]
       type: ISharingType
       isOpenDateBooked: boolean
       openDate?: Date | undefined
@@ -33,7 +32,6 @@ declare namespace ReactNavigation {
       categories: string[]
       title: string
       content: string
-      hashtags: string[]
       type: ISharingType
       isOpenDateBooked: boolean
       openDate?: Date | undefined

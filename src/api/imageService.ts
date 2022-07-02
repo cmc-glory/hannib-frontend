@@ -1,13 +1,6 @@
 import axios from 'axios'
 import {BASE_URL} from '@env'
 
-const apiClient = axios.create({
-  baseURL: BASE_URL,
-  headers: {
-    'Content-type': 'application/json',
-  },
-})
-
 const apiImageClient = axios.create({
   baseURL: BASE_URL,
   headers: {
@@ -23,6 +16,12 @@ export const uploadProfileImage = async (formData: FormData) => {
 
 export const uploadCategoryImage = async (formData: FormData) => {
   const {data} = await apiImageClient.post('/api/img/category', formData)
+
+  return data
+}
+
+export const uploadNanumImages = async (formData: FormData) => {
+  const {data} = await apiImageClient.post('/api/img/nanum', formData)
 
   return data
 }
