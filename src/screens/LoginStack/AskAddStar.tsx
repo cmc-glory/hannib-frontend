@@ -8,9 +8,11 @@ import FastImage from 'react-native-fast-image'
 import KeyboardManager from 'react-native-keyboard-manager'
 import DatePicker from 'react-native-date-picker'
 import moment from 'moment'
+import {useMutation} from 'react-query'
 
+import {uploadCategoryImage, queryKeys} from '../../api'
 import {useToggle, useAnimatedValue} from '../../hooks'
-import {StackHeader, DownArrowIcon, RoundButton, PlusIcon, RemoveButtonIcon, NeccesaryField} from '../../components/utils'
+import {StackHeader, DownArrowIcon, PlusIcon, RemoveButtonIcon, NeccesaryField, FloatingBottomButton, RoundButton} from '../../components/utils'
 import * as theme from '../../theme'
 
 // ***************************** ios keyboard settings *****************************
@@ -47,6 +49,16 @@ function validateEmail(email: string) {
 }
 
 export const AskAddStar = () => {
+  // ******************** utils  ********************
+  const uploadCategoryImageQuery = useMutation(queryKeys.categoryImage, uploadCategoryImage, {
+    onSuccess(data, variables, context) {
+      navigation.navigate('AskAddStarComplete')
+    },
+    onError(error, variables, context) {
+      console.log(error)
+    },
+  })
+
   // ******************** states  ********************
   const navigation = useNavigation()
   const [opend, toggleOpend] = useToggle(false) // 카테고리 select 토글
@@ -105,9 +117,16 @@ export const AskAddStar = () => {
     }
     const form = {mainCategory, name, image, email}
 
-    // 백단으로 문의하기 게시글 post api
+    const formData = new FormData()
+    let file = {
+      uri: image?.uri,
+      type: 'multipart/form-data',
+      name: 'image.jpg',
+    }
+    formData.append('categoryImg', file)
 
-    navigation.navigate('AskAddStarComplete')
+    // 백단으로 문의하기 게시글 post api
+    uploadCategoryImageQuery.mutate(formData)
   }, [mainCategory, name, image, email, date])
 
   // 라이브러리에서 이미지 선택했을 때 호출되는 callback
@@ -136,7 +155,7 @@ export const AskAddStar = () => {
   return (
     <SafeAreaView style={[theme.styles.safeareaview]}>
       <StackHeader title="문의하기" goBack />
-      <View style={{padding: theme.PADDING_SIZE}}>
+      <View style={{padding: theme.PADDING_SIZE, flex: 1}}>
         <View style={styles.spacing}>
           <View style={[theme.styles.rowFlexStart]}>
             <Text style={[theme.styles.label]}>등록할 카테고리</Text>
@@ -238,12 +257,12 @@ export const AskAddStar = () => {
           <TextInput
             value={email}
             onChangeText={setEmail}
-            placeholder="카테고리 문의 결과를 전달받을 이메일을 입력해주세요."
+            placeholder="문의 결과를 전달받을 이메일을 입력해주세요."
             placeholderTextColor={theme.gray300}
             style={[theme.styles.input]}
           />
         </View>
-        <RoundButton label="카테고리 문의하기" enabled={checkEnabled()} onPress={onPressSubmit} />
+        <FloatingBottomButton label="카테고리 문의하기" enabled={checkEnabled()} onPress={onPressSubmit} />
       </View>
     </SafeAreaView>
   )

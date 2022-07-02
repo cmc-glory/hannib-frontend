@@ -8,7 +8,7 @@ import {SearchStar, EmptyResult} from '../../components/LoginStack'
 import * as theme from '../../theme'
 import {IStar} from '../../types'
 import {login, storeAccessToken, storeRefreshToken} from '../../redux/slices'
-import {useAppSelector, useAppDispatch} from '../../hooks'
+import {useAppDispatch} from '../../hooks'
 import {storeString} from '../../hooks'
 
 const BUTTON_GAP = 10
@@ -34,10 +34,14 @@ const SelectedStarTag = ({item, onPressRemove}: SelectedStarTagProps) => {
 }
 
 export const SelectCategory = () => {
+  // ******************** utils  ********************
   const navigation = useNavigation()
   const route = useRoute<SelectCategoryRouteProps>()
   const dispatch = useAppDispatch()
   const BUTTON_WIDTH = useMemo(() => (Dimensions.get('window').width - theme.PADDING_SIZE * 2 - BUTTON_GAP) / 2, [])
+  const {email, name, profileImage} = useMemo(() => route.params, [])
+
+  // ******************** states  ********************
   const [singerSelected, setSingerSelected] = useState(true) // 가수, 배우 대분류 선택
   const [starsAll, setStarsAll] = useState<IStar[]>([]) // 서버에서 받아온 연예인 데이터 전부
   const [singers, setSingers] = useState<IStar[]>([]) // 서버에서 받아온 가수 데이터 전부
@@ -45,8 +49,7 @@ export const SelectCategory = () => {
   const [stars, setStars] = useState<IStar[]>([]) // 프론트 단에서 보여줄 연예인 데이터
   const [selectedStars, setSelectedStars] = useState<IStar[]>([]) // 사용자가 선택한 카테고리
 
-  const {email, name, profileImage} = useMemo(() => route.params, [])
-
+  // ******************** react queries  ********************
   useEffect(() => {
     fetch('http://localhost:8081/src/data/dummyStars.json', {
       method: 'get',
@@ -64,6 +67,7 @@ export const SelectCategory = () => {
       })
   }, [])
 
+  // ******************** callbacks  ********************
   const onPressSinger = useCallback(() => {
     setSingerSelected(true)
     setStars(singers)
@@ -91,7 +95,7 @@ export const SelectCategory = () => {
       login({
         email,
         name,
-        profileImageUri: profileImage.uri,
+        profileImageUri: profileImage?.uri,
         userCategory: selectedStars.map(category => {
           return {id: category.id, name: category.name}
         }),
@@ -167,8 +171,8 @@ export const SelectCategory = () => {
             contentContainerStyle={{paddingHorizontal: theme.PADDING_SIZE}}
           />
         )}
+        <FloatingBottomButton label="선택 완료" enabled={selectedStars.length != 0} onPress={onPressSelectCompletion} />
       </View>
-      <FloatingBottomButton label="선택 완료" enabled={selectedStars.length != 0} onPress={onPressSelectCompletion} />
     </SafeAreaView>
   )
 }

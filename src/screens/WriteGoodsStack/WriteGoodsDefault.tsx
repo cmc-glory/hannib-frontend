@@ -40,37 +40,38 @@ export const WriteGoodsDefault = () => {
   const [categories, setCategories] = useState<string[]>(['dd']) // 카테고리
   const [title, setTitle] = useState<string>('') // 제목
   const [content, setContent] = useState<string>('') // 내용
-  const [hashtags, setHashtags] = useState<IHashtag[]>([]) // 해시태그
   const [type, setType] = useState<ISharingType>('online') // 나눔 방식
   const [isOpenDateBooked, toggleOpenDate] = useToggle() // 나눔 시작일 예약 여부
   const [openDate, setOpenDate] = useState<Date | undefined>() // 나눔 시작일
 
-  const onPressOffline = useCallback(() => {
+  console.log('images :', images)
+
+  // 모든 state가 바뀔때마다 새로 만들어져야 하므로 dependency (X)
+  const onPressOffline = () => {
     navigation.navigate('WriteGoodsOffline', {
-      images,
+      images: images,
       categories,
       title,
       content,
-      hashtags: hashtags.map(item => item.content),
       type,
       isOpenDateBooked,
       openDate,
     })
-  }, [])
-  const onPressOnline = useCallback(
-    () =>
-      navigation.navigate('WriteGoodsOnline', {
-        images,
-        categories,
-        title,
-        content,
-        hashtags: hashtags.map(item => item.content),
-        type,
-        isOpenDateBooked,
-        openDate,
-      }),
-    [],
-  )
+  }
+
+  // 모든 state가 바뀔때마다 새로 만들어져야 하므로 dependency (X)
+  const onPressOnline = () => {
+    navigation.navigate('WriteGoodsOnline', {
+      images: images,
+      categories,
+      title,
+      content,
+      type,
+      isOpenDateBooked,
+      openDate,
+    })
+  }
+
   // 필요한 내용을 기입해서 다음으로 넘어갈 수 있는지.
   const checkNextButtonEnabled = () => {
     if (images.length != 0 && categories.length != 0 && title != '' && content != '') {

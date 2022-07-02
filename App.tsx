@@ -14,6 +14,7 @@ import MainTabNavigator from './src/navigation/MainTabNavigator'
 import {store} from './src/redux/store'
 import {Provider as ReduxProvider} from 'react-redux'
 import NetInfo from '@react-native-community/netinfo'
+import FlashMessage from 'react-native-flash-message'
 
 // 권한 설정이 필요한 곳에 넣으면 됨.
 // 현재는 테스트를 위해 첫 페이지에 넣음.
@@ -75,6 +76,7 @@ const App = () => {
         <SafeAreaProvider style={{flex: 1, backgroundColor: 'white'}}>
           <NavigationContainer>
             <RootStackNavigtor />
+            <FlashMessage position="top" />
           </NavigationContainer>
         </SafeAreaProvider>
       </ReduxProvider>

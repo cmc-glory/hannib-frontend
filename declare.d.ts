@@ -7,6 +7,7 @@ declare module '*.svg' {
 
 declare module '@env' {
   export const API_URL: string
+  export const BASE_URL: string
 }
 declare namespace ReactNavigation {
   interface RootParamList {
@@ -22,7 +23,6 @@ declare namespace ReactNavigation {
       categories: string[]
       title: string
       content: string
-      hashtags: string[]
       type: ISharingType
       isOpenDateBooked: boolean
       openDate?: Date | undefined
@@ -32,7 +32,6 @@ declare namespace ReactNavigation {
       categories: string[]
       title: string
       content: string
-      hashtags: string[]
       type: ISharingType
       isOpenDateBooked: boolean
       openDate?: Date | undefined
@@ -75,7 +74,10 @@ declare namespace ReactNavigation {
     }
     ParticipatingSharingOnline: undefined
     ParticipatingSharingOffline: undefined
-    ReportIssueStackNavigator: undefined
+    ReportIssueStackNavigator?: {
+      screen: string
+      params: any
+    }
     ReportIssueStep2: {
       issue: string
       reason?: string

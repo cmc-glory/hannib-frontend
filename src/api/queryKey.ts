@@ -6,4 +6,7 @@ export const queryKeys = {
   goodsDetail: ['goodsDetail'],
   goodsRequestInfo: ['goodsRequestInfo'],
   calendar: ['calendar'],
+  profileImage: ['profileImage'],
+  categoryImage: ['categoryImage'],
+  nanumImages: ['nanumImage'],
 }

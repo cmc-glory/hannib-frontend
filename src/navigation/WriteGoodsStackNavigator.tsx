@@ -12,7 +12,6 @@ type WriteGoodsStackNavigatorParamList = {
     categories: string[]
     title: string
     content: string
-    hashtags: string[]
     type: ISharingType
     isOpenDateBooked: boolean
     openDate?: Date | undefined
@@ -22,7 +21,6 @@ type WriteGoodsStackNavigatorParamList = {
     categories: string[]
     title: string
     content: string
-    hashtags: string[]
     type: ISharingType
     isOpenDateBooked: boolean
     openDate?: Date | undefined
