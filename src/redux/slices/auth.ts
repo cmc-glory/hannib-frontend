@@ -11,6 +11,8 @@ export interface User {
   name: string
   userCategory: IUserCategory[]
   profileImageUri: string | undefined
+  holdingSharingCnt: number | undefined
+  participateSharingCnt: number | undefined
 }
 
 export interface Auth {
@@ -27,6 +29,8 @@ const initialState = {
     name: '',
     userCategory: [],
     profileImageUri: '',
+    holdingSharingCnt: 0,
+    participateSharingCnt: 0,
   } as User,
   accessToken: '',
   refreshToken: '',
@@ -42,6 +46,8 @@ export const authSlice = createSlice({
       state.user.name = action.payload.name
       state.user.profileImageUri = action.payload.profileImageUri
       state.user.userCategory = action.payload.userCategory
+      state.user.holdingSharingCnt = action.payload.holdingSharingCnt
+      state.user.participateSharingCnt = action.payload.participateSharingCnt
     },
     storeAccessToken: (state, action: PayloadAction<string>) => {
       state.accessToken = action.payload

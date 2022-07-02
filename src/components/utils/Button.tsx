@@ -5,6 +5,7 @@ import * as theme from '../../theme'
 type ButtonProps = {
   label: string
   selected: boolean
+  isDefault?: boolean
   onPress?: () => void
   style?: StyleProp<ViewStyle>
 }
@@ -25,7 +26,18 @@ const UnselectedButton = ({label, onPress, style}: ButtonProps) => {
   )
 }
 
-export const Button = ({label, selected, onPress, style}: ButtonProps) => {
+const DefaultButton = ({label, onPress, style}: ButtonProps) => {
+  return (
+    <Pressable style={[styles.container, styles.defaultContainer, style]} onPress={onPress}>
+      <Text style={styles.defaultText}>{label}</Text>
+    </Pressable>
+  )
+}
+
+export const Button = ({label, selected, onPress, style, isDefault}: ButtonProps) => {
+  if (isDefault == true) {
+    return <DefaultButton label={label} selected={selected} onPress={onPress} style={style} />
+  }
   if (selected) {
     return <SelectedButton label={label} selected={selected} onPress={onPress} style={style} />
   } else {
@@ -50,6 +62,10 @@ const styles = StyleSheet.create({
     backgroundColor: theme.white,
     borderColor: theme.gray300,
   },
+  defaultContainer: {
+    backgroundColor: theme.white,
+    borderColor: theme.gray500,
+  },
   selectedText: {
     color: theme.main,
     fontWeight: '700',
@@ -57,5 +73,9 @@ const styles = StyleSheet.create({
   unselectedText: {
     color: theme.gray300,
     fontWeight: '700',
+  },
+  defaultText: {
+    color: theme.gray700,
+    fontWeight: '400',
   },
 })

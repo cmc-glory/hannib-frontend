@@ -78,7 +78,7 @@ export const HoldingSharing = () => {
       <StackHeader title="진행한 나눔" goBack>
         <MenuIcon onPress={toggleEditDeleteModalVisible}></MenuIcon>
       </StackHeader>
-      <ScrollView contentContainerStyle={[theme.styles.wrapper]}>
+      <ScrollView contentContainerStyle={[theme.styles.wrapper, {paddingBottom: 100}]}>
         <SharingPreview uri="http://localhost:8081/src/assets/images/detail_image_example.png" category="BTS" title="BTS 키링 나눔" />
 
         <View style={{marginTop: 16}}>

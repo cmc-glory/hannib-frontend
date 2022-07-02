@@ -10,7 +10,7 @@ import * as theme from '../../theme'
 
 type MyPageItem = {
   label: string
-  numSharing?: number
+  numSharing?: number | string
   onPress: () => void
 }
 
@@ -26,7 +26,7 @@ const MyPageItem = ({label, numSharing, onPress}: MyPageItem) => {
     <Pressable onPress={onPress} style={[theme.styles.rowSpaceBetween, styles.myPageItem]}>
       <Text style={{fontFamily: 'Pretendard-Medium', fontSize: 16}}>{label}</Text>
       <View style={[theme.styles.rowFlexStart]}>
-        {numSharing && <Text style={{fontFamily: 'Pretendard-Medium', fontSize: 16}}>{numSharing}개</Text>}
+        {numSharing ? <Text style={{fontFamily: 'Pretendard-Medium', fontSize: 16}}>{numSharing}개</Text> : null}
         <RightArrowIcon onPress={onPress} />
       </View>
     </Pressable>
@@ -37,7 +37,8 @@ export const MyPageScreen = () => {
   // ******************** utils ********************
   const navigation = useNavigation()
   const user = useAppSelector(state => state.auth.user)
-  console.log(user)
+  console.log('user : ', user)
+  console.log('user.holdingSharingCnt : ', user.holdingSharingCnt)
 
   // ******************** states ********************
   const [logoutModalVisible, setLogoutModalVisible] = useState<boolean>(false)
@@ -102,7 +103,7 @@ export const MyPageScreen = () => {
         <Separator />
         <View style={styles.wrapper}>
           <Text style={[theme.styles.bold16, {marginBottom: 8, marginTop: 16}]}>나눔 관리</Text>
-          <MyPageItem label="진행한 나눔" numSharing={16} onPress={onPressHoldingSharing} />
+          <MyPageItem label="진행한 나눔" numSharing={user.holdingSharingCnt} onPress={onPressHoldingSharing} />
           <SeparatorLight />
           <MyPageItem label="참여한 나눔" numSharing={16} onPress={onPressParticipatingSharing} />
         </View>
