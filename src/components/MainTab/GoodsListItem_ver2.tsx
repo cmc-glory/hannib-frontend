@@ -120,7 +120,7 @@ export const GoodsListItemVer2 = ({item}: {item: ISharingInfo}) => {
         },
       })
     }
-  }, [])
+  }, [isBefore])
 
   const onPressAddFavorite = useCallback(() => {
     // 즐겨찾기 버튼 클릭했을 때
