@@ -1,7 +1,5 @@
 import React, {useState, useCallback} from 'react'
 import {View, Text, TextInput, StyleSheet} from 'react-native'
-import FastImage from 'react-native-fast-image'
-import axios from 'axios'
 import {MagnifierIcon} from '../utils'
 import * as theme from '../../theme'
 import {IStar} from '../../types'
@@ -25,7 +23,7 @@ export const SearchStar = ({setStars, starsAll}: SearchStarProps) => {
     <View style={styles.container}>
       <Text style={[styles.label]}>최대 5명까지 선택 가능합니다.</Text>
       <View>
-        {keyword == '' && <MagnifierIcon style={styles.maginfier} />}
+        <MagnifierIcon style={styles.maginfier} onPress={searchKeyword} />
         <TextInput
           style={[theme.styles.input, {color: theme.gray800}]}
           value={keyword}

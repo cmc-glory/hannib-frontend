@@ -33,13 +33,16 @@ if (Platform.OS === 'ios') {
 }
 
 export const WriteGoodsOnline = () => {
+  // ******************** utils  ********************
   const navigation = useNavigation()
   const route = useRoute<WriteGoodsOnlineRouteProps>()
 
   // 처음에 화면 로드될 때 이전 페이지 작성 정보 가져옴
-  const {images, categories, title, content, hashtags, type, isOpenDateBooked, openDate} = useMemo(() => {
+  const {images, categories, title, content, type, isOpenDateBooked, openDate} = useMemo(() => {
     return route.params
   }, [])
+
+  console.log(images)
 
   // const [quantityLimit, setQuantityLimit] = useToggle(false) // 인당 수량 제한 여부
   const [isSecretForm, toggleSecretForm] = useToggle(false) // 시크릿 폼 여부

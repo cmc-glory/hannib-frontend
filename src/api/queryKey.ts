@@ -7,4 +7,5 @@ export const queryKeys = {
   goodsRequestInfo: ['goodsRequestInfo'],
   calendar: ['calendar'],
   profileImage: ['profileImage'],
+  categoryImage: ['categoryImage'],
 }
