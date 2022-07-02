@@ -126,6 +126,7 @@ export type IQnAList = {
   isSecret: boolean
   isAnswered: boolean
   writer: string
+  writerId: string
   content: string
   date: undefined | Date
   answer?: string

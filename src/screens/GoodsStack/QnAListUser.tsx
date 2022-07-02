@@ -54,7 +54,7 @@ export const QnAListUser = () => {
           <Text style={[theme.styles.bold16, {color: theme.white}]}>문의 작성하기</Text>
         </Pressable>
         {qnas.map(qna => (
-          <QnAListUserItem item={qna} key={qna.id} />
+          <QnAListUserItem item={qna} key={qna.id} userId={userId} />
         ))}
       </ScrollView>
     </SafeAreaView>

@@ -40,12 +40,12 @@ export const styles = StyleSheet.create({
   bold16: {
     fontFamily: 'Pretendard-Bold',
     fontSize: 16,
-    lineHeight: 20,
+    lineHeight: 24,
   },
   bold20: {
     fontFamily: 'Pretendard-Bold',
     fontSize: 20,
-    lineHeight: 24,
+    lineHeight: 30,
   },
   rowSpaceBetween: {
     flexDirection: 'row',
