@@ -4,21 +4,23 @@ import {View, Text, StyleSheet, Dimensions} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {Asset} from 'react-native-image-picker'
 import {IParticipatingOfflineDetail} from '../../types'
-import {CancelModal} from '../../components/MyPageStack/CancelModal'
+import {CancelModal} from '../../components/MyPageStack'
 import {StackHeader, SharingPreview, GoodsListItem, Button} from '../../components/utils'
 import {useToggle} from '../../hooks'
 import * as theme from '../../theme'
 import {WriteReviewPropsNavigationProps} from '../../navigation/ParticipatingSharingStackNavigator'
+import moment from 'moment'
 const BUTTON_WIDTH = (Dimensions.get('window').width - theme.PADDING_SIZE * 2 - 10) / 2
 
-const participateState: string = 'notTaken'
+//const participateState: string = 'notTaken'
 
 type Buttons = {
   onPressWriteQnA: () => void
   toggleCancelModalVisible: () => void
   onPressWriteReview: () => void
+  participateState: string
 }
-const Buttons = ({onPressWriteQnA, toggleCancelModalVisible, onPressWriteReview}: Buttons) => {
+const Buttons = ({onPressWriteQnA, toggleCancelModalVisible, onPressWriteReview, participateState}: Buttons) => {
   switch (participateState) {
     case 'proceeding':
       return (
@@ -36,10 +38,14 @@ const Buttons = ({onPressWriteQnA, toggleCancelModalVisible, onPressWriteReview}
 
 export const ParticipatingSharingOffline = () => {
   const route = useRoute()
+  const [openDate, setOpenDate] = useState<string>()
+  const [expectedReceiveDate, setExpectedReceiveDate] = useState<string>()
+  const [finalReceiveDate, setFinalReceiveDate] = useState<string>()
   const [detail, setDetail] = useState<IParticipatingOfflineDetail>()
   const [cancelModalVisible, toggleCancelModalVisible] = useToggle() // 취소 모달창 띄울지
   const navigation = useNavigation()
   const writeReviewNavigation = useNavigation<WriteReviewPropsNavigationProps>()
+  const [participateState, setParticipateState] = useState()
 
   //list 페이지에서 보낸 id
   const id = useMemo(() => route.params, [])
@@ -50,12 +56,16 @@ export const ParticipatingSharingOffline = () => {
       .then(res => res.json())
       .then(result => {
         setDetail(result)
+        setParticipateState(result.state)
       })
   }, [])
 
   useEffect(() => {
-    //console.log('detail : ', detail)
-  }, [detail])
+    //console.log('detail : ', detail)'
+    setOpenDate(moment(detail?.openDate).format('YYYY.MM.DD HH.MM.SS'))
+    setExpectedReceiveDate(moment(detail?.expectedReceiveDate).format('YYYY.MM.DD HH.MM.SS'))
+    setFinalReceiveDate(moment(detail?.finalReceiveDate).format('YYYY.MM.DD HH.MM.SS'))
+  }, [detail, participateState])
 
   console.log(detail)
   const onPressWriteQnA = useCallback(() => {
@@ -88,16 +98,16 @@ export const ParticipatingSharingOffline = () => {
           title={detail?.title ? detail.title : 'error'}
         />
         <View style={{marginTop: 16}}>
-          <GoodsListItem type="participating" />
-          <GoodsListItem type="participating" />
-          <GoodsListItem type="participating" />
+          {detail?.products.map(item => (
+            <GoodsListItem key={item.id} type="participating" title={item.name} quantity={item.quantity} />
+          ))}
         </View>
         <View style={{width: '100%', height: 1, backgroundColor: theme.gray200, marginVertical: 10}} />
         <View style={{marginVertical: 16}}>
           <Text style={[theme.styles.bold16, {marginBottom: 16}]}>신청 내역</Text>
 
           <View>
-            <Text style={{marginBottom: 24, color: theme.gray500}}>2022.06.30 22:01:52</Text>
+            <Text style={{marginBottom: 24, color: theme.gray500}}>{openDate}</Text>
             {/* <View style={{paddingVertical: 16, alignSelf: 'center'}}>
               <View style={{backgroundColor: theme.main50, width: 104, height: 104}} />
             </View> */}
@@ -107,17 +117,22 @@ export const ParticipatingSharingOffline = () => {
             </View>
             <View style={[theme.styles.rowSpaceBetween, styles.requestInfoWrapper]}>
               <Text style={styles.requestInfoLabel}>{participateState == 'proceeding' ? '수령 예정일' : '최종 수령일'}</Text>
-              <Text style={styles.requestInfoText}>2022.06.11 14:00</Text>
+              <Text style={styles.requestInfoText}>{participateState == 'proceeding' ? expectedReceiveDate : finalReceiveDate}</Text>
             </View>
             <View style={[theme.styles.rowSpaceBetween, styles.requestInfoWrapper]}>
               <Text style={styles.requestInfoLabel}>장소</Text>
-              <Text style={styles.requestInfoText}>블루스퀘어</Text>
+              <Text style={styles.requestInfoText}>{detail?.location}</Text>
             </View>
           </View>
         </View>
 
         <View style={{...theme.styles.rowSpaceBetween, width: '100%'}}>
-          <Buttons onPressWriteQnA={onPressWriteQnA} toggleCancelModalVisible={toggleCancelModalVisible} onPressWriteReview={onPressWriteReview} />
+          <Buttons
+            onPressWriteQnA={onPressWriteQnA}
+            toggleCancelModalVisible={toggleCancelModalVisible}
+            onPressWriteReview={onPressWriteReview}
+            participateState={participateState ? participateState : 'proceeding'}
+          />
         </View>
       </View>
       <CancelModal isVisible={cancelModalVisible} toggleIsVisible={toggleCancelModalVisible} />

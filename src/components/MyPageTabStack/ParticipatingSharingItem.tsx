@@ -22,10 +22,8 @@ export const ParticipatingSharingItem = ({item}: {item: ISharingInfo}) => {
   // 이미지가 존재하면 이미지의 uri로, 없으면 기본 이미지로
   const imageUri = uri ? uri : 'http://localhost:8081/src/assets/images/no-image.jpeg'
   const navigation = useNavigation()
-  const offlineNavigation = useNavigation<ParticipatingSharingOfflineNavigationProps>()
 
   const [isBefore, setIsBefore] = useState(false)
-
   const [secretModalVisible, setSecretModalVisible] = useState(false)
 
   useEffect(() => {

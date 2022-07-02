@@ -1,0 +1,18 @@
+{
+  "id": "6",
+  "uri": "http://localhost:8081/src/assets/images/detail_image_example7.jpeg",
+  "type": "online",
+  "state": "proceeding",
+  "category": "시나모롤",
+  "title": "시나모롤 페이스 쿠션",
+  "products": [
+    {"name": "시나모롤 페이스 말랑 쿠션🍓", "quantity": 2, "id": "0000"},
+    {"name": "시나모롤 페이스 그립톡", "quantity": 1, "id": "1234"},
+    {"name": "시나모롤 페이스 키링✨", "quantity": 4, "id": "2345"}
+  ],
+  "openDate": "2022-08-20T13:28:56.782Z",
+  "receiverName": "이철수",
+  "postState": "배송 준비중",
+  "address": {"postcode": "12345", "roadAddress": "서울 마포구 양재대로 1234길", "detailedAddress": "12호"},
+  "phonenumber": {"first": "010", "second": "8399", "third": "7482"}
+}

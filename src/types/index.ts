@@ -93,11 +93,29 @@ export type IParticipatingOfflineDetail = {
   category: string
   title: string
   products: IProductInfo[]
-  openDate: Date | undefined
+  openDate: Date
   receiverName: string
   expectedReceiveDate: Date | undefined
   finalReceiveDate: Date | undefined
   location: string | undefined
+}
+
+export type IParticipatingOnlineDetail = {
+  uri: string
+  type: ISharingType
+  state: string
+  category: string
+  title: string
+  products: IProductInfo[]
+  openDate: Date
+  receiverName: string
+  postState: string
+  address: {postcode: string; roadAddress: string; detailedAddress: string}
+  phonenumber: {
+    first: string
+    second: string
+    third: string
+  }
 }
 
 export type ISharingRequestInfo = {

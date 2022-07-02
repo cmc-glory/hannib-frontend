@@ -5,7 +5,10 @@
   "state": "proceeding",
   "category": "최고심",
   "title": "그림 커미션",
-  "products": [{"name": "최고심 블랙핑크 그림", "quantity": 10, "id": "0000"}],
+  "products": [
+    {"name": "최고심 블랙핑크 그림", "quantity": 10, "id": "0000"},
+    {"name": "최고심 블랙핑크 그립톡", "quantity": 5, "id": "1234"}
+  ],
   "openDate": "2022-06-20T13:28:56.782Z",
   "receiverName": "김이나",
   "expectedReceiveDate": "2022-07-21T13:28:56.782Z",
