@@ -4,3 +4,4 @@
 export * from './HoldingSharing'
 //export * from '../../components/MyPageTabStack/HoldingSharingDetail'
 export * from './SendNotice'
+export * from './EditGoodsDefault'

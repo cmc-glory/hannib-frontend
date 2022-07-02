@@ -66,7 +66,11 @@ declare namespace ReactNavigation {
     Search: undefined
     SearchContent: undefined
     HoldingSharing: undefined
-    HoldingSharingStackNavigator: undefined
+    HoldingSharingStackNavigator:
+      | undefined
+      | {
+          screen: string
+        }
     HoldingSharingDetail: undefined
     SendNotice: undefined
     ParticipatingSharingStackNavigator:
