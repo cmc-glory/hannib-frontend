@@ -60,6 +60,12 @@ const Buttons = ({toggleAddressModalVisible, toggleCancelModalVisible, toggleChe
           </Pressable>
         </View>
       )
+    case 'offlineNotTaken':
+      return (
+        <View style={{...theme.styles.rowSpaceBetween, width: '100%', marginBottom: 10}}>
+          <Button label="미수령" selected={false} style={{width: BUTTON_WIDTH}} onPress={toggleCancelModalVisible} isDefault={true} />
+        </View>
+      )
     default:
       return <View></View>
   }

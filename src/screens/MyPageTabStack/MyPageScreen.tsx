@@ -104,7 +104,7 @@ export const MyPageScreen = () => {
           <Text style={[theme.styles.bold16, {marginBottom: 8, marginTop: 16}]}>나눔 관리</Text>
           <MyPageItem label="진행한 나눔" numSharing={user.holdingSharingCnt} onPress={onPressHoldingSharing} />
           <SeparatorLight />
-          <MyPageItem label="참여한 나눔" numSharing={16} onPress={onPressParticipatingSharing} />
+          <MyPageItem label="참여한 나눔" numSharing={user.participateSharingCnt} onPress={onPressParticipatingSharing} />
         </View>
         <Separator />
         <View style={styles.wrapper}>

@@ -5,7 +5,7 @@ import {SafeAreaView} from 'react-native-safe-area-context'
 import {Asset} from 'react-native-image-picker'
 import {IParticipatingOfflineDetail} from '../../types'
 import {CancelModal} from '../../components/MyPageStack'
-import {StackHeader, SharingPreview, GoodsListItem, Button} from '../../components/utils'
+import {StackHeader, SharingPreview, GoodsListItem, Button, Tag} from '../../components/utils'
 import {useToggle} from '../../hooks'
 import * as theme from '../../theme'
 import {WriteReviewPropsNavigationProps} from '../../navigation/ParticipatingSharingStackNavigator'
@@ -31,6 +31,8 @@ const Buttons = ({onPressWriteQnA, toggleCancelModalVisible, onPressWriteReview,
       )
     case 'completed':
       return <Button label="후기 작성" selected={true} style={{width: '100%'}} onPress={onPressWriteReview} />
+    case 'reviewFinished':
+      return <Button label="후기 작성 완료" selected={false} style={{width: '100%'}} onPress={onPressWriteReview} isDefault={true} />
     case 'notTaken':
       return <Button label="미수령" selected={false} style={{width: '100%'}}></Button>
   }
@@ -111,6 +113,7 @@ export const ParticipatingSharingOffline = () => {
             {/* <View style={{paddingVertical: 16, alignSelf: 'center'}}>
               <View style={{backgroundColor: theme.main50, width: 104, height: 104}} />
             </View> */}
+            {participateState == 'completed' || 'reviewFinished' ? <Tag label="수령 완료"></Tag> : null}
             <View style={[theme.styles.rowSpaceBetween, styles.requestInfoWrapper]}>
               <Text style={styles.requestInfoLabel}>수령자명</Text>
               <Text style={styles.requestInfoText}>{detail?.receiverName}</Text>
