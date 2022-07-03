@@ -4,7 +4,7 @@ import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation, useRoute} from '@react-navigation/native'
 import {SelectCategoryRouteProps} from '../../navigation/LoginStackNavigator'
 import {StackHeader, Button, CategoryItem, FloatingBottomButton, XIcon} from '../../components/utils'
-import {SearchStar, EmptyResult} from '../../components/LoginStack'
+import {SearchStar, EmptyResult, InitScreen} from '../../components/LoginStack'
 import * as theme from '../../theme'
 import {IStar} from '../../types'
 import {login, storeAccessToken, storeRefreshToken} from '../../redux/slices'
@@ -41,7 +41,10 @@ export const SelectCategory = () => {
   const BUTTON_WIDTH = useMemo(() => (Dimensions.get('window').width - theme.PADDING_SIZE * 2 - BUTTON_GAP) / 2, [])
   const {email, name, profileImage} = useMemo(() => route.params, [])
 
+  console.log(' params from before : ', email, name, profileImage)
+
   // ******************** states  ********************
+  const [init, setInit] = useState<boolean>(true) // 처음에만 검색해보세요! 화면 띄움
   const [singerSelected, setSingerSelected] = useState(true) // 가수, 배우 대분류 선택
   const [starsAll, setStarsAll] = useState<IStar[]>([]) // 서버에서 받아온 연예인 데이터 전부
   const [singers, setSingers] = useState<IStar[]>([]) // 서버에서 받아온 가수 데이터 전부
@@ -91,16 +94,16 @@ export const SelectCategory = () => {
     dispatch(storeAccessToken(accessToken)) // access token redux에 저장
     dispatch(storeRefreshToken(refreshToken)) // refresh token redux에 저장
     // 사용자 정보 (email, name, selected category) redux에 저장
-    dispatch(
-      login({
-        email,
-        name,
-        profileImageUri: profileImage?.uri,
-        userCategory: selectedStars.map(category => {
-          return {id: category.id, name: category.name}
-        }),
-      }),
-    )
+    // dispatch(
+    //   login({
+    //     email,
+    //     name,
+    //     profileImageUri: profileImage?.uri,
+    //     userCategory: selectedStars.map(category => {
+    //       return {id: category.id, name: category.name}
+    //     }),
+    //   }),
+    // )
 
     navigation.navigate('MainTabNavigator')
   }, [selectedStars])
@@ -149,7 +152,9 @@ export const SelectCategory = () => {
         </View>
       </View>
       <View style={{flex: 1}}>
-        {stars.length == 0 ? (
+        {init == true ? (
+          <InitScreen />
+        ) : stars.length == 0 ? (
           <EmptyResult />
         ) : (
           <FlatList

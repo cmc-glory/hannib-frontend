@@ -2,8 +2,8 @@ import React, {useEffect, useRef, useState, useCallback} from 'react'
 import {View, Text, FlatList, ScrollView, Pressable, StyleSheet, Dimensions} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {StackHeader} from '../../components/utils'
-import {GoodsListItemVer2} from '../../components/MainTab'
-import {ISharingInfo} from '../../types'
+import {NanumListItem} from '../../components/MainTab'
+import {INanumListItem} from '../../types'
 import * as theme from '../../theme'
 
 type CategoryItemProps = {
@@ -40,7 +40,7 @@ const CategoryItem = ({name, id, onPressCategory, selectedCategory, currentIndex
 
 export const Favorites = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('0') // 선택된 카테고리의 id값 저장. (처음엔 전체의 id값)
-  const [sharings, setSharings] = useState<ISharingInfo[]>([]) // 나눔 리스트
+  const [sharings, setSharings] = useState<INanumListItem[]>([]) // 나눔 리스트
   const [refreshing, setRefreshing] = useState<boolean>(false) // 새로고침 로딩 끝났는지
   const [selectedIndex, setSelectedIndex] = useState<number>(0)
   const scrollRef = useRef<ScrollView>(null)
@@ -62,7 +62,7 @@ export const Favorites = () => {
   // refresh pull up 하면 서버에서 가져옴
   const onRefresh = useCallback(() => {
     setRefreshing(true)
-    fetch('http://localhost:8081/src/data/dummySharings.json')
+    fetch('http://localhost:8081/src/data/dummyNanums.json')
       .then(res => res.json())
       .then(result => {
         setSharings(result)
@@ -135,7 +135,7 @@ export const Favorites = () => {
       <FlatList
         contentContainerStyle={{paddingHorizontal: theme.PADDING_SIZE, paddingVertical: 10}}
         data={sharings}
-        renderItem={({item}) => <GoodsListItemVer2 item={item}></GoodsListItemVer2>}
+        renderItem={({item}) => <NanumListItem item={item}></NanumListItem>}
         refreshing={refreshing}
         numColumns={2}
         columnWrapperStyle={{justifyContent: 'space-between', marginBottom: 20}}

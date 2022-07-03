@@ -7,7 +7,7 @@ import {useQuery, useQueryClient} from 'react-query'
 import * as theme from '../../theme'
 import {DownArrowIcon, BellIcon, MagnifierIcon, BottomSheet, FloatingButtonIcon} from '../../components/utils'
 import {GoodsFilterTab, NanumListItem, GoodsListBottomSheetContent, Banner, CategoryDropdown} from '../../components/MainTab'
-import {ISharingInfo, IUserCategory, ISharingType, INanumListItem} from '../../types'
+import {ISharingInfo, IUserCategory, INanumMethod, INanumListItem} from '../../types'
 import {useAppSelector, useAnimatedValue, useToggle, useAnimatedStyle} from '../../hooks'
 import {getNanumListAll, queryKeys} from '../../api'
 
@@ -19,17 +19,22 @@ const GoodsLists = () => {
   const user = useAppSelector(state => state.auth.user)
 
   // ******************** react query ********************
-  const {data} = useQuery(queryKeys.nanumList, getNanumListAll, {
+  const nanumList = useQuery(queryKeys.nanumList, getNanumListAll, {
     onSuccess: data => {
       setRefreshing(false) // 새로고침중이면 로딩 종료
       setSharings(data)
+
+      if (nanumMethodFilter !== 'all') {
+        // 현재 오프라인, 온라인 필터가 설정된 경우엔 보여질 아이템 재설정
+        onPressLocationFilter(nanumMethodFilter)
+      }
     },
   })
 
   // ******************** states ********************
   const [sharings, setSharings] = useState<INanumListItem[]>([])
   const [refreshing, setRefreshing] = useState<boolean>(false) // 새로고침 state
-  const [locationFilter, setLocationFilter] = useState<'all' | 'offline' | 'online'>('all')
+  const [nanumMethodFilter, setNanumMethodFilter] = useState<'all' | INanumMethod>('all')
   const [itemFilter, setItemFilter] = useState<'최신순' | '인기순' | '추천순'>('최신순')
   const [showItemFilterBottomShet, setShowItemFilterBottomSheet] = useState<boolean>(false) // 인기순, 최신순, 추천순 필터링 탭 띄울지
   const [showSelectCategoryModal, setShowSelectCategoryModal] = useState<boolean>(false) // 카테고리 선택하는 드롭다운 띄울지
@@ -71,15 +76,15 @@ const GoodsLists = () => {
     setShowSelectCategoryModal(showSelectCategoryModal => !showSelectCategoryModal)
   }, [])
 
-  const onPressLocationFilter = useCallback((type: ISharingType | 'all') => {
+  const onPressLocationFilter = useCallback((type: INanumMethod | 'all') => {
     // 전체, 우편, 오프라인 클릭시
-    console.log(data)
+    console.log(nanumList.data)
 
     if (type == 'all') {
-      setSharings(data)
+      setSharings(nanumList.data)
     } else {
-      if (data !== undefined) {
-        setSharings(data.filter((item: ISharingInfo) => item.type == type))
+      if (nanumList.data !== undefined) {
+        setSharings(nanumList.data.filter((item: INanumListItem) => item.nanumMethod == type))
       }
     }
   }, [])
@@ -112,8 +117,8 @@ const GoodsLists = () => {
       <View style={{flex: 1}}>
         <Banner imageUri={bannerInfo.imageUri} title={bannerInfo.title} sharingid={bannerInfo.sharingid} animatedHeight={animatedHeight} />
         <GoodsFilterTab
-          locationFilter={locationFilter}
-          setLocationFilter={setLocationFilter}
+          locationFilter={nanumMethodFilter}
+          setLocationFilter={setNanumMethodFilter}
           itemFilter={itemFilter}
           setShowItemFilterBottomSheet={setShowItemFilterBottomSheet}
           onPressLocationFilter={onPressLocationFilter}
