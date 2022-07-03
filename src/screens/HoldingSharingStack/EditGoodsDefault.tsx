@@ -48,7 +48,7 @@ export const EditGoodsDefault = () => {
 
   // 모든 state가 바뀔때마다 새로 만들어져야 하므로 dependency (X)
   const onPressOffline = () => {
-    navigation.navigate('WriteGoodsOffline', {
+    navigation.navigate('EditGoodsOffline', {
       images: images,
       categories,
       title,
@@ -61,7 +61,7 @@ export const EditGoodsDefault = () => {
 
   // 모든 state가 바뀔때마다 새로 만들어져야 하므로 dependency (X)
   const onPressOnline = () => {
-    navigation.navigate('WriteGoodsOnline', {
+    navigation.navigate('EditGoodsOnline', {
       images: images,
       categories,
       title,
@@ -109,10 +109,6 @@ export const EditGoodsDefault = () => {
             onChangeText={setContent}
           />
         </View>
-        {/* <View style={[styles.itemWrapper]}>
-          <Text style={[theme.styles.label]}>해시태그</Text>
-          <HashTag hashtags={hashtags} setHashtags={setHashtags} />
-        </View> */}
         <View style={[styles.itemWrapper]}>
           <View style={[theme.styles.rowFlexStart]}>
             <Text style={[theme.styles.label]}>나눔 방식</Text>

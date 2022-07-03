@@ -72,6 +72,24 @@ declare namespace ReactNavigation {
           screen: string
         }
     HoldingSharingDetail: undefined
+    EditGoodsOnline: {
+      images: Asset[]
+      categories: string[]
+      title: string
+      content: string
+      type: ISharingType
+      isOpenDateBooked: boolean
+      openDate?: Date | undefined
+    }
+    EditGoodsOffline: {
+      images: Asset[]
+      categories: string[]
+      title: string
+      content: string
+      type: ISharingType
+      isOpenDateBooked: boolean
+      openDate?: Date | undefined
+    }
     SendNotice: undefined
     ParticipatingSharingStackNavigator:
       | undefined
