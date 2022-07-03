@@ -1,0 +1,36 @@
+[
+  {
+    "id": "0",
+    "receiverName": "김철수",
+    "state": "미수령",
+    "products": [
+      {
+        "id": "0",
+        "quantity": 1,
+        "name": "BTS 뷔 컨셉의 하트키링"
+      },
+      {
+        "id": "1",
+        "quantity": 3,
+        "name": "BTS 진 컨셉의 하트키링"
+      }
+    ]
+  },
+  {
+    "id": "1",
+    "receiverName": "김영희",
+    "state": "수령완료",
+    "products": [
+      {
+        "id": "0",
+        "quantity": 4,
+        "name": "BTS 정국 컨셉의 하트키링"
+      },
+      {
+        "id": "1",
+        "quantity": 1,
+        "name": "BTS 하트키링"
+      }
+    ]
+  }
+]

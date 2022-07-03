@@ -1,7 +1,8 @@
-import React, {useCallback, useState} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import {View, Pressable, ScrollView, Text, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {StackHeader, FloatingBottomButton, SharingPreview, GoodsListItem, MenuIcon, BottomSheet} from '../../components/utils'
+import {IHoldingReceiverList, ISharingDetail} from '../../types'
 import {useToggle} from '../../hooks'
 import * as theme from '../../theme'
 import {useNavigation} from '@react-navigation/native'
@@ -20,6 +21,8 @@ const dataLists: Array<any> = [
 ]
 
 export const HoldingSharing = () => {
+  const [list, setList] = useState<IHoldingReceiverList>()
+  const [sharingDetail, setSharingDetail] = useState<ISharingDetail>()
   const [editDeleteModalVisible, toggleEditDeleteModalVisible] = useToggle() //수정, 삭제하기 모달 띄울지
   const [deleteHoldingModalVisible, toggleDeleteHoldingModalVisible] = useToggle()
   const [showStateFilterBottomSheet, setShowStateFilterBottomSheet] = useState<boolean>(false) // 전체보기, 수령완료, 미수령 필터링 탭 띄울지
@@ -60,6 +63,28 @@ export const HoldingSharing = () => {
   const onPressViewDetail = () => {
     setIsDetail(true)
   }
+
+  // 컴포넌트가 마운트 되면 진행 나눔 참여자 리스트 가져옴
+  useEffect(() => {
+    fetch('http://localhost:8081/src/data/dummyHoldingReceiverList.json')
+      .then(res => res.json())
+      .then(result => {
+        setList(result)
+      })
+  }, [])
+
+  useEffect(() => {
+    fetch('http://localhost:8081/src/data/dummySharingDetail.json')
+      .then(res => res.json())
+      .then(result => {
+        setSharingDetail(result)
+      })
+  }, [])
+
+  useEffect(() => {
+    console.log('list : ', list)
+    console.log('sharingDetail : ', sharingDetail)
+  }, [list, sharingDetail])
 
   const onPressLeftArrow = () => {
     if (cntList == 1) setCntList(12)

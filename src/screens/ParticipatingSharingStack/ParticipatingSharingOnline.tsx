@@ -17,10 +17,6 @@ type ButtonsProps = {
   toggleCancelModalVisible: () => void
   state: string
 }
-type ModalProps = {
-  isVisible: boolean
-  toggleIsVisible: () => void
-}
 
 const Buttons = ({toggleCancelModalVisible, onPressWriteQnA, state}: ButtonsProps) => {
   switch (state) {

@@ -118,6 +118,13 @@ export type IParticipatingOnlineDetail = {
   }
 }
 
+export type IHoldingReceiverList = {
+  id: string
+  receiverName: string
+  state: string
+  products: IProductInfo[]
+}
+
 export type ISharingRequestInfo = {
   products: IProductInfo[]
   schedule?: ISchedule[]
