@@ -2,7 +2,7 @@ export const queryKeys = {
   notifications: ['notifications'],
   recentSearch: ['recentSearch'],
   popularSearch: ['popularSearch'],
-  goodsList: ['goodsList'],
+  nanumList: ['nanumList'],
   goodsDetail: ['goodsDetail'],
   goodsRequestInfo: ['goodsRequestInfo'],
   calendar: ['calendar'],

@@ -6,7 +6,7 @@ import Modal from 'react-native-modal'
 import {useMutation} from 'react-query'
 import moment from 'moment'
 import * as theme from '../../theme'
-import type {ISharingInfo} from '../../types'
+import type {ISharingInfo, INanumListItem} from '../../types'
 import {Tag, XIcon, StarUnfilledIcon, StarFilledIcon} from '../utils'
 import {addFavorite, removeFavorite} from '../../api'
 
@@ -18,21 +18,21 @@ type SecretModalProps = {
   secretModalVisible: boolean
   setSecretModalVisible: React.Dispatch<React.SetStateAction<boolean>>
 
-  secretKey: string | undefined
-  sharingid: string
+  secretPwd: string | undefined
+  nanumIdx: number
 }
 
-const SecretModal = ({secretModalVisible, setSecretModalVisible, secretKey, sharingid}: SecretModalProps) => {
+const SecretModal = ({secretModalVisible, setSecretModalVisible, secretPwd, nanumIdx}: SecretModalProps) => {
   const [secretSuccess, setSecretSuccess] = useState<boolean | null>()
   const [secretInput, setSecretInput] = useState<string>('')
   const navigation = useNavigation()
   const onPressCheck = () => {
-    if (secretInput == secretKey) {
+    if (secretInput == secretPwd) {
       setSecretInput('')
       navigation.navigate('GoodsStackNavigator', {
         screen: 'GoodsDetail',
         params: {
-          sharingid: sharingid,
+          sharingid: nanumIdx,
         },
       })
       setSecretSuccess(true)
@@ -76,14 +76,14 @@ const SecretModal = ({secretModalVisible, setSecretModalVisible, secretKey, shar
   )
 }
 
-export const GoodsListItemVer2 = ({item}: {item: ISharingInfo}) => {
+export const NanumListItem = ({item}: {item: INanumListItem}) => {
   // 나눔 게시글 아이템 구조분해 할당
-  const {id, type, title, writer, uri, isSecret, secretKey, isFavorite} = item
+  const {nanumIdx, nanumMethod, title, creatorId, thumbnail, secretForm, secretPwd, isFavorite} = item
 
-  const openDate = moment(item.openDate, 'YYYYMMDDHHmmss')
+  const openDate = moment(item.firstDate, 'YYYYMMDDHHmmss')
 
   // 이미지가 존재하면 이미지의 uri로, 없으면 기본 이미지로
-  const imageUri = uri ? uri : 'http://localhost:8081/src/assets/images/no-image.jpeg'
+  const imageUri = thumbnail ? thumbnail : 'http://localhost:8081/src/assets/images/no-image.jpeg'
   const navigation = useNavigation()
 
   const [isBefore, setIsBefore] = useState(false)
@@ -112,13 +112,13 @@ export const GoodsListItemVer2 = ({item}: {item: ISharingInfo}) => {
       setIsBefore(true)
       return // 오픈 전인 경우엔 이동 X
     }
-    if (isSecret == true) {
+    if (secretForm == 'Y') {
       setSecretModalVisible(true)
     } else {
       navigation.navigate('GoodsStackNavigator', {
         screen: 'GoodsDetail',
         params: {
-          sharingid: id,
+          sharingid: nanumIdx,
         },
       })
     }
@@ -126,24 +126,24 @@ export const GoodsListItemVer2 = ({item}: {item: ISharingInfo}) => {
 
   const onPressAddFavorite = useCallback(() => {
     // 즐겨찾기 버튼 클릭했을 때
-    item.isFavorite = true // 프론트 단에서만 즐겨찾기 여부 수정.
+    item.isFavorite = 'Y' // 프론트 단에서만 즐겨찾기 여부 수정.
     addFavoriteQuery.mutate('1111') // 인자에는 query params 넣기
   }, [])
 
   const onPressRemoveFavorite = useCallback(() => {
     // 즐겨찾기 버튼 클릭했을 때
-    item.isFavorite = false //  프론트 단에서만 즐겨찾기 여부 수정. (invalidate query로 새로 가져오기 X)
+    item.isFavorite = 'N' //  프론트 단에서만 즐겨찾기 여부 수정. (invalidate query로 새로 가져오기 X)
     removeFavoriteQuery.mutate('1111') // 인자에는 query params 넣기
   }, [])
 
   return (
     <>
-      <SecretModal secretModalVisible={secretModalVisible} setSecretModalVisible={setSecretModalVisible} secretKey={secretKey} sharingid={id} />
+      <SecretModal secretModalVisible={secretModalVisible} setSecretModalVisible={setSecretModalVisible} secretPwd={secretPwd} nanumIdx={nanumIdx} />
       <Pressable onPress={onPressItem} style={[styles.container]}>
         {isBefore && (
           <View style={styles.overlay}>
             <View style={[styles.imageHeader, {width: IMAGE_SIZE}]}>
-              {isFavorite ? <StarFilledIcon onPress={onPressRemoveFavorite} size={24} /> : <StarUnfilledIcon onPress={onPressAddFavorite} size={24} />}
+              {isFavorite == 'Y' ? <StarFilledIcon onPress={onPressRemoveFavorite} size={24} /> : <StarUnfilledIcon onPress={onPressAddFavorite} size={24} />}
             </View>
             <Text style={[styles.overlayText, {marginBottom: 2.5}]}>{openDate.format('YY/MM/DD HH:MM')}</Text>
             <Text style={styles.overlayText}>오픈 예정</Text>
@@ -152,15 +152,15 @@ export const GoodsListItemVer2 = ({item}: {item: ISharingInfo}) => {
         <View style={{width: IMAGE_SIZE}}>
           {!isBefore && (
             <View style={[styles.imageHeader, {width: IMAGE_SIZE}]}>
-              {isFavorite ? <StarFilledIcon onPress={onPressRemoveFavorite} size={24} /> : <StarUnfilledIcon onPress={onPressAddFavorite} size={24} />}
+              {isFavorite == 'Y' ? <StarFilledIcon onPress={onPressRemoveFavorite} size={24} /> : <StarUnfilledIcon onPress={onPressAddFavorite} size={24} />}
             </View>
           )}
           <FastImage style={[styles.image, {width: IMAGE_SIZE, height: IMAGE_SIZE}]} source={{uri: imageUri}}></FastImage>
         </View>
         <View style={{marginTop: 10}}>
-          <Tag label={type == 'offline' ? '오프라인' : '우편'} />
+          <Tag label={nanumMethod == 'offline' ? '오프라인' : '우편'} />
           <Text style={[styles.title, {width: IMAGE_SIZE}]}>{title}</Text>
-          <Text style={[styles.writerName]}>{writer}</Text>
+          <Text style={[styles.writerName]}>{creatorId}</Text>
         </View>
       </Pressable>
     </>

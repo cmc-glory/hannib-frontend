@@ -173,3 +173,40 @@ export type ISearch = {
   recentSearch: string[]
   famousSearch: string[]
 }
+
+// ******************** backend variable names below ********************
+
+// 나눔 방식
+export type INanumMethod = 'offline' | 'online'
+
+// 나눔 리스트 띄울 때 타입들
+export type INanumListItem = {
+  nanumIdx: number // 나눔 id
+  thumbnail: string // 썸네일 이미지 uri
+  nanumMethod: INanumMethod // 나눔 방식
+  title: string // 제목
+  creatorId: string // 작성자 닉네임
+  firstDate: Date // 나눔 시작일
+  secretForm: 'Y' | 'N' // 시크릿폼 여부
+  secretPwd?: string // 시크릿폼 비밀번호
+  isFavorite: boolean // 즐겨찾기 여부
+}
+
+// 모집폼 작성 시 기본 정보
+export type INanum = {
+  nanumIdx: number // 나눔 db id
+  accountIdx: number // 작성자 db id
+  creatorId: string // 작성자 닉네임
+  thmbnail: string // 썸네일 이미지 uri
+  category: string // 카테고리
+  title: string // 제목
+  contents: string // 내용
+  nanumMethod: INanumMethod // 나눔 방식
+  firstDate: Date // 나눔 시작일
+  secretForm: boolean // 시크릿폼 여부
+  secretPwd: 'Y' | 'N' // 시크릿폼 패스워드
+  createDatetime: Date // 작성 시간
+  deletedYn: boolean // 삭제 여부
+  deletedReason: string // 삭제한 이유
+  qnaNumber: number // 문의 수
+}

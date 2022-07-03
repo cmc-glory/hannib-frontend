@@ -1,0 +1,83 @@
+[
+  {
+    "nanumnanumIdxx": 0,
+    "thumbnail": "http://localhost:8081/src/assets/images/detail_image_example.png",
+    "nanumMethod": "online",
+    "title": "키링 나눔",
+    "creatorId": "춤추는 찻잔",
+    "firstDate": "2022-06-20T13:28:56.782Z",
+    "secretForm": "Y",
+    "secretPwd": "1234",
+    "isFavorite": "N"
+  },
+  {
+    "nanumnanumIdxx": "1",
+    "thumbnail": "http://localhost:8081/src/assets/images/detail_image_example2.jpeg",
+    "nanumMethod": "offline",
+    "title": "생카 운영🎂",
+    "creatorId": "달리는 곰",
+    "firstDate": "2022-06-20T13:28:56.782Z",
+    "secretForm": "N",
+    "isFavorite": "N"
+  },
+  {
+    "nanumIdx": "2",
+    "thumbnail": "http://localhost:8081/src/assets/images/detail_image_example6.jpeg",
+    "nanumMethod": "online",
+    "title": "산리오 큐티 롤스티커(6종)",
+    "creatorId": "산리오 덕후",
+    "firstDate": "2022-06-20T13:28:56.782Z",
+    "secretForm": "N",
+    "isFavorite": "Y"
+  },
+  {
+    "nanumIdx": "6",
+    "thumbnail": "http://localhost:8081/src/assets/images/detail_image_example7.jpeg",
+    "nanumMethod": "online",
+    "title": "시나모롤 페이스 쿠션",
+    "creatorId": "산리오 덕후",
+    "firstDate": "2022-08-20T13:28:56.782Z",
+    "secretForm": "N",
+    "isFavorite": "N"
+  },
+  {
+    "nanumIdx": "7",
+    "thumbnail": "http://localhost:8081/src/assets/images/detail_image_example8.jpeg",
+    "nanumMethod": "offline",
+    "title": "기여운 스마트폰 그립톡💎",
+    "creatorId": "기운찬 식탁",
+    "firstDate": "2022-06-20T13:28:56.782Z",
+    "secretForm": "N",
+    "isFavorite": "N"
+  },
+  {
+    "nanumIdx": "3",
+    "thumbnail": "http://localhost:8081/src/assets/images/detail_image_example3.jpeg",
+    "nanumMethod": "offline",
+    "title": "최고심 마우스패드",
+    "creatorId": "잠자는 커피",
+    "firstDate": "2022-06-20T13:28:56.782Z",
+    "secretForm": "N",
+    "isFavorite": "N"
+  },
+  {
+    "nanumIdx": "4",
+    "thumbnail": "http://localhost:8081/src/assets/images/detail_image_example4.jpeg",
+    "nanumMethod": "offline",
+    "title": "최고심 패브릭 포스터",
+    "creatorId": "잠자는 커피",
+    "firstDate": "2022-06-20T13:28:56.782Z",
+    "secretForm": "N",
+    "isFavorite": "N"
+  },
+  {
+    "nanumIdx": "5",
+    "thumbnail": "http://localhost:8081/src/assets/images/detail_image_example5.jpeg",
+    "nanumMethod": "offline",
+    "title": "그림 커미션",
+    "creatorId": "혼나는 고구마",
+    "firstDate": "2022-06-20T13:28:56.782Z",
+    "secretForm": "N",
+    "isFavorite": "N"
+  }
+]

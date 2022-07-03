@@ -6,10 +6,10 @@ import {useQuery, useQueryClient} from 'react-query'
 
 import * as theme from '../../theme'
 import {DownArrowIcon, BellIcon, MagnifierIcon, BottomSheet, FloatingButtonIcon} from '../../components/utils'
-import {GoodsFilterTab, GoodsListItemVer2, GoodsListBottomSheetContent, Banner, CategoryDropdown} from '../../components/MainTab'
+import {GoodsFilterTab, NanumListItem, GoodsListBottomSheetContent, Banner, CategoryDropdown} from '../../components/MainTab'
 import {ISharingInfo, IUserCategory, ISharingType} from '../../types'
 import {useAppSelector, useAnimatedValue, useToggle, useAnimatedStyle} from '../../hooks'
-import {getGoodsListAll, queryKeys} from '../../api'
+import {getNanumListAll, queryKeys} from '../../api'
 
 const GoodsLists = () => {
   // ******************** utils ********************
@@ -19,7 +19,7 @@ const GoodsLists = () => {
   const user = useAppSelector(state => state.auth.user)
 
   // ******************** react query ********************
-  const {data} = useQuery(queryKeys.goodsList, getGoodsListAll, {
+  const {data} = useQuery(queryKeys.nanumList, getNanumListAll, {
     onSuccess: data => {
       setRefreshing(false) // 새로고침중이면 로딩 종료
       setSharings(data)
@@ -53,7 +53,7 @@ const GoodsLists = () => {
   const onRefresh = useCallback(() => {
     // 새로고침침 pull up이 일어났을 때
     setRefreshing(true)
-    queryClient.invalidateQueries(queryKeys.goodsList)
+    queryClient.invalidateQueries(queryKeys.nanumList)
   }, [])
 
   const onPressWrite = useCallback(() => {
@@ -73,17 +73,21 @@ const GoodsLists = () => {
 
   const onPressLocationFilter = useCallback((type: ISharingType | 'all') => {
     // 전체, 우편, 오프라인 클릭시
+    console.log(data)
+
     if (type == 'all') {
       setSharings(data)
     } else {
-      setSharings(data.filter((item: ISharingInfo) => item.type == type))
+      if (data !== undefined) {
+        setSharings(data.filter((item: ISharingInfo) => item.type == type))
+      }
     }
   }, [])
 
   // ******************** re-rendering ********************
   useEffect(() => {
     // 최신순, 인기순, 추천순 필터가 바뀔 때마다 새로 로드
-    queryClient.invalidateQueries(queryKeys.goodsList)
+    queryClient.invalidateQueries(queryKeys.nanumList)
   }, [itemFilter])
 
   return (
@@ -117,7 +121,7 @@ const GoodsLists = () => {
         <FlatList
           contentContainerStyle={[{paddingHorizontal: theme.PADDING_SIZE, paddingVertical: 6}]}
           data={sharings}
-          renderItem={({item}) => <GoodsListItemVer2 item={item}></GoodsListItemVer2>}
+          renderItem={({item}) => <NanumListItem item={item}></NanumListItem>}
           refreshing={refreshing}
           numColumns={2}
           columnWrapperStyle={{justifyContent: 'space-between', marginBottom: 20}}

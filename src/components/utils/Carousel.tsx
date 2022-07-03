@@ -17,8 +17,6 @@ export type CarouselProps = {
 const CIRCLE_WIDTH = 6,
   CIRCLE_MARGIN_RIGHT = 8
 
-console.log('width : ', Dimensions.get('window').width)
-
 export const Carousel = ({imageUrls, imageWidth}: CarouselProps) => {
   const flatlistRef = useRef<FlatList | null>(null)
   const selectedIndexAnimValue = useAnimatedValue() // 현재 image index
