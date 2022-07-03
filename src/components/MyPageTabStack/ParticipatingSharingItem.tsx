@@ -3,7 +3,6 @@ import {View, Text, Pressable, TextInput, Image, StyleSheet, Dimensions} from 'r
 import FastImage from 'react-native-fast-image'
 import {useNavigation} from '@react-navigation/native'
 import Modal from 'react-native-modal'
-import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5'
 import moment from 'moment'
 import * as theme from '../../theme'
 import type {ISharingInfo} from '../../types'
@@ -25,7 +24,6 @@ export const ParticipatingSharingItem = ({item}: {item: ISharingInfo}) => {
   const navigation = useNavigation()
 
   const [isBefore, setIsBefore] = useState(false)
-
   const [secretModalVisible, setSecretModalVisible] = useState(false)
 
   useEffect(() => {
@@ -40,10 +38,12 @@ export const ParticipatingSharingItem = ({item}: {item: ISharingInfo}) => {
       if (type == 'online') {
         navigation.navigate('ParticipatingSharingStackNavigator', {
           screen: 'ParticipatingSharingOnline',
+          params: {id: item.id},
         })
       } else {
         navigation.navigate('ParticipatingSharingStackNavigator', {
           screen: 'ParticipatingSharingOffline',
+          params: {id: item.id},
         })
       }
     }

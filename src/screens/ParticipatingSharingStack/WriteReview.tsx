@@ -4,7 +4,7 @@ import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation, useRoute} from '@react-navigation/native'
 import {Switch} from 'react-native-paper'
 import {StackHeader, SharingPreview, RoundButton} from '../../components/utils'
-import {WriteQnARouteProps} from '../../navigation/GoodsStackNavigator'
+import {WriteReviewPropsRouteProps} from '../../navigation/ParticipatingSharingStackNavigator'
 import {useToggle} from '../../hooks'
 import * as theme from '../../theme'
 import {ImagePicker} from '../../components/WriteGoodsStack'
@@ -24,7 +24,7 @@ const ProductItem = ({name, quantity, spacing}: {name: string; quantity: number;
 
 export const WriteReview = () => {
   const navigation = useNavigation()
-  const route = useRoute<WriteQnARouteProps>()
+  const route = useRoute<WriteReviewPropsRouteProps>()
   const [content, setContent] = useState<string>('')
   const [images, setImages] = useState<Asset[]>([]) // 대표 이미지
 

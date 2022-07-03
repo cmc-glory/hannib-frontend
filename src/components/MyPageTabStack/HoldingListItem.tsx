@@ -1,5 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react'
 import {View, Pressable, ScrollView, Text, StyleSheet} from 'react-native'
+import {IHoldingReceiverInfo} from '../../types'
 import BouncyCheckbox from 'react-native-bouncy-checkbox'
 import {useToggle} from '../../hooks'
 import * as theme from '../../theme'
@@ -7,7 +8,7 @@ import {ReceiverListItem} from './ReceiverListItem'
 import {HoldingSharingFilterTab} from '../MyPageStack'
 
 type HoldingListItem = {
-  dataLists: Array<any>
+  dataLists?: Array<IHoldingReceiverInfo>
   onPressViewDetail: () => void
   index: number
   showStateFilterBottomSheet: boolean
@@ -48,7 +49,7 @@ export const HoldingListItem = ({
   const handleAllCheck = (checked: boolean) => {
     if (checked) {
       const idArray: Array<any> = []
-      dataLists.forEach(el => idArray.push(el.id))
+      dataLists?.forEach(el => idArray.push(el.id))
       setCheckedItems(idArray)
       setAllChecked(true)
     }
@@ -59,7 +60,7 @@ export const HoldingListItem = ({
     }
   }
   useEffect(() => {
-    if (checkedItems.length == dataLists.length) setAllChecked(true)
+    if (checkedItems.length == dataLists?.length) setAllChecked(true)
     else setAllChecked(false)
   }, [allChecked, checkedItems])
 
@@ -85,15 +86,17 @@ export const HoldingListItem = ({
       </View>
       <View>
         {/* 리스트 api 필요 */}
-        {dataLists.map((list, idx) => (
+        {dataLists?.map((list, idx) => (
           <ReceiverListItem
-            id={list.id}
+            id={Number(list.id)}
             onPressViewDetail={onPressViewDetail}
             index={idx + 1}
             key={list.id}
             checkedItems={checkedItems}
             handleSingleCheck={handleSingleCheck}
-            isFinished={true}
+            receiveState={list.receiveState}
+            products={list.products}
+            receiverName={list.receiverName}
           />
         ))}
       </View>

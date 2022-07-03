@@ -1,10 +1,11 @@
-import React from 'react'
+import React, {useCallback} from 'react'
 import {View, Text, StyleSheet, TextInput, Pressable, Platform} from 'react-native'
 import {RoundButton} from '../../components/utils'
 import Modal from 'react-native-modal'
 import {DownArrowIcon, RightArrowIcon, Tag, XIcon} from '../../components/utils'
 import * as theme from '../../theme'
 import {getStatusBarHeight} from 'react-native-status-bar-height'
+import {useNavigation} from '@react-navigation/native'
 
 const STATUSBAR_HEIGHT = getStatusBarHeight()
 
@@ -16,6 +17,14 @@ type ModalProps = {
 }
 
 export const EditDeleteModal = ({isVisible, toggleIsVisible, deleteSharingModalVisible, toggleDeleteSharingModalVisible}: ModalProps) => {
+  const navigation = useNavigation()
+
+  const onPressEdit = useCallback(() => {
+    navigation.navigate('HoldingSharingStackNavigator', {
+      screen: 'EditGoodsDefault',
+    })
+  }, [])
+
   return (
     <Modal
       animationInTiming={150}
@@ -27,7 +36,10 @@ export const EditDeleteModal = ({isVisible, toggleIsVisible, deleteSharingModalV
       onBackdropPress={toggleIsVisible}
       backdropColor={theme.gray800}>
       <View style={styles.menuModal}>
-        <Pressable>
+        <Pressable
+          onPress={() => {
+            onPressEdit()
+          }}>
           <Text style={{color: theme.gray800, height: 40}}>수정하기</Text>
         </Pressable>
         <Pressable

@@ -64,18 +64,45 @@ declare namespace ReactNavigation {
     Search: undefined
     SearchContent: undefined
     HoldingSharing: undefined
-    HoldingSharingStackNavigator: undefined
+    HoldingSharingStackNavigator:
+      | undefined
+      | {
+          screen: string
+        }
     HoldingSharingDetail: undefined
-    SendNotice: undefined
-    ParticipatingSharingStackNavigator: {
-      screen: string
+    EditGoodsOnline: {
+      images: Asset[]
+      categories: string[]
+      title: string
+      content: string
+      type: ISharingType
+      isOpenDateBooked: boolean
+      openDate?: Date | undefined
     }
+    EditGoodsOffline: {
+      images: Asset[]
+      categories: string[]
+      title: string
+      content: string
+      type: ISharingType
+      isOpenDateBooked: boolean
+      openDate?: Date | undefined
+    }
+    SendNotice: undefined
+    ParticipatingSharingStackNavigator:
+      | undefined
+      | {
+          screen: string
+          params?: any
+        }
     ParticipatingSharingOnline: undefined
+
     ParticipatingSharingOffline: undefined
     ReportIssueStackNavigator?: {
       screen: string
       params: any
     }
+
     ReportIssueStep2: {
       issue: string
       reason?: string

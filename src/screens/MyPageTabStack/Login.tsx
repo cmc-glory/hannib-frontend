@@ -61,6 +61,8 @@ export const Login = () => {
             name: result.name,
             profileImageUri: result.profileImageUri,
             userCategory: [],
+            holdingSharingCnt: result.holdingSharingCnt,
+            participateSharingCnt: result.participateSharingCnt,
           }),
         )
       })
@@ -92,6 +94,8 @@ export const Login = () => {
             name: result.name,
             profileImageUri: result.profileImageUri,
             userCategory: [],
+            holdingSharingCnt: result.holdingSharingCnt,
+            participateSharingCnt: result.participateSharingCnt,
           }),
         )
       })

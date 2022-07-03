@@ -2,11 +2,10 @@ import React from 'react'
 import {createStackNavigator} from '@react-navigation/stack'
 import {ParticipatingSharingOnline, ParticipatingSharingOffline, WriteQnA, WriteReview} from '../screens/ParticipatingSharingStack'
 import type {NativeStackScreenProps} from '@react-navigation/native-stack'
-import {Asset} from 'react-native-image-picker'
 
 type ParticipatingSharingStackNavigatorParamList = {
   ParticipatingSharingOnline: undefined
-  ParticipatingSharingOffline: undefined
+  ParticipatingSharingOffline: {id: string}
   WriteQnA: {
     userid: string
     imageuri: string
