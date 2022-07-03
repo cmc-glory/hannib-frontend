@@ -3,29 +3,28 @@ import {View, Text, TextInput, StyleSheet, Pressable, Platform} from 'react-nati
 import moment from 'moment'
 import uuid from 'react-native-uuid'
 import DateTimePickerModal from 'react-native-modal-datetime-picker'
-import {useToggle} from '../../hooks'
-import type {IReceiveInfo} from '../../types'
+import type {INanumDateInfo} from '../../types'
 import {PlusIcon, MinusIcon, CalendarIcon, LocationIcon, CheckboxIcon, NeccesaryField} from '../utils'
 import * as theme from '../../theme'
 
 // ******************** component prop types  ********************
 type SelectTimeLocationProps = {
-  receiveInfo: IReceiveInfo[]
-  setReceiveInfo: React.Dispatch<React.SetStateAction<IReceiveInfo[]>>
+  nanumDates: INanumDateInfo[]
+  setNanumDates: React.Dispatch<React.SetStateAction<INanumDateInfo[]>>
 }
 
 type TimeLocationItemProps = {
-  item: IReceiveInfo
+  item: INanumDateInfo
   onPressRemove: (id: string) => void
 }
 
 const TimeLocationItem = ({item, onPressRemove}: TimeLocationItemProps) => {
-  const {receiveDate, receivePlace, id} = item
+  const {acceptDate, location, id} = item
   return (
     <View style={styles.wrapper}>
       <View style={{flex: 3}}>
         <TextInput
-          value={moment(receiveDate).format('YY.MM.D HH:mm')}
+          value={moment(acceptDate).format('YY.MM.DD HH:mm')}
           style={[theme.styles.input, styles.input]}
           placeholder="수령일 선택"
           placeholderTextColor={theme.gray300}
@@ -34,13 +33,7 @@ const TimeLocationItem = ({item, onPressRemove}: TimeLocationItemProps) => {
       </View>
 
       <View style={{flex: 2}}>
-        <TextInput
-          value={receivePlace}
-          style={[theme.styles.input, styles.input]}
-          placeholder="장소 입력"
-          placeholderTextColor={theme.gray300}
-          editable={false}
-        />
+        <TextInput value={location} style={[theme.styles.input, styles.input]} placeholder="장소 입력" placeholderTextColor={theme.gray300} editable={false} />
       </View>
 
       <Pressable style={[theme.styles.plusMinusButton]} onPress={() => onPressRemove(id)}>
@@ -50,14 +43,14 @@ const TimeLocationItem = ({item, onPressRemove}: TimeLocationItemProps) => {
   )
 }
 
-export const SelectTimeLocation = ({receiveInfo, setReceiveInfo}: SelectTimeLocationProps) => {
+export const SelectTimeLocation = ({nanumDates, setNanumDates}: SelectTimeLocationProps) => {
   // ******************** states ********************
   const [isAllSamePlace, setIsAllSamePlace] = useState<boolean>() // 모두 같은 장소
-  const [info, setInfo] = useState<IReceiveInfo>({
+  const [info, setInfo] = useState<INanumDateInfo>({
     // 사용자가 입력한 위치, 시간 정보
     id: '',
-    receiveDate: undefined,
-    receivePlace: '',
+    acceptDate: undefined,
+    location: '',
   })
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false) // 나눔 수령일 선택 모달 띄울지
 
@@ -74,51 +67,61 @@ export const SelectTimeLocation = ({receiveInfo, setReceiveInfo}: SelectTimeLoca
 
   const handleConfirm = (date: Date) => {
     // date picker에서 날짜 선택시
-    setInfo({...info, receiveDate: date})
+    setInfo({...info, acceptDate: date})
     hideDatePicker()
   }
 
   const onPressAdd = useCallback(() => {
     // 선택한 시간, 위치 정보 추가
-    const {receiveDate, receivePlace} = info // 현재 state에서 수령일, 수령 장소 가져오고
+    const {acceptDate, location} = info // 현재 state에서 수령일, 수령 장소 가져오고
 
-    if (receiveDate == undefined || receivePlace == '') {
+    if (acceptDate == undefined || location == '') {
       // 날짜와 장소 둘 다 입력 돼야함.
       return
     }
 
     const id = String(uuid.v1()) // id 생성
 
-    setReceiveInfo(info => [...info, {id, receiveDate, receivePlace}]) // 저장한다.
+    setNanumDates(info => [...info, {id, acceptDate, location}]) // 저장한다.
     setInfo({
       id: '',
-      receiveDate: undefined,
-      receivePlace: '',
+      acceptDate: undefined,
+      location: '',
     }) // state 초기화 해줌.
   }, [info])
 
-  const onPressRemove = useCallback((id: string) => {
-    // 선택한 시간, 위치 정보 삭제
-    setReceiveInfo(info => info.filter(item => item.id !== id))
-  }, [])
+  const onPressRemove = useCallback(
+    (id: string) => {
+      // 선택한 시간, 위치 정보 삭제
+      const temp = nanumDates.filter(item => item.id !== id)
+
+      setNanumDates(temp)
+
+      // 수령일 정보가 없는 경우엔 "모두 같은 장소" 옵션도 초기화
+      if (temp.length == 0) {
+        setIsAllSamePlace(false)
+      }
+    },
+    [nanumDates],
+  )
 
   const onPressAllSamePlace = useCallback(() => {
     const temp = isAllSamePlace
     setIsAllSamePlace(!temp)
     if (temp == false) {
-      setReceiveInfo(
-        receiveInfo.map(item => {
-          return {...item, receivePlace: info.receivePlace}
+      setNanumDates(
+        nanumDates.map(item => {
+          return {...item, location: info.location}
         }),
       )
     } else {
-      setReceiveInfo(
-        receiveInfo.map(item => {
+      setNanumDates(
+        nanumDates.map(item => {
           return {...item, place: ''}
         }),
       )
     }
-  }, [info, receiveInfo, isAllSamePlace])
+  }, [info, nanumDates, isAllSamePlace])
 
   return (
     <View>
@@ -154,25 +157,26 @@ export const SelectTimeLocation = ({receiveInfo, setReceiveInfo}: SelectTimeLoca
             editable={false}
             placeholder="수령일 선택"
             placeholderTextColor={theme.gray300}
-            value={info.receiveDate != undefined ? moment(info.receiveDate).format('YY.MM.D HH:mm') : undefined}
+            value={info.acceptDate != undefined ? moment(info.acceptDate).format('YY.MM.D HH:mm') : undefined}
           />
-          {info.receiveDate == undefined && <CalendarIcon style={{position: 'absolute', right: 16, top: 12}} />}
+          {info.acceptDate == undefined && <CalendarIcon style={{position: 'absolute', right: 16, top: 12}} />}
         </Pressable>
         <View style={{flex: 2}}>
           <TextInput
-            value={info.receivePlace}
-            onChangeText={text => setInfo({...info, receivePlace: text})}
+            value={info.location}
+            onChangeText={text => setInfo({...info, location: text})}
             style={[theme.styles.input, styles.input]}
             placeholder="위치"
             placeholderTextColor={theme.gray300}
+            onEndEditing={onPressAdd}
           />
-          {info.receivePlace == '' && <LocationIcon style={{position: 'absolute', right: 16, top: 12}} />}
+          {info.location == '' && <LocationIcon style={{position: 'absolute', right: 16, top: 12}} />}
         </View>
         <Pressable style={[theme.styles.plusMinusButton]} onPress={onPressAdd}>
           <PlusIcon onPress={onPressAdd} />
         </Pressable>
       </View>
-      {receiveInfo.map(item => (
+      {nanumDates.map(item => (
         <TimeLocationItem key={item.id} onPressRemove={onPressRemove} item={item} />
       ))}
     </View>

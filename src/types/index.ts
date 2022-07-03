@@ -227,6 +227,7 @@ export type INanumGoods = {
 
 export type INanumAskInfo = {
   // 나눔폼 작성할 때 사용 (db id 없는 버전)
+  id: string // 프론트에서만 사용
   contents: string
   essential: boolean
 }
@@ -236,4 +237,16 @@ export type INanumAsk = {
   nanumIdx: number // 해당 나눔 id
   contents: string
   essential: boolean
+}
+
+export type INanumDateInfo = {
+  id: string
+  acceptDate: Date
+  location: string
+}
+
+export type INanumDate = {
+  dateIdx: number
+  acceptDate: Date
+  location: string
 }

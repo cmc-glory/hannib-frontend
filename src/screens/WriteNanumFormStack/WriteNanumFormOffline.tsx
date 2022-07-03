@@ -10,7 +10,7 @@ import {WriteNanumFormOfflineRouteProps, WriteNanumFormOfflineNavigationProps} f
 import {StackHeader, FloatingBottomButton} from '../../components/utils'
 import {StepIndicator, NanumGoodsInfo, NanumAsks, SelectTimeLocation} from '../../components/WriteGoodsStack'
 import * as theme from '../../theme'
-import {IAdditionalQuestion, IProductInfo, ISharingForm, INanumAskInfo, INanumGoodsInfo, IReceiveInfo} from '../../types'
+import {INanumAskInfo, INanumGoodsInfo, INanumDateInfo} from '../../types'
 
 // ***************************** ios keyboard settings *****************************
 if (Platform.OS === 'ios') {
@@ -45,17 +45,17 @@ export const WriteNanumFormOffline = () => {
   const [nanumAsks, setNanumAsks] = useState<INanumAskInfo[]>([])
   const [nanumGoods, setNanumGoods] = useState<INanumGoodsInfo[]>([]) // 상품 정보 state
   const [secretPwd, setSecretPwd] = useState('')
-  const [receiveInfo, setReceiveInfo] = useState<IReceiveInfo[]>([])
+  const [nanumDates, setNanumDates] = useState<INanumDateInfo[]>([])
 
   // 처음에 화면 로드될 때 이전 페이지 작성 정보 가져옴
 
   // ***************************** callbacks *****************************
   const isButtonEnabled = useCallback(() => {
-    if (receiveInfo.length == 0 || nanumGoods.length == 0) {
+    if (nanumDates.length == 0 || nanumGoods.length == 0) {
       return false
     }
     return true
-  }, [receiveInfo, nanumGoods])
+  }, [nanumDates, nanumGoods])
 
   const onPressNext = useCallback(() => {
     // 백에 전송할 나눔글 폼
@@ -72,7 +72,7 @@ export const WriteNanumFormOffline = () => {
     //   additionalQuestions,
     //   products,
     //   secretKey,
-    //   receiveInfo,
+    //   nanumDates,
     // }
     // // ************* 여기에 api 작성 *************
     // // 백에서 받아온 게시글 id를 다음 스크린으로 넘겨줌.
@@ -89,7 +89,7 @@ export const WriteNanumFormOffline = () => {
           <StepIndicator step={2} />
         </View>
         <View style={[theme.styles.wrapper, styles.spacing]}>
-          <SelectTimeLocation receiveInfo={receiveInfo} setReceiveInfo={setReceiveInfo} />
+          <SelectTimeLocation nanumDates={nanumDates} setNanumDates={setNanumDates} />
         </View>
 
         <View style={[theme.styles.wrapper, styles.spacing]}>
