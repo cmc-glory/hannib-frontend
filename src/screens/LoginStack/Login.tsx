@@ -9,6 +9,7 @@ import {KakaoOAuthToken, KakaoProfile, getProfile as getKakaoProfile, login} fro
 import {appleAuth} from '@invertase/react-native-apple-authentication'
 import {AppleRequestResponse} from '@invertase/react-native-apple-authentication'
 import {useNavigation} from '@react-navigation/native'
+import {showMessage} from 'react-native-flash-message'
 import * as theme from '../../theme'
 import {LogoWhiteIcon} from '../../components/utils'
 
@@ -36,25 +37,57 @@ export const Login = () => {
 
   const signInWithKakao = async (): Promise<void> => {
     //console.log('clicked')
-    const token: KakaoOAuthToken = await login()
-    const profile: KakaoProfile = await getKakaoProfile()
+    try {
+      const token: KakaoOAuthToken = await login()
+      const profile: KakaoProfile = await getKakaoProfile()
 
-    navigation.navigate('SetProfile', {
-      email: profile.email,
-    })
+      navigation.navigate('SetProfile', {
+        email: profile.email,
+      })
+    } catch (err) {
+      showMessage({
+        message: '카카오 로그인 중 에러가 발생했습니다',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+      })
+    }
   }
 
   const SignInWithGoogle = async () => {
-    const result = await GoogleSignin.signIn()
+    try {
+      const result = await GoogleSignin.signIn()
+      const idToken = result.idToken
+      const user = result.user
+      const googleCredential = auth.GoogleAuthProvider.credential(idToken)
+      auth().signInWithCredential(googleCredential)
 
-    const idToken = result.idToken
-    const user = result.user
-    const googleCredential = auth.GoogleAuthProvider.credential(idToken)
-    auth().signInWithCredential(googleCredential)
-
-    navigation.navigate('SetProfile', {
-      email: user.email,
-    })
+      navigation.navigate('SetProfile', {
+        email: user.email,
+      })
+    } catch (err) {
+      console.log(err)
+      showMessage({
+        message: '구글 로그인 중 에러가 발생했습니다',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+      })
+    }
   }
 
   appleAuth.isSupported &&
@@ -92,6 +125,19 @@ export const Login = () => {
         console.warn('User canceled Apple Sign in.')
       } else {
         console.error(error)
+        showMessage({
+          message: '애플 로그인 중 에러가 발생했습니다',
+          type: 'info',
+          animationDuration: 300,
+          duration: 1350,
+          style: {
+            backgroundColor: 'rgba(36, 36, 36, 0.9)',
+          },
+          titleStyle: {
+            fontFamily: 'Pretendard-Medium',
+          },
+          floating: true,
+        })
       }
     }
   }

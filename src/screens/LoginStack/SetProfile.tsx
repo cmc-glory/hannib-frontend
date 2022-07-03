@@ -3,7 +3,6 @@ import {View, Text, TextInput, Pressable, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation, useRoute} from '@react-navigation/native'
 import {launchImageLibrary} from 'react-native-image-picker'
-import type {Asset} from 'react-native-image-picker'
 import FastImage from 'react-native-fast-image'
 
 import {SetProfileRouteProps} from '../../navigation/LoginStackNavigator'

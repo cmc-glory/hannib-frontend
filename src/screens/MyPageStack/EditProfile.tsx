@@ -13,6 +13,7 @@ import {updateProfileImage} from '../../redux/slices'
 
 import {useAppSelector} from '../../hooks'
 import * as theme from '../../theme'
+import NoUserSvg from '../../assets/Icon/noUser.svg'
 
 export const EditProfile = () => {
   // ******************** utils ********************
@@ -20,8 +21,9 @@ export const EditProfile = () => {
   const navigation = useNavigation()
   const user = useAppSelector(state => state.auth.user)
   const uploadProfileImageQuery = useMutation(queryKeys.profileImage, uploadProfileImage, {
-    onSuccess: () => {
-      profileImage && dispatch(updateProfileImage(profileImage)) // 리덕스에서도 프로필 이미지 변경
+    onSuccess: data => {
+      console.log('response : ', data)
+      profileImage && dispatch(updateProfileImage(data)) // 리덕스에서도 프로필 이미지 변경
       navigation.goBack()
     },
     onError(error, variables, context) {
@@ -53,6 +55,7 @@ export const EditProfile = () => {
   }, [])
 
   const onPressComplete = useCallback(async () => {
+    console.log('here')
     // 이름, 프로필 사진 중 바뀐 게 없으면 리턴.
     if (checkButtonEnabled(name, profileImage) == false) {
       return
@@ -100,8 +103,10 @@ export const EditProfile = () => {
       </StackHeader>
       <View style={styles.container}>
         <View style={{alignSelf: 'center'}}>
-          {profileImage == '' ? (
-            <Pressable style={[styles.image, styles.selectImage]} onPress={onImageLibraryPress}></Pressable>
+          {profileImage == undefined ? (
+            <Pressable style={[styles.image, styles.selectImage]} onPress={onImageLibraryPress}>
+              <NoUserSvg width={54} height={54} />
+            </Pressable>
           ) : (
             <FastImage source={{uri: profileImage}} style={styles.image}></FastImage>
           )}
