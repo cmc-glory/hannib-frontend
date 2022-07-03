@@ -18,23 +18,21 @@ declare namespace ReactNavigation {
     MainTabNavigator: undefined
     GoodsDetail: undefined
     WriteNanumFormStackNavigator: undefined
-    WriteGoodsOnline: {
-      images: Asset[]
-      categories: string[]
+    WriteNanumFormOnline: {
+      images: string[]
+      category: string
       title: string
-      content: string
-      type: ISharingType
-      isOpenDateBooked: boolean
-      openDate?: Date | undefined
+      contents: string
+      nanumMethod: INanumMethod
+      firstDate: Date
     }
-    WriteGoodsOffline: {
-      images: Asset[]
-      categories: string[]
+    WriteNanumFormOffline: {
+      images: string[]
+      category: string
       title: string
-      content: string
-      type: ISharingType
-      isOpenDateBooked: boolean
-      openDate?: Date | undefined
+      contents: string
+      nanumMethod: INanumMethod
+      firstDate: Date
     }
     GoodsRequestOffline: undefined
     GoodsRequestOnline: undefined
@@ -50,8 +48,8 @@ declare namespace ReactNavigation {
       name: string
       profileImage: Asset
     }
-    WriteGoodsComplete: {
-      id: string // 작성한 게시글의 id. "등록한 게시글로 이동"에서 사용한다.
+    WriteNanumFormComplete: {
+      nanumIdx: number // 작성한 게시글의 id. "등록한 게시글로 이동"에서 사용한다.
     }
     NotificationStackNavigator:
       | undefined

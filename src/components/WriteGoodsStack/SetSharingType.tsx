@@ -1,11 +1,11 @@
 import React, {useCallback, useEffect} from 'react'
 import {View, Text, Pressable, StyleSheet, Dimensions} from 'react-native'
-import type {ISharingType} from '../../types'
+import type {INanumMethod} from '../../types'
 import * as theme from '../../theme'
 
 type SetSharingTypeProps = {
-  type: ISharingType
-  setType: React.Dispatch<React.SetStateAction<ISharingType>>
+  type: INanumMethod
+  setType: React.Dispatch<React.SetStateAction<INanumMethod>>
 }
 
 const PADDING_SIZE = 15

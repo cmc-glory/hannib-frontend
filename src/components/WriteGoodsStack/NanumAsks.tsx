@@ -2,34 +2,32 @@ import React, {useCallback, useState} from 'react'
 import {View, Text, TextInput, StyleSheet, Pressable} from 'react-native'
 import uuid from 'react-native-uuid'
 import {PlusIcon, CheckboxIcon, MinusIcon} from '../utils'
-import {IAdditionalQuestion} from '../../types'
+import {INanumAskInfo} from '../../types'
 import * as theme from '../../theme'
 
-const ICON_SIZE = 16
-
-type AdditionalQuestionItemProps = {
-  item: IAdditionalQuestion
+type NanumAskItemProps = {
+  item: INanumAskInfo
   onPressRemove: (id: string) => void
 }
 
-type AdditionalQuestionsProps = {
-  questions: IAdditionalQuestion[]
-  setQuestions: React.Dispatch<React.SetStateAction<IAdditionalQuestion[]>>
+type NanumAsksProps = {
+  questions: INanumAskInfo[]
+  setQuestions: React.Dispatch<React.SetStateAction<INanumAskInfo[]>>
 }
 
-const AdditionalQuestionItem = ({item, onPressRemove}: AdditionalQuestionItemProps) => {
-  const {necessary, content, id} = item
+const NanumAskItem = ({item, onPressRemove}: NanumAskItemProps) => {
+  const {essential, contents, id} = item
   return (
     <View style={styles.wrapper}>
       <View style={[{alignSelf: 'center', alignItems: 'center'}, styles.spacing]}>
-        {necessary ? <CheckboxIcon /> : <Pressable style={{width: 24, height: 24, borderRadius: 12, borderWidth: 1, borderColor: theme.gray300}} />}
+        {essential ? <CheckboxIcon /> : <Pressable style={{width: 24, height: 24, borderRadius: 12, borderWidth: 1, borderColor: theme.gray300}} />}
         <Text style={{fontSize: 12, color: theme.gray700, marginTop: 2}}>필수</Text>
       </View>
       <TextInput
         style={[theme.styles.input, styles.spacing, {flex: 1}]}
         placeholder="질문 제목"
         placeholderTextColor={theme.gray300}
-        value={content}
+        value={contents}
         editable={false}
       />
       <Pressable style={[styles.button]} onPress={() => onPressRemove(id)}>
@@ -39,33 +37,33 @@ const AdditionalQuestionItem = ({item, onPressRemove}: AdditionalQuestionItemPro
   )
 }
 
-export const AdditionalQuestions = ({questions, setQuestions}: AdditionalQuestionsProps) => {
-  const [questionForm, setQuestionForm] = useState<IAdditionalQuestion>({
-    necessary: false,
-    content: '',
+export const NanumAsks = ({questions, setQuestions}: NanumAsksProps) => {
+  const [questionForm, setQuestionForm] = useState<INanumAskInfo>({
+    essential: false,
+    contents: '',
     id: '',
   })
 
-  const onPressNeccesary = useCallback(() => {
+  const onPressEssential = useCallback(() => {
     setQuestionForm(questionForm => {
-      return {...questionForm, necessary: !questionForm.necessary}
+      return {...questionForm, essential: !questionForm.essential}
     })
   }, [])
 
   const onPressAdd = useCallback(() => {
-    const content = questionForm.content
-    const necessary = questionForm.necessary
+    const contents = questionForm.contents
+    const essential = questionForm.essential
 
     // 질문 내용이 없을 때는 추가하지 않음.
-    if (content == '') {
+    if (contents == '') {
       return
     }
 
     const id = String(uuid.v1())
-    setQuestions([...questions, {content, necessary, id}])
+    setQuestions([...questions, {contents, essential, id}])
     setQuestionForm({
-      necessary: false,
-      content: '',
+      essential: false,
+      contents: '',
       id: '',
     })
   }, [questionForm])
@@ -87,10 +85,10 @@ export const AdditionalQuestions = ({questions, setQuestions}: AdditionalQuestio
       <Text style={{color: theme.main, fontSize: 12}}>* 우편 나눔의 경우 주소 입력을 기본으로 받습니다.</Text>
       <View style={styles.wrapper}>
         <View style={[{alignSelf: 'center', alignItems: 'center'}, styles.spacing]}>
-          {questionForm.necessary ? (
-            <CheckboxIcon onPress={onPressNeccesary} />
+          {questionForm.essential ? (
+            <CheckboxIcon onPress={onPressEssential} />
           ) : (
-            <Pressable onPress={onPressNeccesary} style={{width: 24, height: 24, borderRadius: 12, borderWidth: 1, borderColor: theme.gray300}} />
+            <Pressable onPress={onPressEssential} style={{width: 24, height: 24, borderRadius: 12, borderWidth: 1, borderColor: theme.gray300}} />
           )}
           <Text style={{fontSize: 12, color: theme.gray700, marginTop: 2}}>필수</Text>
         </View>
@@ -98,15 +96,16 @@ export const AdditionalQuestions = ({questions, setQuestions}: AdditionalQuestio
           style={[theme.styles.input, styles.spacing, {flex: 1}]}
           placeholder="질문 제목 (ex 트위터 아이디)"
           placeholderTextColor={theme.gray300}
-          value={questionForm.content}
-          onChangeText={text => setQuestionForm({...questionForm, content: text})}
+          value={questionForm.contents}
+          onChangeText={text => setQuestionForm({...questionForm, contents: text})}
+          onSubmitEditing={onPressAdd}
         />
         <Pressable style={[styles.button]} onPress={onPressAdd}>
           <PlusIcon onPress={onPressAdd} />
         </Pressable>
       </View>
       {questions.map(item => (
-        <AdditionalQuestionItem item={item} onPressRemove={onPressRemove} key={item.id} />
+        <NanumAskItem item={item} onPressRemove={onPressRemove} key={item.id} />
       ))}
     </View>
   )

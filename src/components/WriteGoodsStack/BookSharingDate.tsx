@@ -4,18 +4,17 @@ import moment from 'moment'
 import {Switch} from 'react-native-paper'
 import DateTimePickerModal from 'react-native-modal-datetime-picker'
 import {CalendarIcon} from '../utils'
-import {useToggle} from '../../hooks'
 
 import * as theme from '../../theme'
 
 type BookSharingDateProps = {
   isOpenDateBooked: boolean
   toggleOpenDate: () => void
-  openDate: Date | undefined
-  setOpenDate: React.Dispatch<React.SetStateAction<Date | undefined>>
+  firstDate: Date
+  setFirstDate: React.Dispatch<React.SetStateAction<Date>>
 }
 
-export const BookSharingDate = ({isOpenDateBooked, toggleOpenDate, openDate, setOpenDate}: BookSharingDateProps) => {
+export const BookSharingDate = ({isOpenDateBooked, toggleOpenDate, firstDate, setFirstDate}: BookSharingDateProps) => {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false) // 나눔 수령일 선택 모달 띄울지
 
   const showDatePicker = () => {
@@ -31,7 +30,7 @@ export const BookSharingDate = ({isOpenDateBooked, toggleOpenDate, openDate, set
 
   const handleConfirm = (date: any) => {
     //console.warn('A date has been picked: ', date)
-    setOpenDate(date)
+    setFirstDate(date)
     hideDatePicker()
   }
 
@@ -49,12 +48,12 @@ export const BookSharingDate = ({isOpenDateBooked, toggleOpenDate, openDate, set
         <Switch value={isOpenDateBooked} onValueChange={toggleOpenDate} color={theme.secondary} />
       </View>
       <Pressable onPress={showDatePicker}>
-        {openDate == undefined && <CalendarIcon style={{position: 'absolute', right: 16, top: 12}} />}
+        {firstDate == undefined && <CalendarIcon style={{position: 'absolute', right: 16, top: 12}} />}
         <TextInput
           onPressIn={() => Platform.OS == 'ios' && showDatePicker()}
           editable={false}
           underlineColorAndroid="transparent"
-          value={openDate == undefined ? undefined : moment(openDate).format('YYYY.MM.D HH:mm')}
+          value={isOpenDateBooked ? moment(firstDate).format('YYYY.MM.DD HH:mm') : undefined}
           style={[theme.styles.input]}
           placeholder="나눔 수령일 선택"
           placeholderTextColor={theme.gray200}></TextInput>

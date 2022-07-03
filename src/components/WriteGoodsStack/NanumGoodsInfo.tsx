@@ -1,32 +1,32 @@
-import React, {useState, useCallback} from 'react'
+import React, {useState, useRef, useCallback} from 'react'
 import {View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions} from 'react-native'
 import uuid from 'react-native-uuid' // uuid
 import {PlusIcon, MinusIcon, NeccesaryField} from '../utils'
-import {IProductInfo} from '../../types'
+import {INanumGoodsInfo} from '../../types'
 import * as theme from '../../theme'
 
 const STOCK_WIDTH = Dimensions.get('window').width - theme.PADDING_SIZE * 2 - 8 * 2 - 200 - 48
 
-type ProductInfoProps = {
-  productInfos: IProductInfo[]
-  setProductInfos: React.Dispatch<React.SetStateAction<IProductInfo[]>>
+type NanumGoodsInfoProps = {
+  nanumGoodsInfos: INanumGoodsInfo[]
+  setNanumGoodsInfos: React.Dispatch<React.SetStateAction<INanumGoodsInfo[]>>
 }
 
-type ProductInfoItemProps = {
+type NanumGoodsInfoItemProps = {
   onPress: (id: string) => void
-  productInfo: IProductInfo
+  nanumGoodsInfo: INanumGoodsInfo
   key: string
 }
 
-const ProductInfoItem = ({productInfo, onPress}: ProductInfoItemProps) => {
-  const {id, name, quantity} = productInfo
+const NanumGoodsInfoItem = ({nanumGoodsInfo, onPress}: NanumGoodsInfoItemProps) => {
+  const {id, goodsName, goodsNumber} = nanumGoodsInfo
   return (
-    <View style={styles.productInfoItemWrapper}>
+    <View style={styles.nanumGoodsInfoItemWrapper}>
       <View style={[theme.styles.input, styles.itemView, {width: 200}]}>
-        <Text>{name}</Text>
+        <Text>{goodsName}</Text>
       </View>
       <View style={[theme.styles.input, styles.itemView, {width: STOCK_WIDTH}]}>
-        <Text>{quantity}</Text>
+        <Text>{goodsNumber}</Text>
       </View>
       <TouchableOpacity onPress={() => onPress(id)} style={[styles.button]}>
         <MinusIcon onPress={() => onPress(id)} />
@@ -35,30 +35,47 @@ const ProductInfoItem = ({productInfo, onPress}: ProductInfoItemProps) => {
   )
 }
 
-export const ProductInfo = ({productInfos, setProductInfos}: ProductInfoProps) => {
-  const [name, setName] = useState('')
-  const [quantity, setQuantity] = useState<number>()
-  const [limit, setLimit] = useState<number>()
+export const NanumGoodsInfo = ({nanumGoodsInfos, setNanumGoodsInfos}: NanumGoodsInfoProps) => {
+  // ******************** states ********************
+  const [goodsName, setGoodsName] = useState('')
+  const [goodsNumber, setGoodsNumber] = useState<string>('')
+
+  // ******************** refs ********************
+  const ref_input: Array<React.RefObject<TextInput>> = []
+  ref_input[0] = useRef(null)
+  ref_input[1] = useRef(null)
+
+  const onFocusNext = useCallback((index: number) => {
+    if (ref_input[index + 1] && index < ref_input.length - 1) {
+      console.log('reached')
+      ref_input[index + 1].current?.focus()
+    }
+    if (ref_input[index + 1] && index == ref_input.length - 1) {
+      ref_input[index].current?.blur()
+    }
+  }, [])
+
+  // ******************** callbacks ********************
   const onPressAdd = () => {
-    console.log('clicked')
+    console.log('on press add reached')
     // 이름이나 수량 중 하나만 값이 없어도 추가하지 않음
-    if (name == '' || quantity == 0 || quantity == undefined) return
+    if (goodsName == '' || goodsNumber == '') return
     // 인당 수량 제한 여부가 체크돼 있고, 그 값이 없어도 추가하지 않음
 
-    const item: IProductInfo = {
+    const item: INanumGoodsInfo = {
       id: String(uuid.v1()),
-      name: name,
-      quantity: quantity,
+      goodsName,
+      goodsNumber: parseInt(goodsNumber),
     }
 
-    setName('')
-    setQuantity(undefined)
+    setGoodsName('')
+    setGoodsNumber('')
     // 인당 수량 제한 여부가 체크 돼 있으면
 
-    setProductInfos(productInfos => productInfos.concat(item))
+    setNanumGoodsInfos(nanumGoodsInfos => nanumGoodsInfos.concat(item))
   }
   const onPressRemove = useCallback((id: string) => {
-    setProductInfos(productInfos => productInfos.filter(item => item.id !== id))
+    setNanumGoodsInfos(nanumGoodsInfos => nanumGoodsInfos.filter(item => item.id !== id))
   }, [])
   return (
     <View>
@@ -68,21 +85,31 @@ export const ProductInfo = ({productInfos, setProductInfos}: ProductInfoProps) =
           <NeccesaryField />
         </View>
       </View>
-      <View style={[styles.productInfoItemWrapper]}>
+      <View style={[styles.nanumGoodsInfoItemWrapper]}>
         <TextInput
+          ref={ref_input[0]}
           style={[theme.styles.input, styles.input, {width: 200}]}
           placeholder="상품명"
+          onSubmitEditing={() => onFocusNext(0)}
           placeholderTextColor={theme.gray200}
-          value={name}
-          onChangeText={setName}
+          value={goodsName}
+          onChangeText={setGoodsName}
         />
         <TextInput
+          ref={ref_input[1]}
           style={[theme.styles.input, styles.input, {width: STOCK_WIDTH}]}
           placeholder="재고"
           placeholderTextColor={theme.gray200}
           keyboardType="numeric"
-          value={quantity != undefined ? String(quantity) : undefined}
-          onChangeText={text => setQuantity(Number(text))}
+          onEndEditing={() => {
+            if (/^\d+$/.test(goodsNumber) == false) {
+              setGoodsNumber('')
+              return
+            }
+            onPressAdd()
+          }}
+          value={goodsNumber}
+          onChangeText={setGoodsNumber}
         />
 
         <TouchableOpacity style={[styles.button]} onPress={onPressAdd}>
@@ -90,8 +117,8 @@ export const ProductInfo = ({productInfos, setProductInfos}: ProductInfoProps) =
         </TouchableOpacity>
       </View>
       <View>
-        {productInfos.map(productInfo => (
-          <ProductInfoItem key={productInfo.id} productInfo={productInfo} onPress={onPressRemove}></ProductInfoItem>
+        {nanumGoodsInfos.map(nanumGoodsInfo => (
+          <NanumGoodsInfoItem key={nanumGoodsInfo.id} nanumGoodsInfo={nanumGoodsInfo} onPress={onPressRemove}></NanumGoodsInfoItem>
         ))}
       </View>
     </View>
@@ -117,7 +144,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  productInfoItemWrapper: {
+  nanumGoodsInfoItemWrapper: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',

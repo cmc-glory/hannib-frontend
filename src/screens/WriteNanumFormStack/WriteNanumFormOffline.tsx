@@ -6,11 +6,11 @@ import KeyboardManager from 'react-native-keyboard-manager'
 
 import {useNavigation, useRoute} from '@react-navigation/native'
 import {useToggle} from '../../hooks'
-import {WriteGoodsOfflineRouteProps, WriteGoodsOfflineNavigationProps} from '../../navigation/WriteNanumFormNavigator'
+import {WriteNanumFormOfflineRouteProps, WriteNanumFormOfflineNavigationProps} from '../../navigation/WriteNanumFormStackNavigator'
 import {StackHeader, FloatingBottomButton} from '../../components/utils'
-import {StepIndicator, ProductInfo, AdditionalQuestions, SelectTimeLocation} from '../../components/WriteGoodsStack'
+import {StepIndicator, NanumGoodsInfo, NanumAsks, SelectTimeLocation} from '../../components/WriteGoodsStack'
 import * as theme from '../../theme'
-import {IAdditionalQuestion, IProductInfo, ISharingForm, IReceiveInfo} from '../../types'
+import {IAdditionalQuestion, IProductInfo, ISharingForm, INanumAskInfo, INanumGoodsInfo, IReceiveInfo} from '../../types'
 
 // ***************************** ios keyboard settings *****************************
 if (Platform.OS === 'ios') {
@@ -32,54 +32,54 @@ if (Platform.OS === 'ios') {
   KeyboardManager.resignFirstResponder()
 }
 
-export const WriteGoodsOffline = () => {
+export const WriteNanumFormOffline = () => {
   // ***************************** utils *****************************
-  const navigation = useNavigation<WriteGoodsOfflineNavigationProps>()
-  const route = useRoute<WriteGoodsOfflineRouteProps>()
-  const {images, categories, title, content, type, isOpenDateBooked, openDate} = useMemo(() => {
+  const navigation = useNavigation<WriteNanumFormOfflineNavigationProps>()
+  const route = useRoute<WriteNanumFormOfflineRouteProps>()
+  const {images, category, title, contents, nanumMethod, firstDate} = useMemo(() => {
     return route.params
   }, [])
 
   // ***************************** states *****************************
-  const [isSecretForm, toggleSecretForm] = useToggle(false) // 시크릿 폼 여부
-  const [additionalQuestions, setAdditionalQuestions] = useState<IAdditionalQuestion[]>([])
-  const [products, setProducts] = useState<IProductInfo[]>([]) // 상품 정보 state
-  const [secretKey, setSecretKey] = useState('')
+  const [secretForm, toggleSecretForm] = useToggle(false) // 시크릿 폼 여부
+  const [nanumAsks, setNanumAsks] = useState<INanumAskInfo[]>([])
+  const [nanumGoods, setNanumGoods] = useState<INanumGoodsInfo[]>([]) // 상품 정보 state
+  const [secretPwd, setSecretPwd] = useState('')
   const [receiveInfo, setReceiveInfo] = useState<IReceiveInfo[]>([])
 
   // 처음에 화면 로드될 때 이전 페이지 작성 정보 가져옴
 
   // ***************************** callbacks *****************************
   const isButtonEnabled = useCallback(() => {
-    if (receiveInfo.length == 0 || products.length == 0) {
+    if (receiveInfo.length == 0 || nanumGoods.length == 0) {
       return false
     }
     return true
-  }, [receiveInfo, products])
+  }, [receiveInfo, nanumGoods])
 
   const onPressNext = useCallback(() => {
     // 백에 전송할 나눔글 폼
-    const form: ISharingForm = {
-      images,
-      categories,
-      title,
-      content,
-      //hashtags,
-      type,
-      isOpenDateBooked,
-      openDate,
-      isSecretForm,
-      additionalQuestions,
-      products,
-      secretKey,
-      receiveInfo,
-    }
-    // ************* 여기에 api 작성 *************
-    // 백에서 받아온 게시글 id를 다음 스크린으로 넘겨줌.
-    navigation.navigate('WriteGoodsComplete', {
-      id: '11111',
+    // const form: ISharingForm = {
+    //   images,
+    //   categories,
+    //   title,
+    //   content,
+    //   //hashtags,
+    //   type,
+    //   isOpenDateBooked,
+    //   openDate,
+    //   isSecretForm,
+    //   additionalQuestions,
+    //   products,
+    //   secretKey,
+    //   receiveInfo,
+    // }
+    // // ************* 여기에 api 작성 *************
+    // // 백에서 받아온 게시글 id를 다음 스크린으로 넘겨줌.
+    navigation.navigate('WriteNanumFormComplete', {
+      nanumIdx: 11111,
     })
-  }, [isSecretForm, additionalQuestions, products, secretKey])
+  }, [secretForm, nanumAsks, nanumGoods, secretPwd])
 
   return (
     <SafeAreaView style={{backgroundColor: '#fff', flex: 1}}>
@@ -93,21 +93,21 @@ export const WriteGoodsOffline = () => {
         </View>
 
         <View style={[theme.styles.wrapper, styles.spacing]}>
-          <ProductInfo productInfos={products} setProductInfos={setProducts} />
+          <NanumGoodsInfo nanumGoodsInfos={nanumGoods} setNanumGoodsInfos={setNanumGoods} />
         </View>
         <View style={[theme.styles.wrapper, styles.spacing]}>
-          <AdditionalQuestions questions={additionalQuestions} setQuestions={setAdditionalQuestions} />
+          <NanumAsks questions={nanumAsks} setQuestions={setNanumAsks} />
         </View>
 
         <View style={[theme.styles.wrapper, styles.spacing]}>
           <View style={[theme.styles.rowSpaceBetween]}>
             <Text style={{fontFamily: 'Pretendard-Medium', fontSize: 16}}>시크릿 폼</Text>
-            <Switch color={theme.gray800} onValueChange={toggleSecretForm} value={isSecretForm} />
+            <Switch color={theme.gray800} onValueChange={toggleSecretForm} value={secretForm} />
           </View>
           <TextInput
             style={[theme.styles.input, {marginTop: 10}]}
-            value={secretKey}
-            onChangeText={setSecretKey}
+            value={secretPwd}
+            onChangeText={setSecretPwd}
             placeholder="비밀번호를 입력하세요"
             placeholderTextColor={theme.gray300}
           />

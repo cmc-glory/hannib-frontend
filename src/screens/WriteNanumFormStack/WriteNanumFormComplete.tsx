@@ -8,7 +8,7 @@ import {isIphoneX, getBottomSpace} from 'react-native-iphone-x-helper'
 import {StackHeader, CompleteIcon, RoundButton} from '../../components/utils'
 import * as theme from '../../theme'
 
-export const WriteGoodsComplete = () => {
+export const WriteNanumFormComplete = () => {
   const navigation = useNavigation()
   const [height, setHeight] = useState<number>(0)
   const MARGIN_TOP = useMemo(() => {

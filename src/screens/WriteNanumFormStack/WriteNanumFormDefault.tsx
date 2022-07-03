@@ -9,7 +9,7 @@ import StackHeader from '../../components/utils/StackHeader'
 import {SelectCategory, ImagePicker, StepIndicator, SetSharingType, BookSharingDate} from '../../components/WriteGoodsStack'
 import {FloatingBottomButton, NeccesaryField} from '../../components/utils'
 import {useToggle} from '../../hooks'
-import type {ISharingType} from '../../types'
+import type {INanumMethod} from '../../types'
 import * as theme from '../../theme'
 
 // ***************************** ios keyboard settings *****************************
@@ -35,49 +35,46 @@ if (Platform.OS === 'ios') {
 export const WriteNanumFormDefault = () => {
   const navigation = useNavigation()
 
-  const [images, setImages] = useState<Asset[]>([]) // 대표 이미지
-  const [categories, setCategories] = useState<string[]>(['dd']) // 카테고리
+  const [images, setImages] = useState<string[]>([]) // 대표 이미지
+  const [category, setCategory] = useState<string>('dd') // 카테고리
   const [title, setTitle] = useState<string>('') // 제목
-  const [content, setContent] = useState<string>('') // 내용
-  const [type, setType] = useState<ISharingType>('online') // 나눔 방식
+  const [contents, setContents] = useState<string>('') // 내용
+  const [nanumMethod, setNanumMethod] = useState<INanumMethod>('online') // 나눔 방식
   const [isOpenDateBooked, toggleOpenDate] = useToggle() // 나눔 시작일 예약 여부
-  const [openDate, setOpenDate] = useState<Date | undefined>() // 나눔 시작일
-
-  console.log('images :', images)
+  const [firstDate, setFirstDate] = useState<Date>(new Date()) // 나눔 시작일. 기본은 오늘
 
   // 모든 state가 바뀔때마다 새로 만들어져야 하므로 dependency (X)
   const onPressOffline = () => {
-    navigation.navigate('WriteGoodsOffline', {
-      images: images,
-      categories,
+    navigation.navigate('WriteNanumFormOffline', {
+      images,
+      category,
       title,
-      content,
-      type,
-      isOpenDateBooked,
-      openDate,
+      contents,
+      nanumMethod,
+      firstDate,
     })
   }
 
   // 모든 state가 바뀔때마다 새로 만들어져야 하므로 dependency (X)
   const onPressOnline = () => {
-    navigation.navigate('WriteGoodsOnline', {
-      images: images,
-      categories,
+    navigation.navigate('WriteNanumFormOnline', {
+      images,
+      category,
       title,
-      content,
-      type,
-      isOpenDateBooked,
-      openDate,
+      contents,
+      nanumMethod,
+      firstDate,
     })
   }
 
   // 필요한 내용을 기입해서 다음으로 넘어갈 수 있는지.
   const checkNextButtonEnabled = () => {
-    if (images.length != 0 && categories.length != 0 && title != '' && content != '') {
-      return true
-    } else {
-      return false
-    }
+    // if (images.length != 0 && category != '' && title != '' && contents != '') {
+    //   return true
+    // } else {
+    //   return false
+    // }
+    return true // for debugging
   }
   return (
     <SafeAreaView edges={['top', 'bottom']} style={theme.styles.safeareaview}>
@@ -104,8 +101,8 @@ export const WriteNanumFormDefault = () => {
             style={[theme.styles.input, {height: 150, textAlignVertical: 'top', paddingTop: 16}]}
             placeholder="내용 입력"
             placeholderTextColor={theme.gray300}
-            value={content}
-            onChangeText={setContent}
+            value={contents}
+            onChangeText={setContents}
           />
         </View>
         {/* <View style={[styles.itemWrapper]}>
@@ -118,11 +115,11 @@ export const WriteNanumFormDefault = () => {
             <NeccesaryField />
           </View>
 
-          <SetSharingType type={type} setType={setType} />
+          <SetSharingType type={nanumMethod} setType={setNanumMethod} />
         </View>
-        <BookSharingDate isOpenDateBooked={isOpenDateBooked} toggleOpenDate={toggleOpenDate} openDate={openDate} setOpenDate={setOpenDate} />
+        <BookSharingDate isOpenDateBooked={isOpenDateBooked} toggleOpenDate={toggleOpenDate} firstDate={firstDate} setFirstDate={setFirstDate} />
       </ScrollView>
-      <FloatingBottomButton label="다음" onPress={type == 'offline' ? onPressOffline : onPressOnline} enabled={checkNextButtonEnabled()} />
+      <FloatingBottomButton label="다음" onPress={nanumMethod == 'offline' ? onPressOffline : onPressOnline} enabled={checkNextButtonEnabled()} />
     </SafeAreaView>
   )
 }
