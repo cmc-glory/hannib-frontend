@@ -77,8 +77,8 @@ export const SetProfile = () => {
           }}
         />
         {duplicated && <Text style={[{color: theme.red, fontSize: 12, marginTop: 4}, theme.styles.text12]}>중복된 닉네임입니다.</Text>}
-        <FloatingBottomButton label="다음" enabled={checkButtonEnabled(name)} onPress={onPressNext} />
       </View>
+      <FloatingBottomButton label="다음" enabled={checkButtonEnabled(name)} onPress={onPressNext} />
     </SafeAreaView>
   )
 }

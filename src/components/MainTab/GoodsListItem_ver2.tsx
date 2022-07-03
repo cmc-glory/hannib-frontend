@@ -80,7 +80,6 @@ export const GoodsListItemVer2 = ({item}: {item: ISharingInfo}) => {
   // 나눔 게시글 아이템 구조분해 할당
   const {id, type, title, writer, uri, isSecret, secretKey, isFavorite} = item
 
-  const now = moment()
   const openDate = moment(item.openDate, 'YYYYMMDDHHmmss')
 
   // 이미지가 존재하면 이미지의 uri로, 없으면 기본 이미지로
@@ -102,12 +101,15 @@ export const GoodsListItemVer2 = ({item}: {item: ISharingInfo}) => {
   })
 
   useEffect(() => {
-    setIsBefore(now < openDate ? true : false)
+    setIsBefore(moment() < openDate ? true : false)
   }, [])
 
   // 상세 페이지로 이동
   const onPressItem = useCallback(() => {
-    if (isBefore) {
+    const now = moment()
+
+    if (now < openDate) {
+      setIsBefore(true)
       return // 오픈 전인 경우엔 이동 X
     }
     if (isSecret == true) {
@@ -120,7 +122,7 @@ export const GoodsListItemVer2 = ({item}: {item: ISharingInfo}) => {
         },
       })
     }
-  }, [isBefore])
+  }, [])
 
   const onPressAddFavorite = useCallback(() => {
     // 즐겨찾기 버튼 클릭했을 때

@@ -20,6 +20,7 @@ type ContentProps = {
 }
 
 const window = Dimensions.get('screen')
+console.log('window : ', window)
 
 export function GoodsDetailContent({headerHeight, data}: ContentProps) {
   const addFavoriteQuery = useMutation(addFavorite, {
