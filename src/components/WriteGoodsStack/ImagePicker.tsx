@@ -1,42 +1,60 @@
-import React, {useCallback} from 'react'
+import React, {useState, useCallback} from 'react'
 import {View, Text, Pressable, StyleSheet, Alert} from 'react-native'
 import FastImage from 'react-native-fast-image'
 import type {Asset} from 'react-native-image-picker'
 import {launchImageLibrary} from 'react-native-image-picker'
+import {showMessage} from 'react-native-flash-message'
 import * as theme from '../../theme'
 import {PlusIcon, RemoveButtonIcon, NeccesaryField} from '../utils'
+import {useMutation} from 'react-query'
+import {queryKeys, uploadNanumImage} from '../../api'
 
 const IMAGE_SIZE = 64
-const BORDER_SIZE = IMAGE_SIZE / 2
 
 type ImagePickerProps = {
-  images: Asset[]
-  setImages: React.Dispatch<React.SetStateAction<Asset[]>>
+  images: string[]
+  setImages: React.Dispatch<React.SetStateAction<string[]>>
 }
 
-export const ImagePreview = ({
-  uri,
-  fileName,
-  onPressRemove,
-}: {
-  fileName: string | undefined
-  uri: string | undefined
-  onPressRemove: (filename: string | undefined) => void
-}) => {
+export const ImagePreview = ({uri, onPressRemove}: {uri: string | undefined; onPressRemove: (filename: string | undefined) => void}) => {
   return (
     <View>
-      <RemoveButtonIcon style={[styles.removeButton]} size={22} onPress={() => onPressRemove(fileName)} />
+      <RemoveButtonIcon style={[styles.removeButton]} size={22} onPress={() => onPressRemove(uri)} />
       <FastImage source={{uri: uri}} style={styles.image}></FastImage>
     </View>
   )
 }
-export const ImagePicker = ({images, setImages}: ImagePickerProps) => {
-  React.useEffect(() => {
-    console.log('images : ', images)
-  }, [images])
 
+export const ImagePicker = ({images, setImages}: ImagePickerProps) => {
+  // ******************** react query ********************
+  const uploadImageQuery = useMutation(queryKeys.nanumImage, uploadNanumImage, {
+    onSuccess(data) {
+      setImages(images => [...images, data]) // 이미지 저장 성공하면 s3 url을 images 배열에 저장
+      console.log('here')
+    },
+    onError(error) {
+      showMessage({
+        // 에러 안내 메세지
+        message: '이미지 업로드 중 에러가 발생했습니다',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+      })
+      console.log(error)
+    },
+  })
+
+  // ******************** callbacks ********************
   const onImageLibraryPress = useCallback(async () => {
     if (images.length == 5) {
+      // 사진을 5개 넘개 선택한 경우 alert 안내
       Alert.alert('사진은 최대 5개 선택 가능합니다.', '', [
         {
           text: '확인',
@@ -49,22 +67,42 @@ export const ImagePicker = ({images, setImages}: ImagePickerProps) => {
     const response = await launchImageLibrary({selectionLimit: 1, mediaType: 'photo', includeBase64: false})
 
     if (response.didCancel) {
-      console.log('User cancelled image picker')
-    } else if (response.errorCode) {
-      console.log('errorCode : ', response.errorCode)
-    } else if (response.errorMessage) {
-      console.log('errorMessage', response.errorMessage)
+      // 취소한 경우
+    } else if (response.errorCode || response.errorMessage) {
+      // 에러 발생
+      showMessage({
+        // 에러 안내 메세지
+        message: '이미지를 가져오는 중 에러가 발생했습니다',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+      })
     } else if (response.assets) {
-      setImages([...images, response?.assets[0]])
+      // 이미지가 제대로 들어오면
+
+      let formData = new FormData()
+      formData.append('nanumImg', {
+        uri: response.assets[0].uri,
+        type: 'multipart/form-data',
+        name: 'image.jpg',
+      })
+      uploadImageQuery.mutate(formData) // s3에 이미지 저장
     }
   }, [images])
 
   const onPressRemove = useCallback(
-    (filename: string | undefined) => {
-      if (filename == undefined) {
+    (uri: string | undefined) => {
+      if (uri == undefined) {
         return
       }
-      setImages(images.filter(images => images.fileName != filename))
+      setImages(images.filter(item => item != uri))
     },
     [images],
   )
@@ -83,7 +121,7 @@ export const ImagePicker = ({images, setImages}: ImagePickerProps) => {
           </View>
         </Pressable>
         {images?.map(image => (
-          <ImagePreview key={image.uri} uri={image.uri} fileName={image.fileName} onPressRemove={onPressRemove} />
+          <ImagePreview key={image} uri={image} onPressRemove={onPressRemove} />
         ))}
       </View>
     </View>

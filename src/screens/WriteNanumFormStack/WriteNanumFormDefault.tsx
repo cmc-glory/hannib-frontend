@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react'
+import React, {useState} from 'react'
 import {View, Text, ScrollView, TextInput, StyleSheet, Platform} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import type {Asset} from 'react-native-image-picker'
@@ -9,9 +9,8 @@ import StackHeader from '../../components/utils/StackHeader'
 import {SelectCategory, ImagePicker, StepIndicator, SetSharingType, BookSharingDate} from '../../components/WriteGoodsStack'
 import {FloatingBottomButton, NeccesaryField} from '../../components/utils'
 import {useToggle} from '../../hooks'
-import type {IHashtag, ISharingType} from '../../types'
+import type {ISharingType} from '../../types'
 import * as theme from '../../theme'
-import {useAutoFocus, AutoFocusProvider} from '../../contexts'
 
 // ***************************** ios keyboard settings *****************************
 if (Platform.OS === 'ios') {
@@ -33,7 +32,7 @@ if (Platform.OS === 'ios') {
   KeyboardManager.resignFirstResponder()
 }
 
-export const WriteGoodsDefault = () => {
+export const WriteNanumFormDefault = () => {
   const navigation = useNavigation()
 
   const [images, setImages] = useState<Asset[]>([]) // 대표 이미지

@@ -17,7 +17,7 @@ declare namespace ReactNavigation {
     CreateAccount: undefined
     MainTabNavigator: undefined
     GoodsDetail: undefined
-    WriteGoodsStackNavigator: undefined
+    WriteNanumFormStackNavigator: undefined
     WriteGoodsOnline: {
       images: Asset[]
       categories: string[]

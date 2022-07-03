@@ -20,7 +20,7 @@ export const uploadCategoryImage = async (formData: FormData) => {
   return data
 }
 
-export const uploadNanumImages = async (formData: FormData) => {
+export const uploadNanumImage = async (formData: FormData) => {
   const {data} = await apiImageClient.post('/api/img/nanum', formData)
 
   return data

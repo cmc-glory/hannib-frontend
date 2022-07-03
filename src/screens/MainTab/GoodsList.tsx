@@ -7,7 +7,7 @@ import {useQuery, useQueryClient} from 'react-query'
 import * as theme from '../../theme'
 import {DownArrowIcon, BellIcon, MagnifierIcon, BottomSheet, FloatingButtonIcon} from '../../components/utils'
 import {GoodsFilterTab, NanumListItem, GoodsListBottomSheetContent, Banner, CategoryDropdown} from '../../components/MainTab'
-import {ISharingInfo, IUserCategory, ISharingType} from '../../types'
+import {ISharingInfo, IUserCategory, ISharingType, INanumListItem} from '../../types'
 import {useAppSelector, useAnimatedValue, useToggle, useAnimatedStyle} from '../../hooks'
 import {getNanumListAll, queryKeys} from '../../api'
 
@@ -27,7 +27,7 @@ const GoodsLists = () => {
   })
 
   // ******************** states ********************
-  const [sharings, setSharings] = useState<ISharingInfo[]>([])
+  const [sharings, setSharings] = useState<INanumListItem[]>([])
   const [refreshing, setRefreshing] = useState<boolean>(false) // 새로고침 state
   const [locationFilter, setLocationFilter] = useState<'all' | 'offline' | 'online'>('all')
   const [itemFilter, setItemFilter] = useState<'최신순' | '인기순' | '추천순'>('최신순')
@@ -58,7 +58,7 @@ const GoodsLists = () => {
 
   const onPressWrite = useCallback(() => {
     // 모집글 작성 버튼 클릭 시
-    navigation.navigate('WriteGoodsStackNavigator')
+    navigation.navigate('WriteNanumFormStackNavigator')
   }, [])
 
   const onPressMagnifier = useCallback(() => {

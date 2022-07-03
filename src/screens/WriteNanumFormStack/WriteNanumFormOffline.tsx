@@ -6,7 +6,7 @@ import KeyboardManager from 'react-native-keyboard-manager'
 
 import {useNavigation, useRoute} from '@react-navigation/native'
 import {useToggle} from '../../hooks'
-import {WriteGoodsOfflineRouteProps, WriteGoodsOfflineNavigationProps} from '../../navigation/WriteGoodsStackNavigator'
+import {WriteGoodsOfflineRouteProps, WriteGoodsOfflineNavigationProps} from '../../navigation/WriteNanumFormNavigator'
 import {StackHeader, FloatingBottomButton} from '../../components/utils'
 import {StepIndicator, ProductInfo, AdditionalQuestions, SelectTimeLocation} from '../../components/WriteGoodsStack'
 import * as theme from '../../theme'
@@ -36,7 +36,7 @@ export const WriteGoodsOffline = () => {
   // ***************************** utils *****************************
   const navigation = useNavigation<WriteGoodsOfflineNavigationProps>()
   const route = useRoute<WriteGoodsOfflineRouteProps>()
-  const {images, categories, title, content, hashtags, type, isOpenDateBooked, openDate} = useMemo(() => {
+  const {images, categories, title, content, type, isOpenDateBooked, openDate} = useMemo(() => {
     return route.params
   }, [])
 

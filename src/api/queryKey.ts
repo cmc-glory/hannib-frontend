@@ -8,5 +8,5 @@ export const queryKeys = {
   calendar: ['calendar'],
   profileImage: ['profileImage'],
   categoryImage: ['categoryImage'],
-  nanumImages: ['nanumImage'],
+  nanumImage: ['nanumImage'],
 }

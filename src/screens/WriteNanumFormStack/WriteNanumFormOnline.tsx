@@ -7,7 +7,7 @@ import KeyboardManager from 'react-native-keyboard-manager'
 import {useMutation} from 'react-query'
 import {showMessage} from 'react-native-flash-message'
 
-import {WriteGoodsOnlineRouteProps} from '../../navigation/WriteGoodsStackNavigator' // route props
+import {WriteGoodsOnlineRouteProps} from '../../navigation/WriteNanumFormNavigator' // route props
 import {IProductInfo, IAdditionalQuestion, ISharingForm} from '../../types' // types
 import {StackHeader, FloatingBottomButton} from '../../components/utils' // components
 import {StepIndicator, AdditionalQuestions, ProductInfo} from '../../components/WriteGoodsStack' // components

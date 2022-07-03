@@ -3,10 +3,10 @@ import {createStackNavigator} from '@react-navigation/stack'
 import type {NativeStackScreenProps} from '@react-navigation/native-stack'
 import type {Asset} from 'react-native-image-picker'
 import {ISharingType} from '../types'
-import {WriteGoodsDefault, WriteGoodsOffline, WriteGoodsOnline, WriteGoodsComplete} from '../screens/WriteGoodsStack'
+import {WriteNanumFormDefault, WriteGoodsOffline, WriteGoodsOnline, WriteGoodsComplete} from '../screens/WriteNanumFormStack'
 
-type WriteGoodsStackNavigatorParamList = {
-  WriteGoodsDefault: undefined
+type WriteNanumFormStackNavigatorParamList = {
+  WriteNanumFormDefault: undefined
   WriteGoodsOffline: {
     images: Asset[]
     categories: string[]
@@ -30,20 +30,20 @@ type WriteGoodsStackNavigatorParamList = {
   }
 }
 
-type WriteGoodsOfflineProps = NativeStackScreenProps<WriteGoodsStackNavigatorParamList, 'WriteGoodsOffline'>
+type WriteGoodsOfflineProps = NativeStackScreenProps<WriteNanumFormStackNavigatorParamList, 'WriteGoodsOffline'>
 export type WriteGoodsOfflineNavigationProps = WriteGoodsOfflineProps['navigation']
 export type WriteGoodsOfflineRouteProps = WriteGoodsOfflineProps['route']
 
-type WriteGoodsOnlineProps = NativeStackScreenProps<WriteGoodsStackNavigatorParamList, 'WriteGoodsOnline'>
+type WriteGoodsOnlineProps = NativeStackScreenProps<WriteNanumFormStackNavigatorParamList, 'WriteGoodsOnline'>
 export type WriteGoodsOnlineNavigationProps = WriteGoodsOnlineProps['navigation']
 export type WriteGoodsOnlineRouteProps = WriteGoodsOnlineProps['route']
 
-const Stack = createStackNavigator<WriteGoodsStackNavigatorParamList>()
+const Stack = createStackNavigator<WriteNanumFormStackNavigatorParamList>()
 
-const WriteGoodsStackNavigator = () => {
+const WriteNanumFormStackNavigator = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
-      <Stack.Screen name="WriteGoodsDefault" component={WriteGoodsDefault} />
+      <Stack.Screen name="WriteNanumFormDefault" component={WriteNanumFormDefault} />
       <Stack.Screen name="WriteGoodsOffline" component={WriteGoodsOffline} />
       <Stack.Screen name="WriteGoodsOnline" component={WriteGoodsOnline} />
       <Stack.Screen name="WriteGoodsComplete" component={WriteGoodsComplete} />
@@ -51,4 +51,4 @@ const WriteGoodsStackNavigator = () => {
   )
 }
 
-export default WriteGoodsStackNavigator
+export default WriteNanumFormStackNavigator

@@ -2,7 +2,7 @@ import React from 'react'
 import {createStackNavigator} from '@react-navigation/stack'
 //import Login from '../screens/RootStack/Login'
 import MainTabNavigator from './MainTabNavigator'
-import WriteGoodsStackNavigator from './WriteGoodsStackNavigator'
+import WriteNanumFormStackNavigator from './WriteNanumFormNavigator'
 //import FindId from '../screens/RootStack/FindId'
 //import FindPassword from '../screens/RootStack/FindPassword'
 //import CreateAccount from '../screens/RootStack/CreateAccount'
@@ -30,7 +30,7 @@ const RootStackNavigator = () => {
       <Stack.Screen name="LoginStackNavigator" options={{gestureEnabled: false}} component={LoginStackNavigator} />
       <Stack.Screen name="MainTabNavigator" options={{gestureEnabled: false}} component={MainTabNavigator} />
       <Stack.Screen name="GoodsStackNavigator" component={GoodsStackNavigator}></Stack.Screen>
-      <Stack.Screen name="WriteGoodsStackNavigator" component={WriteGoodsStackNavigator}></Stack.Screen>
+      <Stack.Screen name="WriteNanumFormStackNavigator" component={WriteNanumFormStackNavigator}></Stack.Screen>
       <Stack.Screen name="NotificationStackNavigator" component={NotificationStackNavigator}></Stack.Screen>
       <Stack.Screen name="SearchStackNavigator" component={SearchStackNavigator}></Stack.Screen>
       <Stack.Screen name="HoldingSharingStackNavigator" component={HoldingSharingStackNavigator}></Stack.Screen>
