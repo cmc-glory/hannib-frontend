@@ -66,7 +66,6 @@ const Buttons = ({toggleAddressModalVisible, toggleCancelModalVisible, toggleChe
 }
 
 const BUTTON_WIDTH = (Dimensions.get('window').width - theme.PADDING_SIZE * 2 - 10) / 2
-const MODAL_BUTTON_WIDTH = (Dimensions.get('window').width - theme.PADDING_SIZE * 2 - 50) / 2
 
 export const HoldingSharingDetail = () => {
   const [cancelModalVisible, toggleCancelModalVisible] = useToggle() // 취소 모달창 띄울지

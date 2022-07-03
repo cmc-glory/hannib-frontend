@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useState} from 'react'
 import {View, Pressable, ScrollView, Text, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {StackHeader, FloatingBottomButton, SharingPreview, GoodsListItem, MenuIcon, BottomSheet} from '../../components/utils'
-import {IHoldingReceiverList, ISharingDetail} from '../../types'
+import {IHoldingReceiverInfo, ISharingDetail} from '../../types'
 import {useToggle} from '../../hooks'
 import * as theme from '../../theme'
 import {useNavigation} from '@react-navigation/native'
@@ -21,7 +21,7 @@ const dataLists: Array<any> = [
 ]
 
 export const HoldingSharing = () => {
-  const [list, setList] = useState<IHoldingReceiverList>()
+  const [list, setList] = useState<Array<IHoldingReceiverInfo>>()
   const [sharingDetail, setSharingDetail] = useState<ISharingDetail>()
   const [editDeleteModalVisible, toggleEditDeleteModalVisible] = useToggle() //수정, 삭제하기 모달 띄울지
   const [deleteHoldingModalVisible, toggleDeleteHoldingModalVisible] = useToggle()
@@ -82,16 +82,16 @@ export const HoldingSharing = () => {
   }, [])
 
   useEffect(() => {
-    console.log('list : ', list)
-    console.log('sharingDetail : ', sharingDetail)
+    // console.log('list : ', list)
+    // console.log('sharingDetail : ', sharingDetail)
   }, [list, sharingDetail])
 
   const onPressLeftArrow = () => {
-    if (cntList == 1) setCntList(12)
+    if (cntList == 1) setCntList(list?.length ? list.length : 1)
     else setCntList(cntList - 1)
   }
   const onPressRightArrow = () => {
-    if (cntList == 12) setCntList(1)
+    if (cntList == list?.length) setCntList(1)
     else setCntList(cntList + 1)
   }
   // 우선 숫자만 바뀌게 해둠. db 들어오면 바꿔야함.
@@ -107,17 +107,21 @@ export const HoldingSharing = () => {
         <SharingPreview uri="http://localhost:8081/src/assets/images/detail_image_example.png" category="BTS" title="BTS 키링 나눔" />
 
         <View style={{marginTop: 16}}>
-          <GoodsListItem type="holding" />
-          <GoodsListItem type="holding" />
-          <GoodsListItem type="holding" />
+          {sharingDetail?.products.map(product => (
+            <GoodsListItem key={product.id} type="holding" title={product.name} quantity={product.quantity} />
+          ))}
+
+          {/* <GoodsListItem type="holding" />
+          <GoodsListItem type="holding" /> */}
         </View>
         <View style={{width: '100%', height: 1, backgroundColor: theme.gray200, marginVertical: 10}} />
         {isDetail ? (
           <HoldingDetailItem
+            products={list}
             isOnline={true}
             onPressLeftArrow={onPressLeftArrow}
             onPressRightArrow={onPressRightArrow}
-            cntList={cntList}
+            cntList={1}
             setIsDetail={setIsDetail}
           />
         ) : (
@@ -132,18 +136,19 @@ export const HoldingSharing = () => {
             setStateFilter={setStateFilter}
             setCheckedItems={setCheckedItems}
             checkedItems={checkedItems}
-            dataLists={dataLists}
+            dataLists={list}
           />
         )}
       </ScrollView>
-
-      <FloatingBottomButton
-        label="공지 보내기"
-        enabled
-        onPress={() => {
-          navigation.navigate('SendNotice')
-        }}
-      />
+      {isDetail ? null : (
+        <FloatingBottomButton
+          label="공지 보내기"
+          enabled
+          onPress={() => {
+            navigation.navigate('SendNotice')
+          }}
+        />
+      )}
 
       <EditDeleteModal
         isVisible={editDeleteModalVisible}

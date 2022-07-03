@@ -16,18 +16,21 @@ import {
 import BouncyCheckbox from 'react-native-bouncy-checkbox'
 import {useToggle} from '../../hooks'
 import * as theme from '../../theme'
+import {IProductInfo} from '../../types'
 
 type ReceiverListItem = {
   id: number
   onPressViewDetail: () => void
   index: number //db나오면 수정
-  isFinished: boolean
   checkedItems: Array<any>
   handleSingleCheck: (id: number) => void
+  receiveState: string
+  receiverName: string
+  products: Array<IProductInfo>
 }
 
 //개별 리스트 아이템
-export const ReceiverListItem = ({onPressViewDetail, index, checkedItems, id, handleSingleCheck, isFinished}: ReceiverListItem) => {
+export const ReceiverListItem = ({onPressViewDetail, index, checkedItems, id, handleSingleCheck, receiverName, receiveState, products}: ReceiverListItem) => {
   return (
     <Pressable
       onPress={() => {
@@ -50,8 +53,8 @@ export const ReceiverListItem = ({onPressViewDetail, index, checkedItems, id, ha
 
       <View style={{alignSelf: 'stretch', justifyContent: 'space-between', flex: 1}}>
         <View style={{flexDirection: 'row', marginBottom: 8}}>
-          <Text style={{fontSize: 12}}>수령자명</Text>
-          {isFinished == true ? ( //임시
+          <Text style={{fontSize: 12}}>{receiverName}</Text>
+          {receiveState == '수령완료' ? (
             <View style={{flexDirection: 'row'}}>
               <Text style={{fontSize: 12}}> | </Text>
               <Text style={{fontSize: 12, color: theme.main}}>수령완료</Text>
@@ -59,7 +62,10 @@ export const ReceiverListItem = ({onPressViewDetail, index, checkedItems, id, ha
           ) : null}
         </View>
 
-        <Text style={{color: theme.gray700, fontSize: 16}}>BTS 뷔 컨셉의 하트 키링</Text>
+        <Text style={{color: theme.gray700, fontSize: 16}}>
+          {products[0].name}
+          {products.length > 1 ? ` 외 ${products.length - 1}개` : null}
+        </Text>
       </View>
       <Pressable style={[theme.styles.rowFlexStart]} onPress={onPressViewDetail}>
         <Text style={{color: theme.gray500}}>상세보기</Text>
