@@ -113,7 +113,7 @@ export const ParticipatingSharingOffline = () => {
             {/* <View style={{paddingVertical: 16, alignSelf: 'center'}}>
               <View style={{backgroundColor: theme.main50, width: 104, height: 104}} />
             </View> */}
-            {participateState == 'completed' || 'reviewFinished' ? <Tag label="수령 완료"></Tag> : null}
+            {/* {participateState == 'completed' || 'reviewFinished' ? <Tag label="수령 완료"></Tag> : null} */}
             <View style={[theme.styles.rowSpaceBetween, styles.requestInfoWrapper]}>
               <Text style={styles.requestInfoLabel}>수령자명</Text>
               <Text style={styles.requestInfoText}>{detail?.receiverName}</Text>
