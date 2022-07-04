@@ -87,7 +87,7 @@ export const ParticipatingSharingOnline = () => {
           <View>
             <View style={[theme.styles.rowSpaceBetween, {marginBottom: 20}]}>
               <Text style={{color: theme.gray500}}>2022.06.30 22:01:52</Text>
-              {participateState !== 'proceeding' ? <Tag label="수령 완료"></Tag> : null}
+              {/* {participateState !== 'proceeding' ? <Tag label="수령 완료"></Tag> : null} */}
             </View>
             <View style={[theme.styles.rowSpaceBetween, styles.requestInfoWrapper]}>
               <Text style={styles.requestInfoLabel}>수령자명</Text>
