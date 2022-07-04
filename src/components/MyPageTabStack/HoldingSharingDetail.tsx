@@ -29,7 +29,7 @@ const GoodsListItem = () => {
   )
 }
 
-let holdingSharingState = 'offlineFinished' //'onlineNotSent', 'onlineSent', 'offlineFinished', 'offlineNotFinished'
+let holdingSharingState = 'onlineNotSent' //'onlineNotSent', 'onlineSent', 'offlineFinished', 'offlineNotFinished'
 const Buttons = ({toggleAddressModalVisible, toggleCancelModalVisible, toggleCheckFinishedModalVisible, toggleNotTakenModalVisible}: ButtonsProp) => {
   switch (holdingSharingState) {
     case 'onlineNotSent':
