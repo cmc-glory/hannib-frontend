@@ -15,20 +15,6 @@ export const postNanumForm = async (nanumForm: INanumForm) => {
   return data
 }
 
-// export const postNanumForm = async (nanumForm: INanumForm) => {
-//   const data = fetch(BASE_URL + '/api/nanum/write', {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//     body: JSON.stringify({nanumDto : nanumForm}),
-//   })
-//     .then(response => response.json())
-//     .then(data => data)
-
-//   return data
-// }
-
 export const getNanumForm = async (nanumIdx: number) => {
   const {data} = await apiImageClient.get(`/api/nanum/${nanumIdx}`)
 

@@ -2,15 +2,19 @@ import React, {useCallback, useMemo, useState} from 'react'
 import {View, Text, TextInput, ScrollView, StyleSheet, Platform} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {Switch} from 'react-native-paper'
+import moment from 'moment'
 import KeyboardManager from 'react-native-keyboard-manager'
-
 import {useNavigation, useRoute} from '@react-navigation/native'
-import {useToggle} from '../../hooks'
+import {useMutation} from 'react-query'
+import {showMessage} from 'react-native-flash-message'
+
+import {useToggle, useAppSelector} from '../../hooks'
+import {queryKeys, postNanumForm} from '../../api'
 import {WriteNanumFormOfflineRouteProps, WriteNanumFormOfflineNavigationProps} from '../../navigation/WriteNanumFormStackNavigator'
 import {StackHeader, FloatingBottomButton} from '../../components/utils'
 import {StepIndicator, NanumGoodsInfo, NanumAsks, SelectTimeLocation} from '../../components/WriteGoodsStack'
 import * as theme from '../../theme'
-import {INanumAskInfo, INanumGoodsInfo, INanumDateInfo} from '../../types'
+import {INanumAskInfo, INanumGoodsInfo, INanumDateInfo, INanumForm} from '../../types'
 
 // ***************************** ios keyboard settings *****************************
 if (Platform.OS === 'ios') {
@@ -36,10 +40,43 @@ export const WriteNanumFormOffline = () => {
   // ***************************** utils *****************************
   const navigation = useNavigation<WriteNanumFormOfflineNavigationProps>()
   const route = useRoute<WriteNanumFormOfflineRouteProps>()
+  const user = useAppSelector(state => state.auth.user)
+
   const {images, category, title, contents, nanumMethod, firstDate} = useMemo(() => {
     return route.params
   }, [])
 
+  // ***************************** react queries *****************************
+
+  const postNanumFormQuery = useMutation(queryKeys.nanumForm, postNanumForm, {
+    onSuccess(data, variables, context) {
+      console.log('success')
+      console.log(data)
+
+      const nanumIdx = data
+      navigation.navigate('WriteNanumFormComplete', {
+        nanumIdx: nanumIdx,
+      })
+    },
+    onError(error, variables, context) {
+      console.log('error')
+      console.log(error)
+      showMessage({
+        // 에러 안내 메세지
+        message: '나눔폼 업로드 중 에러가 발생했습니다',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+      })
+    },
+  })
   // ***************************** states *****************************
   const [secretForm, toggleSecretForm] = useToggle(false) // 시크릿 폼 여부
   const [nanumAsks, setNanumAsks] = useState<INanumAskInfo[]>([])
@@ -58,28 +95,51 @@ export const WriteNanumFormOffline = () => {
   }, [nanumDates, nanumGoods])
 
   const onPressNext = useCallback(() => {
-    // 백에 전송할 나눔글 폼
-    // const form: ISharingForm = {
-    //   images,
-    //   categories,
-    //   title,
-    //   content,
-    //   //hashtags,
-    //   type,
-    //   isOpenDateBooked,
-    //   openDate,
-    //   isSecretForm,
-    //   additionalQuestions,
-    //   products,
-    //   secretKey,
-    //   nanumDates,
-    // }
-    // // ************* 여기에 api 작성 *************
-    // // 백에서 받아온 게시글 id를 다음 스크린으로 넘겨줌.
-    navigation.navigate('WriteNanumFormComplete', {
-      nanumIdx: 11111,
-    })
-  }, [secretForm, nanumAsks, nanumGoods, secretPwd])
+    const nanumForm: INanumForm = {
+      nanumAskList: nanumAsks.map(item => {
+        return {
+          nanumIdx: 0,
+          contents: item.contents,
+          essential: item.essential ? 'Y' : 'N',
+        }
+      }),
+      nanumDateList: nanumDates.map(item => {
+        return {
+          nanumIdx: 0,
+          acceptDate: moment(item.acceptDate).format('YYYY-MM-DD HH:mm:ss'),
+          location: item.location,
+        }
+      }),
+      nanumGoodslist: nanumGoods.map(item => {
+        return {
+          nanumIdx: 0,
+          goodsName: item.goodsName,
+          goodsNumber: item.goodsNumber,
+        }
+      }),
+      nanumImglist: images.map(item => {
+        return {
+          nanumIdx: 0,
+          imgUrl: item,
+        }
+      }),
+      accountIdx: 0,
+      nanumIdx: 0,
+      creatorId: user.name,
+      thumbnail: images[0],
+      category: category,
+      title: title,
+      contents: contents,
+      nanumMethod: 'M', // M : Mail(우편), O : Offline(오프라인)
+      firstDate: moment(firstDate).format('YYYY-MM-DD HH:mm:ss'), // example: 2022-07-01 12:43:15
+      secretForm: secretForm ? 'Y' : 'N',
+      secretPwd: secretPwd,
+    }
+
+    console.log(JSON.stringify(nanumForm))
+
+    postNanumFormQuery.mutate(nanumForm)
+  }, [secretForm, nanumAsks, nanumGoods, secretPwd, user])
 
   return (
     <SafeAreaView style={{backgroundColor: '#fff', flex: 1}}>
