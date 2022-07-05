@@ -1,10 +1,12 @@
-import React, {useCallback, useState} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import {View, Text, StyleSheet, Dimensions, TextInput, Pressable} from 'react-native'
 import {Button, RoundButton} from '../../components/utils'
 import BouncyCheckbox from 'react-native-bouncy-checkbox'
 import Modal from 'react-native-modal'
 import {XIcon} from '../../components/utils'
 import * as theme from '../../theme'
+import Postcode from '@actbase/react-daum-postcode'
+import {noop} from 'react-query/types/core/utils'
 
 const MODAL_BUTTON_WIDTH = (Dimensions.get('window').width - theme.PADDING_SIZE * 2 - 50) / 2
 
@@ -37,7 +39,28 @@ const Unselected = ({label, onPress}: ButtonProps) => {
 }
 
 export const AddressModal = ({isVisible, toggleIsVisible, sendMethod, setSendMethod}: AddressModal) => {
+  const [postComp, setPostComp] = useState<string>('')
+  const [postNum, setPostNum] = useState<string>('')
+  const [noPostComp, setNoPostComp] = useState<boolean>(false)
+  const [noPostNum, setNoPostNum] = useState<boolean>(false)
+
+  const checkButtonEnabled = useCallback((postComp: string, mailNum: string) => {
+    return postComp == '' || mailNum == '' ? false : true
+  }, [])
+
+  const checkTextInput = useCallback(() => {
+    //console.log('CHECK TEXT INPUT')
+    if (postComp == '') setNoPostComp(true)
+    else setNoPostComp(false)
+    if (postNum == '') setNoPostNum(true)
+    else setNoPostNum(false)
+  }, [])
+
   const onPressPost = useCallback(() => {
+    setNoPostComp(false)
+    setNoPostNum(false)
+    setPostComp('')
+    setPostNum('')
     setSendMethod('post')
   }, [])
 
@@ -45,12 +68,26 @@ export const AddressModal = ({isVisible, toggleIsVisible, sendMethod, setSendMet
     setSendMethod('registeredMail')
   }, [])
 
+  const closeModal = () => {
+    setPostComp('')
+    setPostNum('')
+    setNoPostComp(false)
+    setNoPostNum(false)
+    toggleIsVisible()
+
+    setSendMethod('post')
+  }
+
+  useEffect(() => {
+    //console.log('sendMethod : ', sendMethod)
+  }, [sendMethod, noPostComp, noPostNum])
+
   return (
-    <Modal isVisible={isVisible} onBackdropPress={toggleIsVisible} backdropColor={theme.gray800} backdropOpacity={0.6}>
+    <Modal isVisible={isVisible} onBackdropPress={closeModal} backdropColor={theme.gray800} backdropOpacity={0.6}>
       <View style={styles.shareModal}>
         <View style={[theme.styles.rowSpaceBetween]}>
           <Text style={[theme.styles.bold16]}>운송장 등록</Text>
-          <XIcon onPress={toggleIsVisible} />
+          <XIcon onPress={closeModal} />
         </View>
         <View style={{width: '100%', height: 1, marginVertical: 16, backgroundColor: theme.gray200}} />
         <View style={{marginBottom: 16}}>
@@ -73,12 +110,37 @@ export const AddressModal = ({isVisible, toggleIsVisible, sendMethod, setSendMet
             </View>
           ) : (
             <View>
-              <TextInput placeholder="택배사" style={[styles.modalTextInput, {marginBottom: 10}]} autoCorrect={false}></TextInput>
-              <TextInput placeholder="운송장 번호" style={styles.modalTextInput} autoCorrect={false}></TextInput>
+              <TextInput
+                placeholder="택배사"
+                value={postComp}
+                onChangeText={text => {
+                  setPostComp(text)
+                  setNoPostComp(false)
+                }}
+                style={[styles.modalTextInput, {marginBottom: 10}, noPostComp && {borderColor: theme.red}]}
+                autoCorrect={false}></TextInput>
+              {noPostComp && <Text style={styles.noInputErrorText}>택배사를 입력해주세요.</Text>}
+              <TextInput
+                placeholder="운송장 번호"
+                value={postNum}
+                onChangeText={text => {
+                  setPostNum(text)
+                  setNoPostNum(false)
+                }}
+                style={[styles.modalTextInput, noPostNum && {borderColor: theme.red}]}
+                autoCorrect={false}></TextInput>
+              {noPostNum && <Text style={[styles.noInputErrorText, {marginTop: 10}]}>운송장번호를 입력해주세요.</Text>}
             </View>
           )}
         </View>
-        <RoundButton label="확인" onPress={toggleIsVisible} enabled />
+        <RoundButton
+          label="확인"
+          onPress={() => {
+            checkTextInput()
+            sendMethod == 'registeredMail' ? (checkButtonEnabled(postComp, postNum) ? closeModal() : null) : closeModal()
+          }}
+          enabled={sendMethod == 'registeredMail' ? checkButtonEnabled(postComp, postNum) : true}
+        />
       </View>
     </Modal>
   )
@@ -126,5 +188,10 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  noInputErrorText: {
+    color: theme.red,
+    fontSize: 12,
+    marginBottom: 10,
   },
 })
