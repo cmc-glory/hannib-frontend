@@ -1,9 +1,10 @@
-import React, {useCallback} from 'react'
+import React, {useCallback, useState} from 'react'
 import {View, Pressable, Text, StyleSheet} from 'react-native'
 import Modal from 'react-native-modal'
 import uuid from 'react-native-uuid'
 import {getStatusBarHeight} from 'react-native-status-bar-height'
 import {isIphoneX} from 'react-native-iphone-x-helper'
+import {useNavigation} from '@react-navigation/native'
 import {IUserCategory} from '../../types'
 import * as theme from '../../theme'
 
@@ -26,7 +27,10 @@ type CategoryItemProps = {
 }
 
 const CategoryItem = ({userCategory, currentCategory, borderTop, borderBottom, onPressItem}: CategoryItemProps) => {
+  // ******************** utils ********************
   const selected: boolean = userCategory.id == currentCategory.id
+
+  // ******************** renderer ********************
   return (
     <Pressable
       onPress={() => onPressItem(currentCategory)}
@@ -37,6 +41,14 @@ const CategoryItem = ({userCategory, currentCategory, borderTop, borderBottom, o
 }
 
 export const CategoryDropdown = ({showCategoryModal, setShowCategoryModal, userCategory, setUserCategory, categories}: CategoryDropdownProps) => {
+  // ******************** utils ********************
+  const navigation = useNavigation()
+
+  // ******************** states ********************
+  const [categoryPressed, setCategoryPressed] = useState<boolean>(false)
+
+  // ******************** callbacks ********************
+
   const onPressItem = useCallback((category: IUserCategory) => {
     setUserCategory(category)
     setShowCategoryModal(false)
@@ -44,9 +56,12 @@ export const CategoryDropdown = ({showCategoryModal, setShowCategoryModal, userC
 
   const onPressEditCategory = useCallback(() => {
     setShowCategoryModal(false)
-
+    setCategoryPressed(true)
     // 카테고리 수정하기로 이동하는 네비게이션 필요
   }, [])
+
+  // ******************** renderer ********************
+
   return (
     <Modal
       isVisible={showCategoryModal}
@@ -56,6 +71,11 @@ export const CategoryDropdown = ({showCategoryModal, setShowCategoryModal, userC
       animationOut={'fadeOut'}
       animationInTiming={200}
       animationOutTiming={200}
+      onModalHide={() => {
+        if (categoryPressed) {
+          navigation.navigate('EditCategory')
+        }
+      }}
       style={{margin: 0}}>
       <View style={[styles.container]}>
         {categories.length == 1 ? (

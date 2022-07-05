@@ -1,17 +1,14 @@
 import React from 'react'
 import {createStackNavigator} from '@react-navigation/stack'
-//import Login from '../screens/RootStack/Login'
+import {CardStyleInterpolators} from '@react-navigation/stack'
+
 import MainTabNavigator from './MainTabNavigator'
 import WriteNanumFormStackNavigator from './WriteNanumFormStackNavigator'
-//import FindId from '../screens/RootStack/FindId'
-//import FindPassword from '../screens/RootStack/FindPassword'
-//import CreateAccount from '../screens/RootStack/CreateAccount'
-//import GoodsDetail from '../screens/GoodsStack/GoodsDetail'
 import GoodsStackNavigator from './GoodsStackNavigator'
 import LoginStackNavigator from './LoginStackNavigator'
 import NotificationStackNavigator from './NotificationStackNavigator'
 import SearchStackNavigator from './SearchStackNavigator'
-import {SplashScreen} from '../screens/RootStack'
+import {SplashScreen, EditCategory} from '../screens/RootStack'
 import HoldingSharingStackNavigator from './HoldingSharingStackNavigator'
 import ParticipatingSharingStackNavigator from './ParticipatingSharingStackNavigator'
 import ReportIssueStackNavigator from './ReportIssueStackNavigator'
@@ -22,10 +19,6 @@ const Stack = createStackNavigator()
 const RootStackNavigator = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false, cardStyle: {backgroundColor: '#fff'}}} initialRouteName="SplashScreen">
-      {/* <Stack.Screen name="Login" component={Login} />
-      <Stack.Screen name="FindId" component={FindId} />
-      <Stack.Screen name="FindPassword" component={FindPassword} />
-      <Stack.Screen name="CreateAccount" options={{cardStyle: {backgroundColor: '#fff'}}} component={CreateAccount} /> */}
       <Stack.Screen name="SplashScreen" component={SplashScreen} />
       <Stack.Screen name="LoginStackNavigator" options={{gestureEnabled: false}} component={LoginStackNavigator} />
       <Stack.Screen name="MainTabNavigator" options={{gestureEnabled: false}} component={MainTabNavigator} />
@@ -37,6 +30,7 @@ const RootStackNavigator = () => {
       <Stack.Screen name="ParticipatingSharingStackNavigator" component={ParticipatingSharingStackNavigator}></Stack.Screen>
       <Stack.Screen name="ReportIssueStackNavigator" component={ReportIssueStackNavigator}></Stack.Screen>
       <Stack.Screen name="MyPageStackNavigator" component={MyPageStackNavigator}></Stack.Screen>
+      <Stack.Screen name="EditCategory" component={EditCategory} options={{cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS}}></Stack.Screen>
       {/* <Stack.Screen name="QnAStackNavigator" component={QnAStackNavigator}></Stack.Screen> */}
     </Stack.Navigator>
   )

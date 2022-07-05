@@ -146,5 +146,7 @@ declare namespace ReactNavigation {
       postid: string
     }
     CustomerService: undefined
+    EditCategory: undefined // 나눔 리스트 헤더에서 클릭했을 때
+    EditCategoryMyPage: undefined // 마이 페이지에서 이동할 때
   }
 }

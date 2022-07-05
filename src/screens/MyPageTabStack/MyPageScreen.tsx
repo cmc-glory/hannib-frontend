@@ -79,6 +79,12 @@ export const MyPageScreen = () => {
     })
   }, [])
 
+  const onPressEditCategory = useCallback(() => {
+    navigation.navigate('MyPageStackNavigator', {
+      screen: 'EditCategoryMyPage',
+    })
+  }, [])
+
   return (
     <SafeAreaView style={[theme.styles.safeareaview]}>
       <StackHeader title="마이페이지" goBack={false}>
@@ -109,7 +115,7 @@ export const MyPageScreen = () => {
         <Separator />
         <View style={styles.wrapper}>
           <Text style={[theme.styles.bold16, {marginBottom: 8, marginTop: 16}]}>설정 및 문의</Text>
-          <MyPageItem label="카테고리 설정" onPress={() => {}} />
+          <MyPageItem label="카테고리 설정" onPress={onPressEditCategory} />
           <SeparatorLight />
           <MyPageItem label="차단계정 관리" onPress={onPressBlockedUsers} />
           <SeparatorLight />
