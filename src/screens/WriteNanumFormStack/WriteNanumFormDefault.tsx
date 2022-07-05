@@ -69,12 +69,11 @@ export const WriteNanumFormDefault = () => {
 
   // 필요한 내용을 기입해서 다음으로 넘어갈 수 있는지.
   const checkNextButtonEnabled = () => {
-    // if (images.length != 0 && category != '' && title != '' && contents != '') {
-    //   return true
-    // } else {
-    //   return false
-    // }
-    return true // for debugging
+    if (images.length != 0 && category != '' && title != '' && contents != '') {
+      return true
+    } else {
+      return false
+    }
   }
   return (
     <SafeAreaView edges={['top', 'bottom']} style={theme.styles.safeareaview}>

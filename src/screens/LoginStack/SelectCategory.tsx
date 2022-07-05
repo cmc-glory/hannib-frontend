@@ -51,6 +51,7 @@ export const SelectCategory = () => {
   const [actors, setActors] = useState<IStar[]>([]) // 서버에서 받아온 배우 데이터 전부
   const [stars, setStars] = useState<IStar[]>([]) // 프론트 단에서 보여줄 연예인 데이터
   const [selectedStars, setSelectedStars] = useState<IStar[]>([]) // 사용자가 선택한 카테고리
+  const [keyword, setKeyword] = useState<string>('')
 
   // ******************** react queries  ********************
   useEffect(() => {
@@ -79,6 +80,17 @@ export const SelectCategory = () => {
     setSingerSelected(false)
     setStars(actors)
   }, [actors])
+
+  const searchKeyword = useCallback(
+    (keyword: string) => {
+      // 입력 값이 없을 때는 리턴
+      if (keyword == '') return
+      init && setInit(false) // 한번 검색을 하고 나면 init screen은 필요 없음
+      setStars(starsAll.filter(star => star.name.includes(keyword)))
+      setKeyword('')
+    },
+    [keyword],
+  )
 
   const onPressSelectCompletion = useCallback(() => {
     if (selectedStars.length == 0) return
@@ -144,7 +156,7 @@ export const SelectCategory = () => {
           <Button selected={!singerSelected} label="배우" style={{width: BUTTON_WIDTH}} onPress={onPressActor} />
         </View>
 
-        <SearchStar starsAll={starsAll} setStars={setStars} />
+        <SearchStar keyword={keyword} setKeyword={setKeyword} searchKeyword={searchKeyword} />
         <View style={[theme.styles.rowFlexStart, {flexWrap: 'wrap'}]}>
           {selectedStars.map(item => (
             <SelectedStarTag key={item.name + item.id} item={item} onPressRemove={onPressRemove} />

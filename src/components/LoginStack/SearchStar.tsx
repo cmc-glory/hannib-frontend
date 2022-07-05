@@ -5,31 +5,23 @@ import * as theme from '../../theme'
 import {IStar} from '../../types'
 
 type SearchStarProps = {
-  setStars: React.Dispatch<React.SetStateAction<IStar[]>>
-  starsAll: IStar[]
+  keyword: string
+  setKeyword: React.Dispatch<React.SetStateAction<string>>
+  searchKeyword: (keyword: string) => void
 }
 
-export const SearchStar = ({setStars, starsAll}: SearchStarProps) => {
-  const [keyword, setKeyword] = useState<string>('') // 검색 키워드
-
-  const searchKeyword = useCallback(() => {
-    // 입력 값이 없을 때는 리턴
-    if (keyword == '') return
-    setStars(starsAll.filter(star => star.name.includes(keyword)))
-    setKeyword('')
-  }, [keyword])
-
+export const SearchStar = ({keyword, setKeyword, searchKeyword}: SearchStarProps) => {
   return (
     <View style={styles.container}>
       <Text style={[styles.label]}>최대 5명까지 선택 가능합니다.</Text>
       <View>
-        <MagnifierIcon style={styles.maginfier} onPress={searchKeyword} />
+        <MagnifierIcon style={styles.maginfier} onPress={() => searchKeyword(keyword)} />
         <TextInput
           style={[theme.styles.input, {color: theme.gray800}]}
           value={keyword}
           onChangeText={setKeyword}
           placeholder="검색어를 입력해 주세요."
-          onEndEditing={searchKeyword}
+          onEndEditing={() => searchKeyword(keyword)}
           placeholderTextColor={theme.gray300}></TextInput>
       </View>
     </View>

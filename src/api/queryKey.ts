@@ -9,4 +9,5 @@ export const queryKeys = {
   profileImage: ['profileImage'],
   categoryImage: ['categoryImage'],
   nanumImage: ['nanumImage'],
+  nanumForm: ['nanumForm'],
 }

@@ -86,46 +86,6 @@ export type ISharingDetail = {
   qnaNum: number
 }
 
-export type IParticipatingOfflineDetail = {
-  uri: string
-  type: ISharingType
-  state: string
-  category: string
-  title: string
-  products: IProductInfo[]
-  openDate: Date
-  receiverName: string
-  expectedReceiveDate: Date | undefined
-  finalReceiveDate: Date | undefined
-  location: string | undefined
-}
-
-export type IParticipatingOnlineDetail = {
-  uri: string
-  type: ISharingType
-  state: string
-  category: string
-  title: string
-  products: IProductInfo[]
-  openDate: Date
-  receiverName: string
-  postState: string
-  address: {postcode: string; roadAddress: string; detailedAddress: string}
-  phonenumber: {
-    first: string
-    second: string
-    third: string
-  }
-}
-
-export type IHoldingReceiverInfo = {
-  id: string
-  receiverName: string
-  state: ISharingType
-  receiveState: string
-  products: IProductInfo[]
-}
-
 export type ISharingRequestInfo = {
   products: IProductInfo[]
   schedule?: ISchedule[]
@@ -233,6 +193,47 @@ export type INanumListItem = {
 }
 
 // 모집폼 작성 시 기본 정보
+
+type INanumAskDto = {
+  nanumIdx: number
+  contents: string
+  essential: 'Y' | 'N'
+}
+
+type INanumDateDto = {
+  nanumIdx: number
+  acceptDate: string // example: 2022-07-01 12:43:15
+  location: string
+}
+
+type INanumGoodsDto = {
+  nanumIdx: number
+  goodsName: string
+  goodsNumber: number
+}
+type INanumImgDto = {
+  nanumIdx: number
+  imgUrl: string
+}
+
+export type INanumForm = {
+  nanumAskList: INanumAskDto[]
+  nanumDateList: INanumDateDto[]
+  nanumGoodslist: INanumGoodsDto[]
+  nanumImglist: INanumImgDto[]
+  accountIdx: number
+  nanumIdx: number
+  creatorId: string
+  thumbnail: string
+  category: string
+  title: string
+  contents: string
+  nanumMethod: 'M' | 'O' // M : Mail(우편), O : Offline(오프라인)
+  firstDate: string // example: 2022-07-01 12:43:15
+  secretForm: 'Y' | 'N'
+  secretPwd: string
+}
+
 export type INanum = {
   nanumIdx?: number // 나눔 db id
   accountIdx: number // 작성자 db id
@@ -281,12 +282,12 @@ export type INanumAsk = {
 
 export type INanumDateInfo = {
   id: string
-  acceptDate: Date
+  acceptDate: Date | undefined
   location: string
 }
 
 export type INanumDate = {
   dateIdx: number
-  acceptDate: Date
+  acceptDate: Date | undefined
   location: string
 }

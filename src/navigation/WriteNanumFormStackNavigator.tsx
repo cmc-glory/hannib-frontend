@@ -19,7 +19,7 @@ type WriteNanumFormStackNavigatorParamList = {
     category: string
     title: string
     contents: string
-    type: INanumMethod
+    nanumMethod: INanumMethod
     isOpenDateBooked: boolean
     firstDate: Date
   }
