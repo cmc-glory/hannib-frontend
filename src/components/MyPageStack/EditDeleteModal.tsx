@@ -20,6 +20,7 @@ export const EditDeleteModal = ({isVisible, toggleIsVisible, deleteSharingModalV
   const navigation = useNavigation()
 
   const onPressEdit = useCallback(() => {
+    toggleIsVisible()
     navigation.navigate('HoldingSharingStackNavigator', {
       screen: 'EditGoodsDefault',
     })
@@ -36,12 +37,12 @@ export const EditDeleteModal = ({isVisible, toggleIsVisible, deleteSharingModalV
       onBackdropPress={toggleIsVisible}
       backdropColor={theme.gray800}>
       <View style={styles.menuModal}>
-        <Pressable
+        {/* <Pressable
           onPress={() => {
             onPressEdit()
           }}>
-          <Text style={{color: theme.gray800, height: 40}}>수정하기</Text>
-        </Pressable>
+          <Text style={{color: theme.gray800}}>수정하기</Text>
+        </Pressable> */}
         <Pressable
           onPress={() => {
             toggleIsVisible()
@@ -56,15 +57,15 @@ export const EditDeleteModal = ({isVisible, toggleIsVisible, deleteSharingModalV
 
 const styles = StyleSheet.create({
   menuModal: {
-    backgroundColor: theme.white,
+    backgroundColor: theme.gray100,
     position: 'absolute',
     width: 144,
-    //height: 40,
+    height: 40,
     padding: 10,
     justifyContent: 'center',
     zIndex: 1,
-    right: 0,
+    right: 10,
     borderRadius: 4,
-    top: STATUSBAR_HEIGHT + 28,
+    top: STATUSBAR_HEIGHT + 20,
   },
 })
