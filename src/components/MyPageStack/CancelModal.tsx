@@ -54,7 +54,7 @@ export const CancelModal = ({isVisible, toggleIsVisible}: ModalProps) => {
               setNoText(false)
               setReason(text)
             }}></TextInput>
-          {noText && <Text style={[{color: theme.red, fontSize: 12, marginTop: 4}, theme.styles.text12]}>취소 사유를 입력해주세요.</Text>}
+          {noText && <Text style={[{color: theme.red, fontSize: 12, marginTop: 4}]}>취소 사유를 입력해주세요.</Text>}
         </View>
         <RoundButton
           label="확인"
