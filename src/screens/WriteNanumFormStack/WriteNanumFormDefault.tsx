@@ -1,12 +1,11 @@
-import React, {useState} from 'react'
+import React, {useState, useCallback} from 'react'
 import {View, Text, ScrollView, TextInput, StyleSheet, Platform} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
-import type {Asset} from 'react-native-image-picker'
 import {useNavigation} from '@react-navigation/native'
 import KeyboardManager from 'react-native-keyboard-manager'
 
 import StackHeader from '../../components/utils/StackHeader'
-import {SelectCategory, ImagePicker, StepIndicator, SetSharingType, BookSharingDate} from '../../components/WriteGoodsStack'
+import {SelectCategoryBanner, ImagePicker, StepIndicator, SetSharingType, BookSharingDate} from '../../components/WriteGoodsStack'
 import {FloatingBottomButton, NeccesaryField} from '../../components/utils'
 import {useToggle} from '../../hooks'
 import type {INanumMethod} from '../../types'
@@ -35,8 +34,9 @@ if (Platform.OS === 'ios') {
 export const WriteNanumFormDefault = () => {
   const navigation = useNavigation()
 
+  const [categoryModalOpened, setCategoryModalOpened] = useState<boolean>(false)
   const [images, setImages] = useState<string[]>([]) // 대표 이미지
-  const [category, setCategory] = useState<string>('dd') // 카테고리
+  const [category, setCategory] = useState<string>('') // 카테고리
   const [title, setTitle] = useState<string>('') // 제목
   const [contents, setContents] = useState<string>('') // 내용
   const [nanumMethod, setNanumMethod] = useState<INanumMethod>('online') // 나눔 방식
@@ -68,20 +68,26 @@ export const WriteNanumFormDefault = () => {
   }
 
   // 필요한 내용을 기입해서 다음으로 넘어갈 수 있는지.
-  const checkNextButtonEnabled = () => {
+  const checkNextButtonEnabled = useCallback(() => {
     if (images.length != 0 && category != '' && title != '' && contents != '') {
       return true
     } else {
       return false
     }
-  }
+  }, [images, category, title, contents])
+
   return (
     <SafeAreaView edges={['top', 'bottom']} style={theme.styles.safeareaview}>
       <StackHeader goBack title="모집폼 작성" />
       <ScrollView contentContainerStyle={[theme.styles.wrapper]}>
         <StepIndicator step={1} />
         <ImagePicker images={images} setImages={setImages} />
-        <SelectCategory />
+        <SelectCategoryBanner
+          category={category}
+          setCategory={setCategory}
+          categoryModalOpened={categoryModalOpened}
+          setCategoryModalOpened={setCategoryModalOpened}
+        />
         <View style={[styles.itemWrapper]}>
           <View style={[theme.styles.rowFlexStart]}>
             <Text style={[theme.styles.label]}>제목</Text>

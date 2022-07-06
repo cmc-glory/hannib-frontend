@@ -2,7 +2,7 @@ import React, {useEffect, cloneElement, useMemo} from 'react'
 import {View, Text, StyleSheet, Modal, Animated, TouchableWithoutFeedback, Dimensions} from 'react-native'
 import type {GestureResponderEvent, PanResponderGestureState} from 'react-native'
 import {useAnimatedValue, usePanResponder} from '../../hooks'
-import {getBottomSpace, isIphoneX} from 'react-native-iphone-x-helper'
+import {getBottomSpace, isIphoneX, getStatusBarHeight} from 'react-native-iphone-x-helper'
 
 type BottomSheetProps = {
   children: React.ReactElement
@@ -14,6 +14,7 @@ type Event = GestureResponderEvent
 type State = PanResponderGestureState
 
 const iosX = isIphoneX()
+const STATUS_BAR_HEIGHT = getStatusBarHeight()
 
 export const BottomSheet = ({children, modalVisible, setModalVisible}: BottomSheetProps) => {
   const screenHeight = useMemo(() => {
@@ -71,14 +72,15 @@ export const BottomSheet = ({children, modalVisible, setModalVisible}: BottomShe
         <TouchableWithoutFeedback onPress={closeModal}>
           <View style={styles.background} />
         </TouchableWithoutFeedback>
-        <Animated.View
-          style={{...styles.bottomSheetContainer, paddingBottom: iosX ? bottomSpaceHeight : 10, transform: [{translateY: translateY}]}}
+        <Animated.ScrollView
+          contentContainerStyle={{...styles.bottomSheetContainer, paddingBottom: iosX ? bottomSpaceHeight : 10, maxHeight: screenHeight - STATUS_BAR_HEIGHT}}
+          style={{transform: [{translateY: translateY}]}}
           {...panResponders.panHandlers}>
           <View style={styles.bar} />
           {cloneElement(children, {
             close: closeModal,
           })}
-        </Animated.View>
+        </Animated.ScrollView>
       </View>
     </Modal>
   )
@@ -107,6 +109,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
+
     //paddingBottom: 30,
   },
 })

@@ -1,8 +1,10 @@
 import React from 'react'
 import {createStackNavigator} from '@react-navigation/stack'
 import type {NativeStackScreenProps} from '@react-navigation/native-stack'
+import {CardStyleInterpolators} from '@react-navigation/stack'
+
 import {INanumMethod} from '../types'
-import {WriteNanumFormDefault, WriteNanumFormOffline, WriteNanumFormOnline, WriteNanumFormComplete} from '../screens/WriteNanumFormStack'
+import {WriteNanumFormDefault, WriteNanumFormOffline, WriteNanumFormOnline, WriteNanumFormComplete, SetCategoryNanumForm} from '../screens/WriteNanumFormStack'
 
 type WriteNanumFormStackNavigatorParamList = {
   WriteNanumFormDefault: undefined
@@ -26,6 +28,7 @@ type WriteNanumFormStackNavigatorParamList = {
   WriteNanumFormComplete: {
     nanumIdx: number
   }
+  SetCategoryNanumForm: undefined
 }
 
 type WriteNanumFormOfflineProps = NativeStackScreenProps<WriteNanumFormStackNavigatorParamList, 'WriteNanumFormOffline'>
@@ -45,6 +48,7 @@ const WriteNanumFormStackNavigator = () => {
       <Stack.Screen name="WriteNanumFormOffline" component={WriteNanumFormOffline} />
       <Stack.Screen name="WriteNanumFormOnline" component={WriteNanumFormOnline} />
       <Stack.Screen name="WriteNanumFormComplete" component={WriteNanumFormComplete} />
+      <Stack.Screen name="SetCategoryNanumForm" component={SetCategoryNanumForm} options={{cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS}} />
     </Stack.Navigator>
   )
 }
