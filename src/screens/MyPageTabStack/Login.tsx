@@ -19,6 +19,8 @@ import {
 } from '@react-native-seoul/kakao-login'
 import {login as ReduxLogin} from '../../redux/slices/auth'
 import * as theme from '../../theme'
+import {showMessage} from 'react-native-flash-message'
+import appleAuth, {AppleRequestResponse} from '@invertase/react-native-apple-authentication'
 
 const ios = Platform.OS == 'ios'
 
@@ -63,6 +65,7 @@ export const Login = () => {
             userCategory: [],
             holdingSharingCnt: result.holdingSharingCnt,
             participateSharingCnt: result.participateSharingCnt,
+            accountIdx: 0,
           }),
         )
       })
@@ -96,12 +99,79 @@ export const Login = () => {
             userCategory: [],
             holdingSharingCnt: result.holdingSharingCnt,
             participateSharingCnt: result.participateSharingCnt,
+            accountIdx: 0,
           }),
         )
       })
       .then(() => {
         navigation.navigate('GoodsList')
       })
+  }
+
+  const SignInWithApple = async () => {
+    try {
+      const appleAuthRequestResponse: AppleRequestResponse = await appleAuth.performRequest({
+        requestedOperation: appleAuth.Operation.LOGIN,
+        requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
+      })
+
+      // 해당 이메일로 가입된 id가 있는 지 확인.
+      // 없으면 가입 시킴. 있으면 로그인.
+
+      // console.log('appleAuthRequestResponse', appleAuthRequestResponse)
+      // const {user, nonce, identityToken} = appleAuthRequestResponse
+      // const email: any = appleAuthRequestResponse.email
+      // if (identityToken) {
+      //   console.log(nonce, identityToken)
+      // } else {
+      //   console.log('NO TOKEN')
+      // }
+      // console.log(`Apple Authentication Completed, ${user}, ${email}`)
+
+      fetch('http://localhost:8081/src/data/dummyUser.json', {
+        method: 'get',
+      })
+        .then(res => res.json())
+        .then(result => {
+          dispatch(
+            ReduxLogin({
+              email: result.email,
+              name: result.name,
+              profileImageUri: result.profileImageUri,
+              userCategory: [],
+              holdingSharingCnt: result.holdingSharingCnt,
+              participateSharingCnt: result.participateSharingCnt,
+              accountIdx: 0,
+            }),
+          )
+        })
+        .then(() => {
+          navigation.navigate('GoodsList')
+        })
+
+      // navigation.navigate('SetProfile', {
+      //   email: email,
+      // })
+    } catch (error: any) {
+      if (error.code === appleAuth.Error.CANCELED) {
+        console.warn('User canceled Apple Sign in.')
+      } else {
+        console.error(error)
+        showMessage({
+          message: '애플 로그인 중 에러가 발생했습니다',
+          type: 'info',
+          animationDuration: 300,
+          duration: 1350,
+          style: {
+            backgroundColor: 'rgba(36, 36, 36, 0.9)',
+          },
+          titleStyle: {
+            fontFamily: 'Pretendard-Medium',
+          },
+          floating: true,
+        })
+      }
+    }
   }
 
   return (
@@ -126,7 +196,7 @@ export const Login = () => {
                 style={{backgroundColor: theme.black}}
                 textStyle={{color: theme.white}}
                 source={require('../../assets/images/apple_logo.png')}
-                onPress={SignInWithGoogle}
+                onPress={SignInWithApple}
               />
             )}
             {!ios && (

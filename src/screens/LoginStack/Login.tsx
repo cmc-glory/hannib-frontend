@@ -97,7 +97,7 @@ export const Login = () => {
       })
     }, [])
 
-  const signInWithApple = async () => {
+  const SignInWithApple = async () => {
     try {
       const appleAuthRequestResponse: AppleRequestResponse = await appleAuth.performRequest({
         requestedOperation: appleAuth.Operation.LOGIN,
@@ -167,7 +167,7 @@ export const Login = () => {
               style={{backgroundColor: theme.black}}
               textStyle={{color: theme.white}}
               source={require('../../assets/images/apple_logo.png')}
-              onPress={signInWithApple}
+              onPress={SignInWithApple}
             />
           )}
           {!ios && (
