@@ -85,7 +85,12 @@ export function GoodsDetailContent({headerHeight, nanumDetail}: ContentProps) {
       </View>
       <NoticeBanner postid="1111" />
       <GoodsContentDetail description={nanumDetail.contents} />
-      <WriterProfileBanner writername={nanumDetail.creatorId} writerid={nanumDetail.accountIdx} writerProfileImageUri={'http://'} />
+      <WriterProfileBanner
+        writername={nanumDetail.creatorId}
+        nanumIdx={nanumDetail.accountIdx}
+        writerProfileImageUri={'http://'}
+        askNum={nanumDetail.nanumAskList.length}
+      />
 
       <View style={[styles.padding]}>
         <RelatedSharing />
