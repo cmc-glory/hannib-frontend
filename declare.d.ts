@@ -50,6 +50,9 @@ declare namespace ReactNavigation {
           screen: string
           params: any
         }
+      | {
+          screen: string
+        }
     SelectCategory: {
       email: string
       name: string

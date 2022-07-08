@@ -5,6 +5,7 @@ import {XIcon} from '../utils'
 import * as theme from '../../theme'
 import {useDispatch} from 'react-redux'
 import {logout} from '../../redux/slices/auth'
+import {removeString} from '../../hooks'
 
 type LogoutModalProps = {
   logoutModalVisible: boolean
@@ -21,6 +22,7 @@ export const LogoutModal = ({logoutModalVisible, setLogoutModalVisible}: LogoutM
   const onPressLogout = useCallback(() => {
     dispatch(logout())
     hideModal()
+    removeString('email')
   }, [])
 
   return (
