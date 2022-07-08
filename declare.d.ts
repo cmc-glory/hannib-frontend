@@ -46,7 +46,7 @@ declare namespace ReactNavigation {
     SelectCategory: {
       email: string
       name: string
-      profileImage: Asset
+      profileImage: string
     }
     WriteNanumFormComplete: {
       nanumIdx: number // 작성한 게시글의 id. "등록한 게시글로 이동"에서 사용한다.

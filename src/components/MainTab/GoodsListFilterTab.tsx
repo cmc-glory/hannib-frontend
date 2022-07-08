@@ -3,31 +3,31 @@ import {useCallback} from 'react'
 import {View, Text, Pressable, StyleSheet} from 'react-native'
 import * as theme from '../../theme'
 import {DownArrowIcon} from '../../components/utils'
-import {ISharingType} from '../../types'
+import {ISharingType, INanumMethod} from '../../types'
 
 type GoodsFilterTabProps = {
-  locationFilter: 'all' | 'offline' | 'online'
-  setLocationFilter: React.Dispatch<React.SetStateAction<'all' | 'offline' | 'online'>>
+  locationFilter: 'all' | INanumMethod
+  setLocationFilter: React.Dispatch<React.SetStateAction<'all' | INanumMethod>>
   itemFilter: '최신순' | '인기순' | '추천순'
   setShowItemFilterBottomSheet: React.Dispatch<React.SetStateAction<boolean>>
-  onPressLocationFilter: (type: ISharingType | 'all') => void
+  onPressLocationFilter: (type: INanumMethod | 'all') => void
 }
 
 type ButtonProps = {
   text: '우편' | '오프라인' | '전체'
-  locationFilter: 'all' | 'offline' | 'online'
-  setLocationFilter: React.Dispatch<React.SetStateAction<'all' | 'offline' | 'online'>>
+  locationFilter: 'all' | INanumMethod
+  setLocationFilter: React.Dispatch<React.SetStateAction<'all' | INanumMethod>>
   index: 0 | 1 | 2
-  onPressLocationFilter: (type: ISharingType | 'all') => void
+  onPressLocationFilter: (type: INanumMethod | 'all') => void
 }
 
 const locationMap: {
-  우편: 'online'
-  오프라인: 'offline'
+  우편: 'M'
+  오프라인: 'O'
   전체: 'all'
 } = {
-  우편: 'online',
-  오프라인: 'offline',
+  우편: 'M',
+  오프라인: 'O',
   전체: 'all',
 }
 

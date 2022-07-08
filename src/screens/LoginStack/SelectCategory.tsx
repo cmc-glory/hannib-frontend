@@ -2,14 +2,17 @@ import React, {useMemo, useState, useEffect, useCallback} from 'react'
 import {View, Text, StyleSheet, Dimensions, FlatList, Alert} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation, useRoute} from '@react-navigation/native'
+import {useMutation} from 'react-query'
+import {showMessage} from 'react-native-flash-message'
+
 import {SelectCategoryRouteProps} from '../../navigation/LoginStackNavigator'
 import {StackHeader, Button, CategoryItem, FloatingBottomButton, XIcon} from '../../components/utils'
 import {SearchStar, EmptyResult, InitScreen} from '../../components/LoginStack'
 import * as theme from '../../theme'
-import {IStar} from '../../types'
+import {IStar, IAccountDto, IAccountCategoryDto} from '../../types'
 import {login, storeAccessToken, storeRefreshToken} from '../../redux/slices'
-import {useAppDispatch} from '../../hooks'
-import {storeString} from '../../hooks'
+import {useAppDispatch, storeString} from '../../hooks'
+import {queryKeys, postSignUp} from '../../api'
 
 const BUTTON_GAP = 10
 
@@ -42,6 +45,33 @@ export const SelectCategory = () => {
   const {email, name, profileImage} = useMemo(() => route.params, [])
 
   console.log(' params from before : ', email, name, profileImage)
+
+  // ******************** react queries  ********************
+  const postSignUpQuery = useMutation(queryKeys.signUp, postSignUp, {
+    onSuccess(data) {
+      console.log('sign up success')
+      console.log('data : ', data)
+
+      navigation.navigate('MainTabNavigator')
+    },
+    onError(error) {
+      showMessage({
+        // 에러 안내 메세지
+        message: '회원 가입 중 에러가 발생했습니다',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+      })
+      console.log(error)
+    },
+  })
 
   // ******************** states  ********************
   const [init, setInit] = useState<boolean>(true) // 처음에만 검색해보세요! 화면 띄움
@@ -93,10 +123,6 @@ export const SelectCategory = () => {
   )
 
   const onPressSelectCompletion = useCallback(() => {
-    if (selectedStars.length == 0) return
-    // email, name, image, category 백으로 전송하는 api.
-    // 그리고 access token, refresh token 받아옴.
-
     const accessToken = '111111'
     const refreshToken = '222222'
 
@@ -115,8 +141,25 @@ export const SelectCategory = () => {
     //       return {id: category.id, name: category.name}
     //     }),
     //   }),
-    // )
+    // );
+    const accountIdx = 0
+    const accountDto: IAccountDto = {
+      accountCategoryDtoList: [
+        {
+          accountIdx,
+          job: '가수',
+          categoryName: 'BTS',
+        },
+      ],
+      accountIdx,
+      creatorId: name,
+      accountImg: profileImage == '' ? null : profileImage,
+      email,
+    }
 
+    console.log(accountDto)
+
+    //    postSignUpQuery.mutate(accountDto)
     navigation.navigate('MainTabNavigator')
   }, [selectedStars])
 
@@ -188,7 +231,7 @@ export const SelectCategory = () => {
             contentContainerStyle={{paddingHorizontal: theme.PADDING_SIZE}}
           />
         )}
-        <FloatingBottomButton label="선택 완료" enabled={selectedStars.length != 0} onPress={onPressSelectCompletion} />
+        <FloatingBottomButton label="선택 완료" enabled={true} onPress={onPressSelectCompletion} />
       </View>
     </SafeAreaView>
   )
