@@ -4,6 +4,7 @@ import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation} from '@react-navigation/native'
 import KeyboardManager from 'react-native-keyboard-manager'
 import BottomSheet, {BottomSheetBackdrop, BottomSheetScrollView} from '@gorhom/bottom-sheet'
+import {isIphoneX} from 'react-native-iphone-x-helper'
 import StackHeader from '../../components/utils/StackHeader'
 import {ImagePicker, StepIndicator, SetSharingType, BookSharingDate} from '../../components/WriteGoodsStack'
 import {NeccesaryField, RightArrowIcon, RoundButton, XIcon} from '../../components/utils'
@@ -11,7 +12,7 @@ import {useToggle} from '../../hooks'
 import type {INanumMethod} from '../../types'
 import * as theme from '../../theme'
 
-const windowHeight = Dimensions.get('window').height
+const iosX = isIphoneX()
 
 // ***************************** ios keyboard settings *****************************
 if (Platform.OS === 'ios') {
@@ -44,7 +45,7 @@ export const WriteNanumFormDefault = () => {
   const bottomSheetRef = useRef<BottomSheet>(null)
 
   // variables
-  const snapPoints = useMemo(() => ['90%'], [])
+  const snapPoints = useMemo(() => ['95%'], [])
 
   // callbacks
   const handleSheetChanges = useCallback((index: number) => {
@@ -159,7 +160,12 @@ export const WriteNanumFormDefault = () => {
         <BookSharingDate isOpenDateBooked={isOpenDateBooked} toggleOpenDate={toggleOpenDate} firstDate={firstDate} setFirstDate={setFirstDate} />
       </ScrollView>
       <View style={{paddingHorizontal: theme.PADDING_SIZE}}>
-        <RoundButton label="다음" onPress={nanumMethod == 'O' ? onPressOffline : onPressOnline} enabled={checkNextButtonEnabled()} />
+        <RoundButton
+          label="다음"
+          onPress={nanumMethod == 'O' ? onPressOffline : onPressOnline}
+          enabled={checkNextButtonEnabled()}
+          style={{marginBottom: iosX ? 0 : 10}}
+        />
       </View>
 
       <BottomSheet

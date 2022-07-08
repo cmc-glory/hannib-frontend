@@ -71,7 +71,7 @@ export const GoodsDetail = () => {
         scrollEnabled
         bouncesZoom={false}
         onScroll={(e: any) => {
-          if (e.nativeEvent.contentOffset.y >= IMAGE_HEIGHT - TOP_HEIGHT - 48) {
+          if (e.nativeEvent.contentOffset.y >= IMAGE_HEIGHT - TOP_HEIGHT - 40) {
             setHeaderInvert(true)
           } else {
             setHeaderInvert(false)

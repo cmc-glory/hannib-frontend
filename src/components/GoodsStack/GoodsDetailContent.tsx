@@ -35,14 +35,20 @@ export function GoodsDetailContent({headerHeight, data}: ContentProps) {
     // 즐겨찾기 버튼 클릭했을 때
     data.isFavorite = true // 프론트 단에서만 즐겨찾기 여부 수정.
     data.favoriteNum += 1
-    addFavoriteQuery.mutate('1111') // 인자에는 query params 넣기
+    addFavoriteQuery.mutate({
+      accountIdx: 0,
+      nanumIdx: 0,
+    }) // 인자에는 query params 넣기
   }, [])
 
   const onPressRemoveFavorite = useCallback(() => {
     // 즐겨찾기 버튼 클릭했을 때
     data.isFavorite = false //  프론트 단에서만 즐겨찾기 여부 수정. (invalidate query로 새로 가져오기 X)
     data.favoriteNum -= 1
-    removeFavoriteQuery.mutate('1111') // 인자에는 query params 넣기
+    removeFavoriteQuery.mutate({
+      accountIdx: 0,
+      nanumIdx: 0,
+    }) // 인자에는 query params 넣기
   }, [])
 
   return (
@@ -50,7 +56,7 @@ export function GoodsDetailContent({headerHeight, data}: ContentProps) {
       style={[
         styles.container,
         {
-          minHeight: window.height + headerHeight,
+          minHeight: window.height - headerHeight,
           borderTopLeftRadius: 24,
           borderTopRightRadius: 24,
           marginTop: -24,

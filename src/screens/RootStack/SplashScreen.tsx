@@ -1,10 +1,12 @@
 import React, {useEffect} from 'react'
-import {View, Text, StyleSheet} from 'react-native'
+import {View, Text, StyleSheet, Alert} from 'react-native'
+import {Linking} from 'react-native'
 import {useNavigation} from '@react-navigation/native'
+
 import * as theme from '../../theme'
 import {getString} from '../../hooks'
 import {storeAccessToken, login} from '../../redux/slices'
-import {useAppSelector, useAppDispatch} from '../../hooks'
+import {useAppDispatch} from '../../hooks'
 
 export const SplashScreen = () => {
   const dispatch = useAppDispatch()
@@ -37,6 +39,7 @@ export const SplashScreen = () => {
                 ],
                 holdingSharingCnt: result.holdingSharingCnt,
                 participateSharingCnt: result.participateSharingCnt,
+                accountIdx: 0,
               }),
             )
           })
@@ -47,6 +50,27 @@ export const SplashScreen = () => {
       }
     })
   }, [])
+
+  useEffect(() => {
+    Linking.getInitialURL() // 최초 실행 시에 Universal link 또는 URL scheme요청이 있었을 때 여기서 찾을 수 있음
+      .then(value => {
+        console.log(value)
+      })
+
+    Linking.addEventListener('url', e => {
+      // 앱이 실행되어있는 상태에서 요청이 왔을 때 처리하는 이벤트 등록
+      const route: any = e.url.replace(/.*?:\/\//g, '')
+      console.log(route)
+      Alert.alert('add e.url', e.url)
+    })
+
+    return () => {
+      Linking.removeEventListener('url', e => {
+        Alert.alert('remove e.url', e.url)
+      })
+    }
+  })
+
   return (
     <View style={styles.container}>
       <Text style={styles.appname}>한입</Text>
