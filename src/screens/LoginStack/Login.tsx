@@ -68,7 +68,6 @@ export const Login = () => {
       const user = result.user
       const googleCredential = auth.GoogleAuthProvider.credential(idToken)
       auth().signInWithCredential(googleCredential)
-
       navigation.navigate('SetProfile', {
         email: user.email,
       })
@@ -116,6 +115,9 @@ export const Login = () => {
       }
 
       console.log(`Apple Authentication Completed, ${user}, ${email}`)
+      // Create a Firebase credential from the response
+      const appleCredential = auth.AppleAuthProvider.credential(identityToken, nonce)
+      auth().signInWithCredential(appleCredential)
 
       navigation.navigate('SetProfile', {
         email: email,

@@ -70,8 +70,13 @@ export const Login = () => {
         )
       })
       .then(() => {
-        console.log('here')
-        navigation.navigate('GoodsList')
+        //console.log('here')
+        navigation.navigate('LoginStackNavigator', {
+          screen: 'SetProfile',
+          params: {
+            email: profile.email,
+          },
+        })
       })
   }
 
@@ -104,7 +109,12 @@ export const Login = () => {
         )
       })
       .then(() => {
-        navigation.navigate('GoodsList')
+        navigation.navigate('LoginStackNavigator', {
+          screen: 'SetProfile',
+          params: {
+            email: user.email,
+          },
+        })
       })
   }
 
@@ -114,20 +124,6 @@ export const Login = () => {
         requestedOperation: appleAuth.Operation.LOGIN,
         requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
       })
-
-      // 해당 이메일로 가입된 id가 있는 지 확인.
-      // 없으면 가입 시킴. 있으면 로그인.
-
-      // console.log('appleAuthRequestResponse', appleAuthRequestResponse)
-      // const {user, nonce, identityToken} = appleAuthRequestResponse
-      // const email: any = appleAuthRequestResponse.email
-      // if (identityToken) {
-      //   console.log(nonce, identityToken)
-      // } else {
-      //   console.log('NO TOKEN')
-      // }
-      // console.log(`Apple Authentication Completed, ${user}, ${email}`)
-
       fetch('http://localhost:8081/src/data/dummyUser.json', {
         method: 'get',
       })
@@ -146,12 +142,13 @@ export const Login = () => {
           )
         })
         .then(() => {
-          navigation.navigate('GoodsList')
+          navigation.navigate('LoginStackNavigator', {
+            screen: 'SetProfile',
+            params: {
+              email: appleAuthRequestResponse.email,
+            },
+          })
         })
-
-      // navigation.navigate('SetProfile', {
-      //   email: email,
-      // })
     } catch (error: any) {
       if (error.code === appleAuth.Error.CANCELED) {
         console.warn('User canceled Apple Sign in.')

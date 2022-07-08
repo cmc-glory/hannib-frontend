@@ -42,7 +42,12 @@ declare namespace ReactNavigation {
       params: any
     }
     SplashScreen: undefined
-    LoginStackNavigator: undefined
+    LoginStackNavigator:
+      | undefined
+      | {
+          screen: string
+          params: any
+        }
     SelectCategory: {
       email: string
       name: string
