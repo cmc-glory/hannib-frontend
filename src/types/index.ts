@@ -177,7 +177,7 @@ export type ISearch = {
 // ******************** backend variable names below ********************
 
 // 나눔 방식
-export type INanumMethod = 'offline' | 'online'
+export type INanumMethod = 'O' | 'M'
 
 // 나눔 리스트 띄울 때 타입들
 export type INanumListItem = {
@@ -310,6 +310,6 @@ export type ICategoryDto = {
   job: '가수' | '배우'
   nickName: string
   birth: string // format : "1995-03-21 12:43:15"
-  imgUrl: string
+  imgUrl: string | undefined
   email: string
 }

@@ -118,7 +118,7 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
       navigation.navigate('GoodsStackNavigator', {
         screen: 'GoodsDetail',
         params: {
-          sharingid: nanumIdx,
+          nanumIdx: nanumIdx,
         },
       })
     }

@@ -21,12 +21,7 @@ export const SelectCategoryBanner = ({category, setCategory, categoryModalOpened
 
   return (
     <View style={[styles.container]}>
-      <SetCategoryNanumForm
-        categoryModalOpened={categoryModalOpened}
-        setCategoryModalOpened={setCategoryModalOpened}
-        category={category}
-        setCategory={setCategory}
-      />
+      <SetCategoryNanumForm />
       <View style={[theme.styles.rowFlexStart]}>
         <Text style={[theme.styles.label]}>카테고리</Text>
         <NeccesaryField />

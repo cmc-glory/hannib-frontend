@@ -16,7 +16,9 @@ declare namespace ReactNavigation {
     FindPassword: undefined
     CreateAccount: undefined
     MainTabNavigator: undefined
-    GoodsDetail: undefined
+    GoodsDetail: {
+      nanumIdx: number
+    }
     WriteNanumFormStackNavigator: undefined
     WriteNanumFormOnline: {
       images: string[]

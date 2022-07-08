@@ -9,6 +9,18 @@ const apiClient = axios.create({
   },
 })
 
+export const getNanumAll = async () => {
+  const {data} = await apiClient.get('/api/nanum')
+
+  return data
+}
+
+export const getNanumByIndex = async (index: number) => {
+  const {data} = await apiClient.get(`/api/nanum?nanumIdx=${index}`)
+
+  return data
+}
+
 export const postNanumForm = async (nanumForm: INanumForm) => {
   const {data} = await apiClient.post('/api/nanum/write', nanumForm)
 

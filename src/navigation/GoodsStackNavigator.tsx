@@ -15,7 +15,7 @@ import {
 
 type GoodsStackNavigatorParamList = {
   GoodsDetail: {
-    sharingid: string
+    nanumIdx: string
   }
   GoodsRequestOffline: undefined
   GoodsRequestOnline: undefined

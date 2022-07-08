@@ -72,15 +72,19 @@ export const BottomSheet = ({children, modalVisible, setModalVisible}: BottomShe
         <TouchableWithoutFeedback onPress={closeModal}>
           <View style={styles.background} />
         </TouchableWithoutFeedback>
-        <Animated.ScrollView
-          contentContainerStyle={{...styles.bottomSheetContainer, paddingBottom: iosX ? bottomSpaceHeight : 10, maxHeight: screenHeight - STATUS_BAR_HEIGHT}}
-          style={{transform: [{translateY: translateY}]}}
+        <Animated.View
+          style={{
+            ...styles.bottomSheetContainer,
+            paddingBottom: iosX ? bottomSpaceHeight : 10,
+            maxHeight: screenHeight - STATUS_BAR_HEIGHT,
+            transform: [{translateY: translateY}],
+          }}
           {...panResponders.panHandlers}>
           <View style={styles.bar} />
           {cloneElement(children, {
             close: closeModal,
           })}
-        </Animated.ScrollView>
+        </Animated.View>
       </View>
     </Modal>
   )
@@ -104,7 +108,7 @@ const styles = StyleSheet.create({
   },
   bottomSheetContainer: {
     //height: 300,
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'white',
     borderTopLeftRadius: 10,

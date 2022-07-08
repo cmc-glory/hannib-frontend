@@ -9,7 +9,7 @@ import {DownArrowIcon, BellIcon, MagnifierIcon, BottomSheet, FloatingButtonIcon}
 import {GoodsFilterTab, NanumListItem, GoodsListBottomSheetContent, Banner, CategoryDropdown} from '../../components/MainTab'
 import {ISharingInfo, IUserCategory, INanumMethod, INanumListItem} from '../../types'
 import {useAppSelector, useAnimatedValue, useToggle, useAnimatedStyle} from '../../hooks'
-import {getNanumListAll, queryKeys} from '../../api'
+import {getNanumAll, queryKeys, getNanumListAll} from '../../api'
 
 const GoodsLists = () => {
   // ******************** utils ********************

@@ -159,7 +159,7 @@ export const SelectCategory = () => {
 
     console.log(accountDto)
 
-    //    postSignUpQuery.mutate(accountDto)
+    //postSignUpQuery.mutate(accountDto)
     navigation.navigate('MainTabNavigator')
   }, [selectedStars])
 

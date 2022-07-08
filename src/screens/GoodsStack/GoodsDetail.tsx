@@ -10,7 +10,7 @@ import {SafeAreaView} from 'react-native-safe-area-context'
 import LinearGradient from 'react-native-linear-gradient'
 import {GoodsDetailRouteProps} from '../../navigation/GoodsStackNavigator'
 import {ISharingDetail} from '../../types'
-import {queryKeys, getGoodsDetail} from '../../api'
+import {queryKeys, getNanumByIndex, getGoodsDetail} from '../../api'
 import * as theme from '../../theme'
 
 const IMAGE_HEIGHT = 350
@@ -22,21 +22,29 @@ export const GoodsDetail = () => {
   const navigation = useNavigation()
   const route = useRoute<GoodsDetailRouteProps>()
 
+  console.log(route.params)
+
   const [sharingDetail, setSharingDetail] = useState<ISharingDetail>()
   const scrollViewRef = useRef<ScrollView>(null)
   const [headerHeight, setHeaderHeight] = useState(350)
   const scrollY = useAnimatedValue(0)
   const [headerInvert, setHeaderInvert] = useState(false)
 
+  //const {data} = useQuery(queryKeys.goodsDetail, () => getNanumByIndex(parseInt(route.params.nanumIdx)), {
   const {data} = useQuery(queryKeys.goodsDetail, getGoodsDetail, {
     onSuccess: data => {
-      //setSharingDetail(data)
+      console.log('success')
+      setSharingDetail(data)
+    },
+    onError(err) {
+      console.log('err')
+      console.log(err)
     },
   })
 
   const onPressRequest = useCallback(() => {
     console.log('data type : ', data?.type)
-    if (data?.type == 'online') {
+    if (data?.type == 'M') {
       navigation.navigate('GoodsRequestOnline')
     } else {
       navigation.navigate('GoodsRequestOffline')
