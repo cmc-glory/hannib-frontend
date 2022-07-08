@@ -93,6 +93,48 @@ export type ISharingRequestInfo = {
   additionalQuestions: IAdditionalQuestion[]
 }
 
+export type IHoldingReceiverInfo = {
+  id: string
+  receiverName: string
+  state: string
+  products: IProductInfo[]
+  receiveState: string
+}
+
+export type IParticipatingOfflineDetail = {
+  id: string
+  uri: string
+  type: string
+  state: string
+  category: string
+  title: string
+  products: IProductInfo[]
+  openDate: Date
+  receiverName: string
+  expectedReceiveDate: Date
+  finalReceiveDate: Date | undefined
+  location: string
+}
+
+export type IParticipatingOnlineDetail = {
+  id: string
+  uri: string
+  type: string
+  state: string
+  category: string
+  title: string
+  products: IProductInfo[]
+  openDate: Date
+  receiverName: string
+  postState: string
+  address: {postcode: string; roadAddress: string; detailedAddress: string}
+  phonenumber: {
+    first: string
+    second: string
+    third: string
+  }
+}
+
 export type IAdditionalQuestion = {
   id: string
   necessary: boolean

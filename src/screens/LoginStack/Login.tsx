@@ -12,6 +12,7 @@ import {useNavigation} from '@react-navigation/native'
 import {showMessage} from 'react-native-flash-message'
 import * as theme from '../../theme'
 import {LogoWhiteIcon} from '../../components/utils'
+import {useAppSelector} from '../../hooks'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 type LoginButtonProps = {
@@ -35,7 +36,11 @@ const ios = Platform.OS == 'ios'
 
 export const Login = () => {
   const navigation = useNavigation()
+  const isLoggedIn = useAppSelector(state => state.auth.isLoggedIn)
 
+  useEffect(() => {
+    console.log('isLoggedin : ', isLoggedIn)
+  }, [isLoggedIn])
   const signInWithKakao = async (): Promise<void> => {
     //console.log('clicked')
     try {
@@ -70,7 +75,6 @@ export const Login = () => {
       const user = result.user
       const googleCredential = auth.GoogleAuthProvider.credential(idToken)
       auth().signInWithCredential(googleCredential)
-
       navigation.navigate('SetProfile', {
         email: user.email,
       })
@@ -99,7 +103,7 @@ export const Login = () => {
       })
     }, [])
 
-  const signInWithApple = async () => {
+  const SignInWithApple = async () => {
     try {
       const appleAuthRequestResponse: AppleRequestResponse = await appleAuth.performRequest({
         requestedOperation: appleAuth.Operation.LOGIN,
@@ -118,6 +122,9 @@ export const Login = () => {
       }
 
       console.log(`Apple Authentication Completed, ${user}, ${email}`)
+      // Create a Firebase credential from the response
+      const appleCredential = auth.AppleAuthProvider.credential(identityToken, nonce)
+      auth().signInWithCredential(appleCredential)
 
       navigation.navigate('SetProfile', {
         email: email,
@@ -169,7 +176,7 @@ export const Login = () => {
               style={{backgroundColor: theme.black}}
               textStyle={{color: theme.white}}
               source={require('../../assets/images/apple_logo.png')}
-              onPress={signInWithApple}
+              onPress={SignInWithApple}
             />
           )}
           {!ios && (

@@ -49,7 +49,7 @@ export const HoldingListItem = ({
   const handleAllCheck = (checked: boolean) => {
     if (checked) {
       const idArray: Array<any> = []
-      dataLists?.forEach(el => idArray.push(el.id))
+      dataLists?.forEach(el => idArray.push(Number(el.id)))
       setCheckedItems(idArray)
       setAllChecked(true)
     }
