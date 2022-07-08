@@ -30,8 +30,8 @@ export const GoodsDetail = () => {
   const scrollY = useAnimatedValue(0)
   const [headerInvert, setHeaderInvert] = useState(false)
 
-  //const {data} = useQuery(queryKeys.goodsDetail, () => getNanumByIndex(parseInt(route.params.nanumIdx)), {
-  const {data} = useQuery(queryKeys.goodsDetail, getGoodsDetail, {
+  const {data} = useQuery(queryKeys.goodsDetail, () => getNanumByIndex(parseInt(route.params.nanumIdx)), {
+    //const {data} = useQuery(queryKeys.goodsDetail, getGoodsDetail, {
     onSuccess: data => {
       console.log('success')
       setSharingDetail(data)

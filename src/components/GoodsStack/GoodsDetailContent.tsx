@@ -10,13 +10,13 @@ import {GoodsContentDetail} from './GoodsContentDetail'
 import {SharingTimeLocation} from './SharingTimeLocation'
 import {WriterProfileBanner} from './WriterProfileBanner'
 import {SharingGoodsInfo} from './SharingGoodsInfo'
-import {ISharingDetail} from '../../types'
+import {ISharingDetail, INanum} from '../../types'
 import {addFavorite, removeFavorite} from '../../api'
 import * as theme from '../../theme'
 
 type ContentProps = {
   headerHeight: number
-  data: ISharingDetail
+  data: INanum
 }
 
 const window = Dimensions.get('screen')
@@ -33,7 +33,7 @@ export function GoodsDetailContent({headerHeight, data}: ContentProps) {
 
   const onPressAddFavorite = useCallback(() => {
     // 즐겨찾기 버튼 클릭했을 때
-    data.isFavorite = true // 프론트 단에서만 즐겨찾기 여부 수정.
+    data.isFavorite = 'Y' // 프론트 단에서만 즐겨찾기 여부 수정.
     data.favoriteNum += 1
     addFavoriteQuery.mutate({
       accountIdx: 0,
@@ -43,7 +43,7 @@ export function GoodsDetailContent({headerHeight, data}: ContentProps) {
 
   const onPressRemoveFavorite = useCallback(() => {
     // 즐겨찾기 버튼 클릭했을 때
-    data.isFavorite = false //  프론트 단에서만 즐겨찾기 여부 수정. (invalidate query로 새로 가져오기 X)
+    data.isFavorite = 'N' //  프론트 단에서만 즐겨찾기 여부 수정. (invalidate query로 새로 가져오기 X)
     data.favoriteNum -= 1
     removeFavoriteQuery.mutate({
       accountIdx: 0,
@@ -65,8 +65,8 @@ export function GoodsDetailContent({headerHeight, data}: ContentProps) {
       ]}>
       <View style={styles.padding}>
         <View style={[theme.styles.rowFlexStart]}>
-          <Tag label={data?.type == 'offline' ? '오프라인' : '우편'}></Tag>
-          {data?.isSecret && <LockIcon />}
+          <Tag label={data?.nanumMethod == 'O' ? '오프라인' : '우편'}></Tag>
+          {data?.secretForm && <LockIcon />}
         </View>
         <View style={[{marginVertical: 16}, theme.styles.rowSpaceBetween]}>
           <Text style={[styles.title]}>{data?.title}</Text>
@@ -75,13 +75,13 @@ export function GoodsDetailContent({headerHeight, data}: ContentProps) {
             <Text style={{color: theme.gray500, fontSize: 12, fontFamily: 'Pretendard-Medium'}}>{data?.favoriteNum}</Text>
           </View>
         </View>
-        <Text style={[styles.date]}>{moment(data?.date).format('YYYY.MM.DD')}</Text>
-        <SharingGoodsInfo products={data?.products} />
-        {data?.type == 'offline' && data?.schedule != undefined && <SharingTimeLocation schedules={data?.schedule} />}
+        <Text style={[styles.date]}>{moment(data?.firstDate).format('YYYY.MM.DD')}</Text>
+        <SharingGoodsInfo products={data?.nanumGoodslist} />
+        {data?.nanumMethod == 'O' && <SharingTimeLocation schedules={data?.nanumDateList} />}
       </View>
       <NoticeBanner postid="1111" />
-      <GoodsContentDetail description={data?.description} />
-      <WriterProfileBanner writername={data?.writerName} writerid={data?.writerid} writerProfileImageUri={data?.writerProfileImageUri} />
+      <GoodsContentDetail description={data?.contents} />
+      <WriterProfileBanner writername={data?.creatorId} writerid={data?.accountIdx} writerProfileImageUri={'http://'} />
 
       <View style={[styles.padding]}>
         <RelatedSharing />

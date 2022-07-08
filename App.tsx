@@ -36,21 +36,17 @@ const customTextProps = {
   },
 }
 
-const linking = {
-  prefixes: ['hannip://'],
-  config: {
-    initialRouteName: 'RootStackNavigator',
-    screens: {
-      GoodsStackNavigator: {
-        screens: {
-          GoodsDetail: {
-            path: '/GoodsDetail',
-          },
-        },
-      },
-    },
-  },
-}
+// const linking = {
+//   prefixes: ['hannip://'],
+//   config: {
+//     initialRouteName: 'GoodsStackNavigator',
+//     screens: {
+//       GoodsDetail: {
+//         path: '/GoodsDetail',
+//       },
+//     },
+//   },
+// }
 
 const App = () => {
   // internet checking
@@ -90,7 +86,7 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <ReduxProvider store={store}>
         <SafeAreaProvider style={{flex: 1, backgroundColor: 'white'}}>
-          <NavigationContainer linking={linking} fallback={<ActivityIndicator color="blue" size="large" />}>
+          <NavigationContainer>
             <RootStackNavigtor />
             <FlashMessage position="top" />
           </NavigationContainer>

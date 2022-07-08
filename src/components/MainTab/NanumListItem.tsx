@@ -32,7 +32,7 @@ const SecretModal = ({secretModalVisible, setSecretModalVisible, secretPwd, nanu
       navigation.navigate('GoodsStackNavigator', {
         screen: 'GoodsDetail',
         params: {
-          sharingid: nanumIdx,
+          nanumIdx: nanumIdx,
         },
       })
       setSecretSuccess(true)

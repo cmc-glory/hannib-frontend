@@ -16,7 +16,7 @@ export const getNanumAll = async () => {
 }
 
 export const getNanumByIndex = async (index: number) => {
-  const {data} = await apiClient.get(`/api/nanum?nanumIdx=${index}`)
+  const {data} = await apiClient.get(`/api/nanum/nanumIdx?nanumIdx=${index}`)
 
   return data
 }
