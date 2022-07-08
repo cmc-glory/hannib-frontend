@@ -9,9 +9,8 @@ import {useAnimatedValue, useAppSelector} from '../../hooks'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import LinearGradient from 'react-native-linear-gradient'
 import {GoodsDetailRouteProps} from '../../navigation/GoodsStackNavigator'
-import {ISharingDetail} from '../../types'
-import {queryKeys, getGoodsDetail} from '../../api'
-import * as theme from '../../theme'
+import {INanum} from '../../types'
+import {queryKeys, getNanumByIndex} from '../../api'
 
 const IMAGE_HEIGHT = 350
 const TOP_HEIGHT = getStatusBarHeight() + 48
@@ -22,21 +21,30 @@ export const GoodsDetail = () => {
   const navigation = useNavigation()
   const route = useRoute<GoodsDetailRouteProps>()
 
-  const [sharingDetail, setSharingDetail] = useState<ISharingDetail>()
+  console.log(route.params)
+
+  const [nanumDetail, setNanumDetail] = useState<INanum>()
   const scrollViewRef = useRef<ScrollView>(null)
   const [headerHeight, setHeaderHeight] = useState(350)
   const scrollY = useAnimatedValue(0)
   const [headerInvert, setHeaderInvert] = useState(false)
 
-  const {data} = useQuery(queryKeys.goodsDetail, getGoodsDetail, {
+  const {data} = useQuery(queryKeys.goodsDetail, () => getNanumByIndex(parseInt(route.params.nanumIdx)), {
+    //const {data} = useQuery(queryKeys.goodsDetail, getGoodsDetail, {
     onSuccess: data => {
-      //setSharingDetail(data)
+      console.log('success')
+      console.log(data)
+      setNanumDetail(data)
+    },
+    onError(err) {
+      console.log('err')
+      console.log(err)
     },
   })
 
   const onPressRequest = useCallback(() => {
     console.log('data type : ', data?.type)
-    if (data?.type == 'online') {
+    if (data?.type == 'M') {
       navigation.navigate('GoodsRequestOnline')
     } else {
       navigation.navigate('GoodsRequestOffline')
@@ -63,7 +71,7 @@ export const GoodsDetail = () => {
         scrollEnabled
         bouncesZoom={false}
         onScroll={(e: any) => {
-          if (e.nativeEvent.contentOffset.y >= IMAGE_HEIGHT - TOP_HEIGHT - 48) {
+          if (e.nativeEvent.contentOffset.y >= IMAGE_HEIGHT - TOP_HEIGHT - 40) {
             setHeaderInvert(true)
           } else {
             setHeaderInvert(false)
@@ -73,7 +81,7 @@ export const GoodsDetail = () => {
           })
         }}>
         <HeaderImage images={data?.images} />
-        {data !== undefined && <GoodsDetailContent headerHeight={headerHeight} data={data} />}
+        {nanumDetail != undefined && <GoodsDetailContent headerHeight={headerHeight} nanumDetail={nanumDetail} />}
       </ScrollView>
       <FloatingBottomButton label="신청하기" enabled onPress={onPressRequest} />
     </SafeAreaView>

@@ -12,7 +12,7 @@ type LoginStackNavigatorParamList = {
   SelectCategory: {
     email: string
     name: string
-    profileImage: Asset
+    profileImage: string
   }
   AskAddStar: undefined
   AskAddStarComplete: undefined

@@ -35,10 +35,10 @@ const Unselected = ({label, onPress}: ButtonProps) => {
 
 export const SetSharingType = ({type, setType}: SetSharingTypeProps) => {
   const onPressOffline = useCallback(() => {
-    setType('offline')
+    setType('O')
   }, [])
   const onPressOnline = useCallback(() => {
-    setType('online')
+    setType('M')
   }, [])
 
   useEffect(() => {
@@ -47,7 +47,7 @@ export const SetSharingType = ({type, setType}: SetSharingTypeProps) => {
 
   return (
     <>
-      {type == 'online' ? (
+      {type == 'M' ? (
         <View style={styles.container}>
           <Selected label="우편" onPress={onPressOnline} />
           <Unselected label="오프라인" onPress={onPressOffline} />

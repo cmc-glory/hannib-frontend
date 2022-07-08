@@ -1,19 +1,35 @@
-import React from 'react'
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native'
+import React, {useCallback} from 'react'
+import {View, Text, Pressable, StyleSheet} from 'react-native'
+import {useNavigation} from '@react-navigation/native'
 import {RightArrowIcon, NeccesaryField} from '../utils'
+import {SetCategoryNanumForm} from '../../screens/WriteNanumFormStack'
 import * as theme from '../../theme'
 
-export const SelectCategory = () => {
+type SelectCategoryBannerProps = {
+  category: string
+  setCategory: React.Dispatch<React.SetStateAction<string>>
+  categoryModalOpened: boolean
+  setCategoryModalOpened: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+export const SelectCategoryBanner = ({category, setCategory, categoryModalOpened, setCategoryModalOpened}: SelectCategoryBannerProps) => {
+  const navigation = useNavigation()
+  const onPressSetCategory = useCallback(() => {
+    // navigation.navigate('SetCategoryNanumForm')
+    setCategoryModalOpened(categoryModalOpened => !categoryModalOpened)
+  }, [])
+
   return (
     <View style={[styles.container]}>
+      <SetCategoryNanumForm />
       <View style={[theme.styles.rowFlexStart]}>
         <Text style={[theme.styles.label]}>카테고리</Text>
         <NeccesaryField />
       </View>
 
-      <TouchableOpacity style={styles.selectContainer}>
-        <RightArrowIcon />
-      </TouchableOpacity>
+      <Pressable style={styles.selectContainer} onPress={onPressSetCategory}>
+        <RightArrowIcon onPress={onPressSetCategory} />
+      </Pressable>
     </View>
   )
 }

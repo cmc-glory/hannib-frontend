@@ -1,5 +1,5 @@
 import React, {useState, useCallback, useEffect} from 'react'
-import {View, RefreshControl, ScrollView, Text, FlatList, Pressable, Animated, StyleSheet} from 'react-native'
+import {View, RefreshControl, ScrollView, Text, FlatList, Pressable, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation} from '@react-navigation/native'
 import {useQuery, useQueryClient} from 'react-query'
@@ -7,9 +7,9 @@ import {useQuery, useQueryClient} from 'react-query'
 import * as theme from '../../theme'
 import {DownArrowIcon, BellIcon, MagnifierIcon, BottomSheet, FloatingButtonIcon} from '../../components/utils'
 import {GoodsFilterTab, NanumListItem, GoodsListBottomSheetContent, Banner, CategoryDropdown} from '../../components/MainTab'
-import {ISharingInfo, IUserCategory, INanumMethod, INanumListItem} from '../../types'
-import {useAppSelector, useAnimatedValue, useToggle, useAnimatedStyle} from '../../hooks'
-import {getNanumListAll, queryKeys} from '../../api'
+import {IUserCategory, INanumMethod, INanumListItem} from '../../types'
+import {useAppSelector, useAnimatedValue} from '../../hooks'
+import {queryKeys, getNanumListAll} from '../../api'
 
 const GoodsLists = () => {
   // ******************** utils ********************

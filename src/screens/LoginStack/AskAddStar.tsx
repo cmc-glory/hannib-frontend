@@ -1,7 +1,6 @@
 import React, {useCallback, useState} from 'react'
 import {View, Text, TextInput, Animated, Pressable, Alert, Platform, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
-import type {Asset} from 'react-native-image-picker'
 import {launchImageLibrary} from 'react-native-image-picker'
 import {useNavigation} from '@react-navigation/native'
 import FastImage from 'react-native-fast-image'
@@ -11,10 +10,12 @@ import moment from 'moment'
 import {useMutation} from 'react-query'
 import {showMessage} from 'react-native-flash-message'
 
-import {uploadCategoryImage, queryKeys} from '../../api'
+import {uploadCategoryImage, queryKeys, postCategory} from '../../api'
 import {useToggle, useAnimatedValue, useMonitorAnimatedValue} from '../../hooks'
-import {StackHeader, DownArrowIcon, PlusIcon, RemoveButtonIcon, NeccesaryField, FloatingBottomButton, RoundButton} from '../../components/utils'
+import {StackHeader, DownArrowIcon, PlusIcon, RemoveButtonIcon, NeccesaryField, RoundButton} from '../../components/utils'
+import {ICategoryDto} from '../../types'
 import * as theme from '../../theme'
+import {CategoryDropdown} from '../../components/MainTab'
 
 // ***************************** ios keyboard settings *****************************
 if (Platform.OS === 'ios') {
@@ -50,7 +51,7 @@ function validateEmail(email: string) {
 }
 
 export const AskAddStar = () => {
-  // ******************** utils  ********************
+  // ******************** react queries  ********************
   const uploadCategoryImageQuery = useMutation(queryKeys.categoryImage, uploadCategoryImage, {
     onSuccess(data, variables, context) {
       setImage(data)
@@ -59,6 +60,31 @@ export const AskAddStar = () => {
       showMessage({
         // 에러 안내 메세지
         message: '이미지 업로드 중 에러가 발생했습니다',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+      })
+      console.log(error)
+    },
+  })
+
+  const postCategoryQuery = useMutation(queryKeys.category, postCategory, {
+    onSuccess(data, variables, context) {
+      console.log(data)
+      navigation.navigate('AskAddStarComplete')
+      //setImage(data)
+    },
+    onError(error, variables, context) {
+      showMessage({
+        // 에러 안내 메세지
+        message: '문의하기 게시글 업로드 중 에러가 발생했습니다',
         type: 'info',
         animationDuration: 300,
         duration: 1350,
@@ -134,9 +160,16 @@ export const AskAddStar = () => {
       ])
       return
     }
-  }, [mainCategory, name, image, email, date])
 
-  console.log(animatedValue)
+    const cateogoryDto: ICategoryDto = {
+      job: mainCategory,
+      nickName: name,
+      birth: moment(date).format('YYYY-MM-DD HH:mm:ss'),
+      imgUrl: image,
+      email: email,
+    }
+    postCategoryQuery.mutate(cateogoryDto)
+  }, [mainCategory, name, image, email, date])
 
   // 라이브러리에서 이미지 선택했을 때 호출되는 callback
   const onImageLibraryPress = useCallback(async () => {

@@ -1,12 +1,12 @@
 import 'react-native-gesture-handler'
 import React, {useEffect, useCallback} from 'react'
-import {Alert} from 'react-native'
+import {Alert, ActivityIndicator, Linking} from 'react-native'
 import {SafeAreaProvider} from 'react-native-safe-area-context'
 import {NavigationContainer} from '@react-navigation/native'
 import messaging from '@react-native-firebase/messaging'
-import {useQuery, useMutation, useQueryClient, QueryClient, QueryClientProvider} from 'react-query'
-import {ReactQueryDevtools} from 'react-query/devtools'
+import {QueryClient, QueryClientProvider} from 'react-query'
 import {setCustomText} from 'react-native-global-props'
+import {useNavigation} from '@react-navigation/native'
 import {GoogleSignin} from '@react-native-google-signin/google-signin'
 import {gray800} from './src/theme'
 import RootStackNavigtor from './src/navigation/RootStackNavigator'
@@ -35,6 +35,18 @@ const customTextProps = {
     color: gray800,
   },
 }
+
+// const linking = {
+//   prefixes: ['hannip://'],
+//   config: {
+//     initialRouteName: 'GoodsStackNavigator',
+//     screens: {
+//       GoodsDetail: {
+//         path: '/GoodsDetail',
+//       },
+//     },
+//   },
+// }
 
 const App = () => {
   // internet checking

@@ -32,7 +32,7 @@ const SecretModal = ({secretModalVisible, setSecretModalVisible, secretPwd, nanu
       navigation.navigate('GoodsStackNavigator', {
         screen: 'GoodsDetail',
         params: {
-          sharingid: nanumIdx,
+          nanumIdx: nanumIdx,
         },
       })
       setSecretSuccess(true)
@@ -118,7 +118,7 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
       navigation.navigate('GoodsStackNavigator', {
         screen: 'GoodsDetail',
         params: {
-          sharingid: nanumIdx,
+          nanumIdx: nanumIdx,
         },
       })
     }
@@ -127,13 +127,19 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
   const onPressAddFavorite = useCallback(() => {
     // 즐겨찾기 버튼 클릭했을 때
     item.isFavorite = 'Y' // 프론트 단에서만 즐겨찾기 여부 수정.
-    addFavoriteQuery.mutate('1111') // 인자에는 query params 넣기
+    addFavoriteQuery.mutate({
+      nanumIdx: 0,
+      accountIdx: 0,
+    }) // 인자에는 query params 넣기
   }, [])
 
   const onPressRemoveFavorite = useCallback(() => {
     // 즐겨찾기 버튼 클릭했을 때
     item.isFavorite = 'N' //  프론트 단에서만 즐겨찾기 여부 수정. (invalidate query로 새로 가져오기 X)
-    removeFavoriteQuery.mutate('1111') // 인자에는 query params 넣기
+    removeFavoriteQuery.mutate({
+      nanumIdx: 0,
+      accountIdx: 0,
+    }) // 인자에는 query params 넣기
   }, [])
 
   return (
@@ -158,7 +164,7 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
           <FastImage style={[styles.image, {width: IMAGE_SIZE, height: IMAGE_SIZE}]} source={{uri: imageUri}}></FastImage>
         </View>
         <View style={{marginTop: 10}}>
-          <Tag label={nanumMethod == 'offline' ? '오프라인' : '우편'} />
+          <Tag label={nanumMethod == 'O' ? '오프라인' : '우편'} />
           <Text style={[styles.title, {width: IMAGE_SIZE}]}>{title}</Text>
           <Text style={[styles.writerName]}>{creatorId}</Text>
         </View>

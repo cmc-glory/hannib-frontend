@@ -1,6 +1,6 @@
 [
   {
-    "nanumnanumIdxx": 0,
+    "nanumIdx": 0,
     "thumbnail": "http://localhost:8081/src/assets/images/detail_image_example.png",
     "nanumMethod": "online",
     "title": "키링 나눔",
@@ -11,7 +11,7 @@
     "isFavorite": "N"
   },
   {
-    "nanumnanumIdxx": "1",
+    "nanumIdx": "1",
     "thumbnail": "http://localhost:8081/src/assets/images/detail_image_example2.jpeg",
     "nanumMethod": "offline",
     "title": "생카 운영🎂",

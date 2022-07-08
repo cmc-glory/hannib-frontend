@@ -10,4 +10,7 @@ export const queryKeys = {
   categoryImage: ['categoryImage'],
   nanumImage: ['nanumImage'],
   nanumForm: ['nanumForm'],
+  signUp: ['signUp'],
+  category: ['category'],
+  search: ['search'],
 }

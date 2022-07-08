@@ -58,7 +58,7 @@ export const RecentSearch = ({recentSearch}: RecentSearchProps) => {
         </Pressable>
       </View>
       <View style={[theme.styles.rowFlexStart, {marginTop: 15}]}>
-        {recentSearch.map(item => (
+        {recentSearch?.map(item => (
           <RecentSearchItem key={item} keyword={item} onPressDelete={onPressDeleteRecentSearch} />
         ))}
       </View>

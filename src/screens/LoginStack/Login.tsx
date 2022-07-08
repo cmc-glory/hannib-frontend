@@ -13,6 +13,7 @@ import {showMessage} from 'react-native-flash-message'
 import * as theme from '../../theme'
 import {LogoWhiteIcon} from '../../components/utils'
 import {useAppSelector} from '../../hooks'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 type LoginButtonProps = {
   label: string
@@ -50,6 +51,7 @@ export const Login = () => {
         email: profile.email,
       })
     } catch (err) {
+      console.log(err)
       showMessage({
         message: '카카오 로그인 중 에러가 발생했습니다',
         type: 'info',

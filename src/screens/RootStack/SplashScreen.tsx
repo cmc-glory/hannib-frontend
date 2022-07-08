@@ -1,10 +1,12 @@
 import React, {useEffect} from 'react'
-import {View, Text, StyleSheet} from 'react-native'
+import {View, Text, StyleSheet, Alert} from 'react-native'
+import {Linking} from 'react-native'
 import {useNavigation} from '@react-navigation/native'
+
 import * as theme from '../../theme'
 import {getString} from '../../hooks'
 import {storeAccessToken, login} from '../../redux/slices'
-import {useAppSelector, useAppDispatch} from '../../hooks'
+import {useAppDispatch} from '../../hooks'
 
 export const SplashScreen = () => {
   const dispatch = useAppDispatch()
@@ -48,6 +50,7 @@ export const SplashScreen = () => {
       }
     })
   }, [])
+
   return (
     <View style={styles.container}>
       <Text style={styles.appname}>한입</Text>

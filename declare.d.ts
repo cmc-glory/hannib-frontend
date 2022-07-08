@@ -16,7 +16,9 @@ declare namespace ReactNavigation {
     FindPassword: undefined
     CreateAccount: undefined
     MainTabNavigator: undefined
-    GoodsDetail: undefined
+    GoodsDetail: {
+      nanumIdx: number
+    }
     WriteNanumFormStackNavigator: undefined
     WriteNanumFormOnline: {
       images: string[]
@@ -51,7 +53,7 @@ declare namespace ReactNavigation {
     SelectCategory: {
       email: string
       name: string
-      profileImage: Asset
+      profileImage: string
     }
     WriteNanumFormComplete: {
       nanumIdx: number // 작성한 게시글의 id. "등록한 게시글로 이동"에서 사용한다.
@@ -153,5 +155,6 @@ declare namespace ReactNavigation {
     CustomerService: undefined
     EditCategory: undefined // 나눔 리스트 헤더에서 클릭했을 때
     EditCategoryMyPage: undefined // 마이 페이지에서 이동할 때
+    SetCategoryNanumForm: undefined
   }
 }

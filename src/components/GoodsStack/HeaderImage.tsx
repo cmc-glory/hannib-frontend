@@ -9,7 +9,7 @@ type HeaderImageProps = {
 }
 
 export const HeaderImage = ({images}: HeaderImageProps) => {
-  return images === undefined ? <View></View> : <Carousel imageUrls={images} imageWidth={width} />
+  return images === undefined ? <View style={{height: 350}}></View> : <Carousel imageUrls={images} imageWidth={width} />
 }
 const styles = StyleSheet.create({
   image: {

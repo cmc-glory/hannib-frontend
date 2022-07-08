@@ -7,22 +7,22 @@ import * as theme from '../../theme'
 import {useAppSelector} from '../../hooks'
 
 type WriterProfileBannerProps = {
-  writerid: string
+  writerid: number
   writerProfileImageUri: string
   writername: string
 }
 
 export const WriterProfileBanner = ({writerid, writerProfileImageUri, writername}: WriterProfileBannerProps) => {
   // ******************** utils ********************
-  const userid = useAppSelector(state => state.auth.user.email)
+  const userAccountIdx = useAppSelector(state => state.auth.user.accountIdx)
   const navigation = useNavigation()
   const imageUri = useMemo(() => (writerProfileImageUri == '' ? require('../../assets/images/no_user.jpeg') : {uri: writerProfileImageUri}), [])
 
   // ******************** callbacks ********************
   // 문의글 리스트로 이동하는 네비게이션
   const onPressQnA = useCallback(() => {
-    console.log(userid, writerid)
-    if (userid == writerid) {
+    console.log(userAccountIdx, writerid)
+    if (userAccountIdx == writerid) {
       navigation.navigate('QnAListCreator', {
         nanumId: '111111',
       })
@@ -31,7 +31,7 @@ export const WriterProfileBanner = ({writerid, writerProfileImageUri, writername
         nanumId: '111111',
       })
     }
-  }, [userid])
+  }, [userAccountIdx])
 
   const onPressWriterProfile = useCallback(() => {
     navigation.navigate('WriterProfile', {

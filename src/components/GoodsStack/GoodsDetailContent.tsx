@@ -10,19 +10,19 @@ import {GoodsContentDetail} from './GoodsContentDetail'
 import {SharingTimeLocation} from './SharingTimeLocation'
 import {WriterProfileBanner} from './WriterProfileBanner'
 import {SharingGoodsInfo} from './SharingGoodsInfo'
-import {ISharingDetail} from '../../types'
+import {ISharingDetail, INanum} from '../../types'
 import {addFavorite, removeFavorite} from '../../api'
 import * as theme from '../../theme'
 
 type ContentProps = {
   headerHeight: number
-  data: ISharingDetail
+  nanumDetail: INanum
 }
 
 const window = Dimensions.get('screen')
-console.log('window : ', window)
 
-export function GoodsDetailContent({headerHeight, data}: ContentProps) {
+export function GoodsDetailContent({headerHeight, nanumDetail}: ContentProps) {
+  console.log(nanumDetail)
   const addFavoriteQuery = useMutation(addFavorite, {
     onSuccess: () => {},
   })
@@ -33,16 +33,22 @@ export function GoodsDetailContent({headerHeight, data}: ContentProps) {
 
   const onPressAddFavorite = useCallback(() => {
     // 즐겨찾기 버튼 클릭했을 때
-    data.isFavorite = true // 프론트 단에서만 즐겨찾기 여부 수정.
-    data.favoriteNum += 1
-    addFavoriteQuery.mutate('1111') // 인자에는 query params 넣기
+    nanumDetail.isFavorite = 'Y' // 프론트 단에서만 즐겨찾기 여부 수정.
+    nanumDetail.favoriteNum += 1
+    addFavoriteQuery.mutate({
+      accountIdx: 0,
+      nanumIdx: 0,
+    }) // 인자에는 query params 넣기
   }, [])
 
   const onPressRemoveFavorite = useCallback(() => {
     // 즐겨찾기 버튼 클릭했을 때
-    data.isFavorite = false //  프론트 단에서만 즐겨찾기 여부 수정. (invalidate query로 새로 가져오기 X)
-    data.favoriteNum -= 1
-    removeFavoriteQuery.mutate('1111') // 인자에는 query params 넣기
+    nanumDetail.isFavorite = 'N' //  프론트 단에서만 즐겨찾기 여부 수정. (invalidate query로 새로 가져오기 X)
+    nanumDetail.favoriteNum -= 1
+    removeFavoriteQuery.mutate({
+      accountIdx: 0,
+      nanumIdx: 0,
+    }) // 인자에는 query params 넣기
   }, [])
 
   return (
@@ -50,7 +56,7 @@ export function GoodsDetailContent({headerHeight, data}: ContentProps) {
       style={[
         styles.container,
         {
-          minHeight: window.height + headerHeight,
+          minHeight: window.height - headerHeight,
           borderTopLeftRadius: 24,
           borderTopRightRadius: 24,
           marginTop: -24,
@@ -59,23 +65,27 @@ export function GoodsDetailContent({headerHeight, data}: ContentProps) {
       ]}>
       <View style={styles.padding}>
         <View style={[theme.styles.rowFlexStart]}>
-          <Tag label={data?.type == 'offline' ? '오프라인' : '우편'}></Tag>
-          {data?.isSecret && <LockIcon />}
+          <Tag label={nanumDetail?.nanumMethod == 'O' ? '오프라인' : '우편'}></Tag>
+          {nanumDetail.secretForm && <LockIcon />}
         </View>
         <View style={[{marginVertical: 16}, theme.styles.rowSpaceBetween]}>
-          <Text style={[styles.title]}>{data?.title}</Text>
+          <Text style={[styles.title]}>{nanumDetail?.title}</Text>
           <View style={{alignItems: 'center'}}>
-            {data?.isFavorite ? <StarFilledIcon size={30} onPress={onPressRemoveFavorite} /> : <StarUnfilledIcon size={30} onPress={onPressAddFavorite} />}
-            <Text style={{color: theme.gray500, fontSize: 12, fontFamily: 'Pretendard-Medium'}}>{data?.favoriteNum}</Text>
+            {nanumDetail?.isFavorite ? (
+              <StarFilledIcon size={30} onPress={onPressRemoveFavorite} />
+            ) : (
+              <StarUnfilledIcon size={30} onPress={onPressAddFavorite} />
+            )}
+            <Text style={{color: theme.gray500, fontSize: 12, fontFamily: 'Pretendard-Medium'}}>{nanumDetail.favoriteNum}</Text>
           </View>
         </View>
-        <Text style={[styles.date]}>{moment(data?.date).format('YYYY.MM.DD')}</Text>
-        <SharingGoodsInfo products={data?.products} />
-        {data?.type == 'offline' && data?.schedule != undefined && <SharingTimeLocation schedules={data?.schedule} />}
+        <Text style={[styles.date]}>{moment(nanumDetail.firstDate).format('YYYY.MM.DD')}</Text>
+        <SharingGoodsInfo products={nanumDetail.nanumGoodslist} />
+        {nanumDetail.nanumMethod == 'O' && <SharingTimeLocation schedules={nanumDetail.nanumDateList} />}
       </View>
       <NoticeBanner postid="1111" />
-      <GoodsContentDetail description={data?.description} />
-      <WriterProfileBanner writername={data?.writerName} writerid={data?.writerid} writerProfileImageUri={data?.writerProfileImageUri} />
+      <GoodsContentDetail description={nanumDetail.contents} />
+      <WriterProfileBanner writername={nanumDetail.creatorId} writerid={nanumDetail.accountIdx} writerProfileImageUri={'http://'} />
 
       <View style={[styles.padding]}>
         <RelatedSharing />

@@ -35,6 +35,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
+                <data android:scheme="hannip" />
+
                 <!-- Redirect URI: "kakao{NATIVE_APP_KEY}://oauth“ -->
                 <data android:host="oauth"
                     android:scheme="kakaof2e70f2fa6b42f1af84ee7a0850f3cd6" />
