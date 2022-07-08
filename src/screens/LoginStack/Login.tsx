@@ -12,6 +12,7 @@ import {useNavigation} from '@react-navigation/native'
 import {showMessage} from 'react-native-flash-message'
 import * as theme from '../../theme'
 import {LogoWhiteIcon} from '../../components/utils'
+import {useAppSelector} from '../../hooks'
 
 type LoginButtonProps = {
   label: string
@@ -34,7 +35,11 @@ const ios = Platform.OS == 'ios'
 
 export const Login = () => {
   const navigation = useNavigation()
+  const isLoggedIn = useAppSelector(state => state.auth.isLoggedIn)
 
+  useEffect(() => {
+    console.log('isLoggedin : ', isLoggedIn)
+  }, [isLoggedIn])
   const signInWithKakao = async (): Promise<void> => {
     //console.log('clicked')
     try {

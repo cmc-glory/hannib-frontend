@@ -124,6 +124,9 @@ export const Login = () => {
         requestedOperation: appleAuth.Operation.LOGIN,
         requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
       })
+      const {user, nonce, identityToken} = appleAuthRequestResponse
+      const appleCredential = auth.AppleAuthProvider.credential(identityToken, nonce)
+      auth().signInWithCredential(appleCredential)
       fetch('http://localhost:8081/src/data/dummyUser.json', {
         method: 'get',
       })

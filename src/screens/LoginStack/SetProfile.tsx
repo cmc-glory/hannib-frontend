@@ -4,7 +4,7 @@ import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation, useRoute} from '@react-navigation/native'
 import {launchImageLibrary} from 'react-native-image-picker'
 import FastImage from 'react-native-fast-image'
-
+import auth from '@react-native-firebase/auth'
 import {SetProfileRouteProps} from '../../navigation/LoginStackNavigator'
 import {StackHeader, SelectImageIcon, FloatingBottomButton} from '../../components/utils'
 import NoUserSvg from '../../assets/Icon/noUser.svg'
