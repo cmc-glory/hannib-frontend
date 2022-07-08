@@ -9,9 +9,8 @@ import {useAnimatedValue, useAppSelector} from '../../hooks'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import LinearGradient from 'react-native-linear-gradient'
 import {GoodsDetailRouteProps} from '../../navigation/GoodsStackNavigator'
-import {ISharingDetail} from '../../types'
-import {queryKeys, getNanumByIndex, getGoodsDetail} from '../../api'
-import * as theme from '../../theme'
+import {INanum} from '../../types'
+import {queryKeys, getNanumByIndex} from '../../api'
 
 const IMAGE_HEIGHT = 350
 const TOP_HEIGHT = getStatusBarHeight() + 48
@@ -24,7 +23,7 @@ export const GoodsDetail = () => {
 
   console.log(route.params)
 
-  const [sharingDetail, setSharingDetail] = useState<ISharingDetail>()
+  const [nanumDetail, setNanumDetail] = useState<INanum>()
   const scrollViewRef = useRef<ScrollView>(null)
   const [headerHeight, setHeaderHeight] = useState(350)
   const scrollY = useAnimatedValue(0)
@@ -34,7 +33,8 @@ export const GoodsDetail = () => {
     //const {data} = useQuery(queryKeys.goodsDetail, getGoodsDetail, {
     onSuccess: data => {
       console.log('success')
-      setSharingDetail(data)
+      console.log(data)
+      setNanumDetail(data)
     },
     onError(err) {
       console.log('err')
@@ -81,7 +81,7 @@ export const GoodsDetail = () => {
           })
         }}>
         <HeaderImage images={data?.images} />
-        {data !== undefined && <GoodsDetailContent headerHeight={headerHeight} data={data} />}
+        {nanumDetail != undefined && <GoodsDetailContent headerHeight={headerHeight} nanumDetail={nanumDetail} />}
       </ScrollView>
       <FloatingBottomButton label="신청하기" enabled onPress={onPressRequest} />
     </SafeAreaView>

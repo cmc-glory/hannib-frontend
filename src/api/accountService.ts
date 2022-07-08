@@ -13,3 +13,13 @@ export const postSignUp = async (accountDto: IAccountDto) => {
   const {data} = await apiClient.post('/api/account/signup', accountDto)
   return data
 }
+
+export const getAccountInfo = async (accountIdx: number) => {
+  const {data} = await apiClient.get(`/api/account?accountIdx=${accountIdx}`)
+  return data
+}
+
+export const updateAccountInfo = async (accountDto: IAccountDto) => {
+  const {data} = await apiClient.put('/api/account', accountDto)
+  return data
+}
