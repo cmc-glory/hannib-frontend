@@ -21,7 +21,6 @@ const CategoryItem = ({name, id, onPressCategory, selectedCategory, currentIndex
   return (
     <Pressable
       onPress={e => {
-        console.log(e.nativeEvent)
         const pageX = e.nativeEvent.pageX
         const locationX = e.nativeEvent.locationX
         const x = currentIndex <= selectedIndex ? pageX - locationX - 40 : pageX + locationX + 40
@@ -111,7 +110,7 @@ export const Favorites = () => {
             selectedCategory={selectedCategory}
             scrollRef={scrollRef}
           />
-          <CategoryItem
+          {/* <CategoryItem
             selectedIndex={selectedIndex}
             currentIndex={4}
             id="4"
@@ -128,7 +127,7 @@ export const Favorites = () => {
             onPressCategory={onPressCategory}
             selectedCategory={selectedCategory}
             scrollRef={scrollRef}
-          />
+          /> */}
         </ScrollView>
       </View>
 
@@ -160,6 +159,7 @@ const styles = StyleSheet.create({
   },
   unselectedCategoryText: {
     color: theme.gray500,
+    // fontFamily: 'Pretendard-Bold',
   },
   categoryButton: {
     paddingVertical: 6,

@@ -16,7 +16,7 @@ export const getNanumAll = async () => {
 }
 
 export const getNanumByIndex = async (index: number) => {
-  const {data} = await apiClient.get(`/api/nanum/nanumIdx?nanumIdx=${index}`)
+  const {data} = await apiClient.get(`/api/nanum/${index}`)
 
   return data
 }
@@ -34,7 +34,7 @@ export const getNanumForm = async (nanumIdx: number) => {
 }
 
 export const deleteNanumForm = async (nanumIdx: number) => {
-  const {data} = await apiClient.delete(`/api/nanum?nanumIdx=${nanumIdx}`)
+  const {data} = await apiClient.delete(`/api/nanum/?nanumIdx=${nanumIdx}`)
 
   return data
 }

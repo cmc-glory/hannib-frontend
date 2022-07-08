@@ -17,7 +17,7 @@ const TOP_HEIGHT = getStatusBarHeight() + 48
 const WIDTH = Dimensions.get('window').width
 
 export const GoodsDetail = () => {
-  const userid = useAppSelector(state => state.auth.user.email)
+  const user = useAppSelector(state => state.auth.user)
   const navigation = useNavigation()
   const route = useRoute<GoodsDetailRouteProps>()
 
@@ -62,7 +62,14 @@ export const GoodsDetail = () => {
           style={{position: 'absolute', width: WIDTH, height: TOP_HEIGHT, zIndex: 99}}></LinearGradient>
       )}
 
-      <GoodsDetailHeader inverted={headerInvert} userid={userid} writerid={data?.writerid} />
+      {data != undefined && (
+        <GoodsDetailHeader
+          inverted={headerInvert}
+          userAccountIdx={user.accountIdx}
+          writerAccountIdx={data.accountIdx}
+          nanumIdx={parseInt(route.params.nanumIdx)}
+        />
+      )}
 
       <ScrollView
         bounces={false}
@@ -81,7 +88,7 @@ export const GoodsDetail = () => {
           })
         }}>
         <HeaderImage images={data?.images} />
-        {nanumDetail != undefined && <GoodsDetailContent headerHeight={headerHeight} nanumDetail={nanumDetail} />}
+        {data != undefined && <GoodsDetailContent headerHeight={headerHeight} nanumDetail={data} />}
       </ScrollView>
       <FloatingBottomButton label="신청하기" enabled onPress={onPressRequest} />
     </SafeAreaView>
