@@ -49,7 +49,7 @@ export const WriterProfileBanner = ({nanumIdx, writerProfileImageUri, writername
       <Pressable style={[theme.styles.rowFlexStart]} onPress={onPressQnA}>
         <Text style={{fontSize: 16}}>문의글</Text>
         <Text style={{color: theme.main, marginLeft: 8, fontSize: 16}}>{askNum}</Text>
-        <RightArrowIcon size={20} />
+        <RightArrowIcon size={20} onPress={onPressQnA} />
       </Pressable>
     </View>
   )

@@ -17,11 +17,12 @@ import * as theme from '../../theme'
 type ContentProps = {
   headerHeight: number
   nanumDetail: INanum
+  numInquires: number
 }
 
 const window = Dimensions.get('screen')
 
-export function GoodsDetailContent({headerHeight, nanumDetail}: ContentProps) {
+export function GoodsDetailContent({headerHeight, nanumDetail, numInquires}: ContentProps) {
   console.log(nanumDetail)
   const addFavoriteQuery = useMutation(addFavorite, {
     onSuccess: () => {},
@@ -85,12 +86,7 @@ export function GoodsDetailContent({headerHeight, nanumDetail}: ContentProps) {
       </View>
       <NoticeBanner postid="1111" />
       <GoodsContentDetail description={nanumDetail.contents} />
-      <WriterProfileBanner
-        writername={nanumDetail.creatorId}
-        nanumIdx={nanumDetail.accountIdx}
-        writerProfileImageUri={'http://'}
-        askNum={nanumDetail.nanumAskList.length}
-      />
+      <WriterProfileBanner writername={nanumDetail.creatorId} nanumIdx={nanumDetail.nanumIdx} writerProfileImageUri={'http://'} askNum={numInquires} />
 
       <View style={[styles.padding]}>
         <RelatedSharing />

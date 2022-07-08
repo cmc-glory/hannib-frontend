@@ -3,7 +3,7 @@ import {View, Text, TextInput, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation, useRoute} from '@react-navigation/native'
 import {Switch} from 'react-native-paper'
-import {useMutation} from 'react-query'
+import {useMutation, useQueryClient} from 'react-query'
 
 import {queryKeys, postInquiry} from '../../api'
 import {StackHeader, SharingPreview, RoundButton} from '../../components/utils'
@@ -28,14 +28,19 @@ export const WriteQnA = () => {
   // ******************** utils ********************
   const navigation = useNavigation()
   const route = useRoute<WriteQnARouteProps>()
+  const queryClient = useQueryClient()
+
   const {nanumIdx, accountIdx, imageuri, category, title} = useMemo(() => route.params, [])
   const creatorId = useAppSelector(state => state.auth.user.name)
+
+  console.log('nanumIdx : ', nanumIdx, 'accountIdx : ', accountIdx)
 
   // ******************** react queries********************
   const postInquiryQuery = useMutation(queryKeys.inquiry, postInquiry, {
     onSuccess(data, variables, context) {
       console.log('success')
       console.log(data)
+      queryClient.invalidateQueries(queryKeys.inquiry)
       navigation.goBack()
     },
     onError(error, variables, context) {
@@ -65,7 +70,7 @@ export const WriteQnA = () => {
 
     postInquiryQuery.mutate(questionNanumDto)
     // 백으로 보낸 다음에 전으로 이동
-  }, [comments, isSecret])
+  }, [comments, isSecret, nanumIdx, accountIdx])
 
   return (
     <SafeAreaView style={[theme.styles.safeareaview]}>

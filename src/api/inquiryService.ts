@@ -36,8 +36,14 @@ export const updateInquiry = async (answerNanumDto: IAnswerNanumDto) => {
   return data
 }
 
-// 문의글 삭제
-export const deleteInquiry = async (form: DeleteInfo) => {
-  const {data} = await apiClient.delete('/api/nanum/inquiry', form)
+// // 문의글 삭제
+// export const deleteInquiry = async (form: DeleteInfo) => {
+//   const {data} = await apiClient.delete('/api/nanum/inquiry', form)
+//   return data
+// }
+
+// 문의글 가져오기
+export const getInquiryByIndex = async (nanumIdx: number) => {
+  const {data} = await apiClient.post(`/api/nanum/inquiry/list?nanumIdx=${nanumIdx}`)
   return data
 }

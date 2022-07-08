@@ -259,7 +259,7 @@ export type INanum = {
   nanumDateList: INanumDateDto[]
   nanumGoodslist: INanumGoodsDto[]
   nanumImglist: INanumImgDto[]
-  nanumIdx?: number // 나눔 db id
+  nanumIdx: number // 나눔 db id
   accountIdx: number // 작성자 db id
   creatorId: string // 작성자 닉네임
   thmbnail: string // 썸네일 이미지 uri

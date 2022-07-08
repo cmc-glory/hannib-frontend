@@ -17,6 +17,8 @@ export const QnAListUser = () => {
   const route = useRoute<QnAListUserRouteProps>()
   const {nanumIdx} = useMemo(() => route.params, [])
 
+  console.log('nanumIdx : ', nanumIdx)
+
   // ******************** states ********************
   const [qnas, setQnas] = useState<IQnAList[]>([]) // 문의 목록 state
 

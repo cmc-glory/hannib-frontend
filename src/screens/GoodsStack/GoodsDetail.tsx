@@ -1,4 +1,4 @@
-import React, {useState, useRef, useCallback} from 'react'
+import React, {useState, useRef, useMemo, useCallback} from 'react'
 import {View, ScrollView, Dimensions, Animated} from 'react-native'
 import {getStatusBarHeight} from 'react-native-status-bar-height'
 import {useNavigation, useRoute} from '@react-navigation/native'
@@ -10,7 +10,7 @@ import {SafeAreaView} from 'react-native-safe-area-context'
 import LinearGradient from 'react-native-linear-gradient'
 import {GoodsDetailRouteProps} from '../../navigation/GoodsStackNavigator'
 import {INanum} from '../../types'
-import {queryKeys, getNanumByIndex} from '../../api'
+import {queryKeys, getNanumByIndex, getInquiryByIndex} from '../../api'
 
 const IMAGE_HEIGHT = 350
 const TOP_HEIGHT = getStatusBarHeight() + 48
@@ -20,16 +20,18 @@ export const GoodsDetail = () => {
   const user = useAppSelector(state => state.auth.user)
   const navigation = useNavigation()
   const route = useRoute<GoodsDetailRouteProps>()
-
-  console.log(route.params)
+  const {nanumIdx} = useMemo(() => {
+    return route.params
+  }, [])
 
   const [nanumDetail, setNanumDetail] = useState<INanum>()
   const scrollViewRef = useRef<ScrollView>(null)
   const [headerHeight, setHeaderHeight] = useState(350)
   const scrollY = useAnimatedValue(0)
   const [headerInvert, setHeaderInvert] = useState(false)
+  const [numInqueries, setNumInqueries] = useState<number>(0)
 
-  const {data} = useQuery(queryKeys.goodsDetail, () => getNanumByIndex(parseInt(route.params.nanumIdx)), {
+  const {data} = useQuery(queryKeys.goodsDetail, () => getNanumByIndex(parseInt(nanumIdx)), {
     //const {data} = useQuery(queryKeys.goodsDetail, getGoodsDetail, {
     onSuccess: data => {
       console.log('success')
@@ -38,6 +40,16 @@ export const GoodsDetail = () => {
     },
     onError(err) {
       console.log('err')
+      console.log(err)
+    },
+  })
+
+  const inquries = useQuery(queryKeys.inquiry, () => getInquiryByIndex(parseInt(nanumIdx)), {
+    onSuccess(data) {
+      console.log('inquiry length : ', data)
+      setNumInqueries(data.length)
+    },
+    onError(err) {
       console.log(err)
     },
   })
@@ -88,7 +100,9 @@ export const GoodsDetail = () => {
           })
         }}>
         <HeaderImage images={data?.images} />
-        {data != undefined && <GoodsDetailContent headerHeight={headerHeight} nanumDetail={data} />}
+        {data != undefined && (
+          <GoodsDetailContent headerHeight={headerHeight} nanumDetail={data} numInquires={inquries.data == undefined ? 0 : inquries.data.length} />
+        )}
       </ScrollView>
       <FloatingBottomButton label="신청하기" enabled onPress={onPressRequest} />
     </SafeAreaView>
