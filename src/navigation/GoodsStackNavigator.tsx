@@ -20,14 +20,14 @@ type GoodsStackNavigatorParamList = {
   GoodsRequestOffline: undefined
   GoodsRequestOnline: undefined
   QnAListUser: {
-    nanumId: string
+    nanumIdx: number
   }
   QnAListCreator: {
-    nanumId: string
+    nanumIdx: number
   }
   WriteQnA: {
-    postid: string
-    userid: string
+    nanumIdx: number
+    accountIdx: number
     imageuri: string
     category: string
     title: string

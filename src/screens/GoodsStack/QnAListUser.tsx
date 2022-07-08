@@ -12,10 +12,10 @@ import {useAppSelector} from '../../hooks'
 
 export const QnAListUser = () => {
   // ******************** utils ********************
-  const userId = useAppSelector(state => state.auth.user.email)
+  const userAccountIdx = useAppSelector(state => state.auth.user.accountIdx)
   const navigation = useNavigation()
   const route = useRoute<QnAListUserRouteProps>()
-  const {nanumId} = useMemo(() => route.params, [])
+  const {nanumIdx} = useMemo(() => route.params, [])
 
   // ******************** states ********************
   const [qnas, setQnas] = useState<IQnAList[]>([]) // 문의 목록 state
@@ -29,7 +29,6 @@ export const QnAListUser = () => {
       .then(result => {
         setQnas(result)
       })
-
     // redux에서 사용자 id를 가져오고 writer인지를 체크.
     // setIsOwner(true)
   }, [])
@@ -37,8 +36,8 @@ export const QnAListUser = () => {
   // 문의글 작성으로 이동
   const onPressWrite = useCallback(() => {
     navigation.navigate('WriteQnA', {
-      postid: '1', // 해당 나눔 게시글의 id
-      userid: '1', // 문의글을 남기는 사용자의 id,
+      nanumIdx, // 해당 나눔 게시글의 id
+      accountIdx: userAccountIdx, // 문의글을 남기는 사용자의 id,
       imageuri: 'http://localhost:8081/src/assets/images/detail_image_example.png', // 썸네일 uri
       category: 'bts', // 카테고리
       title: 'BTS 키링 나눔', // 나눔 제목
@@ -48,13 +47,13 @@ export const QnAListUser = () => {
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
       <StackHeader goBack title="문의" />
-      <ScrollView style={[styles.container]} contentOffset={{x: 0, y: 200}}>
+      <ScrollView bounces={false} style={[styles.container]} contentOffset={{x: 0, y: 200}}>
         <SharingPreview uri="http://localhost:8081/src/assets/images/detail_image_example.png" category="BTS" title="BTS 키링 나눔" />
         <Pressable style={[styles.writeButton]} onPress={onPressWrite}>
           <Text style={[theme.styles.bold16, {color: theme.white}]}>문의 작성하기</Text>
         </Pressable>
         {qnas.map(qna => (
-          <QnAListUserItem item={qna} key={qna.id} userId={userId} />
+          <QnAListUserItem item={qna} key={qna.id} accountIdx={userAccountIdx} />
         ))}
       </ScrollView>
     </SafeAreaView>

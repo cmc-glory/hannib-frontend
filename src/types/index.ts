@@ -93,48 +93,6 @@ export type ISharingRequestInfo = {
   additionalQuestions: IAdditionalQuestion[]
 }
 
-export type IHoldingReceiverInfo = {
-  id: string
-  receiverName: string
-  state: string
-  products: IProductInfo[]
-  receiveState: string
-}
-
-export type IParticipatingOfflineDetail = {
-  id: string
-  uri: string
-  type: string
-  state: string
-  category: string
-  title: string
-  products: IProductInfo[]
-  openDate: Date
-  receiverName: string
-  expectedReceiveDate: Date
-  finalReceiveDate: Date | undefined
-  location: string
-}
-
-export type IParticipatingOnlineDetail = {
-  id: string
-  uri: string
-  type: string
-  state: string
-  category: string
-  title: string
-  products: IProductInfo[]
-  openDate: Date
-  receiverName: string
-  postState: string
-  address: {postcode: string; roadAddress: string; detailedAddress: string}
-  phonenumber: {
-    first: string
-    second: string
-    third: string
-  }
-}
-
 export type IAdditionalQuestion = {
   id: string
   necessary: boolean
@@ -217,6 +175,27 @@ export type ISearch = {
 }
 
 // ******************** backend variable names below ********************
+export type IInqueryNanumDto = {
+  nanumIdx: number
+  accountIdx: number
+  creatorId: string
+  comments: string // 질문
+  answerComments: string // 답변
+  secretYn: 'Y' | 'N'
+}
+
+export type IQuestionNanumDto = {
+  nanumIdx: number
+  accountIdx: number
+  creatorId: string
+  comments: string // 질문
+  secretYn: 'Y' | 'N'
+}
+
+export type IAnswerNanumDto = {
+  nanumIdx: number
+  answerComments: string // 답변
+}
 
 // 나눔 방식
 export type INanumMethod = 'O' | 'M'
@@ -235,25 +214,24 @@ export type INanumListItem = {
 }
 
 // 모집폼 작성 시 기본 정보
-
-type INanumAskDto = {
+export type INanumAskDto = {
   nanumIdx: number
   contents: string
   essential: 'Y' | 'N'
 }
 
-type INanumDateDto = {
+export type INanumDateDto = {
   nanumIdx: number
   acceptDate: string // example: 2022-07-01 12:43:15
   location: string
 }
 
-type INanumGoodsDto = {
+export type INanumGoodsDto = {
   nanumIdx: number
   goodsName: string
   goodsNumber: number
 }
-type INanumImgDto = {
+export type INanumImgDto = {
   nanumIdx: number
   imgUrl: string
 }
@@ -277,6 +255,10 @@ export type INanumForm = {
 }
 
 export type INanum = {
+  nanumAskList: INanumAskDto[]
+  nanumDateList: INanumDateDto[]
+  nanumGoodslist: INanumGoodsDto[]
+  nanumImglist: INanumImgDto[]
   nanumIdx?: number // 나눔 db id
   accountIdx: number // 작성자 db id
   creatorId: string // 작성자 닉네임
@@ -292,6 +274,8 @@ export type INanum = {
   deletedYn: boolean // 삭제 여부
   deletedReason: string // 삭제한 이유
   qnaNumber: number // 문의 수
+  isFavorite: 'Y' | 'N'
+  favorites: number // 즐겨찾기한 사람 수
 }
 
 export type INanumGoodsInfo = {

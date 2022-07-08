@@ -129,11 +129,11 @@ declare namespace ReactNavigation {
     }
     QnAListCreator: {
       // 문의글 (나눔글 작성자)
-      nanumId: string
+      nanumIdx: number
     }
     QnAListUser: {
       // 문의글 (나눔 신청자)
-      nanumId: string
+      nanumIdx: number
     }
     WriteQnA: {
       postid: string

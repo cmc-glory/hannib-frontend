@@ -25,11 +25,11 @@ export const WriterProfileBanner = ({nanumIdx, writerProfileImageUri, writername
     console.log(userAccountIdx, nanumIdx)
     if (userAccountIdx == nanumIdx) {
       navigation.navigate('QnAListCreator', {
-        nanumId: '111111',
+        nanumIdx,
       })
     } else {
       navigation.navigate('QnAListUser', {
-        nanumId: '111111',
+        nanumIdx,
       })
     }
   }, [userAccountIdx])

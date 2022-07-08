@@ -8,12 +8,12 @@ import {LockIcon} from '../utils'
 
 type QnAListUserItemProps = {
   item: IQnAList
-  userId: string
+  accountIdx: number
 }
 
 type QuestionProps = {
   item: IQnAList
-  userId: string
+  accountIdx: number
 }
 
 type Answerprops = {
@@ -30,7 +30,7 @@ const QnASecret = () => {
   )
 }
 
-const Question = ({item, userId}: QuestionProps) => {
+const Question = ({item, accountIdx}: QuestionProps) => {
   // ******************** utils ********************
   const {isSecret, isAnswered, writer, content, date, writerId} = item
 
@@ -40,7 +40,7 @@ const Question = ({item, userId}: QuestionProps) => {
   const [editedContent, setEditedContent] = useState<string>(content)
 
   const showMenuIcon = useMemo(() => {
-    return userId == writerId && isAnswered == false // 작성자가 본인이고, 답변이 달리지 않았을 때만 수정 및 삭제 가능
+    return accountIdx == writerId && isAnswered == false // 작성자가 본인이고, 답변이 달리지 않았을 때만 수정 및 삭제 가능
   }, [])
 
   const onPressEdit = useCallback(() => {
@@ -115,14 +115,14 @@ const Answer = ({answer, answeredDate}: Answerprops) => {
   )
 }
 
-export const QnAListUserItem = ({item, userId}: QnAListUserItemProps) => {
+export const QnAListUserItem = ({item, accountIdx}: QnAListUserItemProps) => {
   return (
     <View style={[styles.qnaListItemContainer]}>
       {item.isSecret ? (
         <QnASecret />
       ) : (
         <>
-          <Question item={item} userId={userId} />
+          <Question item={item} accountIdx={accountIdx} />
           {item.isAnswered && <Answer answer={item.answer} answeredDate={item.answeredDate} />}
         </>
       )}
