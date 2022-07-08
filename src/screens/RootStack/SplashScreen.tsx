@@ -14,7 +14,7 @@ export const SplashScreen = () => {
       console.log('accessToken :', accessToken)
       if (accessToken == '' || accessToken == undefined) {
         // access token이 없으면 회원 가입 페이지로 이동
-        navigation.navigate('LoginStackNavigator')
+        navigation.navigate('MainTabNavigator')
       } else {
         //dispatch(storeAccessToken(accessToken)) // redux에 accesss
         // accessToken으로 id, email, 카테고리 저장
@@ -37,6 +37,7 @@ export const SplashScreen = () => {
                 ],
                 holdingSharingCnt: result.holdingSharingCnt,
                 participateSharingCnt: result.participateSharingCnt,
+                accountIdx: 0,
               }),
             )
           })
