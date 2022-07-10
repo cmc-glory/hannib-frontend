@@ -36,7 +36,7 @@ const GoodsLists = () => {
     sharingid: '123445',
   })
 
-  console.log(userCategory.category)
+  //console.log(userCategory.category)
 
   // ******************** react query ********************
   const nanumListByRecent = useQuery(queryKeys.nanumList, () => getNanumByRecent({job: userCategory.job, category: userCategory.category, accountIdx: 0}), {
@@ -74,7 +74,13 @@ const GoodsLists = () => {
 
   const onPressWrite = useCallback(() => {
     // 모집글 작성 버튼 클릭 시
-    navigation.navigate('WriteNanumFormStackNavigator')
+    if (isLoggedIn) {
+      // 로그인 했으면 작성 페이지
+      navigation.navigate('WriteNanumFormStackNavigator')
+    } else {
+      // 로그인 안했으면 로그인 페이지
+      navigation.navigate('MyPageTabStackNavigator')
+    }
   }, [])
 
   const onPressMagnifier = useCallback(() => {
@@ -109,14 +115,15 @@ const GoodsLists = () => {
   return (
     <SafeAreaView style={[styles.container]} edges={['top', 'left', 'right']}>
       <View style={styles.headerContainer}>
-
         {isLoggedIn ? (
           <Pressable style={[styles.titleContainer]} onPress={onPressSelectCategory}>
-            <Text style={styles.title}>{userCategory?.name}</Text>
+            <Text style={styles.title}>{userCategory?.category}</Text>
             <DownArrowIcon onPress={onPressSelectCategory} />
           </Pressable>
         ) : (
-          <Text style={styles.title}>전체보기</Text>
+          <Pressable style={[styles.titleContainer]}>
+            <Text style={styles.title}>전체보기</Text>
+          </Pressable>
         )}
         <View style={[theme.styles.rowFlexStart]}>
           <MagnifierIcon style={{marginRight: 16}} onPress={onPressMagnifier} />

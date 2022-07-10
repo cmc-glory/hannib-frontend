@@ -163,6 +163,9 @@ export const SelectCategory = () => {
         accountIdx: 0,
       }),
     )
+
+    storeString('email', email)
+
     navigation.navigate('MainTabNavigator')
   }, [])
 

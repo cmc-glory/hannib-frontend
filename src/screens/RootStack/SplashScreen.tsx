@@ -38,9 +38,11 @@ export const SplashScreen = () => {
                     name: result.name,
                     profileImageUri: result.profileImageUri,
                     userCategory: [
-                      {id: '1', name: '세븐틴'},
-                      {id: '2', name: '에스파'},
-                      {id: '3', name: '아이브'},
+                      {
+                        job: '가수',
+                        category: 'BTS',
+                        accountIdx: 0,
+                      },
                     ],
                     holdingSharingCnt: result.holdingSharingCnt,
                     participateSharingCnt: result.participateSharingCnt,
@@ -55,7 +57,6 @@ export const SplashScreen = () => {
           }
         })
       }
-
     })
     // })
   }, [])
