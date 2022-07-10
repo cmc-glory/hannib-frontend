@@ -14,7 +14,7 @@ export const QnAListCreator = () => {
   // ******************** utils ********************
   const userId = useAppSelector(state => state.auth.user.email)
   const route = useRoute<QnAListCreatorRouteProps>()
-  const {nanumId} = useMemo(() => route.params, [])
+  const {nanumIdx} = useMemo(() => route.params, [])
 
   // ******************** states ********************
   const [qnas, setQnas] = useState<IQnAList[]>([]) // 문의 목록 state
@@ -36,7 +36,7 @@ export const QnAListCreator = () => {
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
       <StackHeader goBack title="문의" />
-      <ScrollView style={[styles.container]} contentOffset={{x: 0, y: 200}}>
+      <ScrollView bounces={false} style={[styles.container]} contentOffset={{x: 0, y: 200}}>
         <SharingPreview uri="http://localhost:8081/src/assets/images/detail_image_example.png" category="BTS" title="BTS 키링 나눔" />
 
         {qnas.map(qna => (
@@ -59,5 +59,6 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: theme.PADDING_SIZE,
     marginBottom: 24,
+    flex: 1,
   },
 })

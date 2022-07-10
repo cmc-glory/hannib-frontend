@@ -5,7 +5,7 @@ import uuid from 'react-native-uuid'
 import {getStatusBarHeight} from 'react-native-status-bar-height'
 import {isIphoneX} from 'react-native-iphone-x-helper'
 import {useNavigation} from '@react-navigation/native'
-import {IUserCategory} from '../../types'
+import {IAccountCategoryDto} from '../../types'
 import * as theme from '../../theme'
 
 const MARGIN_TOP = isIphoneX() ? getStatusBarHeight() + 56 : 56
@@ -13,29 +13,29 @@ const MARGIN_TOP = isIphoneX() ? getStatusBarHeight() + 56 : 56
 type CategoryDropdownProps = {
   showCategoryModal: boolean
   setShowCategoryModal: React.Dispatch<React.SetStateAction<boolean>>
-  userCategory: IUserCategory
-  setUserCategory: React.Dispatch<React.SetStateAction<IUserCategory>>
-  categories: IUserCategory[]
+  userCategory: IAccountCategoryDto
+  setUserCategory: React.Dispatch<React.SetStateAction<IAccountCategoryDto>>
+  categories: IAccountCategoryDto[]
 }
 
 type CategoryItemProps = {
-  userCategory: IUserCategory
-  currentCategory: IUserCategory
+  userCategory: IAccountCategoryDto
+  currentCategory: IAccountCategoryDto
   borderTop?: boolean
   borderBottom?: boolean
-  onPressItem: (category: IUserCategory) => void
+  onPressItem: (category: IAccountCategoryDto) => void
 }
 
 const CategoryItem = ({userCategory, currentCategory, borderTop, borderBottom, onPressItem}: CategoryItemProps) => {
   // ******************** utils ********************
-  const selected: boolean = userCategory.id == currentCategory.id
+  const selected: boolean = userCategory.category == currentCategory.category && userCategory.job == userCategory.job
 
   // ******************** renderer ********************
   return (
     <Pressable
       onPress={() => onPressItem(currentCategory)}
       style={[styles.itemContainer, selected && {backgroundColor: theme.main50}, borderTop && styles.borderTop, borderBottom && styles.borderBottom]}>
-      <Text style={[selected && {fontFamily: 'Pretendard-Bold'}]}>{currentCategory.name}</Text>
+      <Text style={[selected && {fontFamily: 'Pretendard-Bold'}]}>{currentCategory.category}</Text>
     </Pressable>
   )
 }
@@ -49,7 +49,7 @@ export const CategoryDropdown = ({showCategoryModal, setShowCategoryModal, userC
 
   // ******************** callbacks ********************
 
-  const onPressItem = useCallback((category: IUserCategory) => {
+  const onPressItem = useCallback((category: IAccountCategoryDto) => {
     setUserCategory(category)
     setShowCategoryModal(false)
   }, [])
@@ -78,21 +78,16 @@ export const CategoryDropdown = ({showCategoryModal, setShowCategoryModal, userC
       }}
       style={{margin: 0}}>
       <View style={[styles.container]}>
-        {categories.length == 1 ? (
-          <CategoryItem userCategory={userCategory} currentCategory={categories[0]} borderTop onPressItem={onPressItem} borderBottom />
-        ) : (
-          categories.map((item, index) => {
-            if (index == 0) {
-              return <CategoryItem key={item.id} userCategory={userCategory} currentCategory={item} onPressItem={onPressItem} borderTop />
-            } else {
-              return <CategoryItem userCategory={userCategory} currentCategory={item} onPressItem={onPressItem} key={item.id} />
-            }
-          })
-        )}
+        {categories.map((item, index) => {
+          if (index == 0) {
+            return <CategoryItem key={item.category + index} userCategory={userCategory} currentCategory={item} onPressItem={onPressItem} borderTop />
+          } else {
+            return <CategoryItem userCategory={userCategory} currentCategory={item} onPressItem={onPressItem} key={item.category + index} />
+          }
+        })}
         <CategoryItem
           userCategory={userCategory}
-          currentCategory={{name: '수정하기', id: String(uuid.v1())}}
-          borderTop
+          currentCategory={{category: '수정하기', job: '가수', accountIdx: 0}}
           borderBottom
           onPressItem={onPressEditCategory}
         />

@@ -1,14 +1,16 @@
 import React, {useCallback, useState} from 'react'
-import {View, Text, Pressable, TouchableOpacity, Animated, Alert, Modal as RNModal, StyleSheet} from 'react-native'
+import {View, Text, Pressable, Alert, StyleSheet} from 'react-native'
 import Modal from 'react-native-modal'
 import {useNavigation} from '@react-navigation/native'
 import {getStatusBarHeight} from 'react-native-status-bar-height'
 import Clipboard from '@react-native-clipboard/clipboard'
+import {useMutation} from 'react-query'
 
 import {DeleteModal} from './DeleteModal'
 import * as theme from '../../theme'
 import {useToggle, useAsyncState} from '../../hooks'
 import {LeftArrowIcon, ShareIcon, XIcon, MenuIcon, LeftArrowWhiteIcon, ShareWhiteIcon, MenuWhiteIcon} from '../utils'
+import {queryKeys, deleteNanumForm} from '../../api'
 
 const STATUSBAR_HEIGHT = getStatusBarHeight()
 
@@ -18,6 +20,8 @@ type MenuModalProps = {
   onPressReportIssue: () => void
   isWriter: boolean
   setDeleteModalVisible: React.Dispatch<React.SetStateAction<boolean>>
+  writerAccountIdx: number
+  nanumIdx: number
 }
 
 type ShareModalProps = {
@@ -27,8 +31,9 @@ type ShareModalProps = {
 
 type GoodsDetailHeaderProps = {
   inverted?: boolean
-  userid: string
-  writerid: string
+  userAccountIdx: number
+  writerAccountIdx: number
+  nanumIdx: number
 }
 
 const ShareModal = ({shareVisible, toggleShareVisible}: ShareModalProps) => {
@@ -61,7 +66,7 @@ const ShareModal = ({shareVisible, toggleShareVisible}: ShareModalProps) => {
   )
 }
 
-const MenuModal = ({moreVisible, setMoreVisible, onPressReportIssue, isWriter, setDeleteModalVisible}: MenuModalProps) => {
+const MenuModal = ({moreVisible, setMoreVisible, onPressReportIssue, isWriter, setDeleteModalVisible, writerAccountIdx}: MenuModalProps) => {
   const [deletePressed, setDeletePressed] = useState<boolean>(false)
   const onPressEdit = useCallback(() => {
     setMoreVisible(false)
@@ -110,14 +115,15 @@ const MenuModal = ({moreVisible, setMoreVisible, onPressReportIssue, isWriter, s
   )
 }
 
-export const GoodsDetailHeader = ({inverted, userid, writerid}: GoodsDetailHeaderProps) => {
+export const GoodsDetailHeader = ({inverted, userAccountIdx, writerAccountIdx, nanumIdx}: GoodsDetailHeaderProps) => {
+  // ********************
   const navigation = useNavigation()
   const [shareVisible, toggleShareVisible] = useToggle() // 공유 모달창 띄울지
   //const [moreVisible, toggleMoreVisible] = useToggle() // 메뉴 모달창 띄울지
   const [moreVisible, setMoreVisible] = useAsyncState(false)
   const [deleteModalVisible, setDeleteModalVisible] = useState<boolean>(false)
   //const isWriter = userid == writerid
-  const isWriter = false
+  const isWriter = userAccountIdx == writerAccountIdx
 
   const onPressGoback = useCallback(() => {
     navigation.goBack()
@@ -130,7 +136,7 @@ export const GoodsDetailHeader = ({inverted, userid, writerid}: GoodsDetailHeade
 
   return (
     <View style={[styles.container]}>
-      <DeleteModal deleteModalVisible={deleteModalVisible} setDeleteModalVisible={setDeleteModalVisible} />
+      <DeleteModal deleteModalVisible={deleteModalVisible} setDeleteModalVisible={setDeleteModalVisible} nanumIdx={nanumIdx} />
       {inverted ? (
         <LeftArrowIcon onPress={onPressGoback} style={{marginRight: 10}} />
       ) : (
@@ -145,6 +151,8 @@ export const GoodsDetailHeader = ({inverted, userid, writerid}: GoodsDetailHeade
           onPressReportIssue={onPressReportIssue}
           isWriter={isWriter}
           setDeleteModalVisible={setDeleteModalVisible}
+          writerAccountIdx={writerAccountIdx}
+          nanumIdx={nanumIdx}
         />
         {inverted ? (
           <>

@@ -1,6 +1,6 @@
 import axios from 'axios'
 import {BASE_URL} from '@env'
-import {INanumForm} from '../types'
+import {INanumForm, IAccountCategoryDto} from '../types'
 
 const apiClient = axios.create({
   baseURL: BASE_URL,
@@ -15,8 +15,20 @@ export const getNanumAll = async () => {
   return data
 }
 
+// 최신순으로 가져 오기
+export const getNanumByRecent = async (accountCategoryDto: IAccountCategoryDto) => {
+  const {data} = await apiClient.post(`/api/nanum/list/recent`, accountCategoryDto)
+  return data
+}
+
+// 인기순으로 가져 오기
+export const getNanumByPopularity = async (accountCategoryDto: IAccountCategoryDto) => {
+  const {data} = await apiClient.post(`/api/nanum/list/favorites`, accountCategoryDto)
+  return data
+}
+
 export const getNanumByIndex = async (index: number) => {
-  const {data} = await apiClient.get(`/api/nanum/nanumIdx?nanumIdx=${index}`)
+  const {data} = await apiClient.get(`/api/nanum/${index}`)
 
   return data
 }
@@ -34,7 +46,7 @@ export const getNanumForm = async (nanumIdx: number) => {
 }
 
 export const deleteNanumForm = async (nanumIdx: number) => {
-  const {data} = await apiClient.delete(`/api/nanum?nanumIdx=${nanumIdx}`)
+  const {data} = await apiClient.delete(`/api/nanum/?nanumIdx=${nanumIdx}`)
 
   return data
 }
