@@ -136,8 +136,8 @@ declare namespace ReactNavigation {
       nanumIdx: number
     }
     WriteQnA: {
-      postid: string
-      userid: string
+      nanumIdx: number
+      accountIdx: number
       imageuri: string
       category: string
       title: string

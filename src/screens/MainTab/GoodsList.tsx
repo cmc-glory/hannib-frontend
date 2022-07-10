@@ -7,9 +7,9 @@ import {useQuery, useQueryClient} from 'react-query'
 import * as theme from '../../theme'
 import {DownArrowIcon, BellIcon, MagnifierIcon, BottomSheet, FloatingButtonIcon} from '../../components/utils'
 import {GoodsFilterTab, NanumListItem, GoodsListBottomSheetContent, Banner, CategoryDropdown} from '../../components/MainTab'
-import {IUserCategory, INanumMethod, INanumListItem} from '../../types'
+import {IUserCategory, INanumMethod, INanumListItem, IAccountCategoryDto} from '../../types'
 import {useAppSelector, useAnimatedValue} from '../../hooks'
-import {queryKeys, getNanumListAll} from '../../api'
+import {queryKeys, getNanumListAll, getNanumByRecent, getNanumByPopularity} from '../../api'
 
 const GoodsLists = () => {
   // ******************** utils ********************
@@ -17,9 +17,26 @@ const GoodsLists = () => {
   const navigation = useNavigation()
   const queryClient = useQueryClient()
   const user = useAppSelector(state => state.auth.user)
+  console.log(user.userCategory)
+
+  // ******************** states ********************
+  const [sharings, setSharings] = useState<INanumListItem[]>([])
+  const [refreshing, setRefreshing] = useState<boolean>(false) // 새로고침 state
+  const [nanumMethodFilter, setNanumMethodFilter] = useState<'all' | INanumMethod>('all')
+  const [itemFilter, setItemFilter] = useState<'최신순' | '인기순' | '추천순'>('최신순')
+  const [showItemFilterBottomShet, setShowItemFilterBottomSheet] = useState<boolean>(false) // 인기순, 최신순, 추천순 필터링 탭 띄울지
+  const [showSelectCategoryModal, setShowSelectCategoryModal] = useState<boolean>(false) // 카테고리 선택하는 드롭다운 띄울지
+  const [userCategory, setUserCategory] = useState<IAccountCategoryDto>(user.userCategory[0]) // 현재 사용자가 선택한 카테고리.
+  const [bannerInfo, setBannerInfo] = useState({
+    imageUri: 'http://localhost:8081/src/assets/images/sanrio2.jpeg',
+    title: '응원하는 셀럽의 생일/공연 홍보 배너를 걸어보세요',
+    sharingid: '123445',
+  })
+
+  console.log(userCategory.category)
 
   // ******************** react query ********************
-  const nanumList = useQuery(queryKeys.nanumList, getNanumListAll, {
+  const nanumListByRecent = useQuery(queryKeys.nanumList, () => getNanumByRecent({job: userCategory.job, category: userCategory.category, accountIdx: 0}), {
     onSuccess: data => {
       setRefreshing(false) // 새로고침중이면 로딩 종료
       setSharings(data)
@@ -31,18 +48,9 @@ const GoodsLists = () => {
     },
   })
 
-  // ******************** states ********************
-  const [sharings, setSharings] = useState<INanumListItem[]>([])
-  const [refreshing, setRefreshing] = useState<boolean>(false) // 새로고침 state
-  const [nanumMethodFilter, setNanumMethodFilter] = useState<'all' | INanumMethod>('all')
-  const [itemFilter, setItemFilter] = useState<'최신순' | '인기순' | '추천순'>('최신순')
-  const [showItemFilterBottomShet, setShowItemFilterBottomSheet] = useState<boolean>(false) // 인기순, 최신순, 추천순 필터링 탭 띄울지
-  const [showSelectCategoryModal, setShowSelectCategoryModal] = useState<boolean>(false) // 카테고리 선택하는 드롭다운 띄울지
-  const [userCategory, setUserCategory] = useState<IUserCategory>(user.userCategory[0]) // 현재 사용자가 선택한 카테고리.
-  const [bannerInfo, setBannerInfo] = useState({
-    imageUri: 'http://localhost:8081/src/assets/images/sanrio2.jpeg',
-    title: '응원하는 셀럽의 생일/공연 홍보 배너를 걸어보세요',
-    sharingid: '123445',
+  const nanumListByPopular = useQuery(queryKeys.nanumList, () => getNanumByPopularity({job: '가수', category: userCategory.category, accountIdx: 0}), {
+    onSuccess(data) {},
+    onError(err) {},
   })
 
   // ******************** animations ********************
@@ -78,13 +86,13 @@ const GoodsLists = () => {
 
   const onPressLocationFilter = useCallback((type: INanumMethod | 'all') => {
     // 전체, 우편, 오프라인 클릭시
-    console.log(nanumList.data)
+    console.log(nanumListByRecent.data)
 
     if (type == 'all') {
-      setSharings(nanumList.data)
+      setSharings(nanumListByRecent.data)
     } else {
-      if (nanumList.data !== undefined) {
-        setSharings(nanumList.data.filter((item: INanumListItem) => item.nanumMethod == type))
+      if (nanumListByRecent.data != undefined) {
+        setSharings(nanumListByRecent.data.filter((item: INanumListItem) => item.nanumMethod == type))
       }
     }
   }, [])
@@ -99,7 +107,7 @@ const GoodsLists = () => {
     <SafeAreaView style={[styles.container]} edges={['top', 'left', 'right']}>
       <View style={styles.headerContainer}>
         <Pressable style={[styles.titleContainer]} onPress={onPressSelectCategory}>
-          <Text style={styles.title}>{userCategory?.name}</Text>
+          <Text style={styles.title}>{userCategory?.category}</Text>
           <DownArrowIcon onPress={onPressSelectCategory} />
         </Pressable>
         <View style={[theme.styles.rowFlexStart]}>

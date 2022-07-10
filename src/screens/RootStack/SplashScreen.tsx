@@ -14,41 +14,38 @@ export const SplashScreen = () => {
   useEffect(() => {
     getString('accessToken').then(accessToken => {
       console.log('accessToken :', accessToken)
-      if (accessToken == '' || accessToken == undefined) {
-        // access token이 없으면 회원 가입 페이지로 이동
-        navigation.navigate('MainTabNavigator')
-      } else {
-        //dispatch(storeAccessToken(accessToken)) // redux에 accesss
-        // accessToken으로 id, email, 카테고리 저장
-        storeAccessToken(accessToken)
-        // qna list 받아오기
-        fetch('http://localhost:8081/src/data/dummyUser.json', {
-          method: 'get',
+      // if (accessToken == '' || accessToken == undefined) {
+      //   // access token이 없으면 회원 가입 페이지로 이동
+      //   navigation.navigate('MainTabNavigator')
+      // } else {
+      //dispatch(storeAccessToken(accessToken)) // redux에 accesss
+      // accessToken으로 id, email, 카테고리 저장
+      storeAccessToken('1111')
+      // qna list 받아오기
+      fetch('http://localhost:8081/src/data/dummyUser.json', {
+        method: 'get',
+      })
+        .then(res => res.json())
+        .then(result => {
+          dispatch(
+            login({
+              email: result.email,
+              name: result.name,
+              profileImageUri: result.profileImageUri,
+              userCategory: [{category: 'BTS', job: '배우', accountIdx: 0}],
+
+              holdingSharingCnt: result.holdingSharingCnt,
+              participateSharingCnt: result.participateSharingCnt,
+              accountIdx: 0,
+            }),
+          )
         })
-          .then(res => res.json())
-          .then(result => {
-            dispatch(
-              login({
-                email: result.email,
-                name: result.name,
-                profileImageUri: result.profileImageUri,
-                userCategory: [
-                  {id: '1', name: '세븐틴'},
-                  {id: '2', name: '에스파'},
-                  {id: '3', name: '아이브'},
-                ],
-                holdingSharingCnt: result.holdingSharingCnt,
-                participateSharingCnt: result.participateSharingCnt,
-                accountIdx: 0,
-              }),
-            )
-          })
-          .then(() => {
-            // access token이 있으면 메인탭으로 이동
-            navigation.navigate('MainTabNavigator')
-          })
-      }
+        .then(() => {
+          // access token이 있으면 메인탭으로 이동
+          navigation.navigate('MainTabNavigator')
+        })
     })
+    // })
   }, [])
 
   return (

@@ -3,6 +3,7 @@ import {View, ScrollView, Dimensions, Animated} from 'react-native'
 import {getStatusBarHeight} from 'react-native-status-bar-height'
 import {useNavigation, useRoute} from '@react-navigation/native'
 import {useQuery} from 'react-query'
+
 import {FloatingBottomButton} from '../../components/utils'
 import {HeaderImage, GoodsDetailContent, GoodsDetailHeader} from '../../components/GoodsStack'
 import {useAnimatedValue, useAppSelector} from '../../hooks'
@@ -99,7 +100,7 @@ export const GoodsDetail = () => {
             useNativeDriver: false,
           })
         }}>
-        <HeaderImage images={data?.images} />
+        <HeaderImage images={data?.nanumImglist} />
         {data != undefined && (
           <GoodsDetailContent headerHeight={headerHeight} nanumDetail={data} numInquires={inquries.data == undefined ? 0 : inquries.data.length} />
         )}

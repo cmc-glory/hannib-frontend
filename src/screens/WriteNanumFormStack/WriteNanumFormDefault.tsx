@@ -6,7 +6,7 @@ import KeyboardManager from 'react-native-keyboard-manager'
 import BottomSheet, {BottomSheetBackdrop, BottomSheetScrollView} from '@gorhom/bottom-sheet'
 import {isIphoneX} from 'react-native-iphone-x-helper'
 import StackHeader from '../../components/utils/StackHeader'
-import {ImagePicker, StepIndicator, SetSharingType, BookSharingDate} from '../../components/WriteGoodsStack'
+import {ImagePicker, StepIndicator, SetSharingType, BookSharingDate, SelectCategory} from '../../components/WriteGoodsStack'
 import {NeccesaryField, RightArrowIcon, RoundButton, XIcon} from '../../components/utils'
 import {useToggle} from '../../hooks'
 import type {INanumMethod} from '../../types'
@@ -122,9 +122,25 @@ export const WriteNanumFormDefault = () => {
             <NeccesaryField />
           </View>
 
-          <Pressable style={styles.selectContainer} onPress={handleClosePress}>
-            <RightArrowIcon onPress={handleClosePress} />
-          </Pressable>
+          <View style={[theme.styles.rowFlexStart]}>
+            {category != '' && (
+              <View
+                style={{
+                  backgroundColor: theme.secondary,
+                  width: 24,
+                  height: 24,
+                  borderRadius: 12,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginRight: 8,
+                }}>
+                <Text style={{color: theme.white, fontFamily: 'Pretendard-Medium'}}>1</Text>
+              </View>
+            )}
+            <Pressable style={styles.selectContainer} onPress={handleClosePress}>
+              <RightArrowIcon onPress={handleClosePress} />
+            </Pressable>
+          </View>
         </View>
         <View style={[styles.itemWrapper]}>
           <View style={[theme.styles.rowFlexStart]}>
@@ -178,16 +194,17 @@ export const WriteNanumFormDefault = () => {
         onChange={handleSheetChanges}
         detached={true}
         bottomInset={0}
-        backdropComponent={renderBackdrop}
-        style={[styles.bottomSheetContainer]}>
-        <BottomSheetScrollView>
+        backdropComponent={renderBackdrop}>
+        <BottomSheetScrollView contentContainerStyle={{flex: 1}} style={{flex: 1}}>
           <View style={[{alignItems: 'flex-end'}]}>
             <XIcon
+              style={{padding: 16}}
               onPress={() => {
                 bottomSheetRef.current?.close()
               }}
             />
           </View>
+          <SelectCategory category={category} setCategory={setCategory} bottomSheetRef={bottomSheetRef} />
         </BottomSheetScrollView>
       </BottomSheet>
     </SafeAreaView>
@@ -224,9 +241,5 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-  },
-  bottomSheetContainer: {
-    flex: 1,
-    padding: 10,
   },
 })

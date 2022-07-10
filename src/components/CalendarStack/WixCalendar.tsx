@@ -85,9 +85,50 @@ export const WixCalendar = ({scheduleAll, setSelectedDate}: WixCalendarProps) =>
       minDate={'2012-01-01'}
       maxDate={undefined}
       onDayPress={day => {
-        setSelectedDate(day.dateString)
-        const isIn = markedDates[day.dateString] // 이미 marked dates state에 있는지
-        if (isIn) {
+        if (markedDates != undefined) {
+          setSelectedDate(day.dateString)
+          const isIn = markedDates[day.dateString] // 이미 marked dates state에 있는지
+          if (isIn) {
+            setCurrentDate({
+              [day.dateString]: {
+                ...markedDates[day.dateString],
+                selected: true,
+                selectedColor: theme.gray200,
+              },
+            })
+          } else {
+            setCurrentDate({
+              [day.dateString]: {
+                selected: true,
+                selectedColor: theme.gray200,
+              },
+            })
+          }
+        }
+      }}
+      onVisibleMonthsChange={day => {
+        if (markedDates != undefined) {
+          if (day[0].dateString == today) {
+            setSelectedDate(today)
+          } else {
+            setSelectedDate(day[0].dateString.slice(0, 7) + '01')
+          }
+          setCurrentDate({
+            [day[0].dateString]: {
+              ...markedDates[day[0].dateString],
+              selected: true,
+              selectedColor: theme.gray200,
+            },
+          })
+        }
+      }}
+      onMonthChange={day => {
+        if (markedDates != undefined) {
+          if (day.dateString == today) {
+            setSelectedDate(today)
+          } else {
+            setSelectedDate(day.dateString.slice(0, 7) + '01')
+          }
           setCurrentDate({
             [day.dateString]: {
               ...markedDates[day.dateString],
@@ -95,42 +136,7 @@ export const WixCalendar = ({scheduleAll, setSelectedDate}: WixCalendarProps) =>
               selectedColor: theme.gray200,
             },
           })
-        } else {
-          setCurrentDate({
-            [day.dateString]: {
-              selected: true,
-              selectedColor: theme.gray200,
-            },
-          })
         }
-      }}
-      onVisibleMonthsChange={day => {
-        if (day[0].dateString == today) {
-          setSelectedDate(today)
-        } else {
-          setSelectedDate(day[0].dateString.slice(0, 7) + '01')
-        }
-        setCurrentDate({
-          [day[0].dateString]: {
-            ...markedDates[day[0].dateString],
-            selected: true,
-            selectedColor: theme.gray200,
-          },
-        })
-      }}
-      onMonthChange={day => {
-        if (day.dateString == today) {
-          setSelectedDate(today)
-        } else {
-          setSelectedDate(day.dateString.slice(0, 7) + '01')
-        }
-        setCurrentDate({
-          [day.dateString]: {
-            ...markedDates[day.dateString],
-            selected: true,
-            selectedColor: theme.gray200,
-          },
-        })
       }}
       monthFormat={'yyyy.MM'}
       hideExtraDays={true}

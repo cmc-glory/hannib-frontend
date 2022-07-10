@@ -44,6 +44,6 @@ export const updateInquiry = async (answerNanumDto: IAnswerNanumDto) => {
 
 // 문의글 가져오기
 export const getInquiryByIndex = async (nanumIdx: number) => {
-  const {data} = await apiClient.post(`/api/nanum/inquiry/list?nanumIdx=${nanumIdx}`)
+  const {data} = await apiClient.get(`/api/nanum/inquiry/list?nanumIdx=${nanumIdx}`)
   return data
 }

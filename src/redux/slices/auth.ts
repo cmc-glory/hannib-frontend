@@ -1,6 +1,6 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {createDraftSafeSelector} from '@reduxjs/toolkit'
-import {IUserCategory} from '../../types'
+import {IAccountCategoryDto} from '../../types'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 //Each slice file should define a type for its initial state value,
@@ -9,7 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 export interface User {
   email: string
   name: string
-  userCategory: IUserCategory[]
+  userCategory: IAccountCategoryDto[]
   profileImageUri: string | undefined
   holdingSharingCnt: number | undefined
   participateSharingCnt: number | undefined

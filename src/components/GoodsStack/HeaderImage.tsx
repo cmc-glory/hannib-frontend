@@ -1,15 +1,16 @@
-import React from 'react'
+import React, {useMemo} from 'react'
 import {StyleSheet, View, Dimensions} from 'react-native'
 import {Carousel} from '../utils/Carousel'
 
 const {width} = Dimensions.get('window')
 
 type HeaderImageProps = {
-  images: string[] | undefined
+  images: any
 }
 
 export const HeaderImage = ({images}: HeaderImageProps) => {
-  return images === undefined ? <View style={{height: 350, backgroundColor: 'black'}}></View> : <Carousel imageUrls={images} imageWidth={width} />
+  const tempImages: string[] = useMemo(() => images.map((item: any) => item.imgUrl), [])
+  return images == undefined ? <View style={{height: 350, backgroundColor: 'black'}}></View> : <Carousel imageUrls={tempImages} imageWidth={width} />
 }
 const styles = StyleSheet.create({
   image: {
