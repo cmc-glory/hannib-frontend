@@ -9,10 +9,10 @@ import {SelectCategoryRouteProps} from '../../navigation/LoginStackNavigator'
 import {StackHeader, Button, CategoryItem, FloatingBottomButton, XIcon} from '../../components/utils'
 import {SearchStar, EmptyResult, InitScreen} from '../../components/LoginStack'
 import * as theme from '../../theme'
-import {IStar, IAccountDto, IAccountCategoryDto} from '../../types'
-import {login, storeAccessToken, storeRefreshToken} from '../../redux/slices'
+import {IStar, IAccountDto, IAccountCategoryDto, ICategoryDto} from '../../types'
+import {storeAccessToken, storeRefreshToken, login} from '../../redux/slices'
 import {useAppDispatch, storeString} from '../../hooks'
-import {queryKeys, postSignUp} from '../../api'
+import {queryKeys, postSignUp, searchCategory} from '../../api'
 
 const BUTTON_GAP = 10
 
@@ -43,15 +43,28 @@ export const SelectCategory = () => {
   const dispatch = useAppDispatch()
   const BUTTON_WIDTH = useMemo(() => (Dimensions.get('window').width - theme.PADDING_SIZE * 2 - BUTTON_GAP) / 2, [])
   const {email, name, profileImage} = useMemo(() => route.params, [])
+  var accountCategoryDtoList: IAccountCategoryDto[] = []
 
   console.log(' params from before : ', email, name, profileImage)
 
   // ******************** react queries  ********************
   const postSignUpQuery = useMutation(queryKeys.signUp, postSignUp, {
+    // 회원 가입 api
     onSuccess(data) {
       console.log('sign up success')
       console.log('data : ', data)
 
+      dispatch(
+        login({
+          email: email,
+          name: name,
+          userCategory: accountCategoryDtoList,
+          profileImageUri: profileImage,
+          holdingSharingCnt: 0,
+          participateSharingCnt: 0,
+          accountIdx: 0,
+        }),
+      )
       navigation.navigate('MainTabNavigator')
     },
     onError(error) {
@@ -73,121 +86,84 @@ export const SelectCategory = () => {
     },
   })
 
+  const searchCategoryQuery = useMutation(queryKeys.searchCategory, searchCategory, {
+    // 검색 api
+    onSuccess(data, variables, context) {
+      setResult(data)
+    },
+    onError(error, variables, context) {
+      showMessage({
+        // 에러 안내 메세지
+        message: '검색 중 에러가 발생했습니다',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+      })
+      console.log(error)
+    },
+  })
   // ******************** states  ********************
   const [init, setInit] = useState<boolean>(true) // 처음에만 검색해보세요! 화면 띄움
   const [singerSelected, setSingerSelected] = useState(true) // 가수, 배우 대분류 선택
-  const [starsAll, setStarsAll] = useState<IStar[]>([]) // 서버에서 받아온 연예인 데이터 전부
-  const [singers, setSingers] = useState<IStar[]>([]) // 서버에서 받아온 가수 데이터 전부
-  const [actors, setActors] = useState<IStar[]>([]) // 서버에서 받아온 배우 데이터 전부
-  const [stars, setStars] = useState<IStar[]>([]) // 프론트 단에서 보여줄 연예인 데이터
-  const [selectedStars, setSelectedStars] = useState<IStar[]>([]) // 사용자가 선택한 카테고리
   const [keyword, setKeyword] = useState<string>('')
-
-  // ******************** react queries  ********************
-  useEffect(() => {
-    fetch('http://localhost:8081/src/data/dummyStars.json', {
-      method: 'get',
-    })
-      .then(res => res.json())
-      .then(result => {
-        result.forEach((item: any) => (item.selected = false)) // selected 초기화
-        setStarsAll(result)
-        const singers = result.filter((item: any) => item.maincategory == 'singer') // 가수만 골라서
-        setSingers(singers) // singer에 저장
-        setActors(result.filter((item: any) => item.maincategory == 'actor')) // 배우만 골라서 actors에 저장
-
-        setStars(singers) // 초기 보여줄 화면은 singers
-        setSelectedStars([])
-      })
-  }, [])
+  const [result, setResult] = useState<ICategoryDto>({
+    job: '가수',
+    nickName: '방탄소년단',
+    birth: '2013-06-13',
+    imgUrl:
+      'https://blogfiles.pstatic.net/MjAyMjA3MTBfMzYg/MDAxNjU3MzgxMzg5MjU1.zlXIrPWz8E-j2jq6eIWuP49vm-816tGDYDdC4QG8trYg.uGunW_xEVY94e47Y7klDCopWJXtmi754xw4f7r83oZwg.JPEG.js7056/bts.jpeg?type=w1',
+    email: 'glory@gmail.com',
+  })
 
   // ******************** callbacks  ********************
-  const onPressSinger = useCallback(() => {
-    setSingerSelected(true)
-    setStars(singers)
-  }, [singers])
-  const onPressActor = useCallback(() => {
-    setSingerSelected(false)
-    setStars(actors)
-  }, [actors])
-
   const searchKeyword = useCallback(
+    // 검색 api 호출
     (keyword: string) => {
       // 입력 값이 없을 때는 리턴
       if (keyword == '') return
       init && setInit(false) // 한번 검색을 하고 나면 init screen은 필요 없음
-      setStars(starsAll.filter(star => star.name.includes(keyword)))
+      //setStars(starsAll.filter(star => star.name.includes(keyword)))
+      //const tempKeyword = keyword
+      searchCategoryQuery.mutate(keyword)
       setKeyword('')
     },
     [keyword],
   )
 
-  const onPressSelectCompletion = useCallback(() => {
-    const accessToken = '111111'
-    const refreshToken = '222222'
-
-    storeString('accessToken', accessToken)
-    storeString('refreshToken', refreshToken)
-
-    dispatch(storeAccessToken(accessToken)) // access token redux에 저장
-    dispatch(storeRefreshToken(refreshToken)) // refresh token redux에 저장
-    // 사용자 정보 (email, name, selected category) redux에 저장
-    // dispatch(
-    //   login({
-    //     email,
-    //     name,
-    //     profileImageUri: profileImage?.uri,
-    //     userCategory: selectedStars.map(category => {
-    //       return {id: category.id, name: category.name}
-    //     }),
-    //   }),
-    // );
-    const accountIdx = 0
-    const accountDto: IAccountDto = {
-      accountCategoryDtoList: [
-        {
-          accountIdx,
-          job: '가수',
-          categoryName: 'BTS',
-        },
-      ],
-      accountIdx,
+  const onPressSignUp = useCallback(() => {
+    accountCategoryDtoList.push({
+      accountIdx: 0,
+      job: result.job,
+      category: result.nickName,
+    })
+    // 회원가입 api 호출
+    const signUpForm: IAccountDto = {
+      accountCategoryDtoList: accountCategoryDtoList,
+      accountIdx: 0,
       creatorId: name,
-      accountImg: profileImage == '' ? null : profileImage,
-      email,
+      accountImg: profileImage,
+      email: email,
     }
-
-    console.log(accountDto)
-
-    //postSignUpQuery.mutate(accountDto)
+    //postSignUpQuery.mutate(signUpForm)
+    dispatch(
+      login({
+        email: email,
+        name: name,
+        userCategory: accountCategoryDtoList,
+        profileImageUri: profileImage,
+        holdingSharingCnt: 0,
+        participateSharingCnt: 0,
+        accountIdx: 0,
+      }),
+    )
     navigation.navigate('MainTabNavigator')
-  }, [selectedStars])
-
-  const onPressCategory = useCallback(
-    (category: IStar) => {
-      const {id} = category
-
-      const selected: boolean = selectedStars.map(item => item.id).includes(id)
-      // 최대 선택 개수 초과
-      if (selectedStars.length == 5) {
-        if (!selected) {
-          // 선택된 5개 외에 다른 걸 선택한 경우
-          Alert.alert('최대 5명까지 선택 가능합니다')
-          return
-        }
-      }
-
-      if (selected) {
-        setSelectedStars(selectedStars => selectedStars.filter(item => item.id != id))
-      } else {
-        setSelectedStars(selectedStars => [...selectedStars, category])
-      }
-    },
-    [stars, selectedStars],
-  )
-
-  const onPressRemove = useCallback((id: string) => {
-    setSelectedStars(selectedStars => selectedStars.filter(item => item.id != id))
   }, [])
 
   return (
@@ -195,43 +171,13 @@ export const SelectCategory = () => {
       <StackHeader title="카테고리" />
       <View style={[theme.styles.wrapper]}>
         <View style={[styles.mainCategoryContainer]}>
-          <Button selected={singerSelected} label="가수" style={{width: BUTTON_WIDTH}} onPress={onPressSinger} />
-          <Button selected={!singerSelected} label="배우" style={{width: BUTTON_WIDTH}} onPress={onPressActor} />
+          <Button selected={singerSelected} label="가수" style={{width: BUTTON_WIDTH}} onPress={() => setSingerSelected(true)} />
+          <Button selected={!singerSelected} label="배우" style={{width: BUTTON_WIDTH}} onPress={() => setSingerSelected(true)} />
         </View>
 
         <SearchStar keyword={keyword} setKeyword={setKeyword} searchKeyword={searchKeyword} />
-        <View style={[theme.styles.rowFlexStart, {flexWrap: 'wrap'}]}>
-          {selectedStars.map(item => (
-            <SelectedStarTag key={item.name + item.id} item={item} onPressRemove={onPressRemove} />
-          ))}
-        </View>
-      </View>
-      <View style={{flex: 1}}>
-        {init == true ? (
-          <InitScreen />
-        ) : stars.length == 0 ? (
-          <EmptyResult />
-        ) : (
-          <FlatList
-            data={stars}
-            renderItem={({item, index}) => (
-              <CategoryItem
-                category={item}
-                onPress={onPressCategory}
-                selectedStars={selectedStars}
-                imageSize={IMAGE_SIZE}
-                imageBorder={IMAGE_BORDER}
-                circleSize={CIRCLE_SIZE}
-                circleBorder={CIRCLE_BORDER}
-                index={index}
-              />
-            )}
-            numColumns={3}
-            columnWrapperStyle={{justifyContent: 'flex-start', marginVertical: 10}}
-            contentContainerStyle={{paddingHorizontal: theme.PADDING_SIZE}}
-          />
-        )}
-        <FloatingBottomButton label="선택 완료" enabled={true} onPress={onPressSelectCompletion} />
+        <Text>{JSON.stringify(result)}</Text>
+        <FloatingBottomButton label="선택 완료" enabled={true} onPress={onPressSignUp} />
       </View>
     </SafeAreaView>
   )

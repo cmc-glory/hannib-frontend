@@ -10,18 +10,19 @@ import {GoodsContentDetail} from './GoodsContentDetail'
 import {SharingTimeLocation} from './SharingTimeLocation'
 import {WriterProfileBanner} from './WriterProfileBanner'
 import {SharingGoodsInfo} from './SharingGoodsInfo'
-import {ISharingDetail, INanum} from '../../types'
+import {INanum} from '../../types'
 import {addFavorite, removeFavorite} from '../../api'
 import * as theme from '../../theme'
 
 type ContentProps = {
   headerHeight: number
   nanumDetail: INanum
+  numInquires: number
 }
 
 const window = Dimensions.get('screen')
 
-export function GoodsDetailContent({headerHeight, nanumDetail}: ContentProps) {
+export function GoodsDetailContent({headerHeight, nanumDetail, numInquires}: ContentProps) {
   console.log(nanumDetail)
   const addFavoriteQuery = useMutation(addFavorite, {
     onSuccess: () => {},
@@ -34,7 +35,7 @@ export function GoodsDetailContent({headerHeight, nanumDetail}: ContentProps) {
   const onPressAddFavorite = useCallback(() => {
     // 즐겨찾기 버튼 클릭했을 때
     nanumDetail.isFavorite = 'Y' // 프론트 단에서만 즐겨찾기 여부 수정.
-    nanumDetail.favoriteNum += 1
+    nanumDetail.favorites += 1
     addFavoriteQuery.mutate({
       accountIdx: 0,
       nanumIdx: 0,
@@ -44,7 +45,7 @@ export function GoodsDetailContent({headerHeight, nanumDetail}: ContentProps) {
   const onPressRemoveFavorite = useCallback(() => {
     // 즐겨찾기 버튼 클릭했을 때
     nanumDetail.isFavorite = 'N' //  프론트 단에서만 즐겨찾기 여부 수정. (invalidate query로 새로 가져오기 X)
-    nanumDetail.favoriteNum -= 1
+    nanumDetail.favorites -= 1
     removeFavoriteQuery.mutate({
       accountIdx: 0,
       nanumIdx: 0,
@@ -76,7 +77,7 @@ export function GoodsDetailContent({headerHeight, nanumDetail}: ContentProps) {
             ) : (
               <StarUnfilledIcon size={30} onPress={onPressAddFavorite} />
             )}
-            <Text style={{color: theme.gray500, fontSize: 12, fontFamily: 'Pretendard-Medium'}}>{nanumDetail.favoriteNum}</Text>
+            <Text style={{color: theme.gray500, fontSize: 12, fontFamily: 'Pretendard-Medium'}}>{nanumDetail.favorites}</Text>
           </View>
         </View>
         <Text style={[styles.date]}>{moment(nanumDetail.firstDate).format('YYYY.MM.DD')}</Text>
@@ -85,7 +86,7 @@ export function GoodsDetailContent({headerHeight, nanumDetail}: ContentProps) {
       </View>
       <NoticeBanner postid="1111" />
       <GoodsContentDetail description={nanumDetail.contents} />
-      <WriterProfileBanner writername={nanumDetail.creatorId} writerid={nanumDetail.accountIdx} writerProfileImageUri={'http://'} />
+      <WriterProfileBanner writername={nanumDetail.creatorId} nanumIdx={nanumDetail.nanumIdx} writerProfileImageUri={'http://'} askNum={numInquires} />
 
       <View style={[styles.padding]}>
         <RelatedSharing />

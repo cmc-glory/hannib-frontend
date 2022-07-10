@@ -7,12 +7,13 @@ import * as theme from '../../theme'
 import {useAppSelector} from '../../hooks'
 
 type WriterProfileBannerProps = {
-  writerid: number
+  nanumIdx: number
   writerProfileImageUri: string
   writername: string
+  askNum: number
 }
 
-export const WriterProfileBanner = ({writerid, writerProfileImageUri, writername}: WriterProfileBannerProps) => {
+export const WriterProfileBanner = ({nanumIdx, writerProfileImageUri, writername, askNum}: WriterProfileBannerProps) => {
   // ******************** utils ********************
   const userAccountIdx = useAppSelector(state => state.auth.user.accountIdx)
   const navigation = useNavigation()
@@ -21,14 +22,14 @@ export const WriterProfileBanner = ({writerid, writerProfileImageUri, writername
   // ******************** callbacks ********************
   // 문의글 리스트로 이동하는 네비게이션
   const onPressQnA = useCallback(() => {
-    console.log(userAccountIdx, writerid)
-    if (userAccountIdx == writerid) {
+    console.log(userAccountIdx, nanumIdx)
+    if (userAccountIdx == nanumIdx) {
       navigation.navigate('QnAListCreator', {
-        nanumId: '111111',
+        nanumIdx,
       })
     } else {
       navigation.navigate('QnAListUser', {
-        nanumId: '111111',
+        nanumIdx,
       })
     }
   }, [userAccountIdx])
@@ -47,8 +48,8 @@ export const WriterProfileBanner = ({writerid, writerProfileImageUri, writername
       </Pressable>
       <Pressable style={[theme.styles.rowFlexStart]} onPress={onPressQnA}>
         <Text style={{fontSize: 16}}>문의글</Text>
-        <Text style={{color: theme.main, marginLeft: 8, fontSize: 16}}></Text>
-        <RightArrowIcon size={20} />
+        <Text style={{color: theme.main, marginLeft: 8, fontSize: 16}}>{askNum}</Text>
+        <RightArrowIcon size={20} onPress={onPressQnA} />
       </Pressable>
     </View>
   )

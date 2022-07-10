@@ -3,10 +3,14 @@ import {View, Text, Pressable, TextInput, StyleSheet, Dimensions} from 'react-na
 import Modal from 'react-native-modal'
 import {XIcon} from '../utils'
 import * as theme from '../../theme'
+import {useMutation} from 'react-query'
+import {useNavigation} from '@react-navigation/native'
+import {queryKeys, deleteNanumForm} from '../../api'
 
 type DeleteModalProps = {
   deleteModalVisible: boolean
   setDeleteModalVisible: React.Dispatch<React.SetStateAction<boolean>>
+  nanumIdx: number
 }
 const MODAL_PADDING = 24
 const BUTTON_WIDTH = (Dimensions.get('window').width - theme.PADDING_SIZE * 2 - MODAL_PADDING * 2 - 8) / 2
@@ -15,12 +19,31 @@ const Separator = () => {
   return <View style={{height: 1, width: '100%', backgroundColor: theme.gray200, marginVertical: 16}}></View>
 }
 
-export const DeleteModal = ({deleteModalVisible, setDeleteModalVisible}: DeleteModalProps) => {
+export const DeleteModal = ({deleteModalVisible, setDeleteModalVisible, nanumIdx}: DeleteModalProps) => {
+  // ******************** states ********************
+  const navigation = useNavigation()
+  // ******************** states ********************
   const [deleteReason, setDeleteReason] = useState<string>('')
+
+  // ******************** react queries ********************
+  const deleteQuery = useMutation(queryKeys.nanumForm, deleteNanumForm, {
+    onSuccess(data, variables, context) {
+      console.log('success')
+      console.log(data)
+      navigation.navigate('MainTabNavigator')
+    },
+    onError(error, variables, context) {
+      console.log(error)
+    },
+  })
+
+  // ******************** callbacks ********************
+
   const hideModal = useCallback(() => setDeleteModalVisible(false), [])
   const onPressDelete = useCallback(() => {
+    deleteQuery.mutate(nanumIdx)
     hideModal()
-  }, [])
+  }, [nanumIdx])
   return (
     <Modal isVisible={deleteModalVisible} onBackdropPress={hideModal} backdropOpacity={0.2}>
       <View style={styles.deleteModalContainer}>
@@ -45,7 +68,7 @@ export const DeleteModal = ({deleteModalVisible, setDeleteModalVisible}: DeleteM
           <Pressable style={[styles.button, styles.cancelButton]} onPress={hideModal}>
             <Text style={[theme.styles.bold16, styles.cancelText]}>취소</Text>
           </Pressable>
-          <Pressable style={[styles.button, styles.logoutButton]} onPress={() => {}}>
+          <Pressable style={[styles.button, styles.logoutButton]} onPress={onPressDelete}>
             <Text style={[theme.styles.bold16, styles.logoutText]}>삭제</Text>
           </Pressable>
         </View>

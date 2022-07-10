@@ -55,7 +55,9 @@ export const SplashScreen = () => {
           }
         })
       }
+
     })
+    // })
   }, [])
 
   return (

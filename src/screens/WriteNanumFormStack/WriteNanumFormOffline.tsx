@@ -103,7 +103,7 @@ export const WriteNanumFormOffline = () => {
           essential: item.essential ? 'Y' : 'N',
         }
       }),
-      nanumDateList: nanumDates.map(item => {
+      nanumDatelist: nanumDates.map(item => {
         return {
           nanumIdx: 0,
           acceptDate: moment(item.acceptDate).format('YYYY-MM-DD HH:mm:ss'),
@@ -123,7 +123,7 @@ export const WriteNanumFormOffline = () => {
           imgUrl: item,
         }
       }),
-      accountIdx: 0,
+      accountIdx: user.accountIdx,
       nanumIdx: 0,
       creatorId: user.name,
       thumbnail: images[0],
@@ -133,7 +133,16 @@ export const WriteNanumFormOffline = () => {
       nanumMethod: 'M', // M : Mail(우편), O : Offline(오프라인)
       firstDate: moment(firstDate).format('YYYY-MM-DD HH:mm:ss'), // example: 2022-07-01 12:43:15
       secretForm: secretForm ? 'Y' : 'N',
-      secretPwd: secretPwd,
+      secretPwd: secretPwd == '' ? 1234 : parseInt(secretPwd),
+      favorites: 0,
+      job: '배우',
+      accountDto: {
+        accountCategoryDtoList: user.userCategory,
+        accountIdx: user.accountIdx,
+        creatorId: user.name,
+        email: user.email,
+        accountImg: user.profileImageUri,
+      },
     }
 
     console.log(JSON.stringify(nanumForm))

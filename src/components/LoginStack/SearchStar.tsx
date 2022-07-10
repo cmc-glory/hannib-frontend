@@ -8,12 +8,13 @@ type SearchStarProps = {
   keyword: string
   setKeyword: React.Dispatch<React.SetStateAction<string>>
   searchKeyword: (keyword: string) => void
+  label?: string
 }
 
-export const SearchStar = ({keyword, setKeyword, searchKeyword}: SearchStarProps) => {
+export const SearchStar = ({keyword, setKeyword, searchKeyword, label = '최대 5명까지 선택 가능합니다.'}: SearchStarProps) => {
   return (
     <View style={styles.container}>
-      <Text style={[styles.label]}>최대 5명까지 선택 가능합니다.</Text>
+      <Text style={[styles.label]}>{label}</Text>
       <View>
         <MagnifierIcon style={styles.maginfier} onPress={() => searchKeyword(keyword)} />
         <TextInput
