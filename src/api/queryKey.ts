@@ -13,6 +13,7 @@ export const queryKeys = {
   signUp: ['signUp'],
   category: ['category'],
   search: ['search'],
+  accountInfo: ['accountInfo'],
   searchCategory: ['searchCategory'],
   inquiry: ['inquiry'],
 }

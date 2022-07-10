@@ -8,7 +8,7 @@ import * as theme from '../../theme'
 
 export const MyPage = () => {
   const isLoggedIn = useAppSelector(state => state.auth.isLoggedIn)
-
+  console.log('isLogged in in mypage : ', isLoggedIn)
   return isLoggedIn ? <MyPageScreen /> : <Login />
 }
 
