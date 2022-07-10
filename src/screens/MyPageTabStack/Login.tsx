@@ -53,7 +53,7 @@ export const Login = () => {
     //1. 해당 이메일로 가입 됐는지 확인 (아직 처리 x)
 
     //1-1. 가입 돼있음 -> 로그인
-    fetch('http://localhost:8081/src/data/dummyUser.json', {
+    fetch('http://gloryalb-env.ap-northeast-2.elasticbeanstalk.com/api/account/?accountIdx=2', {
       method: 'get',
     })
       .then(res => res.json())
@@ -61,12 +61,12 @@ export const Login = () => {
         dispatch(
           ReduxLogin({
             email: result.email,
-            name: result.name,
+            name: result.creatorId,
             profileImageUri: result.profileImageUri,
             userCategory: [],
             holdingSharingCnt: result.holdingSharingCnt,
             participateSharingCnt: result.participateSharingCnt,
-            accountIdx: 0,
+            accountIdx: result.accountIdx,
           }),
         )
       })
