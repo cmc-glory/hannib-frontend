@@ -1,6 +1,7 @@
 import React, {useEffect, useRef, useState, useCallback} from 'react'
-import {View, Text, FlatList, ScrollView, Pressable, StyleSheet, Dimensions} from 'react-native'
+import {View, Text, FlatList, ScrollView, Pressable, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
+import {useAppSelector} from '../../hooks'
 import {StackHeader} from '../../components/utils'
 import {NanumListItem} from '../../components/MainTab'
 import {INanumListItem} from '../../types'
@@ -20,17 +21,7 @@ const CategoryItem = ({name, id, onPressCategory, selectedCategory, currentIndex
   const selected = id == selectedCategory
   return (
     <Pressable
-      onPress={e => {
-        const pageX = e.nativeEvent.pageX
-        const locationX = e.nativeEvent.locationX
-        const x = currentIndex <= selectedIndex ? pageX - locationX - 40 : pageX + locationX + 40
-        scrollRef.current?.scrollTo({
-          x: x,
-          y: 0,
-        })
-
-        onPressCategory(id, currentIndex)
-      }}
+      onPress={() => onPressCategory(id, currentIndex)}
       style={[styles.categoryButton, selected ? styles.selectedCategoryButton : styles.unselectedCategoryButton]}>
       <Text style={selected ? styles.selectedCategoryText : styles.unselectedCategoryText}>{name}</Text>
     </Pressable>
@@ -38,11 +29,14 @@ const CategoryItem = ({name, id, onPressCategory, selectedCategory, currentIndex
 }
 
 export const Favorites = () => {
+  // ******************** utils ********************
+  const scrollRef = useRef<ScrollView>(null)
+  // ******************** states ********************
   const [selectedCategory, setSelectedCategory] = useState<string>('0') // 선택된 카테고리의 id값 저장. (처음엔 전체의 id값)
   const [sharings, setSharings] = useState<INanumListItem[]>([]) // 나눔 리스트
   const [refreshing, setRefreshing] = useState<boolean>(false) // 새로고침 로딩 끝났는지
   const [selectedIndex, setSelectedIndex] = useState<number>(0)
-  const scrollRef = useRef<ScrollView>(null)
+  const isLoggedIn = useAppSelector(state => state.auth.isLoggedIn)
 
   useEffect(() => {
     fetch('http://localhost:8081/src/data/dummySharings.json')
@@ -72,74 +66,64 @@ export const Favorites = () => {
   return (
     <SafeAreaView style={[theme.styles.safeareaview]} edges={['top', 'left', 'right']}>
       <StackHeader title="찜한 리스트" />
-      <View style={styles.container}>
-        <ScrollView ref={scrollRef} horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{marginBottom: 10}}>
-          <CategoryItem
-            currentIndex={0}
-            selectedIndex={selectedIndex}
-            id="0"
-            name="전체"
-            onPressCategory={onPressCategory}
-            selectedCategory={selectedCategory}
-            scrollRef={scrollRef}
-          />
-          <CategoryItem
-            currentIndex={1}
-            selectedIndex={selectedIndex}
-            id="1"
-            name="BTS"
-            onPressCategory={onPressCategory}
-            selectedCategory={selectedCategory}
-            scrollRef={scrollRef}
-          />
-          <CategoryItem
-            selectedIndex={selectedIndex}
-            currentIndex={2}
-            id="2"
-            name="세븐틴"
-            onPressCategory={onPressCategory}
-            selectedCategory={selectedCategory}
-            scrollRef={scrollRef}
-          />
-          <CategoryItem
-            selectedIndex={selectedIndex}
-            currentIndex={3}
-            id="3"
-            name="아이브"
-            onPressCategory={onPressCategory}
-            selectedCategory={selectedCategory}
-            scrollRef={scrollRef}
-          />
-          {/* <CategoryItem
-            selectedIndex={selectedIndex}
-            currentIndex={4}
-            id="4"
-            name="STACY"
-            onPressCategory={onPressCategory}
-            selectedCategory={selectedCategory}
-            scrollRef={scrollRef}
-          />
-          <CategoryItem
-            selectedIndex={selectedIndex}
-            currentIndex={5}
-            id="5"
-            name="르세라핌"
-            onPressCategory={onPressCategory}
-            selectedCategory={selectedCategory}
-            scrollRef={scrollRef}
-          /> */}
-        </ScrollView>
-      </View>
+      {isLoggedIn ? (
+        <View>
+          <View style={styles.container}>
+            <ScrollView ref={scrollRef} horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{marginBottom: 10}}>
+              <CategoryItem
+                currentIndex={0}
+                selectedIndex={selectedIndex}
+                id="0"
+                name="전체"
+                onPressCategory={onPressCategory}
+                selectedCategory={selectedCategory}
+                scrollRef={scrollRef}
+              />
+              <CategoryItem
+                currentIndex={1}
+                selectedIndex={selectedIndex}
+                id="1"
+                name="BTS"
+                onPressCategory={onPressCategory}
+                selectedCategory={selectedCategory}
+                scrollRef={scrollRef}
+              />
+              <CategoryItem
+                selectedIndex={selectedIndex}
+                currentIndex={2}
+                id="2"
+                name="세븐틴"
+                onPressCategory={onPressCategory}
+                selectedCategory={selectedCategory}
+                scrollRef={scrollRef}
+              />
+              <CategoryItem
+                selectedIndex={selectedIndex}
+                currentIndex={3}
+                id="3"
+                name="아이브"
+                onPressCategory={onPressCategory}
+                selectedCategory={selectedCategory}
+                scrollRef={scrollRef}
+              />
+            </ScrollView>
+          </View>
 
-      <FlatList
-        contentContainerStyle={{paddingHorizontal: theme.PADDING_SIZE, paddingVertical: 10}}
-        data={sharings}
-        renderItem={({item}) => <NanumListItem item={item}></NanumListItem>}
-        refreshing={refreshing}
-        numColumns={2}
-        columnWrapperStyle={{justifyContent: 'space-between', marginBottom: 20}}
-        onRefresh={onRefresh}
-      />
+          <FlatList
+            contentContainerStyle={{paddingHorizontal: theme.PADDING_SIZE, paddingVertical: 10}}
+            data={sharings}
+            renderItem={({item}) => <NanumListItem item={item}></NanumListItem>}
+            refreshing={refreshing}
+            numColumns={2}
+            columnWrapperStyle={{justifyContent: 'space-between', marginBottom: 20}}
+            onRefresh={onRefresh}
+          />
+        </View>
+      ) : (
+        <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
+          <Text>로그인 후 이용해 보세요!</Text>
+        </View>
+      )}
     </SafeAreaView>
   )
 }
