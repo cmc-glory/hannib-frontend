@@ -7,6 +7,8 @@ import {LogoutModal} from '../../components/MainTab'
 import {StackHeader, BellIcon, RightArrowIcon} from '../../components/utils'
 import {useAppSelector} from '../../hooks'
 import * as theme from '../../theme'
+import {useQuery} from 'react-query'
+import {queryKeys, getAccountInfo} from '../../api'
 
 type MyPageItem = {
   label: string
@@ -37,7 +39,20 @@ export const MyPageScreen = () => {
   // ******************** utils ********************
   const navigation = useNavigation()
   const user = useAppSelector(state => state.auth.user)
-  console.log('user : ', user)
+  //console.log('user : ', user)
+
+  //account idx api 나오면 수정하기
+  const {data} = useQuery(queryKeys.accountInfo, () => getAccountInfo(2), {
+    onSuccess: data => {
+      console.log('success')
+      console.log('data', data)
+    },
+    onError(err) {
+      console.log('err')
+      console.log(err)
+    },
+  })
+  //console.log('data22 : ', data)
 
   // ******************** states ********************
   const [logoutModalVisible, setLogoutModalVisible] = useState<boolean>(false)
