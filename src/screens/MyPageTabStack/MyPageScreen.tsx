@@ -3,6 +3,7 @@ import {View, ScrollView, Pressable, Text, StyleSheet} from 'react-native'
 import FastImage from 'react-native-fast-image'
 import {SafeAreaView} from 'react-native'
 import {useNavigation} from '@react-navigation/native'
+import {IAccountDto} from '../../types'
 import {LogoutModal} from '../../components/MainTab'
 import {StackHeader, BellIcon, RightArrowIcon} from '../../components/utils'
 import {useAppSelector} from '../../hooks'
@@ -39,19 +40,19 @@ export const MyPageScreen = () => {
   // ******************** utils ********************
   const navigation = useNavigation()
   const user = useAppSelector(state => state.auth.user)
-  //console.log('user : ', user)
+  //console.log('user in mypagescreen : ', user)
 
   //account idx api 나오면 수정하기
-  const {data} = useQuery(queryKeys.accountInfo, () => getAccountInfo(2), {
-    onSuccess: data => {
-      console.log('success')
-      console.log('data', data)
-    },
-    onError(err) {
-      console.log('err')
-      console.log(err)
-    },
-  })
+  // const {data} = useQuery(queryKeys.accountInfo, () => getAccountInfo(2), {
+  //   onSuccess: data => {
+  //     console.log('success')
+  //     console.log('data', data)
+  //   },
+  //   onError(err) {
+  //     console.log('err')
+  //     console.log(err)
+  //   },
+  // })
   //console.log('data22 : ', data)
 
   // ******************** states ********************
@@ -113,7 +114,7 @@ export const MyPageScreen = () => {
             source={{uri: user.profileImageUri == undefined ? 'http://localhost:8081/src/assets/images/noUser.png' : user.profileImageUri}}
           />
           <View style={{alignSelf: 'stretch', justifyContent: 'center'}}>
-            <Text style={[theme.styles.bold20, {color: theme.gray700, marginBottom: 8}]}>{user.name}</Text>
+            <Text style={[theme.styles.bold20, {color: theme.gray700, marginBottom: 8}]}>{user && user.name}</Text>
             <Pressable style={[theme.styles.rowFlexStart]} onPress={onPressEditProfile}>
               <Text style={[{color: theme.gray500}, theme.styles.text14]}>프로필 수정</Text>
               <RightArrowIcon size={20} onPress={onPressEditProfile} />

@@ -342,6 +342,11 @@ export type IAccountDto = {
   email: string
 }
 
+export type IAccountIdDto = {
+  creatorId: string
+  accountIdx: number
+}
+
 export type ICategoryDto = {
   job: '가수' | '배우'
   nickName: string

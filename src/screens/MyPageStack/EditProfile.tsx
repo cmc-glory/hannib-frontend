@@ -1,15 +1,16 @@
-import React, {useState, useCallback} from 'react'
+import React, {useState, useCallback, useMemo, useEffect} from 'react'
 import {View, Text, TextInput, Pressable, StyleSheet, ActivityIndicator, Alert} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import FastImage from 'react-native-fast-image'
 import {launchImageLibrary} from 'react-native-image-picker'
 import {Mutation, useMutation} from 'react-query'
 import {useDispatch} from 'react-redux'
-import {useNavigation} from '@react-navigation/native'
+import {useNavigation, useRoute} from '@react-navigation/native'
 import {showMessage, hideMessage} from 'react-native-flash-message'
+
 import {StackHeader, SelectImageIcon} from '../../components/utils'
-import {queryKeys, uploadProfileImage} from '../../api'
-import {updateProfileImage} from '../../redux/slices'
+import {queryKeys, uploadProfileImage, updateAccountId} from '../../api'
+import {updateProfileImage, updateName} from '../../redux/slices'
 
 import {useAppSelector} from '../../hooks'
 import * as theme from '../../theme'
@@ -20,6 +21,30 @@ export const EditProfile = () => {
   const dispatch = useDispatch()
   const navigation = useNavigation()
   const user = useAppSelector(state => state.auth.user)
+
+  const uploadProfileId = useMutation(queryKeys.profileId, updateAccountId, {
+    onSuccess: data => {
+      console.log('response : ', data)
+      name && dispatch(updateName(name)) // 리덕스에서도 이름 변경
+      navigation.goBack()
+    },
+    onError(error, variables, context) {
+      console.log(error)
+      showMessage({
+        message: '닉네임 변경 중 에러가 발생했습니다',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+      })
+    },
+  })
   const uploadProfileImageQuery = useMutation(queryKeys.profileImage, uploadProfileImage, {
     onSuccess: data => {
       console.log('response : ', data)
@@ -73,6 +98,14 @@ export const EditProfile = () => {
       formData.append('profileImg', file)
 
       uploadProfileImageQuery.mutate(formData) // 백에 이미지 전송
+    }
+
+    if (name) {
+      let updatedAccnountName = {
+        accountIdx: user.accountIdx,
+        creatorId: name,
+      }
+      uploadProfileId.mutate(updatedAccnountName)
     }
   }, [name, profileImage])
 

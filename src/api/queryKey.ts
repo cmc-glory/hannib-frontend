@@ -16,4 +16,5 @@ export const queryKeys = {
   accountInfo: ['accountInfo'],
   searchCategory: ['searchCategory'],
   inquiry: ['inquiry'],
+  profileId: ['profileId'],
 }
