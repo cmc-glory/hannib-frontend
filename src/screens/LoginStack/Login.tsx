@@ -12,8 +12,8 @@ import {useNavigation} from '@react-navigation/native'
 import {showMessage} from 'react-native-flash-message'
 import * as theme from '../../theme'
 import {LogoWhiteIcon} from '../../components/utils'
-import {useAppSelector} from '../../hooks'
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import {storeString, useAppSelector} from '../../hooks'
+import AsyncStorage, {useAsyncStorage} from '@react-native-async-storage/async-storage'
 
 type LoginButtonProps = {
   label: string
@@ -47,9 +47,9 @@ export const Login = () => {
       const token: KakaoOAuthToken = await login()
       const profile: KakaoProfile = await getKakaoProfile()
 
-      navigation.navigate('SetProfile', {
-        email: profile.email,
-      })
+      //로그인 시 asyncStorage에 user의 email값 저장
+      storeString('email', profile.email)
+      navigation.navigate('MainTabNavigator')
     } catch (err) {
       console.log(err)
       showMessage({
@@ -75,9 +75,10 @@ export const Login = () => {
       const user = result.user
       const googleCredential = auth.GoogleAuthProvider.credential(idToken)
       auth().signInWithCredential(googleCredential)
-      navigation.navigate('SetProfile', {
-        email: user.email,
-      })
+
+      //로그인 시 asyncStorage에 user의 email값 저장
+      storeString('email', user.email)
+      navigation.navigate('MainTabNavigator')
     } catch (err) {
       console.log(err)
       showMessage({
@@ -95,13 +96,6 @@ export const Login = () => {
       })
     }
   }
-
-  appleAuth.isSupported &&
-    useEffect(() => {
-      return appleAuth.onCredentialRevoked(async () => {
-        console.warn('If this function executes, User Credentials have been Revoked')
-      })
-    }, [])
 
   const SignInWithApple = async () => {
     try {
@@ -126,9 +120,9 @@ export const Login = () => {
       const appleCredential = auth.AppleAuthProvider.credential(identityToken, nonce)
       auth().signInWithCredential(appleCredential)
 
-      navigation.navigate('SetProfile', {
-        email: email,
-      })
+      //로그인 시 asyncStorage에 user의 email값 저장
+      storeString('email', email)
+      navigation.navigate('MainTabNavigator')
     } catch (error: any) {
       if (error.code === appleAuth.Error.CANCELED) {
         console.warn('User canceled Apple Sign in.')
@@ -150,6 +144,13 @@ export const Login = () => {
       }
     }
   }
+
+  appleAuth.isSupported &&
+    useEffect(() => {
+      return appleAuth.onCredentialRevoked(async () => {
+        console.warn('If this function executes, User Credentials have been Revoked')
+      })
+    }, [])
 
   return (
     <LinearGradient

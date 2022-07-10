@@ -21,6 +21,7 @@ import {login as ReduxLogin} from '../../redux/slices/auth'
 import * as theme from '../../theme'
 import {showMessage} from 'react-native-flash-message'
 import appleAuth, {AppleRequestResponse} from '@invertase/react-native-apple-authentication'
+import {storeString} from '../../hooks'
 
 const ios = Platform.OS == 'ios'
 
@@ -49,9 +50,9 @@ export const Login = () => {
     const token: KakaoOAuthToken = await login()
     const profile: KakaoProfile = await getKakaoProfile()
 
-    // 해당 이메일로 가입된 id가 있는 지 확인.
-    // 없으면 가입 시킴. 있으면 로그인.
+    //1. 해당 이메일로 가입 됐는지 확인 (아직 처리 x)
 
+    //1-1. 가입 돼있음 -> 로그인
     fetch('http://localhost:8081/src/data/dummyUser.json', {
       method: 'get',
     })
@@ -69,15 +70,15 @@ export const Login = () => {
           }),
         )
       })
-      .then(() => {
-        //console.log('here')
-        navigation.navigate('LoginStackNavigator', {
-          screen: 'SetProfile',
-          params: {
-            email: profile.email,
-          },
-        })
-      })
+    //로그인 시 asyncStorage에 user의 email값 저장
+    storeString('email', profile.email)
+    // 1-2. 가입 안돼있는 사람이면 회원가입 화면으로
+    // navigation.navigate('LoginStackNavigator', {
+    //   screen: 'SetProfile',
+    //   params: {
+    //     email: profile.email,
+    //   },
+    // })
   }
 
   const SignInWithGoogle = async () => {
@@ -88,9 +89,9 @@ export const Login = () => {
     const googleCredential = auth.GoogleAuthProvider.credential(idToken)
     auth().signInWithCredential(googleCredential)
 
-    // 해당 이메일로 가입된 id가 있는 지 확인.
-    // 없으면 가입 시킴. 있으면 로그인.
+    //1. 해당 이메일로 가입 됐는지 확인
 
+    //1-1. 가입 돼있음 -> 로그인
     fetch('http://localhost:8081/src/data/dummyUser.json', {
       method: 'get',
     })
@@ -108,14 +109,15 @@ export const Login = () => {
           }),
         )
       })
-      .then(() => {
-        navigation.navigate('LoginStackNavigator', {
-          screen: 'SetProfile',
-          params: {
-            email: user.email,
-          },
-        })
-      })
+    //로그인 시 asyncStorage에 user의 email값 저장
+    storeString('email', user.email)
+    // 1-2. 가입 안돼있는 사람이면 회원가입 화면으로
+    // navigation.navigate('LoginStackNavigator', {
+    //   screen: 'SetProfile',
+    //   params: {
+    //     email: profile.email,
+    //   },
+    // })
   }
 
   const SignInWithApple = async () => {
@@ -127,6 +129,10 @@ export const Login = () => {
       const {user, nonce, identityToken} = appleAuthRequestResponse
       const appleCredential = auth.AppleAuthProvider.credential(identityToken, nonce)
       auth().signInWithCredential(appleCredential)
+
+      //1. 해당 이메일로 가입 됐는지 확인
+
+      //1-1. 가입 돼있음 -> 로그인
       fetch('http://localhost:8081/src/data/dummyUser.json', {
         method: 'get',
       })
@@ -144,14 +150,15 @@ export const Login = () => {
             }),
           )
         })
-        .then(() => {
-          navigation.navigate('LoginStackNavigator', {
-            screen: 'SetProfile',
-            params: {
-              email: appleAuthRequestResponse.email,
-            },
-          })
-        })
+      //로그인 시 asyncStorage에 user의 email값 저장
+      storeString('email', appleAuthRequestResponse.email!)
+      // 1-2. 가입 안돼있는 사람이면 회원가입 화면으로
+      // navigation.navigate('LoginStackNavigator', {
+      //   screen: 'SetProfile',
+      //   params: {
+      //     email: profile.email,
+      //   },
+      // })
     } catch (error: any) {
       if (error.code === appleAuth.Error.CANCELED) {
         console.warn('User canceled Apple Sign in.')

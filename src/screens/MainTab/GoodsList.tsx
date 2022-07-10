@@ -12,6 +12,9 @@ import {useAppSelector, useAnimatedValue} from '../../hooks'
 import {queryKeys, getNanumListAll, getNanumByRecent, getNanumByPopularity} from '../../api'
 
 const GoodsLists = () => {
+  // ******************** check login ********************
+  const isLoggedIn = useAppSelector(state => state.auth.isLoggedIn)
+
   // ******************** utils ********************
 
   const navigation = useNavigation()
@@ -101,15 +104,20 @@ const GoodsLists = () => {
   useEffect(() => {
     // 최신순, 인기순, 추천순 필터가 바뀔 때마다 새로 로드
     queryClient.invalidateQueries(queryKeys.nanumList)
-  }, [itemFilter])
+  }, [itemFilter, isLoggedIn])
 
   return (
     <SafeAreaView style={[styles.container]} edges={['top', 'left', 'right']}>
       <View style={styles.headerContainer}>
-        <Pressable style={[styles.titleContainer]} onPress={onPressSelectCategory}>
-          <Text style={styles.title}>{userCategory?.category}</Text>
-          <DownArrowIcon onPress={onPressSelectCategory} />
-        </Pressable>
+
+        {isLoggedIn ? (
+          <Pressable style={[styles.titleContainer]} onPress={onPressSelectCategory}>
+            <Text style={styles.title}>{userCategory?.name}</Text>
+            <DownArrowIcon onPress={onPressSelectCategory} />
+          </Pressable>
+        ) : (
+          <Text style={styles.title}>전체보기</Text>
+        )}
         <View style={[theme.styles.rowFlexStart]}>
           <MagnifierIcon style={{marginRight: 16}} onPress={onPressMagnifier} />
           <BellIcon />
