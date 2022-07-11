@@ -49,6 +49,7 @@ export const Login = () => {
 
       //로그인 시 asyncStorage에 user의 email값 저장
       storeString('email', profile.email)
+
       navigation.navigate('MainTabNavigator')
     } catch (err) {
       console.log(err)

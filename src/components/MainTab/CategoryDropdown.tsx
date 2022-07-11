@@ -74,6 +74,7 @@ export const CategoryDropdown = ({showCategoryModal, setShowCategoryModal, userC
       onModalHide={() => {
         if (categoryPressed) {
           navigation.navigate('EditCategory')
+          setCategoryPressed(false)
         }
       }}
       style={{margin: 0}}>

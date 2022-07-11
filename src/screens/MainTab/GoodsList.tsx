@@ -3,13 +3,14 @@ import {View, RefreshControl, ScrollView, Text, FlatList, Pressable, StyleSheet}
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation} from '@react-navigation/native'
 import {useQuery, useQueryClient} from 'react-query'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 import * as theme from '../../theme'
 import {DownArrowIcon, BellIcon, MagnifierIcon, BottomSheet, FloatingButtonIcon} from '../../components/utils'
 import {GoodsFilterTab, NanumListItem, GoodsListBottomSheetContent, Banner, CategoryDropdown} from '../../components/MainTab'
-import {IUserCategory, INanumMethod, INanumListItem, IAccountCategoryDto} from '../../types'
+import {INanumMethod, INanumListItem, IAccountCategoryDto} from '../../types'
 import {useAppSelector, useAnimatedValue} from '../../hooks'
-import {queryKeys, getNanumListAll, getNanumByRecent, getNanumByPopularity} from '../../api'
+import {queryKeys, getNanumByRecent, getNanumByPopularity} from '../../api'
 
 const GoodsLists = () => {
   // ******************** check login ********************
@@ -17,10 +18,12 @@ const GoodsLists = () => {
 
   // ******************** utils ********************
 
+  AsyncStorage.removeItem('accountIdx')
+
   const navigation = useNavigation()
   const queryClient = useQueryClient()
   const user = useAppSelector(state => state.auth.user)
-  console.log(user.userCategory)
+  const currentCategory = user.userCategory[0]
 
   // ******************** states ********************
   const [sharings, setSharings] = useState<INanumListItem[]>([])
@@ -29,32 +32,42 @@ const GoodsLists = () => {
   const [itemFilter, setItemFilter] = useState<'최신순' | '인기순' | '추천순'>('최신순')
   const [showItemFilterBottomShet, setShowItemFilterBottomSheet] = useState<boolean>(false) // 인기순, 최신순, 추천순 필터링 탭 띄울지
   const [showSelectCategoryModal, setShowSelectCategoryModal] = useState<boolean>(false) // 카테고리 선택하는 드롭다운 띄울지
-  const [userCategory, setUserCategory] = useState<IAccountCategoryDto>(user.userCategory[0]) // 현재 사용자가 선택한 카테고리.
+  const [userCategory, setUserCategory] = useState<IAccountCategoryDto>(currentCategory) // 현재 사용자가 선택한 카테고리.
   const [bannerInfo, setBannerInfo] = useState({
     imageUri: 'http://localhost:8081/src/assets/images/sanrio2.jpeg',
     title: '응원하는 셀럽의 생일/공연 홍보 배너를 걸어보세요',
     sharingid: '123445',
   })
 
-  //console.log(userCategory.category)
-
+  useEffect(() => {
+    setUserCategory(user.userCategory[0])
+  }, [])
   // ******************** react query ********************
-  const nanumListByRecent = useQuery(queryKeys.nanumList, () => getNanumByRecent({job: userCategory.job, category: userCategory.category, accountIdx: 0}), {
-    onSuccess: data => {
-      setRefreshing(false) // 새로고침중이면 로딩 종료
-      setSharings(data)
+  const nanumListByRecent = useQuery(
+    [queryKeys.nanumList, userCategory],
+    () => getNanumByRecent({job: userCategory.job, category: userCategory.category, accountIdx: 0}),
+    {
+      onSuccess: data => {
+        setRefreshing(false) // 새로고침중이면 로딩 종료
+        console.log(data)
+        setSharings(data)
 
-      if (nanumMethodFilter !== 'all') {
-        // 현재 오프라인, 온라인 필터가 설정된 경우엔 보여질 아이템 재설정
-        onPressLocationFilter(nanumMethodFilter)
-      }
+        if (nanumMethodFilter !== 'all') {
+          // 현재 오프라인, 온라인 필터가 설정된 경우엔 보여질 아이템 재설정
+          onPressLocationFilter(nanumMethodFilter)
+        }
+      },
     },
-  })
+  )
 
-  const nanumListByPopular = useQuery(queryKeys.nanumList, () => getNanumByPopularity({job: '가수', category: userCategory.category, accountIdx: 0}), {
-    onSuccess(data) {},
-    onError(err) {},
-  })
+  const nanumListByPopular = useQuery(
+    [queryKeys.nanumList, userCategory],
+    () => getNanumByPopularity({job: userCategory.job, category: userCategory.category, accountIdx: 0}),
+    {
+      onSuccess(data) {},
+      onError(err) {},
+    },
+  )
 
   // ******************** animations ********************
   const animatedValue = useAnimatedValue() // 스크롤 업 다운할때마다 필터를 숨기거나 보여줌

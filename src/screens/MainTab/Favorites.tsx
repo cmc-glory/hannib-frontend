@@ -120,9 +120,7 @@ export const Favorites = () => {
           />
         </View>
       ) : (
-        <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
-          <Text>로그인 후 이용해 보세요!</Text>
-        </View>
+        <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}></View>
       )}
     </SafeAreaView>
   )

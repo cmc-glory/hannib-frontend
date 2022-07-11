@@ -3,6 +3,7 @@ import {View, ScrollView, Pressable, Text, StyleSheet} from 'react-native'
 import FastImage from 'react-native-fast-image'
 import {SafeAreaView} from 'react-native'
 import {useNavigation} from '@react-navigation/native'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import {LogoutModal} from '../../components/MainTab'
 import {StackHeader, BellIcon, RightArrowIcon} from '../../components/utils'
 import {useAppSelector} from '../../hooks'
@@ -42,7 +43,7 @@ export const MyPageScreen = () => {
   //console.log('user : ', user)
 
   //account idx api 나오면 수정하기
-  const {data} = useQuery(queryKeys.accountInfo, () => getAccountInfo(2), {
+  const {data} = useQuery(queryKeys.accountInfo, () => getAccountInfo(9), {
     onSuccess: data => {
       console.log('success')
       console.log('data', data)

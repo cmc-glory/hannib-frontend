@@ -5,23 +5,17 @@ import {useNavigation} from '@react-navigation/native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useDispatch} from 'react-redux'
 import {StackHeader, BellIcon} from '../../components/utils'
-import {GoogleSignin, GoogleSigninButton} from '@react-native-google-signin/google-signin'
+import {GoogleSignin} from '@react-native-google-signin/google-signin'
 import auth from '@react-native-firebase/auth'
-import {
-  KakaoOAuthToken,
-  KakaoProfile,
-  KakaoProfileNoneAgreement,
-  getProfile as getKakaoProfile,
-  login,
-  logout,
-  unlink,
-  loginWithKakaoAccount,
-} from '@react-native-seoul/kakao-login'
+import {KakaoOAuthToken, KakaoProfile, getProfile as getKakaoProfile, login} from '@react-native-seoul/kakao-login'
+import {useMutation} from 'react-query'
+import {queryKeys, getAccountInfo} from '../../api'
+
 import {login as ReduxLogin} from '../../redux/slices/auth'
 import * as theme from '../../theme'
 import {showMessage} from 'react-native-flash-message'
 import appleAuth, {AppleRequestResponse} from '@invertase/react-native-apple-authentication'
-import {storeString} from '../../hooks'
+import {storeString, useAppDispatch, getString} from '../../hooks'
 
 const ios = Platform.OS == 'ios'
 
@@ -44,41 +38,116 @@ const LoginButton = ({label, source, onPress, style, textStyle}: LoginButtonProp
 
 export const Login = () => {
   const navigation = useNavigation()
-  const dispatch = useDispatch()
-  const signInWithKakao = async (): Promise<void> => {
-    //console.log('clicked')
-    const token: KakaoOAuthToken = await login()
-    const profile: KakaoProfile = await getKakaoProfile()
+  const dispatch = useAppDispatch()
 
-    //1. 해당 이메일로 가입 됐는지 확인 (아직 처리 x)
-
-    //1-1. 가입 돼있음 -> 로그인
-    fetch('http://localhost:8081/src/data/dummyUser.json', {
-      method: 'get',
-    })
-      .then(res => res.json())
-      .then(result => {
+  const getAccountInfoQuery = useMutation(queryKeys.accountInfo, getAccountInfo, {
+    onSuccess(data, variables, context) {
+      if (data == '') {
+        // accountIdx 값이 async storage에 있지만 해당 계정 정보가 없는 경우
+        // 이런 경우가 있는 지는 모르겠지만....
+        navigation.navigate('LoginStackNavigator', {
+          screen: 'SetProfile',
+          params: {
+            email: data.email,
+          },
+        })
+      } else {
         dispatch(
           ReduxLogin({
-            email: result.email,
-            name: result.name,
-            profileImageUri: result.profileImageUri,
-            userCategory: [],
-            holdingSharingCnt: result.holdingSharingCnt,
-            participateSharingCnt: result.participateSharingCnt,
-            accountIdx: 0,
+            accountIdx: 9,
+            email: 'js7056@naver.com',
+            name: '진실',
+            userCategory: [
+              {
+                accountIdx: 9,
+                job: '가수',
+                category: 'bts',
+              },
+            ],
+            profileImageUri: '',
+            holdingSharingCnt: 6,
+            participateSharingCnt: 7,
           }),
         )
+        storeString('accountIdx', data.accountIdx)
+      }
+    },
+    onError(error, variables, context) {
+      console.log(error)
+    },
+  })
+
+  const signInWithKakao = async (): Promise<void> => {
+    //console.log('clicked')
+    try {
+      const token: KakaoOAuthToken = await login()
+      const profile: KakaoProfile = await getKakaoProfile()
+
+      // async storage에서 accountIdx 가져와서 해당 accountIdx에 대한 정보가 있는 지 확인
+      getString('accountIdx').then(idx => {
+        if (idx == null || idx == '' || idx == undefined) {
+          //accountIdx가 async storage에 없으면, 회원 가입 페이지로 이동
+          navigation.navigate('LoginStackNavigator', {
+            screen: 'SetProfile',
+            params: {
+              email: profile.email,
+            },
+          })
+          return
+        }
+        const accountIdx = parseInt(idx)
+        // async storage에 accountIdx가 있으면, 해당 accountIdx에 대한 계정 정보가 있는지 확인
+        //getAccountInfoQuery.mutate(accountIdx)
+        getAccountInfo(accountIdx)
+          .then(res => {
+            if (res.data == '') {
+              navigation.navigate('LoginStackNavigator', {
+                screen: 'SetProfile',
+                params: {
+                  email: profile.email,
+                },
+              })
+            } else {
+              dispatch(
+                ReduxLogin({
+                  accountIdx: 9,
+                  email: 'js7056@naver.com',
+                  name: '진실',
+                  userCategory: [
+                    {
+                      accountIdx: 9,
+                      job: '가수',
+                      category: 'bts',
+                    },
+                  ],
+                  profileImageUri: '',
+                  holdingSharingCnt: 6,
+                  participateSharingCnt: 7,
+                }),
+              )
+              storeString('accountIdx', res.data.accountIdx)
+            }
+          })
+          .catch(err => {
+            console.log(err)
+          })
       })
-    //로그인 시 asyncStorage에 user의 email값 저장
-    storeString('email', profile.email)
-    // 1-2. 가입 안돼있는 사람이면 회원가입 화면으로
-    // navigation.navigate('LoginStackNavigator', {
-    //   screen: 'SetProfile',
-    //   params: {
-    //     email: profile.email,
-    //   },
-    // })
+    } catch (err) {
+      console.log(err)
+      showMessage({
+        message: '카카오 로그인 중 에러가 발생했습니다',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+      })
+    }
   }
 
   const SignInWithGoogle = async () => {
