@@ -127,7 +127,7 @@ export const WriteNanumFormOffline = () => {
       nanumIdx: 0,
       creatorId: user.name,
       thumbnail: images[0],
-      category: category,
+      category: category.category,
       title: title,
       contents: contents,
       nanumMethod: 'M', // M : Mail(우편), O : Offline(오프라인)
@@ -135,9 +135,9 @@ export const WriteNanumFormOffline = () => {
       secretForm: secretForm ? 'Y' : 'N',
       secretPwd: secretPwd == '' ? 1234 : parseInt(secretPwd),
       favorites: 0,
-      job: '배우',
+      job: category.job,
       accountDto: {
-        accountCategoryDtoList: user.userCategory,
+        accountCategoryDtoList: user.accountCategoryDtoList,
         accountIdx: user.accountIdx,
         creatorId: user.name,
         email: user.email,

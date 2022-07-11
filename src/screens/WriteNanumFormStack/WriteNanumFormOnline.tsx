@@ -94,7 +94,14 @@ export const WriteNanumFormOnline = () => {
           essential: item.essential ? 'Y' : 'N',
         }
       }),
-      nanumDateList: [
+      // nanumAskList: [
+      //   {
+      //     nanumIdx: 0,
+      //     contents: '트위터 아이디',
+      //     essential: 'Y',
+      //   },
+      // ],
+      nanumDatelist: [
         {
           nanumIdx: 0,
           acceptDate: '2022-07-01 12:43:15',
@@ -118,13 +125,22 @@ export const WriteNanumFormOnline = () => {
       nanumIdx: 0,
       creatorId: user.name,
       thumbnail: images[0],
-      category: category,
+      category: category.category,
       title: title,
       contents: contents,
       nanumMethod: 'M', // M : Mail(우편), O : Offline(오프라인)
       firstDate: moment(firstDate).format('YYYY-MM-DD HH:mm:ss'), // example: 2022-07-01 12:43:15
       secretForm: secretForm ? 'Y' : 'N',
-      secretPwd: secretPwd,
+      secretPwd: secretPwd == '' ? 1234 : parseInt(secretPwd),
+      accountDto: {
+        accountCategoryDtoList: user.accountCategoryDtoList,
+        accountIdx: user.accountIdx,
+        creatorId: user.name,
+        email: user.email,
+        accountImg: user.profileImageUri,
+      },
+      favorites: 0,
+      job: category.job,
     }
 
     console.log(JSON.stringify(nanumForm))
@@ -170,8 +186,8 @@ export const WriteNanumFormOnline = () => {
             placeholderTextColor={theme.gray300}
           />
         </View>
-        <FloatingBottomButton label="다음" onPress={onPressNext} enabled={checkNextEnabled()} />
       </ScrollView>
+      <FloatingBottomButton label="다음" onPress={onPressNext} enabled={checkNextEnabled()} />
     </SafeAreaView>
   )
 }

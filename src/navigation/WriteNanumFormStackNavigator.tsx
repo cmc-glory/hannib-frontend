@@ -10,7 +10,10 @@ type WriteNanumFormStackNavigatorParamList = {
   WriteNanumFormDefault: undefined
   WriteNanumFormOffline: {
     images: string[]
-    category: string
+    category: {
+      category: string
+      job: '가수' | '배우'
+    }
     title: string
     contents: string
     nanumMethod: INanumMethod
@@ -18,7 +21,10 @@ type WriteNanumFormStackNavigatorParamList = {
   }
   WriteNanumFormOnline: {
     images: string[]
-    category: string
+    category: {
+      category: string
+      job: '가수' | '배우'
+    }
     title: string
     contents: string
     nanumMethod: INanumMethod

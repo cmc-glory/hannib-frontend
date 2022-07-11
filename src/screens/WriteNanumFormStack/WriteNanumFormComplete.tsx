@@ -4,12 +4,14 @@ import {useNavigation} from '@react-navigation/native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {getStatusBarHeight} from 'react-native-status-bar-height'
 import {isIphoneX, getBottomSpace} from 'react-native-iphone-x-helper'
+import {useQueryClient} from 'react-query'
 
 import {StackHeader, CompleteIcon, RoundButton} from '../../components/utils'
 import * as theme from '../../theme'
 
 export const WriteNanumFormComplete = () => {
   const navigation = useNavigation()
+  const queryClient = useQueryClient()
   const [height, setHeight] = useState<number>(0)
   const MARGIN_TOP = useMemo(() => {
     const status = getStatusBarHeight()
@@ -22,6 +24,8 @@ export const WriteNanumFormComplete = () => {
 
   const onPressButton = useCallback(() => {
     navigation.navigate('MainTabNavigator')
+    queryClient.invalidateQueries('nanumListRecent')
+    queryClient.invalidateQueries('nanumListPopular')
   }, [])
   return (
     <SafeAreaView style={theme.styles.safeareaview}>

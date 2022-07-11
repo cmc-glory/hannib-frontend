@@ -17,22 +17,17 @@ import FastImage from 'react-native-fast-image'
 
 const BUTTON_GAP = 10
 
-type SelectedStarTagProps = {
-  item: IStar
-  onPressRemove: (id: string) => void
-}
-
 const IMAGE_SIZE = (Dimensions.get('window').width - 40 - 32 - 18) / 3
 const IMAGE_BORDER = IMAGE_SIZE / 2
 const CIRCLE_SIZE = IMAGE_SIZE + 8
 const CIRCLE_BORDER = CIRCLE_SIZE / 2
+const BUTTON_WIDTH = (Dimensions.get('window').width - theme.PADDING_SIZE * 2 - BUTTON_GAP) / 2
 
 export const SelectCategory = () => {
   // ******************** utils  ********************
   const navigation = useNavigation()
   const route = useRoute<SelectCategoryRouteProps>()
   const dispatch = useAppDispatch()
-  const BUTTON_WIDTH = useMemo(() => (Dimensions.get('window').width - theme.PADDING_SIZE * 2 - BUTTON_GAP) / 2, [])
   const {email, name, profileImage} = useMemo(() => route.params, [])
   var accountCategoryDtoList: IAccountCategoryDto[] = []
 
@@ -114,13 +109,9 @@ export const SelectCategory = () => {
   const searchKeyword = useCallback(
     // 검색 api 호출
     (keyword: string) => {
-      console.log('clicked')
-
       // 입력 값이 없을 때는 리턴
       if (keyword == '') return
       init && setInit(false) // 한번 검색을 하고 나면 init screen은 필요 없음
-      //setStars(starsAll.filter(star => star.name.includes(keyword)))
-      //const tempKeyword = keyword
       searchCategoryQuery.mutate(keyword)
       setKeyword('')
     },

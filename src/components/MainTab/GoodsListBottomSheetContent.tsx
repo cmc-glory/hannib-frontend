@@ -27,6 +27,7 @@ const GoodsListBottomSheetContentItem = ({label, selected, onPress}: GoodsListBo
 export const GoodsListBottomSheetContent = ({itemFilter, setItemFilter, close}: GoodsListBottomSheetContentProps) => {
   const onPress = useCallback((label: '최신순' | '인기순' | '추천순') => {
     setItemFilter(label)
+
     if (close) {
       close()
     }

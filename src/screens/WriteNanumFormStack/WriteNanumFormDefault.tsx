@@ -34,10 +34,6 @@ if (Platform.OS === 'ios') {
   KeyboardManager.resignFirstResponder()
 }
 
-const CategoryModal = () => {
-  return <View></View>
-}
-
 export const WriteNanumFormDefault = () => {
   // ***************************** utils *****************************
 
@@ -55,7 +51,7 @@ export const WriteNanumFormDefault = () => {
   // ***************************** states *****************************
   const [categoryModalOpened, setCategoryModalOpened] = useState<boolean>(false)
   const [images, setImages] = useState<string[]>([]) // 대표 이미지
-  const [category, setCategory] = useState<string>('') // 카테고리
+  const [category, setCategory] = useState<{category: string; job: '가수' | '배우'}>({category: '', job: '가수'}) // 카테고리
   const [title, setTitle] = useState<string>('') // 제목
   const [contents, setContents] = useState<string>('') // 내용
   const [nanumMethod, setNanumMethod] = useState<INanumMethod>('M') // 나눔 방식
@@ -93,7 +89,7 @@ export const WriteNanumFormDefault = () => {
 
   // 필요한 내용을 기입해서 다음으로 넘어갈 수 있는지.
   const checkNextButtonEnabled = useCallback(() => {
-    if (images.length != 0 && category != '' && title != '' && contents != '') {
+    if (images.length != 0 && category.category != '' && title != '' && contents != '') {
       return true
     } else {
       return false
@@ -110,7 +106,6 @@ export const WriteNanumFormDefault = () => {
   return (
     <SafeAreaView edges={['top', 'bottom']} style={theme.styles.safeareaview}>
       <StackHeader goBack title="모집폼 작성" />
-      <CategoryModal />
 
       <ScrollView contentContainerStyle={[theme.styles.wrapper]}>
         <StepIndicator step={1} />
@@ -123,7 +118,7 @@ export const WriteNanumFormDefault = () => {
           </View>
 
           <View style={[theme.styles.rowFlexStart]}>
-            {category != '' && (
+            {category.category != '' && (
               <View
                 style={{
                   backgroundColor: theme.secondary,

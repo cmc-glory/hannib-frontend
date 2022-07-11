@@ -9,7 +9,7 @@ import {DownArrowIcon, BellIcon, MagnifierIcon, BottomSheet, FloatingButtonIcon,
 import {GoodsFilterTab, NanumListItem, GoodsListBottomSheetContent, Banner, CategoryDropdown} from '../../components/MainTab'
 import {INanumMethod, INanumListItem, IAccountCategoryDto} from '../../types'
 import {useAppSelector, useAnimatedValue} from '../../hooks'
-import {queryKeys, getNanumByRecent, getNanumByPopularity} from '../../api'
+import {getNanumByRecent, getNanumByPopularity} from '../../api'
 
 const GoodsLists = () => {
   // ******************** check login ********************
@@ -25,7 +25,7 @@ const GoodsLists = () => {
   // ******************** states ********************
   const [sharings, setSharings] = useState<INanumListItem[]>([])
   const [refreshing, setRefreshing] = useState<boolean>(false) // 새로고침 state
-  const [nanumMethodFilter, setNanumMethodFilter] = useState<'all' | INanumMethod>('all')
+  const [nanumMethodFilter, setNanumMethodFilter] = useState<'전체' | INanumMethod>('전체')
   const [itemFilter, setItemFilter] = useState<'최신순' | '인기순' | '추천순'>('최신순')
   const [showItemFilterBottomShet, setShowItemFilterBottomSheet] = useState<boolean>(false) // 인기순, 최신순, 추천순 필터링 탭 띄울지
   const [showSelectCategoryModal, setShowSelectCategoryModal] = useState<boolean>(false) // 카테고리 선택하는 드롭다운 띄울지
@@ -42,14 +42,14 @@ const GoodsLists = () => {
 
   // ******************** react query ********************
   const nanumListByRecent = useQuery(
-    [queryKeys.nanumList, userCategory],
+    ['nanumListRecent', userCategory],
     () => getNanumByRecent({job: userCategory.job, category: userCategory.category, accountIdx: 0}),
     {
       onSuccess: data => {
         setRefreshing(false) // 새로고침중이면 로딩 종료
         setSharings(data)
 
-        if (nanumMethodFilter !== 'all') {
+        if (nanumMethodFilter !== '전체') {
           // 현재 오프라인, 온라인 필터가 설정된 경우엔 보여질 아이템 재설정
           onPressLocationFilter(nanumMethodFilter)
         }
@@ -58,10 +58,13 @@ const GoodsLists = () => {
   )
 
   const nanumListByPopular = useQuery(
-    [queryKeys.nanumList, userCategory],
+    ['nanumListPopular', userCategory],
     () => getNanumByPopularity({job: userCategory.job, category: userCategory.category, accountIdx: 0}),
     {
-      onSuccess(data) {},
+      onSuccess(data) {
+        setRefreshing(false) // 새로고침중이면 로딩 종료
+        setSharings(data)
+      },
       onError(err) {},
     },
   )
@@ -79,7 +82,7 @@ const GoodsLists = () => {
   const onRefresh = useCallback(() => {
     // 새로고침침 pull up이 일어났을 때
     setRefreshing(true)
-    queryClient.invalidateQueries(queryKeys.nanumList)
+    invalidateQueries()
   }, [])
 
   const onPressWrite = useCallback(() => {
@@ -103,23 +106,34 @@ const GoodsLists = () => {
     setShowSelectCategoryModal(showSelectCategoryModal => !showSelectCategoryModal)
   }, [])
 
-  const onPressLocationFilter = useCallback((type: INanumMethod | 'all') => {
-    // 전체, 우편, 오프라인 클릭시
-    console.log(nanumListByRecent.data)
+  const onPressLocationFilter = useCallback(
+    (type: INanumMethod | '전체') => {
+      // 전체, 우편, 오프라인 클릭시
 
-    if (type == 'all') {
-      setSharings(nanumListByRecent.data)
-    } else {
-      if (nanumListByRecent.data != undefined) {
-        setSharings(nanumListByRecent.data.filter((item: INanumListItem) => item.nanumMethod == type))
+      if (type == '전체') {
+        invalidateQueries()
+      } else {
+        if (sharings != undefined) {
+          console.log(sharings)
+          setSharings(sharings.filter((item: INanumListItem) => item.nanumMethod == type))
+        }
       }
+    },
+    [sharings],
+  )
+
+  const invalidateQueries = useCallback(() => {
+    if (itemFilter == '인기순') {
+      queryClient.invalidateQueries('nanumListPopular')
+    } else if (itemFilter == '최신순') {
+      queryClient.invalidateQueries('nanumListRecent')
     }
-  }, [])
+  }, [itemFilter])
 
   // ******************** re-rendering ********************
   useEffect(() => {
     // 최신순, 인기순, 추천순 필터가 바뀔 때마다 새로 로드
-    queryClient.invalidateQueries(queryKeys.nanumList)
+    invalidateQueries()
   }, [itemFilter, isLoggedIn])
 
   return (
