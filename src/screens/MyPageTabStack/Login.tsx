@@ -67,6 +67,7 @@ export const Login = () => {
             profileImageUri: '',
             holdingSharingCnt: 6,
             participateSharingCnt: 7,
+            creatorIdDatetime: '2022-07-11 11:11:11',
           }),
         )
         storeString('accountIdx', data.accountIdx)
@@ -123,6 +124,7 @@ export const Login = () => {
                   profileImageUri: '',
                   holdingSharingCnt: 6,
                   participateSharingCnt: 7,
+                  creatorIdDatetime: '2022-07-11 11:11:11',
                 }),
               )
               storeString('accountIdx', res.data.accountIdx)
@@ -175,6 +177,7 @@ export const Login = () => {
             holdingSharingCnt: result.holdingSharingCnt,
             participateSharingCnt: result.participateSharingCnt,
             accountIdx: 0,
+            creatorIdDatetime: '2022-07-11 11:11:11',
           }),
         )
       })
@@ -216,6 +219,7 @@ export const Login = () => {
               holdingSharingCnt: result.holdingSharingCnt,
               participateSharingCnt: result.participateSharingCnt,
               accountIdx: 0,
+              creatorIdDatetime: '2022-07-11 11:11:11',
             }),
           )
         })

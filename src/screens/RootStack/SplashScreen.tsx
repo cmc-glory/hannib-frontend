@@ -32,6 +32,7 @@ export const SplashScreen = () => {
           profileImageUri: '',
           holdingSharingCnt: 6,
           participateSharingCnt: 7,
+          creatorIdDatetime: '2022-07-11 11:11:11',
         }),
       )
 

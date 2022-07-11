@@ -1,6 +1,6 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {createDraftSafeSelector} from '@reduxjs/toolkit'
-import {IAccountCategoryDto} from '../../types'
+import {IAccountCategoryDto, IAccountDto} from '../../types'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 //Each slice file should define a type for its initial state value,
@@ -14,6 +14,7 @@ export interface User {
   holdingSharingCnt: number | undefined
   participateSharingCnt: number | undefined
   accountIdx: number
+  creatorIdDatetime: string
 }
 
 export interface Auth {
@@ -33,6 +34,7 @@ const initialState = {
     holdingSharingCnt: 0,
     participateSharingCnt: 0,
     accountIdx: 0,
+    creatorIdDatetime: '1997-01-01 00:00:00',
   } as User,
   accessToken: '',
   refreshToken: '',
