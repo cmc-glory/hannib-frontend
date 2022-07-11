@@ -1,6 +1,7 @@
 import React, {useEffect, useRef, useState, useCallback} from 'react'
 import {View, Text, FlatList, ScrollView, Pressable, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
+import {EmptyIcon} from '../../components/utils'
 import {useAppSelector} from '../../hooks'
 import {StackHeader} from '../../components/utils'
 import {NanumListItem} from '../../components/MainTab'
@@ -120,7 +121,16 @@ export const Favorites = () => {
           />
         </View>
       ) : (
-        <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}></View>
+        <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
+          <EmptyIcon style={{marginBottom: 32}} />
+          <View>
+            <Text style={[theme.styles.bold20, {marginBottom: 8}]}>현재 찜 리스트가 비어있어요.</Text>
+            <View>
+              <Text style={[{color: theme.gray700, fontSize: 16, textAlign: 'center'}, theme.styles.text16]}>관심 있는, 오픈 예정인 나눔을</Text>
+              <Text style={[{color: theme.gray700, fontSize: 16, textAlign: 'center'}, theme.styles.text16]}>찜 리스트에 추가해보세요!</Text>
+            </View>
+          </View>
+        </View>
       )}
     </SafeAreaView>
   )

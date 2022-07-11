@@ -55,6 +55,7 @@ import LeftArrowCalendarSvg from '../../assets/Icon/LeftArrowCalendar.svg'
 import RightArrowCalendarSvg from '../../assets/Icon/RightArrowCalendar.svg'
 import LogoWhiteSvg from '../../assets/Icon/LogoWhite.svg'
 import XSmallSvg from '../../assets/Icon/XSmall.svg'
+import EmptySvg from '../../assets/Icon/Empty.svg'
 
 import * as theme from '../../theme'
 
@@ -68,6 +69,14 @@ type IconPropss = {
   onPress?: () => void
   style?: any
   size?: number
+}
+
+export const EmptyIcon = ({onPress, style, size = 53}: IconPropss) => {
+  return (
+    <Pressable onPress={onPress} style={style}>
+      <EmptySvg width={size} height={size} />
+    </Pressable>
+  )
 }
 
 export const XSmallIcon = ({onPress, style, size = 16}: IconPropss) => {
