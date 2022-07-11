@@ -3,10 +3,9 @@ import {View, Text, FlatList, Pressable, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation} from '@react-navigation/native'
 import {useQuery, useQueryClient} from 'react-query'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 
 import * as theme from '../../theme'
-import {DownArrowIcon, BellIcon, MagnifierIcon, BottomSheet, FloatingButtonIcon} from '../../components/utils'
+import {DownArrowIcon, BellIcon, MagnifierIcon, BottomSheet, FloatingButtonIcon, EmptyIcon} from '../../components/utils'
 import {GoodsFilterTab, NanumListItem, GoodsListBottomSheetContent, Banner, CategoryDropdown} from '../../components/MainTab'
 import {INanumMethod, INanumListItem, IAccountCategoryDto} from '../../types'
 import {useAppSelector, useAnimatedValue} from '../../hooks'
@@ -157,15 +156,27 @@ const GoodsLists = () => {
           setShowItemFilterBottomSheet={setShowItemFilterBottomSheet}
           onPressLocationFilter={onPressLocationFilter}
         />
-        <FlatList
-          contentContainerStyle={[{paddingHorizontal: theme.PADDING_SIZE, paddingVertical: 6}]}
-          data={sharings}
-          renderItem={({item}) => <NanumListItem item={item}></NanumListItem>}
-          refreshing={refreshing}
-          numColumns={2}
-          columnWrapperStyle={{justifyContent: 'space-between', marginBottom: 20}}
-          onRefresh={onRefresh}
-        />
+        {sharings.length == 0 ? (
+          <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
+            <EmptyIcon style={{marginBottom: 32}} />
+            <View>
+              <Text style={[theme.styles.bold20, {marginBottom: 8, textAlign: 'center'}]}>아직 나눔 게시글이 없어요.</Text>
+              <View>
+                <Text style={[{color: theme.gray700, fontSize: 16, textAlign: 'center'}, theme.styles.text16]}>관심 있는 스타의 굿즈를 나눔해 보세요!</Text>
+              </View>
+            </View>
+          </View>
+        ) : (
+          <FlatList
+            contentContainerStyle={[{paddingHorizontal: theme.PADDING_SIZE, paddingVertical: 6}]}
+            data={sharings}
+            renderItem={({item}) => <NanumListItem item={item}></NanumListItem>}
+            refreshing={refreshing}
+            numColumns={2}
+            columnWrapperStyle={{justifyContent: 'space-between', marginBottom: 20}}
+            onRefresh={onRefresh}
+          />
+        )}
       </View>
 
       <FloatingButtonIcon style={styles.floatingButton} onPress={onPressWrite} />

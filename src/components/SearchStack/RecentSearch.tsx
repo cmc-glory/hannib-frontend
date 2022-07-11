@@ -3,7 +3,7 @@ import {View, Text, Alert, Pressable, StyleSheet} from 'react-native'
 import {useMutation, useQueryClient} from 'react-query'
 import {removeSearchKeywordWithId, removeSearchKeywordAll} from '../../api'
 import {useAppSelector} from '../../hooks'
-import {XIcon} from '../utils'
+import {XSmallIcon} from '../utils'
 import * as theme from '../../theme'
 
 type RecentSearchProps = {
@@ -19,7 +19,7 @@ const RecentSearchItem = ({keyword, onPressDelete}: RecentSearchItemProps) => {
   return (
     <View style={[theme.styles.rowSpaceBetween, styles.itemContainer]}>
       <Text>{keyword}</Text>
-      <XIcon size={16} style={{marginLeft: 8}} onPress={onPressDelete} />
+      <XSmallIcon style={{marginLeft: 8}} onPress={onPressDelete} />
     </View>
   )
 }
