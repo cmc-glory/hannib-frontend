@@ -1,5 +1,5 @@
 import React, {useState, useCallback} from 'react'
-import {View, Text, TextInput, Pressable, StyleSheet} from 'react-native'
+import {View, Text, TextInput, Pressable, ActivityIndicator, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation, useRoute} from '@react-navigation/native'
 import {launchImageLibrary} from 'react-native-image-picker'
@@ -66,18 +66,6 @@ export const SetProfile = () => {
     navigation.navigate('SelectCategory', {email: route.params.email, name, profileImage: image})
   }, [name, image])
 
-  // const onImageLibraryPress = useCallback(async () => {
-  //   const response = await launchImageLibrary({selectionLimit: 1, mediaType: 'photo', includeBase64: false})
-  //   if (response.didCancel) {
-  //     console.log('User cancelled image picker')
-  //   } else if (response.errorCode) {
-  //     console.log('errorCode : ', response.errorCode)
-  //   } else if (response.errorMessage) {
-  //     console.log('errorMessage', response.errorMessage)
-  //   } else if (response.assets) {
-  //     response?.assets[0].uri && setProfileImage({uri: response?.assets[0].uri})
-  //   }
-  // }, [])
   const onImageLibraryPress = useCallback(async () => {
     const response = await launchImageLibrary({selectionLimit: 1, mediaType: 'photo', includeBase64: false})
 
@@ -102,10 +90,10 @@ export const SetProfile = () => {
     } else if (response.assets) {
       // 이미지가 제대로 들어오면
       const fileSize = response.assets[0].fileSize
-      if (fileSize && fileSize >= 10000000) {
+      if (fileSize && fileSize >= 1048576) {
         showMessage({
           // 에러 안내 메세지
-          message: '최대 10MB까지 업로드 가능합니다',
+          message: '최대 1MB까지 업로드 가능합니다',
           type: 'info',
           animationDuration: 300,
           duration: 1350,
@@ -138,6 +126,7 @@ export const SetProfile = () => {
           {image == '' ? (
             <Pressable style={[styles.image, styles.selectImage]} onPress={onImageLibraryPress}>
               <NoUserSvg width={54} height={54} />
+              <ActivityIndicator animating={uploadImageQuery.isLoading} style={{position: 'absolute'}} />
             </Pressable>
           ) : (
             <FastImage source={{uri: image}} style={styles.image}></FastImage>

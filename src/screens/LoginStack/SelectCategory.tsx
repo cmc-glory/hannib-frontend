@@ -1,18 +1,19 @@
 import React, {useMemo, useState, useEffect, useCallback} from 'react'
-import {View, Text, StyleSheet, Dimensions, FlatList, Alert} from 'react-native'
+import {View, Text, StyleSheet, Dimensions, Pressable, Alert} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation, useRoute} from '@react-navigation/native'
 import {useMutation} from 'react-query'
 import {showMessage} from 'react-native-flash-message'
 
 import {SelectCategoryRouteProps} from '../../navigation/LoginStackNavigator'
-import {StackHeader, Button, CategoryItem, FloatingBottomButton, XIcon} from '../../components/utils'
-import {SearchStar, EmptyResult, InitScreen} from '../../components/LoginStack'
+import {StackHeader, Button, CheckboxMainIcon, FloatingBottomButton, XIcon, XSmallIcon} from '../../components/utils'
+import {EmptyResult, SearchStar} from '../../components/LoginStack'
 import * as theme from '../../theme'
-import {IStar, IAccountDto, IAccountCategoryDto, ICategoryDto} from '../../types'
-import {storeAccessToken, storeRefreshToken, login} from '../../redux/slices'
+import {IStar, IAccountCategoryDto, ICategoryDto} from '../../types'
+import {login} from '../../redux/slices'
 import {useAppDispatch, storeString} from '../../hooks'
 import {queryKeys, postSignUp, searchCategory} from '../../api'
+import FastImage from 'react-native-fast-image'
 
 const BUTTON_GAP = 10
 
@@ -23,18 +24,8 @@ type SelectedStarTagProps = {
 
 const IMAGE_SIZE = (Dimensions.get('window').width - 40 - 32 - 18) / 3
 const IMAGE_BORDER = IMAGE_SIZE / 2
-const CIRCLE_SIZE = IMAGE_SIZE + 6
+const CIRCLE_SIZE = IMAGE_SIZE + 8
 const CIRCLE_BORDER = CIRCLE_SIZE / 2
-
-const SelectedStarTag = ({item, onPressRemove}: SelectedStarTagProps) => {
-  const {name, id} = item
-  return (
-    <View style={[theme.styles.rowSpaceBetween, styles.tagContainer]}>
-      <Text style={[theme.styles.text14]}>{name}</Text>
-      <XIcon size={16} onPress={() => onPressRemove(id)} style={{marginLeft: 8}} />
-    </View>
-  )
-}
 
 export const SelectCategory = () => {
   // ******************** utils  ********************
@@ -89,7 +80,9 @@ export const SelectCategory = () => {
   const searchCategoryQuery = useMutation(queryKeys.searchCategory, searchCategory, {
     // 검색 api
     onSuccess(data, variables, context) {
+      console.log(data)
       setResult(data)
+      console.log(data == '')
     },
     onError(error, variables, context) {
       showMessage({
@@ -113,19 +106,15 @@ export const SelectCategory = () => {
   const [init, setInit] = useState<boolean>(true) // 처음에만 검색해보세요! 화면 띄움
   const [singerSelected, setSingerSelected] = useState(true) // 가수, 배우 대분류 선택
   const [keyword, setKeyword] = useState<string>('')
-  const [result, setResult] = useState<ICategoryDto>({
-    job: '가수',
-    nickName: '방탄소년단',
-    birth: '2013-06-13',
-    imgUrl:
-      'https://blogfiles.pstatic.net/MjAyMjA3MTBfMzYg/MDAxNjU3MzgxMzg5MjU1.zlXIrPWz8E-j2jq6eIWuP49vm-816tGDYDdC4QG8trYg.uGunW_xEVY94e47Y7klDCopWJXtmi754xw4f7r83oZwg.JPEG.js7056/bts.jpeg?type=w1',
-    email: 'glory@gmail.com',
-  })
+  const [result, setResult] = useState<ICategoryDto | ''>('')
+  const [userSelectedCategories, setUserSelectedCategories] = useState<IAccountCategoryDto[]>([])
 
   // ******************** callbacks  ********************
   const searchKeyword = useCallback(
     // 검색 api 호출
     (keyword: string) => {
+      console.log('clicked')
+
       // 입력 값이 없을 때는 리턴
       if (keyword == '') return
       init && setInit(false) // 한번 검색을 하고 나면 init screen은 필요 없음
@@ -138,19 +127,19 @@ export const SelectCategory = () => {
   )
 
   const onPressSignUp = useCallback(() => {
-    accountCategoryDtoList.push({
-      accountIdx: 0,
-      job: result.job,
-      category: result.nickName,
-    })
-    // 회원가입 api 호출
-    const signUpForm: IAccountDto = {
-      accountCategoryDtoList: accountCategoryDtoList,
-      accountIdx: 0,
-      creatorId: name,
-      accountImg: profileImage,
-      email: email,
-    }
+    // accountCategoryDtoList.push({
+    //   accountIdx: 0,
+    //   job: result.job,
+    //   category: result.nickName,
+    // })
+    // // 회원가입 api 호출
+    // const signUpForm: IAccountDto = {
+    //   accountCategoryDtoList: accountCategoryDtoList,
+    //   accountIdx: 0,
+    //   creatorId: name,
+    //   accountImg: profileImage,
+    //   email: email,
+    // }
     //postSignUpQuery.mutate(signUpForm)
     dispatch(
       login({
@@ -169,24 +158,137 @@ export const SelectCategory = () => {
     navigation.navigate('MainTabNavigator')
   }, [])
 
+  const isSelected = useCallback(
+    (category: ICategoryDto) => {
+      return userSelectedCategories.filter(item => item.job == category.job && item.category == category.nickName).length == 0 ? false : true
+    },
+    [userSelectedCategories],
+  )
+
+  const onPressCategory = useCallback(
+    (category: ICategoryDto) => {
+      if (isSelected(category)) {
+        setUserSelectedCategories(userSelectedCategories.filter(item => item.job != category.job || item.category != category.nickName))
+      } else {
+        if (userSelectedCategories.length == 5) {
+          Alert.alert('최대 5명까지 선택 가능합니다')
+          return
+        }
+        setUserSelectedCategories(
+          userSelectedCategories.concat({
+            job: category.job,
+            category: category.nickName,
+            accountIdx: 0,
+          }),
+        )
+      }
+    },
+    [userSelectedCategories],
+  )
+
+  const onPressRemoveCategory = useCallback((param: IAccountCategoryDto) => {
+    setUserSelectedCategories(userSelectedCategories =>
+      userSelectedCategories.filter(item => {
+        console.log(item, param)
+        return item.job != param.job || item.category != param.category
+      }),
+    )
+  }, [])
+
   return (
-    <SafeAreaView style={styles.rootContainer}>
+    <SafeAreaView style={theme.styles.safeareaview}>
       <StackHeader title="카테고리" />
-      <View style={[theme.styles.wrapper]}>
+      <View style={[theme.styles.wrapper, {flex: 1}]}>
         <View style={[styles.mainCategoryContainer]}>
-          <Button selected={singerSelected} label="가수" style={{width: BUTTON_WIDTH}} onPress={() => setSingerSelected(true)} />
-          <Button selected={!singerSelected} label="배우" style={{width: BUTTON_WIDTH}} onPress={() => setSingerSelected(true)} />
+          <Button
+            selected={singerSelected}
+            label="가수"
+            style={{width: BUTTON_WIDTH}}
+            onPress={() => {
+              setInit(true)
+              setSingerSelected(true)
+            }}
+          />
+          <Button
+            selected={!singerSelected}
+            label="배우"
+            style={{width: BUTTON_WIDTH}}
+            onPress={() => {
+              setInit(true)
+              setSingerSelected(false)
+            }}
+          />
         </View>
 
         <SearchStar keyword={keyword} setKeyword={setKeyword} searchKeyword={searchKeyword} />
-        <Text>{JSON.stringify(result)}</Text>
-        <FloatingBottomButton label="선택 완료" enabled={true} onPress={onPressSignUp} />
+        <View style={[theme.styles.rowFlexStart, {flexWrap: 'wrap', marginBottom: 16}]}>
+          {userSelectedCategories.length > 0 &&
+            userSelectedCategories.map(item => (
+              <View key={item.category + item.job} style={[theme.styles.rowFlexStart, {marginBottom: 8}, styles.selectedCategoryButton]}>
+                <Text style={[{marginRight: 8}, theme.styles.text14]}>{item.category}</Text>
+                <XSmallIcon size={16} onPress={() => onPressRemoveCategory(item)} />
+              </View>
+            ))}
+        </View>
+        {init == true ? (
+          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <Text style={theme.styles.bold20}>관심 있는 스타를 검색해 보세요!</Text>
+          </View>
+        ) : result == '' ? (
+          <EmptyResult />
+        ) : (
+          <View style={{width: CIRCLE_SIZE}}>
+            <Pressable style={[styles.pressableView, isSelected(result) && styles.selectedPressable]} onPress={() => onPressCategory(result)}>
+              {isSelected(result) && <CheckboxMainIcon style={styles.checkboxMain} />}
+              <FastImage style={styles.image} source={{uri: result.imgUrl}}></FastImage>
+            </Pressable>
+            <Text style={styles.starName}>{result.nickName}</Text>
+          </View>
+        )}
       </View>
+      <FloatingBottomButton label="선택 완료" enabled={userSelectedCategories.length != 0} onPress={onPressSignUp} />
     </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
+  selectedCategoryButton: {
+    backgroundColor: theme.gray50,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    alignSelf: 'flex-start',
+    borderRadius: 26,
+    marginRight: 8,
+  },
+  starName: {
+    color: theme.gray700,
+    marginTop: 8,
+    textAlign: 'center',
+  },
+  checkboxMain: {
+    position: 'absolute',
+    right: 4,
+    top: 4,
+    zIndex: 1,
+  },
+  selectedPressable: {
+    backgroundColor: theme.main,
+  },
+  pressableView: {
+    width: CIRCLE_SIZE,
+    height: CIRCLE_SIZE,
+    borderRadius: CIRCLE_BORDER,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  image: {
+    //width: IMAGE_SIZE,
+    width: IMAGE_SIZE,
+    height: IMAGE_SIZE,
+
+    borderRadius: IMAGE_BORDER,
+    resizeMode: 'cover',
+  },
   tagContainer: {
     backgroundColor: theme.gray50,
     marginRight: 8,
@@ -195,10 +297,7 @@ const styles = StyleSheet.create({
     borderRadius: 26,
     marginBottom: 8,
   },
-  rootContainer: {
-    flex: 1,
-    backgroundColor: theme.white,
-  },
+
   mainCategoryContainer: {
     flexDirection: 'row',
     alignItems: 'center',

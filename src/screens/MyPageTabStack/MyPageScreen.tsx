@@ -3,11 +3,7 @@ import {View, ScrollView, Pressable, Text, StyleSheet} from 'react-native'
 import FastImage from 'react-native-fast-image'
 import {SafeAreaView} from 'react-native'
 import {useNavigation} from '@react-navigation/native'
-<<<<<<< HEAD
 import AsyncStorage from '@react-native-async-storage/async-storage'
-=======
-import {IAccountDto} from '../../types'
->>>>>>> ae150551b73087ce90d2cfb5b0f3b138862c75fa
 import {LogoutModal} from '../../components/MainTab'
 import {StackHeader, BellIcon, RightArrowIcon} from '../../components/utils'
 import {useAppSelector} from '../../hooks'
