@@ -3,7 +3,11 @@ import {View, ScrollView, Pressable, Text, StyleSheet} from 'react-native'
 import FastImage from 'react-native-fast-image'
 import {SafeAreaView} from 'react-native'
 import {useNavigation} from '@react-navigation/native'
+<<<<<<< HEAD
 import AsyncStorage from '@react-native-async-storage/async-storage'
+=======
+import {IAccountDto} from '../../types'
+>>>>>>> ae150551b73087ce90d2cfb5b0f3b138862c75fa
 import {LogoutModal} from '../../components/MainTab'
 import {StackHeader, BellIcon, RightArrowIcon} from '../../components/utils'
 import {useAppSelector} from '../../hooks'
@@ -40,7 +44,7 @@ export const MyPageScreen = () => {
   // ******************** utils ********************
   const navigation = useNavigation()
   const user = useAppSelector(state => state.auth.user)
-  //console.log('user : ', user)
+  //console.log('user in mypagescreen : ', user)
 
   //account idx api 나오면 수정하기
   const {data} = useQuery(queryKeys.accountInfo, () => getAccountInfo(9), {
@@ -114,7 +118,7 @@ export const MyPageScreen = () => {
             source={{uri: user.profileImageUri == undefined ? 'http://localhost:8081/src/assets/images/noUser.png' : user.profileImageUri}}
           />
           <View style={{alignSelf: 'stretch', justifyContent: 'center'}}>
-            <Text style={[theme.styles.bold20, {color: theme.gray700, marginBottom: 8}]}>{user.name}</Text>
+            <Text style={[theme.styles.bold20, {color: theme.gray700, marginBottom: 8}]}>{user && user.name}</Text>
             <Pressable style={[theme.styles.rowFlexStart]} onPress={onPressEditProfile}>
               <Text style={[{color: theme.gray500}, theme.styles.text14]}>프로필 수정</Text>
               <RightArrowIcon size={20} onPress={onPressEditProfile} />

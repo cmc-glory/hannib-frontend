@@ -1,6 +1,6 @@
 import axios from 'axios'
 import {BASE_URL} from '@env'
-import {IAccountDto} from '../types'
+import {IAccountDto, IAccountIdDto} from '../types'
 
 const apiClient = axios.create({
   baseURL: BASE_URL,
@@ -21,5 +21,10 @@ export const getAccountInfo = async (accountIdx: number) => {
 
 export const updateAccountInfo = async (accountDto: IAccountDto) => {
   const {data} = await apiClient.put('/api/account', accountDto)
+  return data
+}
+
+export const updateAccountId = async (accountIdDto: IAccountIdDto) => {
+  const {data} = await apiClient.put(`/api/account/?accountIdx=${accountIdDto.creatorId}`, accountIdDto)
   return data
 }

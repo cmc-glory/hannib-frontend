@@ -65,10 +65,13 @@ export const authSlice = createSlice({
     updateProfileImage: (state, action: PayloadAction<string>) => {
       state.user.profileImageUri = action.payload
     },
+    updateName: (state, action: PayloadAction<string>) => {
+      state.user.name = action.payload
+    },
   },
 })
 
 const selectSelf = (state: Auth) => state
 export const userSelector = createDraftSafeSelector(selectSelf, state => state.user)
 export default authSlice.reducer
-export const {login, storeAccessToken, storeRefreshToken, logout, updateProfileImage} = authSlice.actions
+export const {login, storeAccessToken, storeRefreshToken, logout, updateProfileImage, updateName} = authSlice.actions
