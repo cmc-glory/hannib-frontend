@@ -39,45 +39,6 @@ const LoginButton = ({label, source, onPress, style, textStyle}: LoginButtonProp
 export const Login = () => {
   const navigation = useNavigation()
   const dispatch = useAppDispatch()
-
-  const getAccountInfoQuery = useMutation(queryKeys.accountInfo, getAccountInfo, {
-    onSuccess(data, variables, context) {
-      if (data == '') {
-        // accountIdx 값이 async storage에 있지만 해당 계정 정보가 없는 경우
-        // 이런 경우가 있는 지는 모르겠지만....
-        navigation.navigate('LoginStackNavigator', {
-          screen: 'SetProfile',
-          params: {
-            email: data.email,
-          },
-        })
-      } else {
-        dispatch(
-          ReduxLogin({
-            accountIdx: 9,
-            email: 'js7056@naver.com',
-            name: '진실',
-            userCategory: [
-              {
-                accountIdx: 9,
-                job: '가수',
-                category: 'bts',
-              },
-            ],
-            profileImageUri: '',
-            holdingSharingCnt: 6,
-            participateSharingCnt: 7,
-            creatorIdDatetime: '2022-07-11 11:11:11',
-          }),
-        )
-        storeString('accountIdx', data.accountIdx)
-      }
-    },
-    onError(error, variables, context) {
-      console.log(error)
-    },
-  })
-
   const signInWithKakao = async (): Promise<void> => {
     //console.log('clicked')
     try {
@@ -102,6 +63,7 @@ export const Login = () => {
         getAccountInfo(accountIdx)
           .then(res => {
             if (res.data == '') {
+              // 해당 accountIdx에 대한 계정 정보가 없으면 회원 가입 페이지로 이동
               navigation.navigate('LoginStackNavigator', {
                 screen: 'SetProfile',
                 params: {
@@ -109,12 +71,14 @@ export const Login = () => {
                 },
               })
             } else {
+              // 해당 accountIdx에 대한 계정 정보가 있으면 로그인 시킴
+
               dispatch(
                 ReduxLogin({
                   accountIdx: 9,
                   email: 'js7056@naver.com',
                   name: '진실',
-                  userCategory: [
+                  accountCategoryDtoList: [
                     {
                       accountIdx: 9,
                       job: '가수',
@@ -173,7 +137,7 @@ export const Login = () => {
             email: result.email,
             name: result.name,
             profileImageUri: result.profileImageUri,
-            userCategory: [],
+            accountCategoryDtoList: [],
             holdingSharingCnt: result.holdingSharingCnt,
             participateSharingCnt: result.participateSharingCnt,
             accountIdx: 0,
@@ -215,7 +179,7 @@ export const Login = () => {
               email: result.email,
               name: result.name,
               profileImageUri: result.profileImageUri,
-              userCategory: [],
+              accountCategoryDtoList: [],
               holdingSharingCnt: result.holdingSharingCnt,
               participateSharingCnt: result.participateSharingCnt,
               accountIdx: 0,

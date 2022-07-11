@@ -49,7 +49,7 @@ export const SelectCategory = () => {
         login({
           email: email,
           name: name,
-          userCategory: accountCategoryDtoList,
+          accountCategoryDtoList: accountCategoryDtoList,
           profileImageUri: profileImage,
           holdingSharingCnt: 0,
           participateSharingCnt: 0,
@@ -145,11 +145,12 @@ export const SelectCategory = () => {
       login({
         email: email,
         name: name,
-        userCategory: accountCategoryDtoList,
+        accountCategoryDtoList: userSelectedCategories,
         profileImageUri: profileImage,
         holdingSharingCnt: 0,
         participateSharingCnt: 0,
-        accountIdx: 0,
+        accountIdx: 9,
+        creatorIdDatetime: '2022-07-11 00:00:00',
       }),
     )
 

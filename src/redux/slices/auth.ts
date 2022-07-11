@@ -9,7 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 export interface User {
   email: string
   name: string
-  userCategory: IAccountCategoryDto[]
+  accountCategoryDtoList: IAccountCategoryDto[]
   profileImageUri: string | undefined
   holdingSharingCnt: number | undefined
   participateSharingCnt: number | undefined
@@ -29,7 +29,7 @@ const initialState = {
   user: {
     email: '',
     name: '',
-    userCategory: [],
+    accountCategoryDtoList: [],
     profileImageUri: '',
     holdingSharingCnt: 0,
     participateSharingCnt: 0,
@@ -49,7 +49,7 @@ export const authSlice = createSlice({
       state.user.email = action.payload.email
       state.user.name = action.payload.name
       state.user.profileImageUri = action.payload.profileImageUri
-      state.user.userCategory = action.payload.userCategory
+      state.user.accountCategoryDtoList = action.payload.accountCategoryDtoList
       state.user.holdingSharingCnt = action.payload.holdingSharingCnt
       state.user.participateSharingCnt = action.payload.participateSharingCnt
       state.user.accountIdx = action.payload.accountIdx

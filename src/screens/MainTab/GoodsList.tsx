@@ -1,5 +1,5 @@
 import React, {useState, useCallback, useEffect} from 'react'
-import {View, RefreshControl, ScrollView, Text, FlatList, Pressable, StyleSheet} from 'react-native'
+import {View, Text, FlatList, Pressable, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation} from '@react-navigation/native'
 import {useQuery, useQueryClient} from 'react-query'
@@ -17,13 +17,11 @@ const GoodsLists = () => {
   const isLoggedIn = useAppSelector(state => state.auth.isLoggedIn)
 
   // ******************** utils ********************
-
-  AsyncStorage.removeItem('accountIdx')
-
   const navigation = useNavigation()
   const queryClient = useQueryClient()
   const user = useAppSelector(state => state.auth.user)
-  const currentCategory = user.userCategory[0]
+  console.log(user)
+  const currentCategory = user.accountCategoryDtoList[0]
 
   // ******************** states ********************
   const [sharings, setSharings] = useState<INanumListItem[]>([])
@@ -40,8 +38,9 @@ const GoodsLists = () => {
   })
 
   useEffect(() => {
-    setUserCategory(user.userCategory[0])
-  }, [])
+    setUserCategory(currentCategory)
+  }, [currentCategory])
+
   // ******************** react query ********************
   const nanumListByRecent = useQuery(
     [queryKeys.nanumList, userCategory],
@@ -49,7 +48,6 @@ const GoodsLists = () => {
     {
       onSuccess: data => {
         setRefreshing(false) // 새로고침중이면 로딩 종료
-        console.log(data)
         setSharings(data)
 
         if (nanumMethodFilter !== 'all') {
@@ -148,7 +146,7 @@ const GoodsLists = () => {
         setShowCategoryModal={setShowSelectCategoryModal}
         userCategory={userCategory}
         setUserCategory={setUserCategory}
-        categories={user.userCategory}
+        categories={user.accountCategoryDtoList}
       />
       <View style={{flex: 1}}>
         <Banner imageUri={bannerInfo.imageUri} title={bannerInfo.title} sharingid={bannerInfo.sharingid} animatedHeight={animatedHeight} />

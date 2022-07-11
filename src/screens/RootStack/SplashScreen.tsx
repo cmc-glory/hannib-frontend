@@ -22,7 +22,7 @@ export const SplashScreen = () => {
           accountIdx: 9,
           email: 'js7056@naver.com',
           name: '진실',
-          userCategory: [
+          accountCategoryDtoList: [
             {
               accountIdx: 9,
               job: '가수',

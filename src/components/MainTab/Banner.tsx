@@ -15,19 +15,14 @@ type BannerProps = {
 
 export const Banner = ({imageUri, title, sharingid, animatedHeight}: BannerProps) => {
   const navigation = useNavigation()
-  const animatedStyle = useAnimatedStyle({
-    transform: [{translateY: animatedHeight}],
-  })
+
   const onPressBanner = useCallback(async () => {
-    // navigation.navigate('GoodsStackNavigator', {
-    //   screen: 'GoodsDetail',
-    //   params: {
-    //     sharingid: sharingid,
-    //   },
-    // })
-    const url = 'https://www.instagram.com/'
-    await Linking.canOpenURL(url)
-    Linking.openURL(url)
+    // const url = 'https://www.instagram.com/'
+    // await Linking.canOpenURL(url)
+    // Linking.openURL(url)
+    navigation.navigate('MyPageStackNavigator', {
+      screen: 'CustomerService',
+    })
   }, [])
   return (
     <Pressable style={styles.container} onPress={onPressBanner}>
