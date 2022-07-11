@@ -30,7 +30,7 @@ export const Search = () => {
   // ********************* callbacks *********************
 
   const onPressSearch = useCallback(() => {
-    console.log('clicked')
+    setKeyword('')
     //queryClient.invalidateQueries(queryKeys.search)
     searchQuery.mutate(keyword)
   }, [keyword])
