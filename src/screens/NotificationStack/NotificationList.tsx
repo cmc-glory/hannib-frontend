@@ -4,7 +4,7 @@ import {View, Text, ScrollView, Pressable, StyleSheet} from 'react-native'
 import {useQuery, useMutation, useQueryClient, UseMutateFunction} from 'react-query'
 import moment from 'moment'
 import {useNavigation} from '@react-navigation/native'
-import {StackHeader} from '../../components/utils'
+import {StackHeader, EmptyIcon} from '../../components/utils'
 import {queryKeys, getNotificationsAll, setNotificationRead} from '../../api'
 import * as theme from '../../theme'
 import {INotification, INotificationType} from '../../types'
@@ -174,15 +174,23 @@ export const NotificationList = () => {
   })
 
   return (
-    <SafeAreaView style={styles.rootContainer}>
+    <SafeAreaView style={theme.styles.safeareaview}>
       <StackHeader title="알림" goBack />
-      <ScrollView>
+      <ScrollView contentContainerStyle={{flex: 1}}>
         <View style={[styles.guideView, theme.styles.wrapper]}>
           <Text style={[styles.guideText]}>* 30일이 지난 알림은 자동으로 삭제됩니다</Text>
         </View>
-        {data?.map((item: INotification) => (
-          <NotificationItem item={item} key={item.id} mutate={mutate} />
-        ))}
+        {data != undefined && data.length > 0 ? (
+          data.map((item: INotification) => <NotificationItem item={item} key={item.id} mutate={mutate} />)
+        ) : (
+          <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
+            <EmptyIcon style={{marginBottom: 32}} />
+            <View>
+              <Text style={[theme.styles.bold20, {marginBottom: 8, textAlign: 'center'}]}>알림 내역이 없습니다.</Text>
+              <View></View>
+            </View>
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   )
@@ -193,10 +201,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
     marginBottom: 16,
   },
-  rootContainer: {
-    flex: 1,
-    backgroundColor: theme.white,
-  },
+
   container: {},
   guideText: {
     color: theme.secondary,
@@ -205,6 +210,7 @@ const styles = StyleSheet.create({
   guideView: {
     height: 60,
     justifyContent: 'center',
+    position: 'absolute',
   },
   NotificationItemContaienr: {
     padding: theme.PADDING_SIZE,

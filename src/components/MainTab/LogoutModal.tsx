@@ -23,6 +23,7 @@ export const LogoutModal = ({logoutModalVisible, setLogoutModalVisible}: LogoutM
     dispatch(logout())
     hideModal()
     removeString('email')
+    removeString('accountIdx')
   }, [])
 
   return (

@@ -111,7 +111,10 @@ export const MyPageScreen = () => {
         <View style={[theme.styles.rowFlexStart, styles.profileContainer]}>
           <FastImage
             style={styles.profileImage}
-            source={{uri: user.profileImageUri == undefined ? 'http://localhost:8081/src/assets/images/noUser.png' : user.profileImageUri}}
+            source={{
+              uri:
+                user.profileImageUri == undefined || user.profileImageUri == '' ? 'http://localhost:8081/src/assets/images/noUser.png' : user.profileImageUri,
+            }}
           />
           <View style={{alignSelf: 'stretch', justifyContent: 'center'}}>
             <Text style={[theme.styles.bold20, {color: theme.gray700, marginBottom: 8}]}>{user && user.name}</Text>

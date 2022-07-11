@@ -9,8 +9,8 @@ type HeaderImageProps = {
 }
 
 export const HeaderImage = ({images}: HeaderImageProps) => {
-  const tempImages: string[] = useMemo(() => images.map((item: any) => item.imgUrl), [])
-  return images == undefined ? <View style={{height: 350, backgroundColor: 'black'}}></View> : <Carousel imageUrls={tempImages} imageWidth={width} />
+  const tempImages: string[] | undefined = useMemo(() => images?.map((item: any) => item.imgUrl), [])
+  return tempImages == undefined ? <View style={{height: 350, backgroundColor: 'black'}}></View> : <Carousel imageUrls={tempImages} imageWidth={width} />
 }
 const styles = StyleSheet.create({
   image: {

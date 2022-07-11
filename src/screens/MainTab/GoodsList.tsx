@@ -160,9 +160,10 @@ const GoodsLists = () => {
           <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
             <EmptyIcon style={{marginBottom: 32}} />
             <View>
-              <Text style={[theme.styles.bold20, {marginBottom: 8, textAlign: 'center'}]}>아직 나눔 게시글이 없어요.</Text>
+              <Text style={[theme.styles.bold20, {marginBottom: 8, textAlign: 'center'}]}>현재 나눔 리스트가 비어있어요.</Text>
               <View>
-                <Text style={[{color: theme.gray700, fontSize: 16, textAlign: 'center'}, theme.styles.text16]}>관심 있는 스타의 굿즈를 나눔해 보세요!</Text>
+                <Text style={[{color: theme.gray700, fontSize: 16, textAlign: 'center'}, theme.styles.text16]}>하단의 + 버튼을 눌러</Text>
+                <Text style={[{color: theme.gray700, fontSize: 16, textAlign: 'center'}, theme.styles.text16]}>보다 손쉽게 나눔을 진행해 보세요!</Text>
               </View>
             </View>
           </View>

@@ -1,4 +1,4 @@
-import React, {useMemo, useState, useEffect, useCallback} from 'react'
+import React, {useMemo, useState, useCallback} from 'react'
 import {View, Text, StyleSheet, Dimensions, Pressable, Alert} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation, useRoute} from '@react-navigation/native'
@@ -54,6 +54,7 @@ export const SelectCategory = () => {
           holdingSharingCnt: 0,
           participateSharingCnt: 0,
           accountIdx: 0,
+          creatorIdDatetime: '2022-07-11 00:00:00',
         }),
       )
       navigation.navigate('MainTabNavigator')
@@ -157,7 +158,7 @@ export const SelectCategory = () => {
     storeString('email', email)
 
     navigation.navigate('MainTabNavigator')
-  }, [])
+  }, [userSelectedCategories])
 
   const isSelected = useCallback(
     (category: ICategoryDto) => {

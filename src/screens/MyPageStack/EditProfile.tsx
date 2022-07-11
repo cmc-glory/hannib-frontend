@@ -167,7 +167,7 @@ export const EditProfile = () => {
       </StackHeader>
       <View style={styles.container}>
         <View style={{alignSelf: 'center'}}>
-          {profileImage == undefined ? (
+          {profileImage == undefined || profileImage == '' ? (
             <Pressable style={[styles.image, styles.selectImage]} onPress={onImageLibraryPress}>
               <NoUserSvg width={54} height={54} />
             </Pressable>
