@@ -122,27 +122,31 @@ export const SelectCategory = ({category, setCategory, bottomSheetRef}: SelectCa
         </View>
 
         <SearchStar keyword={keyword} setKeyword={setKeyword} searchKeyword={searchKeyword} label="카테고리를 선택해 주세요." />
-        {category.category != '' && (
-          <View style={[theme.styles.rowFlexStart, {marginBottom: 16}, styles.selectedCategoryButton]}>
-            <Text style={[{marginRight: 8}, theme.styles.text14]}>{category.category}</Text>
-            <XSmallIcon size={16} onPress={onPressX} />
-          </View>
-        )}
-        {init == true ? (
-          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            <Text style={theme.styles.bold20}>관심 있는 스타를 검색해 보세요!</Text>
-          </View>
-        ) : result == '' ? (
-          <EmptyResult />
-        ) : (
-          <View style={{width: CIRCLE_SIZE}}>
-            <Pressable style={[styles.pressableView, category.category == result.nickName && styles.selectedPressable]} onPress={() => onPressCategory(result)}>
-              {category.category == result.nickName && <CheckboxMainIcon style={styles.checkboxMain} />}
-              <FastImage style={styles.image} source={{uri: result.imgUrl}}></FastImage>
-            </Pressable>
-            <Text style={styles.starName}>{result.nickName}</Text>
-          </View>
-        )}
+        <View style={{flex: 1}}>
+          {category.category != '' && (
+            <View style={[theme.styles.rowFlexStart, {marginBottom: 16}, styles.selectedCategoryButton]}>
+              <Text style={[{marginRight: 8}, theme.styles.text14]}>{category.category}</Text>
+              <XSmallIcon size={16} onPress={onPressX} />
+            </View>
+          )}
+          {init == true ? (
+            <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center'}]}>
+              <Text style={theme.styles.bold20}>관심 있는 스타를 검색해 보세요!</Text>
+            </View>
+          ) : result == '' ? (
+            <EmptyResult />
+          ) : (
+            <View style={{width: CIRCLE_SIZE}}>
+              <Pressable
+                style={[styles.pressableView, category.category == result.nickName && styles.selectedPressable]}
+                onPress={() => onPressCategory(result)}>
+                {category.category == result.nickName && <CheckboxMainIcon style={styles.checkboxMain} />}
+                <FastImage style={styles.image} source={{uri: result.imgUrl}}></FastImage>
+              </Pressable>
+              <Text style={styles.starName}>{result.nickName}</Text>
+            </View>
+          )}
+        </View>
       </View>
 
       <View style={[iphoneX && {marginBottom: BOTTOM_SPACE}]}>

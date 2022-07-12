@@ -70,10 +70,13 @@ export const authSlice = createSlice({
     updateName: (state, action: PayloadAction<string>) => {
       state.user.name = action.payload
     },
+    updateCategory: (state, action: PayloadAction<IAccountCategoryDto[]>) => {
+      state.user.accountCategoryDtoList = action.payload
+    },
   },
 })
 
 const selectSelf = (state: Auth) => state
 export const userSelector = createDraftSafeSelector(selectSelf, state => state.user)
 export default authSlice.reducer
-export const {login, storeAccessToken, storeRefreshToken, logout, updateProfileImage, updateName} = authSlice.actions
+export const {login, storeAccessToken, storeRefreshToken, logout, updateProfileImage, updateName, updateCategory} = authSlice.actions

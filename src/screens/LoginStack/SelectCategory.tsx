@@ -214,30 +214,37 @@ export const SelectCategory = () => {
         </View>
 
         <SearchStar keyword={keyword} setKeyword={setKeyword} searchKeyword={searchKeyword} />
-        <View style={[theme.styles.rowFlexStart, {flexWrap: 'wrap', marginBottom: 16}]}>
-          {userSelectedCategories.length > 0 &&
-            userSelectedCategories.map(item => (
-              <View key={item.category + item.job} style={[theme.styles.rowFlexStart, {marginBottom: 8}, styles.selectedCategoryButton]}>
-                <Text style={[{marginRight: 8}, theme.styles.text14]}>{item.category}</Text>
-                <XSmallIcon size={16} onPress={() => onPressRemoveCategory(item)} />
-              </View>
-            ))}
+        <View style={{flex: 1}}>
+          <View style={[theme.styles.rowFlexStart, {flexWrap: 'wrap', marginBottom: 16}, result == '' && {position: 'absolute'}]}>
+            {userSelectedCategories.length > 0 &&
+              userSelectedCategories.map(item => (
+                <View key={item.category + item.job} style={[theme.styles.rowFlexStart, {marginBottom: 8}, styles.selectedCategoryButton]}>
+                  <Text style={[{marginRight: 8}, theme.styles.text14]}>{item.category}</Text>
+                  <XSmallIcon size={16} onPress={() => onPressRemoveCategory(item)} />
+                </View>
+              ))}
+          </View>
+          {init == true ? (
+            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+              <Text style={theme.styles.bold20}>관심 있는 스타를 검색해 보세요!</Text>
+            </View>
+          ) : result == '' ? (
+            <EmptyResult />
+          ) : (
+            <View style={{width: CIRCLE_SIZE}}>
+              <Pressable style={[styles.pressableView, isSelected(result) && styles.selectedPressable]} onPress={() => onPressCategory(result)}>
+                {isSelected(result) && <CheckboxMainIcon style={styles.checkboxMain} />}
+                <FastImage
+                  style={styles.image}
+                  source={{uri: result.imgUrl}}
+                  onError={() => {
+                    setResult({...result, imgUrl : ""})
+                  }}></FastImage>
+              </Pressable>
+              <Text style={styles.starName}>{result.nickName}</Text>
+            </View>
+          )}
         </View>
-        {init == true ? (
-          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            <Text style={theme.styles.bold20}>관심 있는 스타를 검색해 보세요!</Text>
-          </View>
-        ) : result == '' ? (
-          <EmptyResult />
-        ) : (
-          <View style={{width: CIRCLE_SIZE}}>
-            <Pressable style={[styles.pressableView, isSelected(result) && styles.selectedPressable]} onPress={() => onPressCategory(result)}>
-              {isSelected(result) && <CheckboxMainIcon style={styles.checkboxMain} />}
-              <FastImage style={styles.image} source={{uri: result.imgUrl}}></FastImage>
-            </Pressable>
-            <Text style={styles.starName}>{result.nickName}</Text>
-          </View>
-        )}
       </View>
       <FloatingBottomButton label="선택 완료" enabled={userSelectedCategories.length != 0} onPress={onPressSignUp} />
     </SafeAreaView>

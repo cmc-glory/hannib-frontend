@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    paddingHorizontal: theme.PADDING_SIZE,
+    justifyContent: 'center',
     //paddingTop: 48
   },
   title: {
