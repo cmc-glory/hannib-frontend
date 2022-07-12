@@ -14,7 +14,7 @@ type CategoryDropdownProps = {
   showCategoryModal: boolean
   setShowCategoryModal: React.Dispatch<React.SetStateAction<boolean>>
   userCategory: IAccountCategoryDto
-  setUserCategory: React.Dispatch<React.SetStateAction<IAccountCategoryDto | undefined>>
+  setUserCategory: React.Dispatch<React.SetStateAction<IAccountCategoryDto>>
   categories: IAccountCategoryDto[]
 }
 

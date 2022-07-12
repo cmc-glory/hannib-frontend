@@ -331,7 +331,7 @@ export type INanumDate = {
 export type IAccountCategoryDto = {
   accountIdx: number
   job: '가수' | '배우'
-  categoryName: string
+  category: string
 }
 
 export type IAccountDto = {
@@ -341,11 +341,6 @@ export type IAccountDto = {
   accountImg: string | null
   email: string
   creatorIdDatetime: string
-}
-
-export type IAccountIdDto = {
-  creatorId: string
-  accountIdx: number
 }
 
 export type ICategoryDto = {

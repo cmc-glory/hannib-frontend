@@ -29,7 +29,13 @@ const initialState = {
   user: {
     email: '',
     creatorId: '',
-    accountCategoryDtoList: [],
+    accountCategoryDtoList: [
+      {
+        job: '가수',
+        category: '전체보기',
+        accountIdx: 0,
+      },
+    ],
     accountImg: '',
     holdingSharingCnt: 0,
     participateSharingCnt: 0,

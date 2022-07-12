@@ -4,42 +4,60 @@ import {SafeAreaView} from 'react-native-safe-area-context'
 import FastImage from 'react-native-fast-image'
 import {launchImageLibrary} from 'react-native-image-picker'
 import moment from 'moment'
-import {useMutation} from 'react-query'
-import {useDispatch} from 'react-redux'
-import {useNavigation, useRoute} from '@react-navigation/native'
-import {showMessage, hideMessage} from 'react-native-flash-message'
+import {useMutation, useQueryClient, useQuery} from 'react-query'
+import {useNavigation} from '@react-navigation/native'
+import {showMessage} from 'react-native-flash-message'
 
 import {StackHeader, SelectImageIcon} from '../../components/utils'
-import {queryKeys, uploadProfileImage, updateAccountId} from '../../api'
-import {updateProfileImage, updateName} from '../../redux/slices'
+import {queryKeys, uploadProfileImage, updateAccountInfo, getAccountInfoByIdx} from '../../api'
 
-import {useAppSelector} from '../../hooks'
+import {updateName, updateProfileImage} from '../../redux/slices'
+import {useAppSelector, useAppDispatch} from '../../hooks'
 import * as theme from '../../theme'
 import NoUserSvg from '../../assets/Icon/noUser.svg'
+import {IAccountDto} from '../../types'
 
 export const EditProfile = () => {
   // ******************** utils ********************
-  const dispatch = useDispatch()
   const navigation = useNavigation()
+  const queryClient = useQueryClient()
+  const dispatch = useAppDispatch()
   const user = useAppSelector(state => state.auth.user)
+
+  const {data} = useQuery(queryKeys.accountInfo, () => getAccountInfoByIdx(user.accountIdx), {
+    onSuccess: data => {
+      console.log('data', data)
+    },
+    onError(err) {
+      console.log('err')
+      console.log(err)
+    },
+  })
   const leftChangeNum = useMemo(() => {
-    const thisMonth = moment().format('YYYY-MM')
-    const lastMonthChanged = user.creatorIdDatetime.slice(0, 7)
+    // 처음에 회원 가입을 하면(회원 정보를 한번도 수정한 적 없으면) creatorIdDatetime == null
+    if (data.creatorIdDatetime == null) {
+      return 1
+    }
+    const thisMonth = moment().format('YYYY.MM')
+    const lastMonthChanged = data.creatorIdDatetime.slice(0, 7)
+
+    console.log(thisMonth, lastMonthChanged)
 
     return thisMonth == lastMonthChanged ? 0 : 1
-  }, [])
+  }, [data])
 
-  // ******************** react queries ********************
-  const uploadProfileId = useMutation(queryKeys.profileId, updateAccountId, {
-    onSuccess: data => {
-      console.log('response : ', data)
-      name && dispatch(updateName(name)) // 리덕스에서도 이름 변경
+  const updateAccountInfoQuery = useMutation(queryKeys.accountInfo, updateAccountInfo, {
+    onSuccess(data, variables, context) {
+      queryClient.invalidateQueries(queryKeys.accountInfo)
+      dispatch(updateName(name))
+      if (profileImage != undefined) {
+        dispatch(updateProfileImage(profileImage))
+      }
       navigation.goBack()
     },
     onError(error, variables, context) {
-      console.log(error)
       showMessage({
-        message: '닉네임 변경 중 에러가 발생했습니다',
+        message: '회원 정보 업데이트 중 에러가 발생했습니다',
         type: 'info',
         animationDuration: 300,
         duration: 1350,
@@ -77,8 +95,8 @@ export const EditProfile = () => {
   })
 
   // ******************** states ********************
-  const [name, setName] = useState<string>(user.creatorId)
-  const [profileImage, setProfileImage] = useState<string | undefined>(user.accountImg)
+  const [name, setName] = useState<string>(data.creatorId)
+  const [profileImage, setProfileImage] = useState<string | undefined>(data.accountImg)
 
   // ******************** callbacks ********************
   const checkButtonEnabled = useCallback((name: string, profileImage: string | undefined) => {
@@ -92,12 +110,16 @@ export const EditProfile = () => {
     if (checkButtonEnabled(name, profileImage) == false) {
       return
     }
-    if (name) {
-      let updatedAccnountName = {
+    if (name && profileImage) {
+      let accountDto: IAccountDto = {
         accountIdx: user.accountIdx,
         creatorId: name,
+        accountCategoryDtoList: user.accountCategoryDtoList,
+        accountImg: profileImage,
+        email: user.email,
+        creatorIdDatetime: '',
       }
-      uploadProfileId.mutate(updatedAccnountName)
+      updateAccountInfoQuery.mutate(accountDto)
     }
   }, [name, profileImage])
 
@@ -157,8 +179,8 @@ export const EditProfile = () => {
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
       <StackHeader goBack title="프로필 수정">
-        {uploadProfileImageQuery.isLoading ? (
-          <ActivityIndicator animating={uploadProfileImageQuery.isLoading} />
+        {updateAccountInfoQuery.isLoading ? (
+          <ActivityIndicator animating={updateAccountInfoQuery.isLoading} />
         ) : (
           <Pressable onPress={onPressComplete}>
             <Text style={[theme.styles.bold16, {color: checkButtonEnabled(name, profileImage) ? theme.main : theme.gray300}]}>완료</Text>

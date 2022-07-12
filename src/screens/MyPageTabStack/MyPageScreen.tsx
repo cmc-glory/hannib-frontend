@@ -112,11 +112,11 @@ export const MyPageScreen = () => {
           <FastImage
             style={styles.profileImage}
             source={{
-              uri: user.accountImg == undefined || user.accountImg == '' ? 'http://localhost:8081/src/assets/images/noUser.png' : user.accountImg,
+              uri: data.accountImg == undefined || data.accountImg == '' ? 'http://localhost:8081/src/assets/images/noUser.png' : data.accountImg,
             }}
           />
           <View style={{alignSelf: 'stretch', justifyContent: 'center'}}>
-            <Text style={[theme.styles.bold20, {color: theme.gray700, marginBottom: 8}]}>{user && user.creatorId}</Text>
+            <Text style={[theme.styles.bold20, {color: theme.gray700, marginBottom: 8}]}>{data != undefined && data.creatorId}</Text>
             <Pressable style={[theme.styles.rowFlexStart]} onPress={onPressEditProfile}>
               <Text style={[{color: theme.gray500}, theme.styles.text14]}>프로필 수정</Text>
               <RightArrowIcon size={20} onPress={onPressEditProfile} />

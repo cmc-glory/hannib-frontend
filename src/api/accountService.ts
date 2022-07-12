@@ -1,6 +1,6 @@
 import axios from 'axios'
 import {BASE_URL} from '@env'
-import {IAccountDto, IAccountIdDto} from '../types'
+import {IAccountDto} from '../types'
 
 /*
 type IAccountDto = {
@@ -45,7 +45,7 @@ export const getAccountInfoByEmail = async (email: string) => {
 
 // 계정 정보 업데이트
 export const updateAccountInfo = async (accountDto: IAccountDto) => {
-  const {data} = await apiClient.put('/api/account', accountDto)
+  const {data} = await apiClient.put('/api/account/', accountDto)
   return data
 }
 
@@ -58,10 +58,5 @@ export const deleteAccount = async (deleteAccountForm: deleteAccountForm) => {
 // 닉네임 중복 확인
 export const checkNicknameDuplicated = async (nickname: string) => {
   const {data} = await apiClient.get(`api/account/nickname?nickName=${nickname}`)
-  return data
-}
-
-export const updateAccountId = async (accountIdDto: IAccountIdDto) => {
-  const {data} = await apiClient.put(`/api/account/?accountIdx=${accountIdDto.creatorId}`, accountIdDto)
   return data
 }

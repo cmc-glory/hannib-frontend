@@ -9,7 +9,7 @@ import {GoogleSignin} from '@react-native-google-signin/google-signin'
 import auth from '@react-native-firebase/auth'
 import {KakaoOAuthToken, KakaoProfile, getProfile as getKakaoProfile, login} from '@react-native-seoul/kakao-login'
 import {useMutation} from 'react-query'
-import {queryKeys, getAccountInfoByIdx} from '../../api'
+import {queryKeys, getAccountInfoByIdx, getAccountInfoByEmail} from '../../api'
 
 import {login as ReduxLogin} from '../../redux/slices/auth'
 import * as theme from '../../theme'
@@ -47,39 +47,38 @@ export const Login = () => {
       const profile: KakaoProfile = await getKakaoProfile()
 
       // async storage에서 accountIdx 가져와서 해당 accountIdx에 대한 정보가 있는 지 확인
-      getString('accountIdx').then(idx => {
-        if (idx == null || idx == '' || idx == undefined) {
-          //accountIdx가 async storage에 없으면, 회원 가입 페이지로 이동
-          navigation.navigate('LoginStackNavigator', {
-            screen: 'SetProfile',
-            params: {
-              email: profile.email,
-            },
-          })
-          return
-        }
-        const accountIdx = parseInt(idx)
-        // async storage에 accountIdx가 있으면, 해당 accountIdx에 대한 계정 정보가 있는지 확인
-        getAccountInfoByIdx(accountIdx)
-          .then(res => {
-            console.log(res)
-            if (res == '') {
-              // 해당 accountIdx에 대한 계정 정보가 없으면 회원 가입 페이지로 이동
-              navigation.navigate('LoginStackNavigator', {
-                screen: 'SetProfile',
-                params: {
-                  email: profile.email,
-                },
-              })
-            } else {
-              // 해당 accountIdx에 대한 계정 정보가 있으면 로그인 시킴
-              dispatch(ReduxLogin(res))
-            }
-          })
-          .catch(err => {
-            console.log(err)
-          })
-      })
+      // getString('accountIdx').then(idx => {
+      //   if (idx == null || idx == '' || idx == undefined) {
+      //     //accountIdx가 async storage에 없으면, 회원 가입 페이지로 이동
+      //     navigation.navigate('LoginStackNavigator', {
+      //       screen: 'SetProfile',
+      //       params: {
+      //         email: profile.email,
+      //       },
+      //     })
+      //     return
+      //   }
+      // async storage에 accountIdx가 있으면, 해당 accountIdx에 대한 계정 정보가 있는지 확인
+      getAccountInfoByEmail(profile.email)
+        .then(res => {
+          console.log(res)
+          if (res == '') {
+            // 해당 accountIdx에 대한 계정 정보가 없으면 회원 가입 페이지로 이동
+            navigation.navigate('LoginStackNavigator', {
+              screen: 'SetProfile',
+              params: {
+                email: profile.email,
+              },
+            })
+          } else {
+            // 해당 accountIdx에 대한 계정 정보가 있으면 로그인 시킴
+            dispatch(ReduxLogin(res))
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
+      //})
     } catch (err) {
       console.log(err)
       showMessage({
