@@ -95,13 +95,13 @@ export const SelectCategory = () => {
   const getAccountInfoByIdxQuery = useMutation(queryKeys.accountInfo, getAccountInfoByIdx, {
     onSuccess(data, variables, context) {
       console.log(data)
-      data.accountCategoryDtoList = [
-        {
-          job: '가수',
-          category: '아이유',
-          accountIdx: data.accountIdx,
-        },
-      ]
+      // data.accountCategoryDtoList = [
+      //   {
+      //     job: '가수',
+      //     category: '아이유',
+      //     accountIdx: data.accountIdx,
+      //   },
+      // ]
       dispatch(ReduxLogin(data)) // 백단에서 받아온 계정 정보를 리덕스에 저장
       storeString('accountIdx', data.accountIdx.toString()) // accountIdx를 async storage에 저장
       storeString('email', data.email) //이메일도 async storage에 저장
@@ -156,6 +156,7 @@ export const SelectCategory = () => {
       accountImg: profileImage,
       email: email,
     }
+    console.log()
     // 회원 가입 post api 호출
     postSignUpQuery.mutate(signUpForm)
   }, [userSelectedCategories])

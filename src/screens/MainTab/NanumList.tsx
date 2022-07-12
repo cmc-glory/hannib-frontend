@@ -33,9 +33,9 @@ const NanumList = () => {
     accountIdx: 0,
   }) // 현재 사용자가 선택한 카테고리.
   const [bannerInfo, setBannerInfo] = useState({
-    imageUri: 'http://localhost:8081/src/assets/images/sanrio2.jpeg',
-    title: '응원하는 셀럽의 생일/공연 홍보 배너를 걸어보세요',
-    sharingid: '123445',
+    imageUri: '',
+    title: '',
+    nanumIdx: 0,
   })
   useEffect(() => {
     setUserCategory(currentCategory)
@@ -144,7 +144,7 @@ const NanumList = () => {
       />
 
       <View style={{flex: 1}}>
-        <Banner imageUri={bannerInfo.imageUri} title={bannerInfo.title} sharingid={bannerInfo.sharingid} />
+        <Banner imageUri={bannerInfo.imageUri} title={bannerInfo.title} nanumIdx={bannerInfo.nanumIdx} />
         <View style={{flex: 1, width: '100%'}}>
           <NanumListFilterTab
             locationFilter={nanumMethodFilter}

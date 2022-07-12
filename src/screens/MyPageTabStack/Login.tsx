@@ -59,25 +59,25 @@ export const Login = () => {
       //     return
       //   }
       // async storage에 accountIdx가 있으면, 해당 accountIdx에 대한 계정 정보가 있는지 확인
-      getAccountInfoByEmail(profile.email)
-        .then(res => {
-          console.log(res)
-          if (res == '') {
-            // 해당 accountIdx에 대한 계정 정보가 없으면 회원 가입 페이지로 이동
-            navigation.navigate('LoginStackNavigator', {
-              screen: 'SetProfile',
-              params: {
-                email: profile.email,
-              },
-            })
-          } else {
-            // 해당 accountIdx에 대한 계정 정보가 있으면 로그인 시킴
-            dispatch(ReduxLogin(res))
-          }
-        })
-        .catch(err => {
-          console.log(err)
-        })
+      // getAccountInfoByEmail(profile.email)
+      //   .then(res => {
+      //     console.log(res)
+      //     if (res == '') {
+      // 해당 accountIdx에 대한 계정 정보가 없으면 회원 가입 페이지로 이동
+      navigation.navigate('LoginStackNavigator', {
+        screen: 'SetProfile',
+        params: {
+          email: profile.email,
+        },
+      })
+      //   } else {
+      //     // 해당 accountIdx에 대한 계정 정보가 있으면 로그인 시킴
+      //     dispatch(ReduxLogin(res))
+      //   }
+      // })
+      // .catch(err => {
+      //   console.log(err)
+      // })
       //})
     } catch (err) {
       console.log(err)

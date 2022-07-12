@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   image: {
-    borderRadius: 24,
+    borderRadius: 8,
   },
   imageHeader: {
     position: 'absolute',

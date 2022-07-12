@@ -56,6 +56,8 @@ import RightArrowCalendarSvg from '../../assets/Icon/RightArrowCalendar.svg'
 import LogoWhiteSvg from '../../assets/Icon/LogoWhite.svg'
 import XSmallSvg from '../../assets/Icon/XSmall.svg'
 import EmptySvg from '../../assets/Icon/Empty.svg'
+import HeartRedSvg from '../../assets/Icon/HeartRed.svg'
+import StarYellowSvg from '../../assets/Icon/StarYellow.svg'
 
 import * as theme from '../../theme'
 
@@ -69,6 +71,22 @@ type IconPropss = {
   onPress?: () => void
   style?: any
   size?: number
+}
+
+export const StarYellowIcon = ({onPress, style, size = 24}: IconPropss) => {
+  return (
+    <Pressable onPress={onPress} style={style}>
+      <StarYellowSvg width={size} height={size} />
+    </Pressable>
+  )
+}
+
+export const HeartRedIcon = ({onPress, style, size = 24}: IconPropss) => {
+  return (
+    <Pressable onPress={onPress} style={style}>
+      <HeartRedSvg width={size} height={size} />
+    </Pressable>
+  )
 }
 
 export const EmptyIcon = ({onPress, style, size = 53}: IconPropss) => {

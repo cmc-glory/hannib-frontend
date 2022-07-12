@@ -112,7 +112,7 @@ export const MyPageScreen = () => {
           <FastImage
             style={styles.profileImage}
             source={{
-              uri: data.accountImg == undefined || data.accountImg == '' ? 'http://localhost:8081/src/assets/images/noUser.png' : data.accountImg,
+              uri: data?.accountImg == undefined || data?.accountImg == '' ? 'http://localhost:8081/src/assets/images/noUser.png' : data.accountImg,
             }}
           />
           <View style={{alignSelf: 'stretch', justifyContent: 'center'}}>
