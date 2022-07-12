@@ -96,13 +96,22 @@ export const WriteNanumFormOffline = () => {
 
   const onPressNext = useCallback(() => {
     const nanumForm: INanumForm = {
-      nanumAskList: nanumAsks.map(item => {
-        return {
-          nanumIdx: 0,
-          contents: item.contents,
-          essential: item.essential ? 'Y' : 'N',
-        }
-      }),
+      nanumAskList:
+        nanumAsks.length == 0
+          ? [
+              {
+                nanumIdx: 0,
+                contents: '트위터 아이디',
+                essential: 'Y',
+              },
+            ]
+          : nanumAsks.map(item => {
+              return {
+                nanumIdx: 0,
+                contents: item.contents,
+                essential: item.essential ? 'Y' : 'N',
+              }
+            }),
       nanumDatelist: nanumDates.map(item => {
         return {
           nanumIdx: 0,
@@ -125,7 +134,7 @@ export const WriteNanumFormOffline = () => {
       }),
       accountIdx: user.accountIdx,
       nanumIdx: 0,
-      creatorId: user.name,
+      creatorId: user.creatorId,
       thumbnail: images[0],
       category: category.category,
       title: title,
@@ -139,9 +148,9 @@ export const WriteNanumFormOffline = () => {
       accountDto: {
         accountCategoryDtoList: user.accountCategoryDtoList,
         accountIdx: user.accountIdx,
-        creatorId: user.name,
+        creatorId: user.creatorId,
         email: user.email,
-        accountImg: user.profileImageUri,
+        accountImg: user.accountImg,
       },
     }
 

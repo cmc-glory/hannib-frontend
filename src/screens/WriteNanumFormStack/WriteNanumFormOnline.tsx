@@ -87,20 +87,23 @@ export const WriteNanumFormOnline = () => {
   // ******************** callbacks  ********************
   const onPressNext = useCallback(() => {
     const nanumForm: INanumForm = {
-      nanumAskList: nanumAsks.map(item => {
-        return {
-          nanumIdx: 0,
-          contents: item.contents,
-          essential: item.essential ? 'Y' : 'N',
-        }
-      }),
-      // nanumAskList: [
-      //   {
-      //     nanumIdx: 0,
-      //     contents: '트위터 아이디',
-      //     essential: 'Y',
-      //   },
-      // ],
+      nanumAskList:
+        nanumAsks.length == 0
+          ? [
+              {
+                nanumIdx: 0,
+                contents: '트위터 아이디',
+                essential: 'Y',
+              },
+            ]
+          : nanumAsks.map(item => {
+              return {
+                nanumIdx: 0,
+                contents: item.contents,
+                essential: item.essential ? 'Y' : 'N',
+              }
+            }),
+
       nanumDatelist: [
         {
           nanumIdx: 0,
@@ -121,9 +124,9 @@ export const WriteNanumFormOnline = () => {
           imgUrl: item,
         }
       }),
-      accountIdx: 0,
+      accountIdx: user.accountIdx,
       nanumIdx: 0,
-      creatorId: user.name,
+      creatorId: user.creatorId,
       thumbnail: images[0],
       category: category.category,
       title: title,
@@ -135,9 +138,9 @@ export const WriteNanumFormOnline = () => {
       accountDto: {
         accountCategoryDtoList: user.accountCategoryDtoList,
         accountIdx: user.accountIdx,
-        creatorId: user.name,
+        creatorId: user.creatorId,
         email: user.email,
-        accountImg: user.profileImageUri,
+        accountImg: user.accountImg,
       },
       favorites: 0,
       job: category.job,

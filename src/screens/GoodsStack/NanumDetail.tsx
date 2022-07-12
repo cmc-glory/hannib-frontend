@@ -17,7 +17,7 @@ const IMAGE_HEIGHT = 350
 const TOP_HEIGHT = getStatusBarHeight() + 48
 const WIDTH = Dimensions.get('window').width
 
-export const GoodsDetail = () => {
+export const NanumDetail = () => {
   const user = useAppSelector(state => state.auth.user)
   const navigation = useNavigation()
   const route = useRoute<GoodsDetailRouteProps>()

@@ -2,7 +2,7 @@ import React from 'react'
 import {createStackNavigator} from '@react-navigation/stack'
 import type {NativeStackScreenProps} from '@react-navigation/native-stack'
 import {
-  GoodsDetail,
+  NanumDetail,
   GoodsRequestOffline,
   GoodsReqeustOnline,
   WriteQnA,
@@ -14,7 +14,7 @@ import {
 } from '../screens/GoodsStack'
 
 type GoodsStackNavigatorParamList = {
-  GoodsDetail: {
+  NanumDetail: {
     nanumIdx: string
   }
   GoodsRequestOffline: undefined
@@ -43,7 +43,7 @@ type GoodsStackNavigatorParamList = {
 
 const Stack = createStackNavigator<GoodsStackNavigatorParamList>()
 
-type GoodsDetailProps = NativeStackScreenProps<GoodsStackNavigatorParamList, 'GoodsDetail'>
+type GoodsDetailProps = NativeStackScreenProps<GoodsStackNavigatorParamList, 'NanumDetail'>
 export type GoodsDetailRouteProps = GoodsDetailProps['route']
 
 type QnAListCreatorProps = NativeStackScreenProps<GoodsStackNavigatorParamList, 'QnAListCreator'>
@@ -61,7 +61,7 @@ export type WriterProfileRouteProps = WriterProfileProps['route']
 const GoodsStackNavigator = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false, cardStyle: {backgroundColor: 'white', flex: 1}}}>
-      <Stack.Screen name="GoodsDetail" component={GoodsDetail} />
+      <Stack.Screen name="NanumDetail" component={NanumDetail} />
       <Stack.Screen name="GoodsRequestOffline" component={GoodsRequestOffline} />
       <Stack.Screen name="GoodsRequestOnline" component={GoodsReqeustOnline} />
       <Stack.Screen name="QnAListUser" component={QnAListUser} />

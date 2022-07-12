@@ -16,7 +16,7 @@ declare namespace ReactNavigation {
     FindPassword: undefined
     CreateAccount: undefined
     MainTabNavigator: undefined
-    GoodsDetail: {
+    NanumDetail: {
       nanumIdx: number
     }
     WriteNanumFormStackNavigator: undefined

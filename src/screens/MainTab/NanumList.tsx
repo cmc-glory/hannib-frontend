@@ -37,6 +37,9 @@ const NanumList = () => {
     title: '응원하는 셀럽의 생일/공연 홍보 배너를 걸어보세요',
     sharingid: '123445',
   })
+  useEffect(() => {
+    setUserCategory(currentCategory)
+  }, [currentCategory])
 
   // ******************** react query ********************
   // 카테고리가 설정되지 않았을 때 (로그인하지 않았을 때) 전부 불러오기
@@ -47,14 +50,11 @@ const NanumList = () => {
     enabled: isLoggedIn == false, // 로그인 하지 않았을 때 전체 보기
   })
 
-  useEffect(() => {
-    setUserCategory(currentCategory)
-  }, [currentCategory])
-
-  useQuery(['nanumListRecent', userCategory], () => getNanumByRecent({job: userCategory.job, category: userCategory.category, accountIdx: 0}), {
+  useQuery(['nanumListRecent', userCategory], () => getNanumByRecent(userCategory.category), {
     onSuccess: data => {
       setRefreshing(false) // 새로고침중이면 로딩 종료
       setSharings(data)
+      console.log(data)
 
       if (nanumMethodFilter !== '전체') {
         // 현재 오프라인, 온라인 필터가 설정된 경우엔 보여질 아이템 재설정
@@ -65,7 +65,7 @@ const NanumList = () => {
   })
 
   // 카테고리가 설정 됐을 때 인기순
-  useQuery(['nanumListPopular', userCategory], () => getNanumByPopularity({job: userCategory.job, category: userCategory.category, accountIdx: 0}), {
+  useQuery(['nanumListPopular', userCategory], () => getNanumByPopularity(userCategory.category), {
     onSuccess(data) {
       setRefreshing(false) // 새로고침중이면 로딩 종료
       setSharings(data)
@@ -166,7 +166,7 @@ const NanumList = () => {
             </View>
           ) : (
             <FlatList
-              contentContainerStyle={[{paddingHorizontal: theme.PADDING_SIZE, paddingVertical: 6}]}
+              contentContainerStyle={[{paddingHorizontal: theme.PADDING_SIZE, paddingVertical: 6, marginTop: 52}]}
               data={sharings}
               renderItem={({item}) => <NanumListItem item={item}></NanumListItem>}
               refreshing={refreshing}

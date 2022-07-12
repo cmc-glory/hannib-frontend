@@ -1,6 +1,6 @@
 //export * from './Lists'
 //sexport * from './ListDetail'
-export * from './GoodsDetail'
+export * from './NanumDetail'
 export * from './GoodsRequestOffline'
 export * from './GoodsRequestOnline'
 export * from './QnAListCreator'

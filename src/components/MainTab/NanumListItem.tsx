@@ -117,7 +117,7 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
       setSecretModalVisible(true)
     } else {
       navigation.navigate('GoodsStackNavigator', {
-        screen: 'GoodsDetail',
+        screen: 'NanumDetail',
         params: {
           nanumIdx: nanumIdx,
         },
@@ -206,9 +206,10 @@ const styles = StyleSheet.create({
 
   container: {
     width: IMAGE_SIZE,
+    borderRadius: 8,
   },
   image: {
-    borderRadius: 8,
+    borderRadius: 24,
   },
   imageHeader: {
     position: 'absolute',

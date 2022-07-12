@@ -9,8 +9,7 @@ const apiClient = axios.create({
   },
 })
 
-
-// 카테고리 상관 없이 모든 나눔 글 가져오기 
+// 카테고리 상관 없이 모든 나눔 글 가져오기
 export const getNanumAll = async () => {
   const {data} = await apiClient.get('/api/nanum/list/all')
 
@@ -18,14 +17,14 @@ export const getNanumAll = async () => {
 }
 
 // 최신순으로 가져 오기
-export const getNanumByRecent = async (accountCategoryDto: IAccountCategoryDto) => {
-  const {data} = await apiClient.post(`/api/nanum/list/recent`, accountCategoryDto)
+export const getNanumByRecent = async (category: string) => {
+  const {data} = await apiClient.get(`/api/nanum/list/login1?category=${category}`)
   return data
 }
 
 // 인기순으로 가져 오기
-export const getNanumByPopularity = async (accountCategoryDto: IAccountCategoryDto) => {
-  const {data} = await apiClient.post(`/api/nanum/list/favorites`, accountCategoryDto)
+export const getNanumByPopularity = async (category: string) => {
+  const {data} = await apiClient.get(`/api/nanum/list/login2?category=${category}`)
   return data
 }
 

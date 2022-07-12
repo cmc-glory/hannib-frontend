@@ -1,5 +1,5 @@
 import React, {useCallback, useState} from 'react'
-import {View, Text, StyleSheet, Pressable, Dimensions, Alert} from 'react-native'
+import {View, Text, StyleSheet, FlatList, Pressable, Dimensions, Alert} from 'react-native'
 import {useMutation} from 'react-query'
 import {showMessage} from 'react-native-flash-message'
 import FastImage from 'react-native-fast-image'
@@ -41,7 +41,7 @@ export const SelectCategory = ({category, setCategory, bottomSheetRef}: SelectCa
   const [singerSelected, setSingerSelected] = useState(true) // 가수, 배우 대분류 선택
   const [keyword, setKeyword] = useState<string>('')
   const [init, setInit] = useState<boolean>(true) // 청므에 검색해보세요! 띄울 지
-  const [result, setResult] = useState<ICategoryDto | ''>('')
+  const [result, setResult] = useState<ICategoryDto[]>([])
 
   // ******************** react quries ********************
   const searchCategoryQuery = useMutation(queryKeys.searchCategory, searchCategory, {
@@ -71,13 +71,17 @@ export const SelectCategory = ({category, setCategory, bottomSheetRef}: SelectCa
     // 검색 api 호출
     (keyword: string) => {
       // 입력 값이 없을 때는 리턴
-      if (keyword == '') return
       init && setInit(false) // 한번 검색을 하고 나면 init screen은 필요 없음
-
-      searchCategoryQuery.mutate(keyword)
+      searchCategoryQuery.mutate({
+        job: singerSelected ? '가수' : '배우',
+        nickName: keyword,
+        birth: '',
+        imgUrl: '',
+        email: '',
+      })
       setKeyword('')
     },
-    [keyword],
+    [keyword, singerSelected],
   )
 
   // ******************** callbacks ********************
@@ -133,18 +137,24 @@ export const SelectCategory = ({category, setCategory, bottomSheetRef}: SelectCa
             <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center'}]}>
               <Text style={theme.styles.bold20}>관심 있는 스타를 검색해 보세요!</Text>
             </View>
-          ) : result == '' ? (
+          ) : result.length == 0 ? (
             <EmptyResult />
           ) : (
-            <View style={{width: CIRCLE_SIZE}}>
-              <Pressable
-                style={[styles.pressableView, category.category == result.nickName && styles.selectedPressable]}
-                onPress={() => onPressCategory(result)}>
-                {category.category == result.nickName && <CheckboxMainIcon style={styles.checkboxMain} />}
-                <FastImage style={styles.image} source={{uri: result.imgUrl}}></FastImage>
-              </Pressable>
-              <Text style={styles.starName}>{result.nickName}</Text>
-            </View>
+            <FlatList
+              data={result}
+              numColumns={3}
+              columnWrapperStyle={{justifyContent: 'space-between', marginBottom: 16}}
+              renderItem={({item, index}) => (
+                <View style={{width: CIRCLE_SIZE}}>
+                  <Pressable
+                    style={[styles.pressableView, item.nickName == category.category && styles.selectedPressable]}
+                    onPress={() => onPressCategory(item)}>
+                    {item.nickName == category.category && <CheckboxMainIcon style={styles.checkboxMain} />}
+                    <FastImage style={styles.image} source={{uri: item.imgUrl}}></FastImage>
+                  </Pressable>
+                  <Text style={styles.starName}>{item.nickName}</Text>
+                </View>
+              )}></FlatList>
           )}
         </View>
       </View>
