@@ -10,10 +10,9 @@ type BannerProps = {
   imageUri: string
   title: string
   sharingid: string
-  animatedHeight: Animated.AnimatedInterpolation
 }
 
-export const Banner = ({imageUri, title, sharingid, animatedHeight}: BannerProps) => {
+export const Banner = ({imageUri, title, sharingid}: BannerProps) => {
   const navigation = useNavigation()
 
   const onPressBanner = useCallback(async () => {

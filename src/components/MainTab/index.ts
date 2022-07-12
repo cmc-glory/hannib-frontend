@@ -1,4 +1,4 @@
-export * from './GoodsListFilterTab'
+export * from './NanumListFilterTab'
 export * from './GoodsListBottomSheetContent'
 export * from './LogoutModal'
 export * from './Banner'

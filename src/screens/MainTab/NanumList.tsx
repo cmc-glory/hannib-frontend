@@ -6,12 +6,12 @@ import {useQuery, useQueryClient} from 'react-query'
 
 import * as theme from '../../theme'
 import {DownArrowIcon, BellIcon, MagnifierIcon, BottomSheet, FloatingButtonIcon, EmptyIcon} from '../../components/utils'
-import {GoodsFilterTab, NanumListItem, GoodsListBottomSheetContent, Banner, CategoryDropdown} from '../../components/MainTab'
+import {NanumListFilterTab, NanumListItem, GoodsListBottomSheetContent, Banner, CategoryDropdown} from '../../components/MainTab'
 import {INanumMethod, INanumListItem, IAccountCategoryDto} from '../../types'
 import {useAppSelector, useAnimatedValue} from '../../hooks'
-import {getNanumByRecent, getNanumByPopularity} from '../../api'
+import {getNanumByRecent, getNanumByPopularity, getNanumAll} from '../../api'
 
-const GoodsLists = () => {
+const NanumList = () => {
   // ******************** check login ********************
   const isLoggedIn = useAppSelector(state => state.auth.isLoggedIn)
 
@@ -55,6 +55,7 @@ const GoodsLists = () => {
           onPressLocationFilter(nanumMethodFilter)
         }
       },
+      enabled: itemFilter == '최신순',
     },
   )
 
@@ -69,16 +70,6 @@ const GoodsLists = () => {
       onError(err) {},
     },
   )
-
-  console.log(sharings)
-
-  // ******************** animations ********************
-  const animatedValue = useAnimatedValue() // 스크롤 업 다운할때마다 필터를 숨기거나 보여줌
-  const animatedHeight = animatedValue.interpolate({
-    inputRange: [0, 84],
-    outputRange: [0, -84],
-    extrapolate: 'clamp',
-  })
 
   // ******************** callbacks ********************
 
@@ -165,36 +156,38 @@ const GoodsLists = () => {
         categories={user.accountCategoryDtoList}
       />
       <View style={{flex: 1}}>
-        <Banner imageUri={bannerInfo.imageUri} title={bannerInfo.title} sharingid={bannerInfo.sharingid} animatedHeight={animatedHeight} />
-        <GoodsFilterTab
-          locationFilter={nanumMethodFilter}
-          setLocationFilter={setNanumMethodFilter}
-          itemFilter={itemFilter}
-          setShowItemFilterBottomSheet={setShowItemFilterBottomSheet}
-          onPressLocationFilter={onPressLocationFilter}
-        />
-        {sharings.length == 0 ? (
-          <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
-            <EmptyIcon style={{marginBottom: 32}} />
-            <View>
-              <Text style={[theme.styles.bold20, {marginBottom: 8, textAlign: 'center'}]}>현재 나눔 리스트가 비어있어요.</Text>
+        <Banner imageUri={bannerInfo.imageUri} title={bannerInfo.title} sharingid={bannerInfo.sharingid} />
+        <View style={{flex: 1, width: '100%'}}>
+          <NanumListFilterTab
+            locationFilter={nanumMethodFilter}
+            setLocationFilter={setNanumMethodFilter}
+            itemFilter={itemFilter}
+            setShowItemFilterBottomSheet={setShowItemFilterBottomSheet}
+            onPressLocationFilter={onPressLocationFilter}
+          />
+          {sharings.length == 0 ? (
+            <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
+              <EmptyIcon style={{marginBottom: 32}} />
               <View>
-                <Text style={[{color: theme.gray700, fontSize: 16, textAlign: 'center'}, theme.styles.text16]}>하단의 + 버튼을 눌러</Text>
-                <Text style={[{color: theme.gray700, fontSize: 16, textAlign: 'center'}, theme.styles.text16]}>보다 손쉽게 나눔을 진행해 보세요!</Text>
+                <Text style={[theme.styles.bold20, {marginBottom: 8, textAlign: 'center'}]}>현재 나눔 리스트가 비어있어요.</Text>
+                <View>
+                  <Text style={[{color: theme.gray700, fontSize: 16, textAlign: 'center'}, theme.styles.text16]}>하단의 + 버튼을 눌러</Text>
+                  <Text style={[{color: theme.gray700, fontSize: 16, textAlign: 'center'}, theme.styles.text16]}>보다 손쉽게 나눔을 진행해 보세요!</Text>
+                </View>
               </View>
             </View>
-          </View>
-        ) : (
-          <FlatList
-            contentContainerStyle={[{paddingHorizontal: theme.PADDING_SIZE, paddingVertical: 6}]}
-            data={sharings}
-            renderItem={({item}) => <NanumListItem item={item}></NanumListItem>}
-            refreshing={refreshing}
-            numColumns={2}
-            columnWrapperStyle={{justifyContent: 'space-between', marginBottom: 20}}
-            onRefresh={onRefresh}
-          />
-        )}
+          ) : (
+            <FlatList
+              contentContainerStyle={[{paddingHorizontal: theme.PADDING_SIZE, paddingVertical: 6}]}
+              data={sharings}
+              renderItem={({item}) => <NanumListItem item={item}></NanumListItem>}
+              refreshing={refreshing}
+              numColumns={2}
+              columnWrapperStyle={{justifyContent: 'space-between', marginBottom: 20}}
+              onRefresh={onRefresh}
+            />
+          )}
+        </View>
       </View>
 
       <FloatingButtonIcon style={styles.floatingButton} onPress={onPressWrite} />
@@ -205,7 +198,7 @@ const GoodsLists = () => {
   )
 }
 
-export default GoodsLists
+export default NanumList
 
 const styles = StyleSheet.create({
   floatingButton: {

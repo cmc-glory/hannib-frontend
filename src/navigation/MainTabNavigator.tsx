@@ -1,7 +1,7 @@
 import React, {useMemo} from 'react'
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 
-import GoodsList from '../screens/MainTab/GoodsList'
+import NanumList from '../screens/MainTab/NanumList'
 import {getBottomSpace} from 'react-native-iphone-x-helper'
 import CalendarStackNavigator from './CalendarStackNavigator'
 import MyPageTabStackNavigator from './MyPageTabStackNavigator'
@@ -56,7 +56,7 @@ function BottomTab() {
           title: '리스트',
           tabBarIcon: ({focused}) => (focused ? <HomeIconFocused /> : <HomeIcon />),
         }}
-        component={GoodsList}
+        component={NanumList}
       />
       <Tab.Screen
         name="Favorites"

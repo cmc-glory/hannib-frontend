@@ -52,7 +52,7 @@ export const Search = () => {
     <SafeAreaView style={theme.styles.safeareaview}>
       <StackHeader title="검색" goBack />
       <View style={[{flex: 1}]}>
-        <View style={[theme.styles.wrapper, {position: 'absolute', left: 0, right: 0, top: 0}]}>
+        <View style={[theme.styles.wrapper]}>
           <TextInput
             style={[theme.styles.input, {marginBottom: 20, color: theme.gray800}]}
             placeholder="검색어를 입력해 주세요"

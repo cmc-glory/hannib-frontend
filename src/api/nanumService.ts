@@ -9,8 +9,10 @@ const apiClient = axios.create({
   },
 })
 
+
+// 카테고리 상관 없이 모든 나눔 글 가져오기 
 export const getNanumAll = async () => {
-  const {data} = await apiClient.get('/api/nanum')
+  const {data} = await apiClient.get('/api/nanum/list/all')
 
   return data
 }

@@ -2,7 +2,7 @@ import React, {useMemo} from 'react'
 import {useCallback} from 'react'
 import {View, Text, Pressable, StyleSheet} from 'react-native'
 import * as theme from '../../theme'
-import {DownArrowIcon} from '../../components/utils'
+import {DownArrowIcon} from '../utils'
 import {ISharingType, INanumMethod} from '../../types'
 
 type GoodsFilterTabProps = {
@@ -48,7 +48,13 @@ const Button = ({text, locationFilter, setLocationFilter, index, onPressLocation
   )
 }
 
-export const GoodsFilterTab = ({locationFilter, setLocationFilter, itemFilter, setShowItemFilterBottomSheet, onPressLocationFilter}: GoodsFilterTabProps) => {
+export const NanumListFilterTab = ({
+  locationFilter,
+  setLocationFilter,
+  itemFilter,
+  setShowItemFilterBottomSheet,
+  onPressLocationFilter,
+}: GoodsFilterTabProps) => {
   const onPressItemFilter = useCallback(() => {
     setShowItemFilterBottomSheet(showItemFilterBottomSheet => !showItemFilterBottomSheet)
   }, [])
@@ -119,6 +125,8 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: theme.PADDING_SIZE,
     backgroundColor: 'white',
+    position: 'absolute',
+    width: '100%',
   },
   button: {
     height: 32,
