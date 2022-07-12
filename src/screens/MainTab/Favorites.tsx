@@ -57,35 +57,37 @@ export const Favorites = () => {
       {isLoggedIn ? (
         <View style={{flex: 1}}>
           <View style={styles.container}>
-            <FlatList
-              ref={scrollRef}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{marginBottom: 10}}
-              data={[{category: '전체보기'}].concat(user.accountCategoryDtoList)}
-              renderItem={({item, index}) =>
-                index == 0 ? (
-                  <CategoryItem
-                    name={'전체 보기'}
-                    currentIndex={index}
-                    selectedIndex={selectedIndex}
-                    id={index.toString()}
-                    onPressCategory={onPressCategory}
-                    selectedCategory={selectedCategory}
-                    scrollRef={scrollRef}
-                  />
-                ) : (
-                  <CategoryItem
-                    name={item.category}
-                    currentIndex={index}
-                    selectedIndex={selectedIndex}
-                    id={index.toString()}
-                    onPressCategory={onPressCategory}
-                    selectedCategory={selectedCategory}
-                    scrollRef={scrollRef}
-                  />
-                )
-              }></FlatList>
+            {user.accountCategoryDtoList != null && (
+              <FlatList
+                ref={scrollRef}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{marginBottom: 10}}
+                data={[{category: '전체보기'}].concat(user.accountCategoryDtoList)}
+                renderItem={({item, index}) =>
+                  index == 0 ? (
+                    <CategoryItem
+                      name={'전체 보기'}
+                      currentIndex={index}
+                      selectedIndex={selectedIndex}
+                      id={index.toString()}
+                      onPressCategory={onPressCategory}
+                      selectedCategory={selectedCategory}
+                      scrollRef={scrollRef}
+                    />
+                  ) : (
+                    <CategoryItem
+                      name={item.category}
+                      currentIndex={index}
+                      selectedIndex={selectedIndex}
+                      id={index.toString()}
+                      onPressCategory={onPressCategory}
+                      selectedCategory={selectedCategory}
+                      scrollRef={scrollRef}
+                    />
+                  )
+                }></FlatList>
+            )}
           </View>
 
           {sharings.length > 0 ? (

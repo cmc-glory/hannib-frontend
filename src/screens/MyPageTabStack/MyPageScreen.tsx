@@ -9,7 +9,7 @@ import {StackHeader, BellIcon, RightArrowIcon} from '../../components/utils'
 import {useAppSelector} from '../../hooks'
 import * as theme from '../../theme'
 import {useQuery} from 'react-query'
-import {queryKeys, getAccountInfo} from '../../api'
+import {queryKeys, getAccountInfoByIdx} from '../../api'
 
 type MyPageItem = {
   label: string
@@ -40,10 +40,10 @@ export const MyPageScreen = () => {
   // ******************** utils ********************
   const navigation = useNavigation()
   const user = useAppSelector(state => state.auth.user)
-  //console.log('user in mypagescreen : ', user)
+  console.log('user in mypagescreen : ', user)
 
   //account idx api 나오면 수정하기
-  const {data} = useQuery(queryKeys.accountInfo, () => getAccountInfo(9), {
+  const {data} = useQuery(queryKeys.accountInfo, () => getAccountInfoByIdx(user.accountIdx), {
     onSuccess: data => {
       console.log('success')
       console.log('data', data)
@@ -112,12 +112,11 @@ export const MyPageScreen = () => {
           <FastImage
             style={styles.profileImage}
             source={{
-              uri:
-                user.profileImageUri == undefined || user.profileImageUri == '' ? 'http://localhost:8081/src/assets/images/noUser.png' : user.profileImageUri,
+              uri: user.accountImg == undefined || user.accountImg == '' ? 'http://localhost:8081/src/assets/images/noUser.png' : user.accountImg,
             }}
           />
           <View style={{alignSelf: 'stretch', justifyContent: 'center'}}>
-            <Text style={[theme.styles.bold20, {color: theme.gray700, marginBottom: 8}]}>{user && user.name}</Text>
+            <Text style={[theme.styles.bold20, {color: theme.gray700, marginBottom: 8}]}>{user && user.creatorId}</Text>
             <Pressable style={[theme.styles.rowFlexStart]} onPress={onPressEditProfile}>
               <Text style={[{color: theme.gray500}, theme.styles.text14]}>프로필 수정</Text>
               <RightArrowIcon size={20} onPress={onPressEditProfile} />

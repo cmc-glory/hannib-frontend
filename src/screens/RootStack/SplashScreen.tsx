@@ -6,33 +6,22 @@ import {useMutation} from 'react-query'
 import * as theme from '../../theme'
 import {getString} from '../../hooks'
 import {storeAccessToken, login} from '../../redux/slices'
-import {queryKeys, getAccountInfo} from '../../api'
+import {queryKeys, getAccountInfoByIdx} from '../../api'
 import {useAppDispatch} from '../../hooks'
 
 export const SplashScreen = () => {
   const dispatch = useAppDispatch()
   const navigation = useNavigation()
 
-  const getAccountInfoQuery = useMutation(queryKeys.accountInfo, getAccountInfo, {
+  const getAccountInfoQuery = useMutation(queryKeys.accountInfo, getAccountInfoByIdx, {
     onSuccess(data, variables, context) {
       console.log('reached')
       //나중에 api 수정되면 data 값 넣어주기
       dispatch(
         login({
-          accountIdx: 9,
-          email: 'js7056@naver.com',
-          name: '진실',
-          accountCategoryDtoList: [
-            {
-              accountIdx: 9,
-              job: '가수',
-              category: 'bts',
-            },
-          ],
-          profileImageUri: '',
+          ...data,
           holdingSharingCnt: 6,
           participateSharingCnt: 7,
-          creatorIdDatetime: '2022-07-11 11:11:11',
         }),
       )
 

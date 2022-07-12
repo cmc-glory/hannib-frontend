@@ -1,8 +1,12 @@
 import React, {useCallback, useEffect, useState} from 'react'
 import {View, Text, TouchableOpacity, TextInput, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
-import {useAppSelector, useUserSelector} from '../../hooks'
-import {useToggle} from '../../hooks'
+import {useNavigation} from '@react-navigation/native'
+import {showMessage} from 'react-native-flash-message'
+
+import {deleteAccount} from '../../api'
+import {useAppSelector, useAppDispatch, useToggle, removeString} from '../../hooks'
+import {logout} from '../../redux/slices'
 import {ResignModal} from '../../components/MyPageStack'
 import {StackHeader, CheckboxIcon, EmptyCheckboxIcon, RoundButton} from '../../components/utils'
 import * as theme from '../../theme'
@@ -50,6 +54,8 @@ export const Resign = () => {
   const [agreed, toggleAgreed] = useToggle() // 유의사항 확인 및 동의
   const [resignModalVisible, setResignModalVisible] = useState<boolean>(false) // 탈퇴하기 확인 모달 띄울지
   const [resign, setResign] = useState<boolean>(false) // 마지막 탈퇴 모달에 동의
+  const navigation = useNavigation()
+  const dispatch = useAppDispatch()
 
   const user = useAppSelector(state => state.auth.user)
   console.log('user : ', user)
@@ -59,16 +65,55 @@ export const Resign = () => {
   }, [agreed])
   const onPressResign = useCallback(() => {
     setResignModalVisible(true)
+
     // 사유, 기타 내용, userid 백에 전송
   }, [selectedReason, reasonEtc])
 
   useEffect(() => {
     // 마지막 탈퇴 동의까지 하면
     if (resign) {
+      // 회원 탈퇴 폼 생성
+      const deleteForm: {
+        accountIdx: number
+        reason: string
+      } = {
+        accountIdx: user.accountIdx,
+        reason: '',
+      }
+
+      deleteForm.reason += selectedReason
+      deleteForm.reason += '\n'
+      deleteForm.reason += '자세한 내용 : '
+      deleteForm.reason += reasonEtc
+
+      // 회원 탈퇴 api 날리고
+      deleteAccount(deleteForm)
+        .then(res => {
+          dispatch(logout()) // 로그아웃 시키고
+          removeString('accountIdx') // async storage에서 accountIdx 제거
+          removeString('email') // async storage에서 email 제거
+          navigation.navigate('MainTabNavigator')
+        })
+        .catch(err => {
+          showMessage({
+            // 에러 안내 메세지
+            message: '회원 탈퇴 중 에러가 발생했습니다',
+            type: 'info',
+            animationDuration: 300,
+            duration: 1350,
+            style: {
+              backgroundColor: 'rgba(36, 36, 36, 0.9)',
+            },
+            titleStyle: {
+              fontFamily: 'Pretendard-Medium',
+            },
+            floating: true,
+          })
+          console.log(err)
+        })
       // 백에 탈퇴 api 전송
-      console.log('resign')
     }
-  }, [resign])
+  }, [resign, selectedReason, reasonEtc])
 
   return (
     <SafeAreaView style={[theme.styles.safeareaview]}>

@@ -1,18 +1,19 @@
 import React, {useMemo, useState, useCallback} from 'react'
-import {View, Text, StyleSheet, Dimensions, Pressable, Alert} from 'react-native'
+import {View, Text, FlatList, StyleSheet, Dimensions, Pressable, Alert} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation, useRoute} from '@react-navigation/native'
 import {useMutation} from 'react-query'
 import {showMessage} from 'react-native-flash-message'
+import moment from 'moment'
 
 import {SelectCategoryRouteProps} from '../../navigation/LoginStackNavigator'
 import {StackHeader, Button, CheckboxMainIcon, FloatingBottomButton, XIcon, XSmallIcon} from '../../components/utils'
 import {EmptyResult, SearchStar} from '../../components/LoginStack'
 import * as theme from '../../theme'
-import {IStar, IAccountCategoryDto, ICategoryDto} from '../../types'
-import {login} from '../../redux/slices'
+import {IAccountCategoryDto, IAccountDto, ICategoryDto} from '../../types'
+import {login as ReduxLogin} from '../../redux/slices'
 import {useAppDispatch, storeString} from '../../hooks'
-import {queryKeys, postSignUp, searchCategory} from '../../api'
+import {queryKeys, postSignUp, searchCategory, getAccountInfoByIdx} from '../../api'
 import FastImage from 'react-native-fast-image'
 
 const BUTTON_GAP = 10
@@ -29,30 +30,22 @@ export const SelectCategory = () => {
   const route = useRoute<SelectCategoryRouteProps>()
   const dispatch = useAppDispatch()
   const {email, name, profileImage} = useMemo(() => route.params, [])
-  var accountCategoryDtoList: IAccountCategoryDto[] = []
 
-  console.log(' params from before : ', email, name, profileImage)
+  // ******************** states  ********************
+  const [init, setInit] = useState<boolean>(true) // 처음에만 검색해보세요! 화면 띄움
+  const [singerSelected, setSingerSelected] = useState(true) // 가수, 배우 대분류 선택
+  const [keyword, setKeyword] = useState<string>('') // 검색 키워드
+  const [result, setResult] = useState<ICategoryDto[]>([]) // 검색 결과
+  const [userSelectedCategories, setUserSelectedCategories] = useState<IAccountCategoryDto[]>([]) // 사용자가 선택한 카테고리들
+  const [signUpSuccess, setSignUpSuccess] = useState<boolean>(false)
 
   // ******************** react queries  ********************
   const postSignUpQuery = useMutation(queryKeys.signUp, postSignUp, {
     // 회원 가입 api
     onSuccess(data) {
-      console.log('sign up success')
-      console.log('data : ', data)
-
-      dispatch(
-        login({
-          email: email,
-          name: name,
-          accountCategoryDtoList: accountCategoryDtoList,
-          profileImageUri: profileImage,
-          holdingSharingCnt: 0,
-          participateSharingCnt: 0,
-          accountIdx: 0,
-          creatorIdDatetime: '2022-07-11 00:00:00',
-        }),
-      )
-      navigation.navigate('MainTabNavigator')
+      setSignUpSuccess(true)
+      // 회원 가입 성공하면 백단에서 보내준 accountIdx로 계정 정보를 불러옴.
+      getAccountInfoByIdxQuery.mutate(data)
     },
     onError(error) {
       showMessage({
@@ -76,14 +69,14 @@ export const SelectCategory = () => {
   const searchCategoryQuery = useMutation(queryKeys.searchCategory, searchCategory, {
     // 검색 api
     onSuccess(data, variables, context) {
-      console.log(data)
+      console.log('search category has been complete successfully')
+      console.log('data:', data)
       setResult(data)
-      console.log(data == '')
     },
     onError(error, variables, context) {
       showMessage({
         // 에러 안내 메세지
-        message: '검색 중 에러가 발생했습니다',
+        message: '카테고리 검색 중 에러가 발생했습니다',
         type: 'info',
         animationDuration: 300,
         duration: 1350,
@@ -98,60 +91,69 @@ export const SelectCategory = () => {
       console.log(error)
     },
   })
-  // ******************** states  ********************
-  const [init, setInit] = useState<boolean>(true) // 처음에만 검색해보세요! 화면 띄움
-  const [singerSelected, setSingerSelected] = useState(true) // 가수, 배우 대분류 선택
-  const [keyword, setKeyword] = useState<string>('')
-  const [result, setResult] = useState<ICategoryDto | ''>('')
-  const [userSelectedCategories, setUserSelectedCategories] = useState<IAccountCategoryDto[]>([])
+
+  const getAccountInfoByIdxQuery = useMutation(queryKeys.accountInfo, getAccountInfoByIdx, {
+    onSuccess(data, variables, context) {
+      console.log(data)
+      dispatch(ReduxLogin(data)) // 백단에서 받아온 계정 정보를 리덕스에 저장
+      storeString('accountIdx', data.accountIdx.toString()) // accountIdx를 async storage에 저장
+      storeString('email', data.email) //이메일도 async storage에 저장
+      navigation.navigate('MainTabNavigator')
+    },
+    onError(error, variables, context) {
+      showMessage({
+        // 에러 안내 메세지
+        message: '계정 정보를 가져오는 중 에러가 발생했습니다',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+      })
+      console.log(error)
+    },
+  })
 
   // ******************** callbacks  ********************
+  // 검색 호출 시
   const searchKeyword = useCallback(
     // 검색 api 호출
     (keyword: string) => {
       // 입력 값이 없을 때는 리턴
-      if (keyword == '') return
+      //if (keyword == '') return
       init && setInit(false) // 한번 검색을 하고 나면 init screen은 필요 없음
-      searchCategoryQuery.mutate(keyword)
+      searchCategoryQuery.mutate({
+        job: singerSelected ? '가수' : '배우',
+        nickName: keyword,
+        birth: '',
+        imgUrl: '',
+        email: '',
+      })
       setKeyword('')
     },
-    [keyword],
+    [keyword, singerSelected],
   )
 
+  // 회원 가입 버튼 클릭 시
   const onPressSignUp = useCallback(() => {
-    // accountCategoryDtoList.push({
-    //   accountIdx: 0,
-    //   job: result.job,
-    //   category: result.nickName,
-    // })
-    // // 회원가입 api 호출
-    // const signUpForm: IAccountDto = {
-    //   accountCategoryDtoList: accountCategoryDtoList,
-    //   accountIdx: 0,
-    //   creatorId: name,
-    //   accountImg: profileImage,
-    //   email: email,
-    // }
-    //postSignUpQuery.mutate(signUpForm)
-    dispatch(
-      login({
-        email: email,
-        name: name,
-        accountCategoryDtoList: userSelectedCategories,
-        profileImageUri: profileImage,
-        holdingSharingCnt: 0,
-        participateSharingCnt: 0,
-        accountIdx: 9,
-        creatorIdDatetime: '2022-07-11 00:00:00',
-      }),
-    )
-
-    storeString('email', email)
-    storeString('accountIdx', '9')
-
-    navigation.navigate('MainTabNavigator')
+    const signUpForm: IAccountDto = {
+      accountCategoryDtoList: userSelectedCategories,
+      accountIdx: 0,
+      creatorId: name,
+      creatorIdDatetime: moment().format('YYYY-MM-DD HH:mm:ss'),
+      accountImg: profileImage,
+      email: email,
+    }
+    // 회원 가입 post api 호출
+    postSignUpQuery.mutate(signUpForm)
   }, [userSelectedCategories])
 
+  // 해당 카테고리가 선택됐는지
   const isSelected = useCallback(
     (category: ICategoryDto) => {
       return userSelectedCategories.filter(item => item.job == category.job && item.category == category.nickName).length == 0 ? false : true
@@ -159,6 +161,7 @@ export const SelectCategory = () => {
     [userSelectedCategories],
   )
 
+  // 카테고리 아이템 클릭시
   const onPressCategory = useCallback(
     (category: ICategoryDto) => {
       if (isSelected(category)) {
@@ -180,6 +183,7 @@ export const SelectCategory = () => {
     [userSelectedCategories],
   )
 
+  // 해당 카테고리를 선택한 카테고리 리스트에서 제거
   const onPressRemoveCategory = useCallback((param: IAccountCategoryDto) => {
     setUserSelectedCategories(userSelectedCategories =>
       userSelectedCategories.filter(item => {
@@ -216,7 +220,7 @@ export const SelectCategory = () => {
 
         <SearchStar keyword={keyword} setKeyword={setKeyword} searchKeyword={searchKeyword} />
         <View style={{flex: 1}}>
-          <View style={[theme.styles.rowFlexStart, {flexWrap: 'wrap', marginBottom: 16}, result == '' && {position: 'absolute', top: 0}]}>
+          <View style={[theme.styles.rowFlexStart, {flexWrap: 'wrap', marginBottom: 16}, result.length == 0 && {position: 'absolute', top: 0}]}>
             {userSelectedCategories.length > 0 &&
               userSelectedCategories.map(item => (
                 <View key={item.category + item.job} style={[theme.styles.rowFlexStart, {marginBottom: 8}, styles.selectedCategoryButton]}>
@@ -229,25 +233,26 @@ export const SelectCategory = () => {
             <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
               <Text style={theme.styles.bold20}>관심 있는 스타를 검색해 보세요!</Text>
             </View>
-          ) : result == '' ? (
+          ) : result.length == 0 ? (
             <EmptyResult />
           ) : (
-            <View style={{width: CIRCLE_SIZE}}>
-              <Pressable style={[styles.pressableView, isSelected(result) && styles.selectedPressable]} onPress={() => onPressCategory(result)}>
-                {isSelected(result) && <CheckboxMainIcon style={styles.checkboxMain} />}
-                <FastImage
-                  style={styles.image}
-                  source={{uri: result.imgUrl}}
-                  onError={() => {
-                    setResult({...result, imgUrl: ''})
-                  }}></FastImage>
-              </Pressable>
-              <Text style={styles.starName}>{result.nickName}</Text>
-            </View>
+            <FlatList
+              data={result}
+              numColumns={3}
+              columnWrapperStyle={{justifyContent: 'space-between', marginBottom: 16}}
+              renderItem={({item, index}) => (
+                <View style={{width: CIRCLE_SIZE}}>
+                  <Pressable style={[styles.pressableView, isSelected(item) && styles.selectedPressable]} onPress={() => onPressCategory(item)}>
+                    {isSelected(item) && <CheckboxMainIcon style={styles.checkboxMain} />}
+                    <FastImage style={styles.image} source={{uri: item.imgUrl}}></FastImage>
+                  </Pressable>
+                  <Text style={styles.starName}>{item.nickName}</Text>
+                </View>
+              )}></FlatList>
           )}
         </View>
       </View>
-      <FloatingBottomButton label="선택 완료" enabled={userSelectedCategories.length != 0} onPress={onPressSignUp} />
+      <FloatingBottomButton label="선택 완료" enabled={userSelectedCategories.length != 0 && signUpSuccess == false} onPress={onPressSignUp} />
     </SafeAreaView>
   )
 }

@@ -1,59 +1,53 @@
-import React, {useState, useCallback, useEffect} from 'react'
+import React, {useState, useCallback} from 'react'
 import {View, Text, FlatList, Pressable, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation} from '@react-navigation/native'
-import {useQuery, useQueryClient} from 'react-query'
+import {useQuery} from 'react-query'
 
 import * as theme from '../../theme'
 import {DownArrowIcon, BellIcon, MagnifierIcon, BottomSheet, FloatingButtonIcon, EmptyIcon} from '../../components/utils'
 import {NanumListFilterTab, NanumListItem, GoodsListBottomSheetContent, Banner, CategoryDropdown} from '../../components/MainTab'
 import {INanumMethod, INanumListItem, IAccountCategoryDto} from '../../types'
-import {useAppSelector, useAnimatedValue} from '../../hooks'
+import {useAppSelector, useAnimatedValue, removeString} from '../../hooks'
 import {getNanumByRecent, getNanumByPopularity, getNanumAll, queryKeys} from '../../api'
 
 const NanumList = () => {
   // ******************** check login ********************
   const isLoggedIn = useAppSelector(state => state.auth.isLoggedIn)
 
+  removeString('accountIdx') // async storage에서 accountIdx 제거
+  removeString('email') // async storage에서 email 제거
+
   // ******************** utils ********************
   const navigation = useNavigation()
-  const queryClient = useQueryClient()
   const user = useAppSelector(state => state.auth.user)
   console.log(user)
-  const currentCategory = user.accountCategoryDtoList[0]
 
   // ******************** states ********************
-  const [sharings, setSharings] = useState<INanumListItem[]>([])
+  const [sharings, setSharings] = useState<INanumListItem[]>([]) // 나눔 게시글들
   const [refreshing, setRefreshing] = useState<boolean>(false) // 새로고침 state
-  const [nanumMethodFilter, setNanumMethodFilter] = useState<'전체' | INanumMethod>('전체')
-  const [itemFilter, setItemFilter] = useState<'최신순' | '인기순' | '추천순'>('최신순')
-  const [showItemFilterBottomShet, setShowItemFilterBottomSheet] = useState<boolean>(false) // 인기순, 최신순, 추천순 필터링 탭 띄울지
+  const [nanumMethodFilter, setNanumMethodFilter] = useState<'전체' | INanumMethod>('전체') // 필터1 : 전체, 우편, 오프라인
+  const [itemFilter, setItemFilter] = useState<'최신순' | '인기순' | '추천순'>('최신순') // 필터2 : 전체, 우편, 오프라인
+  const [showItemFilterBottomShet, setShowItemFilterBottomSheet] = useState<boolean>(false) // 인기순, 최신순, 추천순 필터링 bottom sheet 띄울지
   const [showSelectCategoryModal, setShowSelectCategoryModal] = useState<boolean>(false) // 카테고리 선택하는 드롭다운 띄울지
-  const [userCategory, setUserCategory] = useState<IAccountCategoryDto>(currentCategory) // 현재 사용자가 선택한 카테고리.
+  const [userCategory, setUserCategory] = useState<IAccountCategoryDto>() // 현재 사용자가 선택한 카테고리.
   const [bannerInfo, setBannerInfo] = useState({
     imageUri: 'http://localhost:8081/src/assets/images/sanrio2.jpeg',
     title: '응원하는 셀럽의 생일/공연 홍보 배너를 걸어보세요',
     sharingid: '123445',
   })
 
-  useEffect(() => {
-    setUserCategory(currentCategory)
-  }, [currentCategory])
-
   // ******************** react query ********************
   // 카테고리가 설정되지 않았을 때 (로그인하지 않았을 때) 전부 불러오기
-  const getNanumAllQuery = useQuery(queryKeys.nanumAll, getNanumAll, {
+  useQuery(queryKeys.nanumAll, getNanumAll, {
     onSuccess(data) {
       setSharings(data)
     },
     enabled: isLoggedIn == false, // 로그인 하지 않았을 때 전체 보기
   })
 
-  // 카테고리가 설정 됐을 때 최신순
-  const nanumListByRecent = useQuery(
-    ['nanumListRecent', userCategory],
-    () => getNanumByRecent({job: userCategory.job, category: userCategory.category, accountIdx: 0}),
-    {
+  if (userCategory != undefined) {
+    useQuery(['nanumListRecent', userCategory], () => getNanumByRecent({job: userCategory.job, category: userCategory.category, accountIdx: 0}), {
       onSuccess: data => {
         setRefreshing(false) // 새로고침중이면 로딩 종료
         setSharings(data)
@@ -63,33 +57,29 @@ const NanumList = () => {
           onPressLocationFilter(nanumMethodFilter)
         }
       },
-      enabled: itemFilter == '최신순' && isLoggedIn == true, // 필터가 최신순으로 설정됐을 때만
-    },
-  )
+      enabled: itemFilter == '최신순', // 필터가 최신순으로 설정됐을 때만
+    })
 
-  // 카테고리가 설정 됐을 때 인기순
-  const nanumListByPopular = useQuery(
-    ['nanumListPopular', userCategory],
-    () => getNanumByPopularity({job: userCategory.job, category: userCategory.category, accountIdx: 0}),
-    {
+    // 카테고리가 설정 됐을 때 인기순
+    useQuery(['nanumListPopular', userCategory], () => getNanumByPopularity({job: userCategory.job, category: userCategory.category, accountIdx: 0}), {
       onSuccess(data) {
         setRefreshing(false) // 새로고침중이면 로딩 종료
         setSharings(data)
       },
       onError(err) {},
-      enabled: itemFilter == '인기순' && isLoggedIn == true,
-    },
-  )
+      enabled: itemFilter == '인기순',
+    })
+  }
+  // 카테고리가 설정 됐을 때 최신순
 
   // ******************** callbacks ********************
-
+  // 새로고침침 pull up이 일어났을 때
   const onRefresh = useCallback(() => {
-    // 새로고침침 pull up이 일어났을 때
     setRefreshing(true)
   }, [])
 
+  // 모집글 작성 버튼 클릭 시
   const onPressWrite = useCallback(() => {
-    // 모집글 작성 버튼 클릭 시
     if (isLoggedIn) {
       // 로그인 했으면 작성 페이지
       navigation.navigate('WriteNanumFormStackNavigator')
@@ -99,20 +89,19 @@ const NanumList = () => {
     }
   }, [])
 
+  // 검색 버튼 클릭시
   const onPressMagnifier = useCallback(() => {
-    // 검색 버튼 클릭시
     navigation.navigate('SearchStackNavigator')
   }, [])
 
+  // 카테고리(에스파, 세븐틴 등) 클릭시
   const onPressSelectCategory = useCallback(() => {
-    // 카테고리(에스파, 세븐틴 등) 클릭시
     setShowSelectCategoryModal(showSelectCategoryModal => !showSelectCategoryModal)
   }, [])
 
+  // 전체, 우편, 오프라인 클릭시
   const onPressLocationFilter = useCallback(
     (type: INanumMethod | '전체') => {
-      // 전체, 우편, 오프라인 클릭시
-
       if (type == '전체') {
       } else {
         if (sharings != undefined) {
@@ -142,13 +131,16 @@ const NanumList = () => {
           <BellIcon />
         </View>
       </View>
-      <CategoryDropdown
-        showCategoryModal={showSelectCategoryModal}
-        setShowCategoryModal={setShowSelectCategoryModal}
-        userCategory={userCategory}
-        setUserCategory={setUserCategory}
-        categories={user.accountCategoryDtoList}
-      />
+      {userCategory != undefined && (
+        <CategoryDropdown
+          showCategoryModal={showSelectCategoryModal}
+          setShowCategoryModal={setShowSelectCategoryModal}
+          userCategory={userCategory}
+          setUserCategory={setUserCategory}
+          categories={user.accountCategoryDtoList}
+        />
+      )}
+
       <View style={{flex: 1}}>
         <Banner imageUri={bannerInfo.imageUri} title={bannerInfo.title} sharingid={bannerInfo.sharingid} />
         <View style={{flex: 1, width: '100%'}}>

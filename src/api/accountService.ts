@@ -32,8 +32,8 @@ export const postSignUp = async (accountDto: IAccountDto) => {
 }
 
 // accountIdx로 회원 정보 가져오기
-export const getAccountInfo = async (accountIdx: number) => {
-  const {data} = await apiClient.get(`/api/account/?accountIdx=${accountIdx}`)
+export const getAccountInfoByIdx = async (accountIdx: number) => {
+  const {data} = await apiClient.get(`/api/account/accountidx?accountIdx=${accountIdx}`)
   return data
 }
 
@@ -51,7 +51,7 @@ export const updateAccountInfo = async (accountDto: IAccountDto) => {
 
 // 회원 탈퇴
 export const deleteAccount = async (deleteAccountForm: deleteAccountForm) => {
-  const {data} = await apiClient.delete('/api/account', {data: deleteAccountForm})
+  const {data} = await apiClient.delete('/api/account/', {data: deleteAccountForm})
   return data
 }
 

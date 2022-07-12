@@ -8,9 +8,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export interface User {
   email: string
-  name: string
+  creatorId: string
   accountCategoryDtoList: IAccountCategoryDto[]
-  profileImageUri: string | undefined
+  accountImg: string | undefined
   holdingSharingCnt: number | undefined
   participateSharingCnt: number | undefined
   accountIdx: number
@@ -28,9 +28,9 @@ const initialState = {
   isLoggedIn: false,
   user: {
     email: '',
-    name: '',
+    creatorId: '',
     accountCategoryDtoList: [],
-    profileImageUri: '',
+    accountImg: '',
     holdingSharingCnt: 0,
     participateSharingCnt: 0,
     accountIdx: 0,
@@ -47,8 +47,8 @@ export const authSlice = createSlice({
     login: (state, action: PayloadAction<User>) => {
       state.isLoggedIn = true
       state.user.email = action.payload.email
-      state.user.name = action.payload.name
-      state.user.profileImageUri = action.payload.profileImageUri
+      state.user.creatorId = action.payload.creatorId
+      state.user.accountImg = action.payload.accountImg
       state.user.accountCategoryDtoList = action.payload.accountCategoryDtoList
       state.user.holdingSharingCnt = action.payload.holdingSharingCnt
       state.user.participateSharingCnt = action.payload.participateSharingCnt
@@ -67,10 +67,10 @@ export const authSlice = createSlice({
       return initialState
     },
     updateProfileImage: (state, action: PayloadAction<string>) => {
-      state.user.profileImageUri = action.payload
+      state.user.accountImg = action.payload
     },
     updateName: (state, action: PayloadAction<string>) => {
-      state.user.name = action.payload
+      state.user.creatorId = action.payload
     },
     updateCategory: (state, action: PayloadAction<IAccountCategoryDto[]>) => {
       state.user.accountCategoryDtoList = action.payload

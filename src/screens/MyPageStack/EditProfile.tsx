@@ -77,13 +77,13 @@ export const EditProfile = () => {
   })
 
   // ******************** states ********************
-  const [name, setName] = useState<string>(user.name)
-  const [profileImage, setProfileImage] = useState<string | undefined>(user.profileImageUri)
+  const [name, setName] = useState<string>(user.creatorId)
+  const [profileImage, setProfileImage] = useState<string | undefined>(user.accountImg)
 
   // ******************** callbacks ********************
   const checkButtonEnabled = useCallback((name: string, profileImage: string | undefined) => {
     // 이름도, profile image도 바뀐 게 없다면
-    return name == user.name && profileImage == user.profileImageUri ? false : true
+    return name == user.creatorId && profileImage == user.accountImg ? false : true
   }, [])
 
   const onPressComplete = useCallback(async () => {
@@ -179,7 +179,7 @@ export const EditProfile = () => {
         </View>
 
         <Text style={theme.styles.label}>닉네임</Text>
-        <TextInput style={theme.styles.input} placeholder={user.name} placeholderTextColor={theme.gray300} value={name} onChangeText={setName} />
+        <TextInput style={theme.styles.input} placeholder={user.creatorId} placeholderTextColor={theme.gray300} value={name} onChangeText={setName} />
         <Text style={[theme.styles.text14, {marginTop: 8, color: theme.gray500}]}>이번달 잔여 수정 가능 횟수 : {leftChangeNum}회</Text>
       </View>
     </SafeAreaView>

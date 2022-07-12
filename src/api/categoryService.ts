@@ -14,8 +14,8 @@ export const postCategory = async (categoryDto: ICategoryDto) => {
   return data
 }
 
-export const searchCategory = async (nickName: string) => {
-  const {data} = await apiClient.get(`/api/category/search?nickName=${nickName}`)
+export const searchCategory = async (categoryDto: ICategoryDto) => {
+  const {data} = await apiClient.post('/api/category/search', categoryDto)
 
   return data
 }

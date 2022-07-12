@@ -9,7 +9,7 @@ import {GoogleSignin} from '@react-native-google-signin/google-signin'
 import auth from '@react-native-firebase/auth'
 import {KakaoOAuthToken, KakaoProfile, getProfile as getKakaoProfile, login} from '@react-native-seoul/kakao-login'
 import {useMutation} from 'react-query'
-import {queryKeys, getAccountInfo} from '../../api'
+import {queryKeys, getAccountInfoByIdx} from '../../api'
 
 import {login as ReduxLogin} from '../../redux/slices/auth'
 import * as theme from '../../theme'
@@ -39,6 +39,7 @@ const LoginButton = ({label, source, onPress, style, textStyle}: LoginButtonProp
 export const Login = () => {
   const navigation = useNavigation()
   const dispatch = useAppDispatch()
+
   const signInWithKakao = async (): Promise<void> => {
     //console.log('clicked')
     try {
@@ -59,10 +60,10 @@ export const Login = () => {
         }
         const accountIdx = parseInt(idx)
         // async storage에 accountIdx가 있으면, 해당 accountIdx에 대한 계정 정보가 있는지 확인
-        //getAccountInfoQuery.mutate(accountIdx)
-        getAccountInfo(accountIdx)
+        getAccountInfoByIdx(accountIdx)
           .then(res => {
-            if (res.data == '') {
+            console.log(res)
+            if (res == '') {
               // 해당 accountIdx에 대한 계정 정보가 없으면 회원 가입 페이지로 이동
               navigation.navigate('LoginStackNavigator', {
                 screen: 'SetProfile',
@@ -72,26 +73,7 @@ export const Login = () => {
               })
             } else {
               // 해당 accountIdx에 대한 계정 정보가 있으면 로그인 시킴
-
-              dispatch(
-                ReduxLogin({
-                  accountIdx: 9,
-                  email: 'js7056@naver.com',
-                  name: '진실',
-                  accountCategoryDtoList: [
-                    {
-                      accountIdx: 9,
-                      job: '가수',
-                      category: 'bts',
-                    },
-                  ],
-                  profileImageUri: '',
-                  holdingSharingCnt: 6,
-                  participateSharingCnt: 7,
-                  creatorIdDatetime: '2022-07-11 11:11:11',
-                }),
-              )
-              storeString('accountIdx', res.data.accountIdx)
+              dispatch(ReduxLogin(res))
             }
           })
           .catch(err => {
@@ -124,36 +106,40 @@ export const Login = () => {
     const googleCredential = auth.GoogleAuthProvider.credential(idToken)
     auth().signInWithCredential(googleCredential)
 
-    //1. 해당 이메일로 가입 됐는지 확인
-
-    //1-1. 가입 돼있음 -> 로그인
-    fetch('http://localhost:8081/src/data/dummyUser.json', {
-      method: 'get',
+    // async storage에서 accountIdx 가져와서 해당 accountIdx에 대한 정보가 있는 지 확인
+    getString('accountIdx').then(idx => {
+      if (idx == null || idx == '' || idx == undefined) {
+        //accountIdx가 async storage에 없으면, 회원 가입 페이지로 이동
+        navigation.navigate('LoginStackNavigator', {
+          screen: 'SetProfile',
+          params: {
+            email: user.email,
+          },
+        })
+        return
+      }
+      const accountIdx = parseInt(idx)
+      // async storage에 accountIdx가 있으면, 해당 accountIdx에 대한 계정 정보가 있는지 확인
+      getAccountInfoByIdx(accountIdx)
+        .then(res => {
+          if (res == '') {
+            // 해당 accountIdx에 대한 계정 정보가 없으면 회원 가입 페이지로 이동
+            navigation.navigate('LoginStackNavigator', {
+              screen: 'SetProfile',
+              params: {
+                email: user.email,
+              },
+            })
+          } else {
+            // 해당 accountIdx에 대한 계정 정보가 있으면 로그인 시킴
+            dispatch(ReduxLogin(res))
+            //storeString('accountIdx', res.accountIdx)
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
     })
-      .then(res => res.json())
-      .then(result => {
-        dispatch(
-          ReduxLogin({
-            email: result.email,
-            name: result.name,
-            profileImageUri: result.profileImageUri,
-            accountCategoryDtoList: [],
-            holdingSharingCnt: result.holdingSharingCnt,
-            participateSharingCnt: result.participateSharingCnt,
-            accountIdx: 0,
-            creatorIdDatetime: '2022-07-11 11:11:11',
-          }),
-        )
-      })
-    //로그인 시 asyncStorage에 user의 email값 저장
-    storeString('email', user.email)
-    // 1-2. 가입 안돼있는 사람이면 회원가입 화면으로
-    // navigation.navigate('LoginStackNavigator', {
-    //   screen: 'SetProfile',
-    //   params: {
-    //     email: profile.email,
-    //   },
-    // })
   }
 
   const SignInWithApple = async () => {
@@ -166,36 +152,40 @@ export const Login = () => {
       const appleCredential = auth.AppleAuthProvider.credential(identityToken, nonce)
       auth().signInWithCredential(appleCredential)
 
-      //1. 해당 이메일로 가입 됐는지 확인
-
-      //1-1. 가입 돼있음 -> 로그인
-      fetch('http://localhost:8081/src/data/dummyUser.json', {
-        method: 'get',
+      // async storage에서 accountIdx 가져와서 해당 accountIdx에 대한 정보가 있는 지 확인
+      getString('accountIdx').then(idx => {
+        if (idx == null || idx == '' || idx == undefined) {
+          //accountIdx가 async storage에 없으면, 회원 가입 페이지로 이동
+          navigation.navigate('LoginStackNavigator', {
+            screen: 'SetProfile',
+            params: {
+              email: appleAuthRequestResponse.email,
+            },
+          })
+          return
+        }
+        const accountIdx = parseInt(idx)
+        // async storage에 accountIdx가 있으면, 해당 accountIdx에 대한 계정 정보가 있는지 확인
+        getAccountInfoByIdx(accountIdx)
+          .then(res => {
+            if (res == '') {
+              // 해당 accountIdx에 대한 계정 정보가 없으면 회원 가입 페이지로 이동
+              navigation.navigate('LoginStackNavigator', {
+                screen: 'SetProfile',
+                params: {
+                  email: appleAuthRequestResponse.email,
+                },
+              })
+            } else {
+              // 해당 accountIdx에 대한 계정 정보가 있으면 로그인 시킴
+              dispatch(ReduxLogin(res))
+              //storeString('accountIdx', res.accountIdx)
+            }
+          })
+          .catch(err => {
+            console.log(err)
+          })
       })
-        .then(res => res.json())
-        .then(result => {
-          dispatch(
-            ReduxLogin({
-              email: result.email,
-              name: result.name,
-              profileImageUri: result.profileImageUri,
-              accountCategoryDtoList: [],
-              holdingSharingCnt: result.holdingSharingCnt,
-              participateSharingCnt: result.participateSharingCnt,
-              accountIdx: 0,
-              creatorIdDatetime: '2022-07-11 11:11:11',
-            }),
-          )
-        })
-      //로그인 시 asyncStorage에 user의 email값 저장
-      storeString('email', appleAuthRequestResponse.email!)
-      // 1-2. 가입 안돼있는 사람이면 회원가입 화면으로
-      // navigation.navigate('LoginStackNavigator', {
-      //   screen: 'SetProfile',
-      //   params: {
-      //     email: profile.email,
-      //   },
-      // })
     } catch (error: any) {
       if (error.code === appleAuth.Error.CANCELED) {
         console.warn('User canceled Apple Sign in.')
