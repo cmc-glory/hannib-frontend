@@ -9,7 +9,7 @@ import {DownArrowIcon, BellIcon, MagnifierIcon, BottomSheet, FloatingButtonIcon,
 import {NanumListFilterTab, NanumListItem, GoodsListBottomSheetContent, Banner, CategoryDropdown} from '../../components/MainTab'
 import {INanumMethod, INanumListItem, IAccountCategoryDto} from '../../types'
 import {useAppSelector, useAnimatedValue} from '../../hooks'
-import {getNanumByRecent, getNanumByPopularity, getNanumAll} from '../../api'
+import {getNanumByRecent, getNanumByPopularity, getNanumAll, queryKeys} from '../../api'
 
 const NanumList = () => {
   // ******************** check login ********************
@@ -38,10 +38,18 @@ const NanumList = () => {
 
   useEffect(() => {
     setUserCategory(currentCategory)
-    invalidateQueries()
   }, [currentCategory])
 
   // ******************** react query ********************
+  // 카테고리가 설정되지 않았을 때 (로그인하지 않았을 때) 전부 불러오기
+  const getNanumAllQuery = useQuery(queryKeys.nanumAll, getNanumAll, {
+    onSuccess(data) {
+      setSharings(data)
+    },
+    enabled: isLoggedIn == false, // 로그인 하지 않았을 때 전체 보기
+  })
+
+  // 카테고리가 설정 됐을 때 최신순
   const nanumListByRecent = useQuery(
     ['nanumListRecent', userCategory],
     () => getNanumByRecent({job: userCategory.job, category: userCategory.category, accountIdx: 0}),
@@ -55,10 +63,11 @@ const NanumList = () => {
           onPressLocationFilter(nanumMethodFilter)
         }
       },
-      enabled: itemFilter == '최신순',
+      enabled: itemFilter == '최신순' && isLoggedIn == true, // 필터가 최신순으로 설정됐을 때만
     },
   )
 
+  // 카테고리가 설정 됐을 때 인기순
   const nanumListByPopular = useQuery(
     ['nanumListPopular', userCategory],
     () => getNanumByPopularity({job: userCategory.job, category: userCategory.category, accountIdx: 0}),
@@ -68,6 +77,7 @@ const NanumList = () => {
         setSharings(data)
       },
       onError(err) {},
+      enabled: itemFilter == '인기순' && isLoggedIn == true,
     },
   )
 
@@ -76,7 +86,6 @@ const NanumList = () => {
   const onRefresh = useCallback(() => {
     // 새로고침침 pull up이 일어났을 때
     setRefreshing(true)
-    invalidateQueries()
   }, [])
 
   const onPressWrite = useCallback(() => {
@@ -105,7 +114,6 @@ const NanumList = () => {
       // 전체, 우편, 오프라인 클릭시
 
       if (type == '전체') {
-        invalidateQueries()
       } else {
         if (sharings != undefined) {
           console.log(sharings)
@@ -115,20 +123,6 @@ const NanumList = () => {
     },
     [sharings],
   )
-
-  const invalidateQueries = useCallback(() => {
-    if (itemFilter == '인기순') {
-      queryClient.invalidateQueries('nanumListPopular')
-    } else if (itemFilter == '최신순') {
-      queryClient.invalidateQueries('nanumListRecent')
-    }
-  }, [itemFilter])
-
-  // ******************** re-rendering ********************
-  useEffect(() => {
-    // 최신순, 인기순, 추천순 필터가 바뀔 때마다 새로 로드
-    invalidateQueries()
-  }, [itemFilter, isLoggedIn])
 
   return (
     <SafeAreaView style={[styles.container]} edges={['top', 'left', 'right']}>

@@ -4,16 +4,13 @@ import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation, useRoute} from '@react-navigation/native'
 import {launchImageLibrary} from 'react-native-image-picker'
 import FastImage from 'react-native-fast-image'
-import auth from '@react-native-firebase/auth'
 import {useMutation} from 'react-query'
 import {showMessage} from 'react-native-flash-message'
 import {SetProfileRouteProps} from '../../navigation/LoginStackNavigator'
 import {StackHeader, SelectImageIcon, FloatingBottomButton} from '../../components/utils'
 import NoUserSvg from '../../assets/Icon/noUser.svg'
 import * as theme from '../../theme'
-import {queryKeys, uploadProfileImage} from '../../api'
-
-const names = ['test', '진실', 'ㅇㅇ']
+import {queryKeys, uploadProfileImage, checkNicknameDuplicated} from '../../api'
 
 export const SetProfile = () => {
   // ****************** utils  ******************
@@ -23,13 +20,44 @@ export const SetProfile = () => {
   // ****************** react queris  ******************
   const uploadImageQuery = useMutation(queryKeys.nanumImage, uploadProfileImage, {
     onSuccess(data) {
+      console.log('Image upload to s3 completed successfully')
       setImage(data) // 이미지 저장 성공하면 s3 url을 images 배열에 저장
-      console.log('here')
     },
     onError(error) {
       showMessage({
         // 에러 안내 메세지
         message: '이미지 업로드 중 에러가 발생했습니다',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+      })
+      console.log(error)
+    },
+  })
+
+  const checkNicknameDuplicatedQuery = useMutation(queryKeys.nicknameDuplicated, checkNicknameDuplicated, {
+    onSuccess(data, variables, context) {
+      // 같은 닉네임을 찾지 못해서 응답이 blank이면
+      if (data == '') {
+        // 카테고리 선택 창으로 이동
+        navigation.navigate('SelectCategory', {email: route.params.email, name, profileImage: image})
+      }
+      // 같은 닉네임이 있으면
+      else {
+        setDuplicated(true)
+      }
+    },
+    onError(error, variables, context) {
+      showMessage({
+        // 에러 안내 메세지
+        message: '닉네임 중복 확인 중 에러가 발생했습니다',
         type: 'info',
         animationDuration: 300,
         duration: 1350,
@@ -58,12 +86,7 @@ export const SetProfile = () => {
 
   const onPressNext = useCallback(() => {
     // 중복 닉네임 판별
-    if (names.includes(name)) {
-      setDuplicated(true)
-      return
-    }
-
-    navigation.navigate('SelectCategory', {email: route.params.email, name, profileImage: image})
+    checkNicknameDuplicatedQuery.mutate(name)
   }, [name, image])
 
   const onImageLibraryPress = useCallback(async () => {

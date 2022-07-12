@@ -127,6 +127,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     position: 'absolute',
     width: '100%',
+    zIndex: 1,
   },
   button: {
     height: 32,

@@ -13,7 +13,6 @@ import {showMessage} from 'react-native-flash-message'
 import * as theme from '../../theme'
 import {LogoWhiteIcon} from '../../components/utils'
 import {storeString, useAppSelector} from '../../hooks'
-import AsyncStorage, {useAsyncStorage} from '@react-native-async-storage/async-storage'
 
 type LoginButtonProps = {
   label: string
