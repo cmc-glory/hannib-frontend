@@ -86,7 +86,12 @@ export function GoodsDetailContent({headerHeight, nanumDetail, numInquires}: Con
       </View>
       <NoticeBanner postid="1111" />
       <GoodsContentDetail description={nanumDetail.contents} />
-      <WriterProfileBanner writername={nanumDetail.creatorId} nanumIdx={nanumDetail.nanumIdx} writerProfileImageUri={'http://'} askNum={numInquires} />
+      <WriterProfileBanner
+        writername={nanumDetail.creatorId}
+        nanumIdx={nanumDetail.nanumIdx}
+        writerProfileImageUri={nanumDetail.accountDto.accountImg}
+        askNum={numInquires}
+      />
 
       <View style={[styles.padding]}>
         <RelatedSharing />

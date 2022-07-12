@@ -286,6 +286,15 @@ export type INanum = {
   qnaNumber: number // 문의 수
   isFavorite: 'Y' | 'N'
   favorites: number // 즐겨찾기한 사람 수
+  accountDto: {
+    accountCategoryDtoList: IAccountCategoryDto[]
+    accountIdx: number
+    creatorId: string
+    creatorIdDatetime?: string
+    accountImg?: string
+    email: string
+  }
+  job: '가수' | '배우'
 }
 
 export type INanumGoodsInfo = {

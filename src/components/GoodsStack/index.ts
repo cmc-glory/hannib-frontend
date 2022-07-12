@@ -1,6 +1,6 @@
 export * from './HeaderImage'
 export * from './GoodsDetailContent'
-export * from './GoodsDetailHeader'
+export * from './NanumDetailHeader'
 export * from './NoticeBanner'
 export * from './RelatedSharing'
 export * from './FindAddress'

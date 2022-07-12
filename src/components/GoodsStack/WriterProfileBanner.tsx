@@ -8,7 +8,7 @@ import {useAppSelector} from '../../hooks'
 
 type WriterProfileBannerProps = {
   nanumIdx: number
-  writerProfileImageUri: string
+  writerProfileImageUri: string | undefined
   writername: string
   askNum: number
 }

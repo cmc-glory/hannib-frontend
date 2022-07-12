@@ -5,7 +5,7 @@ import {useNavigation, useRoute} from '@react-navigation/native'
 import {useQuery} from 'react-query'
 
 import {FloatingBottomButton} from '../../components/utils'
-import {HeaderImage, GoodsDetailContent, GoodsDetailHeader} from '../../components/GoodsStack'
+import {HeaderImage, GoodsDetailContent, NanumDetailHeader} from '../../components/GoodsStack'
 import {useAnimatedValue, useAppSelector} from '../../hooks'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import LinearGradient from 'react-native-linear-gradient'
@@ -76,7 +76,7 @@ export const NanumDetail = () => {
       )}
 
       {data != undefined && (
-        <GoodsDetailHeader
+        <NanumDetailHeader
           inverted={headerInvert}
           userAccountIdx={user.accountIdx}
           writerAccountIdx={data.accountIdx}

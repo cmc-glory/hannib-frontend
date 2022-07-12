@@ -29,7 +29,7 @@ type ShareModalProps = {
   toggleShareVisible: () => void
 }
 
-type GoodsDetailHeaderProps = {
+type NanumDetailHeaderProps = {
   inverted?: boolean
   userAccountIdx: number
   writerAccountIdx: number
@@ -68,17 +68,10 @@ const ShareModal = ({shareVisible, toggleShareVisible}: ShareModalProps) => {
 
 const MenuModal = ({moreVisible, setMoreVisible, onPressReportIssue, isWriter, setDeleteModalVisible, writerAccountIdx}: MenuModalProps) => {
   const [deletePressed, setDeletePressed] = useState<boolean>(false)
-  const onPressEdit = useCallback(() => {
-    setMoreVisible(false)
-
-    Alert.alert('수정하기 클릭')
-  }, [])
 
   const onPressDelete = useCallback(() => {
     setDeletePressed(true)
     setMoreVisible(false)
-
-    //Alert.alert('삭제하기 클릭')
   }, [])
   return (
     <Modal
@@ -97,9 +90,6 @@ const MenuModal = ({moreVisible, setMoreVisible, onPressReportIssue, isWriter, s
       animationOut="fadeOut">
       {isWriter ? (
         <View style={styles.menuModalWrapper}>
-          <Pressable style={styles.menuModalButton} onPress={onPressEdit}>
-            <Text>수정하기</Text>
-          </Pressable>
           <Pressable style={styles.menuModalButton} onPress={onPressDelete}>
             <Text>삭제하기</Text>
           </Pressable>
@@ -115,7 +105,7 @@ const MenuModal = ({moreVisible, setMoreVisible, onPressReportIssue, isWriter, s
   )
 }
 
-export const GoodsDetailHeader = ({inverted, userAccountIdx, writerAccountIdx, nanumIdx}: GoodsDetailHeaderProps) => {
+export const NanumDetailHeader = ({inverted, userAccountIdx, writerAccountIdx, nanumIdx}: NanumDetailHeaderProps) => {
   // ********************
   const navigation = useNavigation()
   const [shareVisible, toggleShareVisible] = useToggle() // 공유 모달창 띄울지
