@@ -4,6 +4,7 @@ import {black, gray50, gray500, gray800, gray300, white, main} from './colors'
 export const PADDING_SIZE = 20
 export const INPUT_HEIGHT = 48
 export const ICON_SIZE = 24
+export const CAROUSEL_HEIGHT = 340
 
 export const styles = StyleSheet.create({
   label: {

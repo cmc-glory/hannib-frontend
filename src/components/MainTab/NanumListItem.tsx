@@ -79,6 +79,7 @@ const SecretModal = ({secretModalVisible, setSecretModalVisible, secretPwd, nanu
 export const NanumListItem = ({item}: {item: INanumListItem}) => {
   // 나눔 게시글 아이템 구조분해 할당
   const {nanumIdx, nanumMethod, title, creatorId, thumbnail, secretForm, secretPwd, isFavorite} = item
+  console.log(nanumIdx)
 
   const openDate = moment(item.firstDate, 'YYYYMMDDHHmmss')
 
@@ -122,7 +123,7 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
         },
       })
     }
-  }, [])
+  }, [nanumIdx])
 
   const onPressAddFavorite = useCallback(() => {
     // 즐겨찾기 버튼 클릭했을 때
@@ -164,7 +165,7 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
           <FastImage style={[styles.image, {width: IMAGE_SIZE, height: IMAGE_SIZE}]} source={{uri: imageUri}}></FastImage>
         </View>
         <View style={{marginTop: 10}}>
-          <Tag label={nanumMethod == 'O' ? '오프라인' : '우편'} />
+          <Tag label={nanumMethod == 'M' ? '우편' : '오프라인'} />
           <Text style={[styles.title, {width: IMAGE_SIZE}]}>{title}</Text>
           <Text style={[styles.writerName]}>{creatorId}</Text>
         </View>

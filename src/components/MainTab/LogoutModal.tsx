@@ -22,8 +22,8 @@ export const LogoutModal = ({logoutModalVisible, setLogoutModalVisible}: LogoutM
   const onPressLogout = useCallback(() => {
     dispatch(logout())
     hideModal()
-    removeString('email')
-    removeString('accountIdx')
+    //removeString('email')
+    //removeString('accountIdx')
   }, [])
 
   return (

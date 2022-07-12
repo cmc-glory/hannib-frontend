@@ -61,7 +61,9 @@ export const authSlice = createSlice({
       state.refreshToken = action.payload
     },
     logout: state => {
-      AsyncStorage.removeItem('accessToken')
+      //AsyncStorage.removeItem('accessToken')
+      //AsyncStorage.removeItem('accountIdx')
+
       return initialState
     },
     updateProfileImage: (state, action: PayloadAction<string>) => {

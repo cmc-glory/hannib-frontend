@@ -17,7 +17,11 @@ export const WriterProfileBanner = ({nanumIdx, writerProfileImageUri, writername
   // ******************** utils ********************
   const userAccountIdx = useAppSelector(state => state.auth.user.accountIdx)
   const navigation = useNavigation()
-  const imageUri = useMemo(() => (writerProfileImageUri == '' ? require('../../assets/images/no_user.jpeg') : {uri: writerProfileImageUri}), [])
+
+  const imageUri = useMemo(
+    () => (writerProfileImageUri == '' || writerProfileImageUri == undefined ? require('../../assets/images/no_user.jpeg') : {uri: writerProfileImageUri}),
+    [],
+  )
 
   // ******************** callbacks ********************
   // 문의글 리스트로 이동하는 네비게이션

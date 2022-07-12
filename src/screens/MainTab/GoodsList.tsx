@@ -38,6 +38,7 @@ const GoodsLists = () => {
 
   useEffect(() => {
     setUserCategory(currentCategory)
+    invalidateQueries()
   }, [currentCategory])
 
   // ******************** react query ********************
@@ -68,6 +69,8 @@ const GoodsLists = () => {
       onError(err) {},
     },
   )
+
+  console.log(sharings)
 
   // ******************** animations ********************
   const animatedValue = useAnimatedValue() // 스크롤 업 다운할때마다 필터를 숨기거나 보여줌

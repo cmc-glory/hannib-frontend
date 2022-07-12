@@ -58,6 +58,7 @@ export const SplashScreen = () => {
           //dispatch(storeAccessToken(accessToken!)) // redux에 accesss
           // accessToken으로 id, email, 카테고리 저장
           getAccountInfoQuery.mutate(parseInt(accountIdx))
+
           dispatch(storeAccessToken('1111'))
           //storeAccessToken(accessToken!)
           // qna list 받아오기

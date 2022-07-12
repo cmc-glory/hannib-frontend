@@ -147,6 +147,7 @@ export const SelectCategory = () => {
     )
 
     storeString('email', email)
+    storeString('accountIdx', '9')
 
     navigation.navigate('MainTabNavigator')
   }, [userSelectedCategories])
@@ -215,7 +216,7 @@ export const SelectCategory = () => {
 
         <SearchStar keyword={keyword} setKeyword={setKeyword} searchKeyword={searchKeyword} />
         <View style={{flex: 1}}>
-          <View style={[theme.styles.rowFlexStart, {flexWrap: 'wrap', marginBottom: 16}, result == '' && {position: 'absolute'}]}>
+          <View style={[theme.styles.rowFlexStart, {flexWrap: 'wrap', marginBottom: 16}, result == '' && {position: 'absolute', top: 0}]}>
             {userSelectedCategories.length > 0 &&
               userSelectedCategories.map(item => (
                 <View key={item.category + item.job} style={[theme.styles.rowFlexStart, {marginBottom: 8}, styles.selectedCategoryButton]}>
@@ -238,7 +239,7 @@ export const SelectCategory = () => {
                   style={styles.image}
                   source={{uri: result.imgUrl}}
                   onError={() => {
-                    setResult({...result, imgUrl : ""})
+                    setResult({...result, imgUrl: ''})
                   }}></FastImage>
               </Pressable>
               <Text style={styles.starName}>{result.nickName}</Text>

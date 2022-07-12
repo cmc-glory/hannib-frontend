@@ -87,7 +87,7 @@ export const Carousel = ({imageUrls, imageWidth}: CarouselProps) => {
           onScrollEndDrag={onScroll}
           renderItem={({item, index}) => (
             <Pressable onPress={() => onPressImage(index)}>
-              <FastImage source={{uri: item}} style={[styles.image, {width: imageWidth, height: 340}]} />
+              <FastImage source={{uri: item}} style={[styles.image, {width: imageWidth, height: theme.CAROUSEL_HEIGHT}]} />
             </Pressable>
           )}
           //keyExtractor={(item, index) => index.toString()}
