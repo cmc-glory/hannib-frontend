@@ -36,7 +36,6 @@ export const GoodsListBottomSheetContent = ({itemFilter, setItemFilter, close}: 
     <View style={[styles.rootContainer, theme.styles.wrapper]}>
       <GoodsListBottomSheetContentItem label="최신순" selected={itemFilter == '최신순'} onPress={onPress} />
       <GoodsListBottomSheetContentItem label="인기순" selected={itemFilter == '인기순'} onPress={onPress} />
-      <GoodsListBottomSheetContentItem label="추천순" selected={itemFilter == '추천순'} onPress={onPress} />
     </View>
   )
 }

@@ -175,7 +175,7 @@ export type ISearch = {
 }
 
 // ******************** backend variable names below ********************
-export type IInqueryNanumDto = {
+export type IInquiryNanumDto = {
   nanumIdx: number
   accountIdx: number
   creatorId: string

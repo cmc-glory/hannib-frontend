@@ -1,5 +1,5 @@
 import React, {useCallback, useState, useMemo} from 'react'
-import {View, Text, ScrollView, Pressable, StyleSheet} from 'react-native'
+import {View, Text, ScrollView, Pressable, StyleSheet, Alert} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation, useRoute} from '@react-navigation/native'
 import {useQuery} from 'react-query'
@@ -15,7 +15,10 @@ import {queryKeys, getNanumByIndex, getInquiryByIndex} from '../../api'
 
 export const QnAListUser = () => {
   // ******************** utils ********************
-  const userAccountIdx = useAppSelector(state => state.auth.user.accountIdx)
+  const auth = useAppSelector(state => state.auth)
+  const isLoggedIn = auth.isLoggedIn
+  const userAccountIdx = auth.user.accountIdx
+
   const navigation = useNavigation()
   const route = useRoute<QnAListUserRouteProps>()
   const {nanumIdx} = useMemo(() => route.params, [])
@@ -28,14 +31,26 @@ export const QnAListUser = () => {
 
   // 문의글 작성으로 이동
   const onPressWrite = useCallback(() => {
-    navigation.navigate('WriteQnA', {
-      nanumIdx, // 해당 나눔 게시글의 id
-      accountIdx: userAccountIdx, // 문의글을 남기는 사용자의 id,
-      imageuri: nanumInfo.data.thumbnail, // 썸네일 uri
-      category: nanumInfo.data.category, // 카테고리
-      title: nanumInfo.data.title, // 나눔 제목
-    })
-  }, [nanumInfo])
+    if (isLoggedIn) {
+      navigation.navigate('WriteQnA', {
+        nanumIdx, // 해당 나눔 게시글의 id
+        accountIdx: userAccountIdx, // 문의글을 남기는 사용자의 id,
+        imageuri: nanumInfo.data.thumbnail, // 썸네일 uri
+        category: nanumInfo.data.category, // 카테고리
+        title: nanumInfo.data.title, // 나눔 제목
+      })
+    } else {
+      Alert.alert('로그인 후 이용할 수 있습니다. 로그인 페이지로 이동하시겠습니까?', '', [
+        {
+          text: '확인',
+          onPress: () => navigation.navigate('MyPageTabStackNavigator'),
+        },
+        {
+          text: '취소',
+        },
+      ])
+    }
+  }, [nanumInfo, isLoggedIn])
 
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
@@ -45,8 +60,8 @@ export const QnAListUser = () => {
         <Pressable style={[styles.writeButton]} onPress={onPressWrite}>
           <Text style={[theme.styles.bold16, {color: theme.white}]}>문의 작성하기</Text>
         </Pressable>
-        {inquiries.data.length > 0 ? (
-          inquiries.data.map((qna: IInquiryNanumDto) => <QnAListUserItem item={qna} key={qna.comments + qna.accountIdx} accountIdx={userAccountIdx} />)
+        {inquiries?.data?.length > 0 ? (
+          inquiries?.data?.map((qna: IInquiryNanumDto) => <QnAListUserItem item={qna} key={qna.comments + qna.accountIdx} accountIdx={userAccountIdx} />)
         ) : (
           <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
             <EmptyIcon style={{marginBottom: 32}} />

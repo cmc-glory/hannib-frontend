@@ -1,16 +1,15 @@
 import React, {useState, useCallback, useEffect} from 'react'
-import {View, Text, FlatList, Pressable, StyleSheet} from 'react-native'
+import {View, Text, FlatList, Pressable, StyleSheet, ActivityIndicator} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation} from '@react-navigation/native'
-import {useQuery} from 'react-query'
+import {useQueryClient, useQuery} from 'react-query'
 
 import * as theme from '../../theme'
 import {DownArrowIcon, BellIcon, MagnifierIcon, BottomSheet, FloatingButtonIcon, EmptyIcon} from '../../components/utils'
 import {NanumListFilterTab, NanumListItem, GoodsListBottomSheetContent, Banner, CategoryDropdown} from '../../components/MainTab'
 import {INanumMethod, INanumListItem, IAccountCategoryDto} from '../../types'
 import {useAppSelector, useAppDispatch} from '../../hooks'
-import {getNanumByRecent, getNanumByPopularity, getNanumAll, queryKeys} from '../../api'
-import {login} from '../../redux/slices'
+import {getNanumByRecent, getNanumByPopularity, getNanumAllByFavorites, queryKeys, getNanumAllByRecent} from '../../api'
 
 const NanumList = () => {
   // ******************** check login ********************
@@ -18,9 +17,9 @@ const NanumList = () => {
 
   // ******************** utils ********************
   const navigation = useNavigation()
-  const dispatch = useAppDispatch()
   const user = useAppSelector(state => state.auth.user)
   const currentCategory = user.accountCategoryDtoList[0]
+  const queryClient = useQueryClient()
 
   // ******************** states ********************
   const [sharings, setSharings] = useState<INanumListItem[]>([]) // 나눔 게시글들
@@ -45,14 +44,23 @@ const NanumList = () => {
 
   // ******************** react query ********************
   // 카테고리가 설정되지 않았을 때 (로그인하지 않았을 때) 전부 불러오기
-  useQuery(queryKeys.nanumAll, getNanumAll, {
+  const nanumAllByRecent = useQuery(queryKeys.nanumList, getNanumAllByRecent, {
     onSuccess(data) {
+      setRefreshing(false)
       setSharings(data)
     },
-    enabled: isLoggedIn == false, // 로그인 하지 않았을 때 전체 보기
+    enabled: isLoggedIn == false && itemFilter == '최신순', // 로그인 하지 않았을 때 전체 보기
   })
 
-  useQuery(['nanumListRecent', userCategory], () => getNanumByRecent(userCategory.category), {
+  const nanumAllByFavorites = useQuery(queryKeys.nanumList, getNanumAllByFavorites, {
+    onSuccess(data) {
+      setRefreshing(false)
+      setSharings(data)
+    },
+    enabled: isLoggedIn == false && itemFilter == '인기순', // 로그인 하지 않았을 때 전체 보기
+  })
+
+  const nanumByRecent = useQuery([queryKeys.nanumList, userCategory], () => getNanumByRecent(userCategory.category), {
     onSuccess: data => {
       setRefreshing(false) // 새로고침중이면 로딩 종료
       setSharings(data)
@@ -63,17 +71,17 @@ const NanumList = () => {
         onPressLocationFilter(nanumMethodFilter)
       }
     },
-    enabled: itemFilter == '최신순', // 필터가 최신순으로 설정됐을 때만
+    enabled: isLoggedIn == true && itemFilter == '최신순', // 필터가 최신순으로 설정됐을 때만
   })
 
   // 카테고리가 설정 됐을 때 인기순
-  useQuery(['nanumListPopular', userCategory], () => getNanumByPopularity(userCategory.category), {
+  const nanumByFaavorites = useQuery([queryKeys.nanumList, userCategory], () => getNanumByPopularity(userCategory.category), {
     onSuccess(data) {
       setRefreshing(false) // 새로고침중이면 로딩 종료
       setSharings(data)
     },
     onError(err) {},
-    enabled: itemFilter == '인기순',
+    enabled: isLoggedIn == true && itemFilter == '인기순',
   })
   // 카테고리가 설정 됐을 때 최신순
 
@@ -81,6 +89,7 @@ const NanumList = () => {
   // 새로고침침 pull up이 일어났을 때
   const onRefresh = useCallback(() => {
     setRefreshing(true)
+    queryClient.invalidateQueries(queryKeys.nanumList)
   }, [])
 
   // 모집글 작성 버튼 클릭 시
@@ -166,9 +175,16 @@ const NanumList = () => {
                 </View>
               </View>
             </View>
+          ) : nanumAllByFavorites.isLoading || nanumAllByRecent.isLoading || nanumByRecent.isLoading || nanumByFaavorites.isLoading ? (
+            <View>
+              <ActivityIndicator
+                animating={
+                  nanumAllByFavorites.isLoading || nanumAllByRecent.isLoading || nanumByRecent.isLoading || nanumByFaavorites.isLoading
+                }></ActivityIndicator>
+            </View>
           ) : (
             <FlatList
-              contentContainerStyle={[{paddingHorizontal: theme.PADDING_SIZE, paddingVertical: 6, marginTop: 52}]}
+              contentContainerStyle={[{paddingHorizontal: theme.PADDING_SIZE, paddingVertical: 6}]}
               data={sharings}
               renderItem={({item}) => <NanumListItem item={item}></NanumListItem>}
               refreshing={refreshing}

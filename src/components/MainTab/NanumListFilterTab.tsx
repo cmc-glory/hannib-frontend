@@ -125,9 +125,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: theme.PADDING_SIZE,
     backgroundColor: 'white',
-    position: 'absolute',
     width: '100%',
-    zIndex: 1,
   },
   button: {
     height: 32,
