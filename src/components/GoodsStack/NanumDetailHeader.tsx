@@ -121,8 +121,13 @@ export const NanumDetailHeader = ({inverted, userAccountIdx, writerAccountIdx, n
 
   const onPressReportIssue = useCallback(async () => {
     await setMoreVisible(false)
-    navigation.navigate('ReportIssueStackNavigator')
-  }, [])
+    navigation.navigate('ReportIssueStackNavigator', {
+      screen: 'ReportIssueStep1',
+      params: {
+        nanumIdx: nanumIdx,
+      },
+    })
+  }, [nanumIdx])
 
   return (
     <View style={[styles.container]}>

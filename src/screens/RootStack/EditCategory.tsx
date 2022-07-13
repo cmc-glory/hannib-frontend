@@ -91,7 +91,6 @@ export const EditCategory = () => {
   const searchKeyword = useCallback(
     (keyword: string) => {
       // 입력 값이 없을 때는 리턴
-      if (keyword == '') return
       init && setInit(false) // 한번 검색을 하고 나면 init screen은 필요 없음
       searchCategoryQuery.mutate({
         job: singerSelected ? '가수' : '배우',

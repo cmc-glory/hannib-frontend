@@ -58,13 +58,18 @@ export const WriteQnA = () => {
   const onPressSubmit = () => {
     // 백으로 내용이랑 비밀 여부 post 하는 api
     const questionNanumDto: IInquiryNanumDto = {
+      inquiryIdx: 0,
       nanumIdx,
       accountIdx,
       creatorId,
       comments,
+      createdDate: '',
+      answerDate: '',
       secretYn: isSecret ? 'Y' : 'N',
       answerComments: '',
     }
+
+    console.log(JSON.stringify(questionNanumDto))
 
     postInquiryQuery.mutate(questionNanumDto)
     // 백으로 보낸 다음에 전으로 이동

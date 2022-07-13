@@ -9,25 +9,30 @@ const Stack = createStackNavigator<ReportIssueStackNavigatorParamList>()
 const ios = Platform.OS == 'ios'
 
 type ReportIssueStackNavigatorParamList = {
-  ReportIssueStep1: undefined
-  ReportIssueStep2: {issue: string; reason?: string; userName: string}
-  ReportIssueStep3: {issue: string; reason?: string; userName: string}
+  ReportIssueStep1: {
+    nanumIdx: number
+  }
+  ReportIssueStep2: undefined
 }
+
+type Props1 = NativeStackScreenProps<ReportIssueStackNavigatorParamList, 'ReportIssueStep1'>
+export type ReportIssueStep1NavigationProp = Props1['navigation']
+export type ReportIssueStep1RouteProp = Props1['route']
 
 type Props2 = NativeStackScreenProps<ReportIssueStackNavigatorParamList, 'ReportIssueStep2'>
 export type ReportIssueStep2NavigationProp = Props2['navigation']
 export type ReportIssueStep2RouteProp = Props2['route']
 
-type Props3 = NativeStackScreenProps<ReportIssueStackNavigatorParamList, 'ReportIssueStep3'>
-export type ReportIssueStep3NavigationProp = Props3['navigation']
-export type ReportIssueStep3RouteProp = Props3['route']
+// type Props3 = NativeStackScreenProps<ReportIssueStackNavigatorParamList, 'ReportIssueStep3'>
+// export type ReportIssueStep3NavigationProp = Props3['navigation']
+// export type ReportIssueStep3RouteProp = Props3['route']
 
 const ReportIssueStackNavigator = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false, cardStyle: {backgroundColor: 'white'}}}>
       <Stack.Screen name="ReportIssueStep1" component={ReportIssueStep1} options={{cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS}} />
       <Stack.Screen name="ReportIssueStep2" component={ReportIssueStep2} options={{cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS}} />
-      <Stack.Screen name="ReportIssueStep3" component={ReportIssueStep3} options={{cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS}} />
+      {/* <Stack.Screen name="ReportIssueStep3" component={ReportIssueStep3} options={{cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS}} /> */}
     </Stack.Navigator>
   )
 }

@@ -9,13 +9,6 @@ import * as theme from '../../theme'
 export const ReportIssueStep2 = () => {
   const navigation = useNavigation()
   const route = useRoute<ReportIssueStep2RouteProp>()
-  const {userName} = route.params
-
-  const onPressBlockUser = useCallback(() => {
-    navigation.navigate('ReportIssueStep3', {
-      userName: userName,
-    })
-  }, [])
 
   const onPressComplete = useCallback(() => {
     navigation.navigate('MainTabNavigator')
@@ -25,14 +18,15 @@ export const ReportIssueStep2 = () => {
     <SafeAreaView style={[styles.rootContainer]}>
       <StackHeader title="문제 신고하기" goBack x />
       <View style={[styles.container, theme.styles.wrapper]}>
-        <Text style={[theme.styles.bold20, {marginTop: 12, marginBottom: 24}]}>신고가 완료되었습니다.</Text>
-        <Pressable style={[styles.blockButton]} onPress={onPressBlockUser}>
+        <Text style={[theme.styles.bold20, {marginTop: 12, marginBottom: 12}]}>신고가 완료되었습니다.</Text>
+        <Text style={{fontSize: 16, color: theme.gray700}}>보다 나은 한입을 위해 도움을 주셔서 감사합니다.</Text>
+        {/* <Pressable style={[styles.blockButton]} onPress={onPressBlockUser}>
           <Text style={{fontSize: 16, color: theme.red}}>{userName}님 차단하기</Text>
         </Pressable>
         <Text style={{fontSize: 16, color: theme.gray700, marginTop: 16}}>
           해당 계정의 게시글을 볼 수 없으며 알림도 받지 않습니다. 쪽지 및 연락을 보낼 수 없도록 차단합니다.
-        </Text>
-        <RoundButton label="완료" enabled style={{marginTop: 24}} onPress={onPressComplete} />
+        </Text> */}
+        <RoundButton label="메인 화면으로 이동" enabled style={{marginTop: 32}} onPress={onPressComplete} />
       </View>
     </SafeAreaView>
   )

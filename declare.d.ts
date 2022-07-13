@@ -123,15 +123,10 @@ declare namespace ReactNavigation {
       screen: string
       params: any
     }
-
-    ReportIssueStep2: {
-      issue: string
-      reason?: string
-      userName: string
+    ReportIssueStep1: {
+      nanumIdx: number
     }
-    ReportIssueStep3: {
-      userName: stirng
-    }
+    ReportIssueStep2: undefined
     AskAddStar: undefined
     AskAddStarComplete: undefined
     BlockedUsers: undefined

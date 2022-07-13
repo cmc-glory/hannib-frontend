@@ -175,9 +175,22 @@ export type ISearch = {
 }
 
 // ******************** backend variable names below ********************
+export type IInquiryEditDto = {
+  inquiryIdx: number
+  comments: string
+  secretYn: 'Y' | 'N'
+}
+
+export type IInquiryDeleteDto = {
+  inquiryIdx: number
+}
+
 export type IInquiryNanumDto = {
+  inquiryIdx: number
   nanumIdx: number
   accountIdx: number
+  answerDate: string
+  createdDate: string
   creatorId: string
   comments: string // 질문
   answerComments: string // 답변

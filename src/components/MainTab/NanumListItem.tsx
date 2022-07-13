@@ -151,7 +151,7 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
       <SecretModal secretModalVisible={secretModalVisible} setSecretModalVisible={setSecretModalVisible} secretPwd={secretPwd} nanumIdx={nanumIdx} />
       <Pressable onPress={onPressItem} style={[styles.container]}>
         {isBefore && (
-          <View style={styles.overlay}>
+          <View style={{...styles.overlay}}>
             <View style={[styles.imageHeader, {width: IMAGE_SIZE}]}>
               {isFavorite == 'Y' ? <StarFilledIcon onPress={onPressRemoveFavorite} size={24} /> : <StarUnfilledIcon onPress={onPressAddFavorite} size={24} />}
             </View>
@@ -159,13 +159,16 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
             <Text style={styles.overlayText}>오픈 예정</Text>
           </View>
         )}
-        <View style={{width: IMAGE_SIZE}}>
+        <View style={{width: IMAGE_SIZE, height: IMAGE_SIZE, borderRadius: 8}}>
           {!isBefore && (
             <View style={[styles.imageHeader, {width: IMAGE_SIZE}]}>
               {isFavorite == 'Y' ? <StarFilledIcon onPress={onPressRemoveFavorite} size={24} /> : <StarUnfilledIcon onPress={onPressAddFavorite} size={24} />}
             </View>
           )}
-          <FastImage style={[styles.image, {width: IMAGE_SIZE, height: IMAGE_SIZE}]} source={{uri: imageUri}}></FastImage>
+          <FastImage
+            resizeMode={FastImage.resizeMode.cover}
+            style={[styles.image, {width: IMAGE_SIZE, height: IMAGE_SIZE}]}
+            source={{uri: imageUri}}></FastImage>
         </View>
         <View style={{marginTop: 10}}>
           <Tag label={nanumMethod == 'M' ? '우편' : '오프라인'} />
@@ -213,6 +216,7 @@ const styles = StyleSheet.create({
   },
   image: {
     borderRadius: 8,
+    aspectRatio: 1 / 1,
   },
   imageHeader: {
     position: 'absolute',
