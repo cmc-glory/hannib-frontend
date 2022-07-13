@@ -6,7 +6,7 @@ import {showMessage} from 'react-native-flash-message'
 
 import {DeleteQnAModal} from './DeleteQnAModal'
 import * as theme from '../../theme'
-import {IInquiryNanumDto, IInquiryEditDto, IInquiryDeleteDto} from '../../types'
+import {IInquiryNanumDto, IInquiryEditDto} from '../../types'
 import {LockIcon} from '../utils'
 import {queryKeys, updateInquiry} from '../../api'
 
@@ -103,7 +103,7 @@ const Question = ({item, accountIdx, nanumIdx, inquiryIdx}: QuestionProps) => {
         deleteQnAModalVisible={deleteQnAModalVisible}
         setDeleteQnAModalVisible={setDeleteQnAModalVisible}
         nanumIdx={nanumIdx}
-        accountIdx={accountIdx}
+        inquiryIdx={inquiryIdx}
       />
       <View style={[theme.styles.rowSpaceBetween, {marginBottom: 8}]}>
         <View style={[theme.styles.rowFlexStart]}>
