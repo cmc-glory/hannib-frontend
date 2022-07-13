@@ -10,7 +10,7 @@ type GoodsFilterTabProps = {
   setLocationFilter: React.Dispatch<React.SetStateAction<'전체' | INanumMethod>>
   itemFilter: '최신순' | '인기순' | '추천순'
   setShowItemFilterBottomSheet: React.Dispatch<React.SetStateAction<boolean>>
-  onPressLocationFilter: (type: INanumMethod | '전체') => void
+  //onPressLocationFilter: (type: INanumMethod | '전체') => void
 }
 
 type ButtonProps = {
@@ -18,7 +18,7 @@ type ButtonProps = {
   locationFilter: '전체' | INanumMethod
   setLocationFilter: React.Dispatch<React.SetStateAction<'전체' | INanumMethod>>
   index: 0 | 1 | 2
-  onPressLocationFilter: (type: INanumMethod | '전체') => void
+  //onPressLocationFilter: (type: INanumMethod | '전체') => void
 }
 
 const locationMap: {
@@ -31,15 +31,15 @@ const locationMap: {
   전체: '전체',
 }
 
-const Button = ({text, locationFilter, setLocationFilter, index, onPressLocationFilter}: ButtonProps) => {
+const Button = ({text, locationFilter, setLocationFilter, index}: ButtonProps) => {
   const locationValue = locationMap[text]
   const buttonStyle = useMemo(() => (locationValue == locationFilter ? styles.selectedButton : styles.unselectedButton), [locationFilter])
   const textStyle = useMemo(() => (locationValue == locationFilter ? styles.selectedText : styles.unselectedText), [locationFilter])
 
   const onPressButton = useCallback(() => {
     setLocationFilter(locationValue)
-    onPressLocationFilter(locationValue)
-  }, [])
+    ///onPressLocationFilter(locationValue)
+  }, [locationValue])
 
   return (
     <Pressable style={[styles.button, buttonStyle]} onPress={onPressButton}>
@@ -53,8 +53,8 @@ export const NanumListFilterTab = ({
   setLocationFilter,
   itemFilter,
   setShowItemFilterBottomSheet,
-  onPressLocationFilter,
-}: GoodsFilterTabProps) => {
+}: //onPressLocationFilter,
+GoodsFilterTabProps) => {
   const onPressItemFilter = useCallback(() => {
     setShowItemFilterBottomSheet(showItemFilterBottomSheet => !showItemFilterBottomSheet)
   }, [])
@@ -66,19 +66,22 @@ export const NanumListFilterTab = ({
           locationFilter={locationFilter}
           setLocationFilter={setLocationFilter}
           index={0}
-          onPressLocationFilter={onPressLocationFilter}></Button>
+          //onPressLocationFilter={onPressLocationFilter}
+        ></Button>
         <Button
           text="우편"
           locationFilter={locationFilter}
           setLocationFilter={setLocationFilter}
           index={1}
-          onPressLocationFilter={onPressLocationFilter}></Button>
+          //onPressLocationFilter={onPressLocationFilter}
+        ></Button>
         <Button
           text="오프라인"
           locationFilter={locationFilter}
           setLocationFilter={setLocationFilter}
           index={2}
-          onPressLocationFilter={onPressLocationFilter}></Button>
+          //onPressLocationFilter={onPressLocationFilter}
+        ></Button>
       </View>
 
       <View>

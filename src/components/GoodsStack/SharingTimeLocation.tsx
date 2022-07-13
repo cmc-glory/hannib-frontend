@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useMemo} from 'react'
 import {View, Text, StyleSheet} from 'react-native'
 import moment from 'moment'
 import {LocationIcon} from '../utils'
@@ -11,11 +11,13 @@ type SharingTimeLocationProps = {
 
 type SharingTimeLocationItemProps = {
   schedule: INanumDateDto
+  scheduleNum: number
+  index: number
 }
 
-const SharingTimeLocationItem = ({schedule}: SharingTimeLocationItemProps) => {
+const SharingTimeLocationItem = ({schedule, scheduleNum, index}: SharingTimeLocationItemProps) => {
   return (
-    <View style={[theme.styles.rowSpaceBetween, {marginBottom: 12}]}>
+    <View style={[theme.styles.rowSpaceBetween, scheduleNum != index && {marginBottom: 12}]}>
       <View style={[theme.styles.rowFlexStart]}>
         <View style={styles.dot} />
         <Text style={{fontSize: 16, color: theme.gray700}}>{moment(schedule.acceptDate).format('YY.MM.DD HH:mm')}</Text>
@@ -29,11 +31,12 @@ const SharingTimeLocationItem = ({schedule}: SharingTimeLocationItemProps) => {
 }
 
 export const SharingTimeLocation = ({schedules}: SharingTimeLocationProps) => {
-  console.log(schedules)
+  const scheduleNum = useMemo(() => schedules.length - 1, [])
+
   return (
     <View>
       {schedules?.map((schedule, index) => (
-        <SharingTimeLocationItem key={index} schedule={schedule} />
+        <SharingTimeLocationItem key={index} schedule={schedule} scheduleNum={scheduleNum} index={index} />
       ))}
     </View>
   )

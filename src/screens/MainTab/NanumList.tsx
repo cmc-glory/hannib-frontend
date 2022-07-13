@@ -22,6 +22,7 @@ const NanumList = () => {
   const queryClient = useQueryClient()
 
   // ******************** states ********************
+  const [sharingsAll, setSharingsAll] = useState<INanumListItem[]>([]) // 나눔 게시글들
   const [sharings, setSharings] = useState<INanumListItem[]>([]) // 나눔 게시글들
   const [refreshing, setRefreshing] = useState<boolean>(false) // 새로고침 state
   const [nanumMethodFilter, setNanumMethodFilter] = useState<'전체' | INanumMethod>('전체') // 필터1 : 전체, 우편, 오프라인
@@ -47,6 +48,7 @@ const NanumList = () => {
   const nanumAllByRecent = useQuery([queryKeys.nanumList], getNanumAllByRecent, {
     onSuccess(data) {
       setRefreshing(false)
+      setSharingsAll(data)
       setSharings(data)
     },
     enabled: isLoggedIn == false && itemFilter == '최신순', // 로그인 하지 않았을 때 전체 보기
@@ -64,11 +66,10 @@ const NanumList = () => {
     onSuccess: data => {
       setRefreshing(false) // 새로고침중이면 로딩 종료
       setSharings(data)
-      console.log(data)
 
       if (nanumMethodFilter !== '전체') {
         // 현재 오프라인, 온라인 필터가 설정된 경우엔 보여질 아이템 재설정
-        onPressLocationFilter(nanumMethodFilter)
+        //onPressLocationFilter(nanumMethodFilter)
       }
     },
     enabled: isLoggedIn == true && itemFilter == '최신순', // 필터가 최신순으로 설정됐을 때만
@@ -79,7 +80,6 @@ const NanumList = () => {
     onSuccess(data) {
       setRefreshing(false) // 새로고침중이면 로딩 종료
       setSharings(data)
-      console.log(data)
     },
     onError(err) {
       console.log(err)
@@ -134,19 +134,25 @@ const NanumList = () => {
     setShowSelectCategoryModal(showSelectCategoryModal => !showSelectCategoryModal)
   }, [])
 
-  // 전체, 우편, 오프라인 클릭시
-  const onPressLocationFilter = useCallback(
-    (type: INanumMethod | '전체') => {
-      if (type == '전체') {
-      } else {
-        if (sharings != undefined) {
-          console.log(sharings)
-          setSharings(sharings.filter((item: INanumListItem) => item.nanumMethod == type))
-        }
-      }
-    },
-    [sharings],
-  )
+  // // 전체, 우편, 오프라인 클릭시
+  // const onPressLocationFilter = useCallback(
+  //   (type: INanumMethod | '전체') => {
+  //     // if (type == '전체') {
+  //     //   setSharings(sharingsAll)
+  //     // } else {
+  //     //   if (sharings != undefined) {
+  //     //     const temp = sharingsAll.filter((item: INanumListItem) => item.nanumMethod == type)
+  //     //     setSharings(temp)
+  //     //   }
+  //     // }
+  //   },
+  //   [sharingsAll, sharings],
+  // )
+
+  useEffect(() => {
+    console.log('sharings changed')
+    console.log(sharings)
+  }, [])
 
   return (
     <SafeAreaView style={[styles.container]} edges={['top', 'left', 'right']}>
@@ -183,7 +189,7 @@ const NanumList = () => {
             setLocationFilter={setNanumMethodFilter}
             itemFilter={itemFilter}
             setShowItemFilterBottomSheet={setShowItemFilterBottomSheet}
-            onPressLocationFilter={onPressLocationFilter}
+            //onPressLocationFilter={onPressLocationFilter}
           />
           {sharings.length == 0 ? (
             <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
@@ -206,7 +212,7 @@ const NanumList = () => {
           ) : (
             <FlatList
               contentContainerStyle={[{paddingHorizontal: theme.PADDING_SIZE, paddingVertical: 6}]}
-              data={sharings}
+              data={nanumMethodFilter == '전체' ? sharings : sharings.filter(item => item.nanumMethod == nanumMethodFilter)}
               renderItem={({item}) => <NanumListItem item={item}></NanumListItem>}
               refreshing={refreshing}
               numColumns={2}
