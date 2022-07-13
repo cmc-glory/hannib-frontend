@@ -46,39 +46,25 @@ export const Login = () => {
       const token: KakaoOAuthToken = await login()
       const profile: KakaoProfile = await getKakaoProfile()
 
-      // async storage에서 accountIdx 가져와서 해당 accountIdx에 대한 정보가 있는 지 확인
-      // getString('accountIdx').then(idx => {
-      //   if (idx == null || idx == '' || idx == undefined) {
-      //     //accountIdx가 async storage에 없으면, 회원 가입 페이지로 이동
-      //     navigation.navigate('LoginStackNavigator', {
-      //       screen: 'SetProfile',
-      //       params: {
-      //         email: profile.email,
-      //       },
-      //     })
-      //     return
-      //   }
-      // async storage에 accountIdx가 있으면, 해당 accountIdx에 대한 계정 정보가 있는지 확인
-      // getAccountInfoByEmail(profile.email)
-      //   .then(res => {
-      //     console.log(res)
-      //     if (res == '') {
-      // 해당 accountIdx에 대한 계정 정보가 없으면 회원 가입 페이지로 이동
-      navigation.navigate('LoginStackNavigator', {
-        screen: 'SetProfile',
-        params: {
-          email: profile.email,
-        },
-      })
-      //   } else {
-      //     // 해당 accountIdx에 대한 계정 정보가 있으면 로그인 시킴
-      //     dispatch(ReduxLogin(res))
-      //   }
-      // })
-      // .catch(err => {
-      //   console.log(err)
-      // })
-      //})
+      // 해당 이메일로 가입된 회원인지 확인
+      getAccountInfoByEmail(profile.email)
+        .then(res => {
+          dispatch(ReduxLogin(res))
+          navigation.navigate('MainTabNavigator', {
+            screen: 'NanumList',
+          })
+        })
+        .catch(err => {
+          // 해당 이메일이 없는 경우 회원 가입 페이지로 이동
+          if (err.response.status == 500) {
+            navigation.navigate('LoginStackNavigator', {
+              screen: 'SetProfile',
+              params: {
+                email: profile.email,
+              },
+            })
+          }
+        })
     } catch (err) {
       console.log(err)
       showMessage({
@@ -98,47 +84,48 @@ export const Login = () => {
   }
 
   const SignInWithGoogle = async () => {
-    const result = await GoogleSignin.signIn()
+    try {
+      const result = await GoogleSignin.signIn()
 
-    const idToken = result.idToken
-    const user = result.user
-    const googleCredential = auth.GoogleAuthProvider.credential(idToken)
-    auth().signInWithCredential(googleCredential)
-
-    // async storage에서 accountIdx 가져와서 해당 accountIdx에 대한 정보가 있는 지 확인
-    getString('accountIdx').then(idx => {
-      if (idx == null || idx == '' || idx == undefined) {
-        //accountIdx가 async storage에 없으면, 회원 가입 페이지로 이동
-        navigation.navigate('LoginStackNavigator', {
-          screen: 'SetProfile',
-          params: {
-            email: user.email,
-          },
-        })
-        return
-      }
-      const accountIdx = parseInt(idx)
-      // async storage에 accountIdx가 있으면, 해당 accountIdx에 대한 계정 정보가 있는지 확인
-      getAccountInfoByIdx(accountIdx)
+      const idToken = result.idToken
+      const user = result.user
+      const googleCredential = auth.GoogleAuthProvider.credential(idToken)
+      auth().signInWithCredential(googleCredential)
+      // 해당 이메일로 가입된 회원인지 확인
+      getAccountInfoByEmail(user.email)
         .then(res => {
-          if (res == '') {
-            // 해당 accountIdx에 대한 계정 정보가 없으면 회원 가입 페이지로 이동
+          dispatch(ReduxLogin(res))
+          navigation.navigate('MainTabNavigator', {
+            screen: 'NanumList',
+          })
+        })
+        .catch(err => {
+          // 해당 이메일이 없는 경우 회원 가입 페이지로 이동
+          if (err.response.status == 500) {
             navigation.navigate('LoginStackNavigator', {
               screen: 'SetProfile',
               params: {
                 email: user.email,
               },
             })
-          } else {
-            // 해당 accountIdx에 대한 계정 정보가 있으면 로그인 시킴
-            dispatch(ReduxLogin(res))
-            //storeString('accountIdx', res.accountIdx)
           }
         })
-        .catch(err => {
-          console.log(err)
-        })
-    })
+    } catch (err) {
+      console.log(err)
+      showMessage({
+        message: '구글 로그인 중 에러가 발생했습니다',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+      })
+    }
   }
 
   const SignInWithApple = async () => {
@@ -151,40 +138,41 @@ export const Login = () => {
       const appleCredential = auth.AppleAuthProvider.credential(identityToken, nonce)
       auth().signInWithCredential(appleCredential)
 
-      // async storage에서 accountIdx 가져와서 해당 accountIdx에 대한 정보가 있는 지 확인
-      getString('accountIdx').then(idx => {
-        if (idx == null || idx == '' || idx == undefined) {
-          //accountIdx가 async storage에 없으면, 회원 가입 페이지로 이동
-          navigation.navigate('LoginStackNavigator', {
-            screen: 'SetProfile',
-            params: {
-              email: appleAuthRequestResponse.email,
-            },
-          })
-          return
-        }
-        const accountIdx = parseInt(idx)
-        // async storage에 accountIdx가 있으면, 해당 accountIdx에 대한 계정 정보가 있는지 확인
-        getAccountInfoByIdx(accountIdx)
+      // 이미 애플 계정으로 한입에 로그인한 적 있으면 email이 null이 옴
+      if (appleAuthRequestResponse.email == null) {
+        // 로그인 한 적 있으므로 async storage에서 이메일을 가져와서
+        getString('email').then(email => {
+          if (email != undefined && email != null) {
+            // 그 이메일로 계정 정보를 찾고 로그인 시킴
+            getAccountInfoByEmail(email).then(res => {
+              dispatch(ReduxLogin(res))
+              navigation.navigate('MainTabNavigator', {
+                screen: 'NanumList',
+              })
+            })
+          }
+        })
+      } else {
+        // 애플 계정 이메일로 가입한 적 있는지 확인 (ex. js7056@naver.com으로 카카오 가입을 한 후 js7056@naver.com으로 첫 애플 로그인을 시도한 경우)
+        getAccountInfoByEmail(appleAuthRequestResponse.email)
           .then(res => {
-            if (res == '') {
-              // 해당 accountIdx에 대한 계정 정보가 없으면 회원 가입 페이지로 이동
+            dispatch(ReduxLogin(res))
+            navigation.navigate('MainTabNavigator', {
+              screen: 'NanumList',
+            })
+          })
+          .catch(err => {
+            // 해당 이메일이 없는 경우 회원 가입 페이지로 이동
+            if (err.response.status == 500) {
               navigation.navigate('LoginStackNavigator', {
                 screen: 'SetProfile',
                 params: {
                   email: appleAuthRequestResponse.email,
                 },
               })
-            } else {
-              // 해당 accountIdx에 대한 계정 정보가 있으면 로그인 시킴
-              dispatch(ReduxLogin(res))
-              //storeString('accountIdx', res.accountIdx)
             }
           })
-          .catch(err => {
-            console.log(err)
-          })
-      })
+      }
     } catch (error: any) {
       if (error.code === appleAuth.Error.CANCELED) {
         console.warn('User canceled Apple Sign in.')

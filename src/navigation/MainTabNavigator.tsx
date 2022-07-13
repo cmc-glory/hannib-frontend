@@ -51,7 +51,7 @@ function BottomTab() {
         },
       }}>
       <Tab.Screen
-        name="GoodsList"
+        name="NanumList"
         options={{
           title: '리스트',
           tabBarIcon: ({focused}) => (focused ? <HomeIconFocused /> : <HomeIcon />),

@@ -11,6 +11,7 @@ declare module '@env' {
 }
 declare namespace ReactNavigation {
   interface RootParamList {
+    NanumList: undefined
     Login: undefined
     FindId: undefined
     FindPassword: undefined
