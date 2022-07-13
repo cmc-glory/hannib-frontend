@@ -38,7 +38,7 @@ export const WriteQnA = () => {
   // ******************** react queries********************
   const postInquiryQuery = useMutation(queryKeys.inquiry, postInquiry, {
     onSuccess(data, variables, context) {
-      queryClient.invalidateQueries(queryKeys.inquiry)
+      queryClient.invalidateQueries([queryKeys.inquiry, nanumIdx])
       navigation.goBack()
     },
     onError(error, variables, context) {
@@ -55,7 +55,7 @@ export const WriteQnA = () => {
   }, [])
 
   // ******************** callbacks ********************
-  const onPressSubmit = useCallback(() => {
+  const onPressSubmit = () => {
     // 백으로 내용이랑 비밀 여부 post 하는 api
     const questionNanumDto: IInquiryNanumDto = {
       nanumIdx,
@@ -68,7 +68,7 @@ export const WriteQnA = () => {
 
     postInquiryQuery.mutate(questionNanumDto)
     // 백으로 보낸 다음에 전으로 이동
-  }, [comments, isSecret, nanumIdx, accountIdx])
+  }
 
   return (
     <SafeAreaView style={[theme.styles.safeareaview]}>

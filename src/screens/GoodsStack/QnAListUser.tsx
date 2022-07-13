@@ -1,8 +1,8 @@
 import React, {useCallback, useState, useMemo} from 'react'
-import {View, Text, ScrollView, Pressable, StyleSheet, Alert} from 'react-native'
+import {View, Text, ScrollView, Pressable, StyleSheet, Alert, RefreshControl} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation, useRoute} from '@react-navigation/native'
-import {useQuery} from 'react-query'
+import {useQuery, useQueryClient} from 'react-query'
 
 import {QnAListUserRouteProps} from '../../navigation/GoodsStackNavigator'
 import {StackHeader, SharingPreview} from '../../components/utils'
@@ -21,13 +21,22 @@ export const QnAListUser = () => {
 
   const navigation = useNavigation()
   const route = useRoute<QnAListUserRouteProps>()
+  const queryClient = useQueryClient()
+
   const {nanumIdx} = useMemo(() => route.params, [])
 
   console.log('nanumIdx : ', nanumIdx)
 
+  // ******************** states ********************
+  const [refreshing, setRefreshing] = useState<boolean>(false)
+
   // ******************** reactQueries ********************
   const nanumInfo = useQuery([queryKeys.nanumDetail, nanumIdx], () => getNanumByIndex(nanumIdx))
-  const inquiries = useQuery([queryKeys.inquiry, nanumIdx], () => getInquiryByIndex(nanumIdx))
+  const inquiries = useQuery([queryKeys.inquiry, nanumIdx], () => getInquiryByIndex(nanumIdx), {
+    onSuccess(data) {
+      setRefreshing(false)
+    },
+  })
 
   // 문의글 작성으로 이동
   const onPressWrite = useCallback(() => {
@@ -55,28 +64,45 @@ export const QnAListUser = () => {
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
       <StackHeader goBack title="문의" />
-      <ScrollView bounces={false} style={[styles.container]} contentOffset={{x: 0, y: 200}} contentContainerStyle={{flex: 1}}>
+      <View style={styles.container}>
         <SharingPreview uri={nanumInfo.data?.thumbnail} category={nanumInfo.data?.category} title={nanumInfo.data?.title} />
         <Pressable style={[styles.writeButton]} onPress={onPressWrite}>
           <Text style={[theme.styles.bold16, {color: theme.white}]}>문의 작성하기</Text>
         </Pressable>
-        {inquiries?.data?.length > 0 ? (
-          inquiries?.data?.map((qna: IInquiryNanumDto) => <QnAListUserItem item={qna} key={qna.comments + qna.accountIdx} accountIdx={userAccountIdx} />)
-        ) : (
-          <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
-            <EmptyIcon style={{marginBottom: 32}} />
+      </View>
+
+      {inquiries?.data?.length > 0 ? (
+        <ScrollView
+          style={{flex: 1}}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => {
+                setRefreshing(true)
+                queryClient.invalidateQueries([queryKeys.inquiry, nanumIdx])
+              }}
+            />
+          }>
+          <ScrollView contentContainerStyle={{flex: 1, paddingHorizontal: theme.PADDING_SIZE}}>
+            {inquiries?.data?.map((qna: IInquiryNanumDto) => (
+              <QnAListUserItem item={qna} key={qna.comments + qna.accountIdx} accountIdx={userAccountIdx} nanumIdx={nanumIdx} />
+            ))}
+          </ScrollView>
+        </ScrollView>
+      ) : (
+        <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
+          <EmptyIcon style={{marginBottom: 32}} />
+          <View>
+            <Text style={[theme.styles.bold20, {marginBottom: 8, textAlign: 'center'}]}>문의글이 없습니다.</Text>
             <View>
-              <Text style={[theme.styles.bold20, {marginBottom: 8, textAlign: 'center'}]}>문의글이 없습니다.</Text>
-              <View>
-                <Text style={[{color: theme.gray700, fontSize: 16, textAlign: 'center'}, theme.styles.text16]}>문의하실 사항이 있으시다면</Text>
-                <Text style={[{color: theme.gray700, fontSize: 16, textAlign: 'center'}, theme.styles.text16]}>
-                  상단의 문의 작성하기를 통해 문의글을 남겨주세요.
-                </Text>
-              </View>
+              <Text style={[{color: theme.gray700, fontSize: 16, textAlign: 'center'}, theme.styles.text16]}>문의하실 사항이 있으시다면</Text>
+              <Text style={[{color: theme.gray700, fontSize: 16, textAlign: 'center'}, theme.styles.text16]}>
+                상단의 문의 작성하기를 통해 문의글을 남겨주세요.
+              </Text>
             </View>
           </View>
-        )}
-      </ScrollView>
+        </View>
+      )}
     </SafeAreaView>
   )
 }

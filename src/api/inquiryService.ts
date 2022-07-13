@@ -25,7 +25,7 @@ export const postInquiry = async (questionNanumDto: IInquiryNanumDto) => {
 }
 
 // 문의 글 수정
-export const postAnswer = async (questionNanumDto: IInquiryNanumDto) => {
+export const updateInquiry = async (questionNanumDto: IInquiryNanumDto) => {
   const {data} = await apiClient.put('/api/nanum/inquiry', questionNanumDto)
   return data
 }
@@ -37,7 +37,7 @@ export const deleteInquiry = async (form: DeleteInfo) => {
 }
 
 // 문의글 답변 작성
-export const updateInquiry = async (answerNanumDto: IInquiryNanumDto) => {
+export const postAnswer = async (answerNanumDto: IInquiryNanumDto) => {
   const {data} = await apiClient.put('/api/nanum/inquiry/answer', answerNanumDto)
   return data
 }

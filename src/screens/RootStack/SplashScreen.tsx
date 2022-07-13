@@ -17,13 +17,7 @@ export const SplashScreen = () => {
     onSuccess(data, variables, context) {
       console.log('reached')
       //나중에 api 수정되면 data 값 넣어주기
-      data.accountCategoryDtoList = [
-        {
-          job: '가수',
-          category: '아이유',
-          accountIdx: data.accountIdx,
-        },
-      ]
+
       dispatch(
         login({
           ...data,

@@ -30,7 +30,7 @@ const NanumList = () => {
   const [showSelectCategoryModal, setShowSelectCategoryModal] = useState<boolean>(false) // 카테고리 선택하는 드롭다운 띄울지
   const [userCategory, setUserCategory] = useState<IAccountCategoryDto>({
     job: '가수',
-    category: '전체보기',
+    categoryName: '전체보기',
     accountIdx: 0,
   }) // 현재 사용자가 선택한 카테고리.
   const [bannerInfo, setBannerInfo] = useState({
@@ -60,7 +60,7 @@ const NanumList = () => {
     enabled: isLoggedIn == false && itemFilter == '인기순', // 로그인 하지 않았을 때 전체 보기
   })
 
-  const nanumByRecent = useQuery([queryKeys.nanumList, userCategory], () => getNanumByRecent(userCategory.category), {
+  const nanumByRecent = useQuery([queryKeys.nanumList, userCategory], () => getNanumByRecent(userCategory.categoryName), {
     onSuccess: data => {
       setRefreshing(false) // 새로고침중이면 로딩 종료
       setSharings(data)
@@ -75,7 +75,7 @@ const NanumList = () => {
   })
 
   // 카테고리가 설정 됐을 때 인기순
-  const nanumByFaavorites = useQuery([queryKeys.nanumList, userCategory], () => getNanumByPopularity(userCategory.category), {
+  const nanumByFaavorites = useQuery([queryKeys.nanumList, userCategory], () => getNanumByPopularity(userCategory.categoryName), {
     onSuccess(data) {
       setRefreshing(false) // 새로고침중이면 로딩 종료
       setSharings(data)
@@ -132,7 +132,7 @@ const NanumList = () => {
       <View style={styles.headerContainer}>
         {isLoggedIn ? (
           <Pressable style={[styles.titleContainer]} onPress={onPressSelectCategory}>
-            <Text style={styles.title}>{userCategory.category}</Text>
+            <Text style={styles.title}>{userCategory.categoryName}</Text>
             <DownArrowIcon onPress={onPressSelectCategory} />
           </Pressable>
         ) : (

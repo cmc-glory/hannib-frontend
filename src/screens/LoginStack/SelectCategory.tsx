@@ -164,7 +164,7 @@ export const SelectCategory = () => {
   // 해당 카테고리가 선택됐는지
   const isSelected = useCallback(
     (category: ICategoryDto) => {
-      return userSelectedCategories.filter(item => item.job == category.job && item.category == category.nickName).length == 0 ? false : true
+      return userSelectedCategories.filter(item => item.job == category.job && item.categoryName == category.nickName).length == 0 ? false : true
     },
     [userSelectedCategories],
   )
@@ -173,7 +173,7 @@ export const SelectCategory = () => {
   const onPressCategory = useCallback(
     (category: ICategoryDto) => {
       if (isSelected(category)) {
-        setUserSelectedCategories(userSelectedCategories.filter(item => item.job != category.job || item.category != category.nickName))
+        setUserSelectedCategories(userSelectedCategories.filter(item => item.job != category.job || item.categoryName != category.nickName))
       } else {
         if (userSelectedCategories.length == 5) {
           Alert.alert('최대 5명까지 선택 가능합니다')
@@ -182,7 +182,7 @@ export const SelectCategory = () => {
         setUserSelectedCategories(
           userSelectedCategories.concat({
             job: category.job,
-            category: category.nickName,
+            categoryName: category.nickName,
             accountIdx: 0,
           }),
         )
@@ -196,7 +196,7 @@ export const SelectCategory = () => {
     setUserSelectedCategories(userSelectedCategories =>
       userSelectedCategories.filter(item => {
         console.log(item, param)
-        return item.job != param.job || item.category != param.category
+        return item.job != param.job || item.categoryName != param.categoryName
       }),
     )
   }, [])
@@ -231,8 +231,8 @@ export const SelectCategory = () => {
           <View style={[theme.styles.rowFlexStart, {flexWrap: 'wrap', marginBottom: 16}, result.length == 0 && {position: 'absolute', top: 0}]}>
             {userSelectedCategories.length > 0 &&
               userSelectedCategories.map(item => (
-                <View key={item.category + item.job} style={[theme.styles.rowFlexStart, {marginBottom: 8}, styles.selectedCategoryButton]}>
-                  <Text style={[{marginRight: 8}, theme.styles.text14]}>{item.category}</Text>
+                <View key={item.categoryName + item.job} style={[theme.styles.rowFlexStart, {marginBottom: 8}, styles.selectedCategoryButton]}>
+                  <Text style={[{marginRight: 8}, theme.styles.text14]}>{item.categoryName}</Text>
                   <XSmallIcon size={16} onPress={() => onPressRemoveCategory(item)} />
                 </View>
               ))}

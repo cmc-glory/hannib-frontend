@@ -1,19 +1,24 @@
 import React, {useState, useCallback, useMemo} from 'react'
 import {View, Text, TextInput, Pressable, StyleSheet} from 'react-native'
 import moment from 'moment'
+import {useMutation} from 'react-query'
+
 import {DeleteQnAModal} from './DeleteQnAModal'
 import * as theme from '../../theme'
 import {IInquiryNanumDto} from '../../types'
 import {LockIcon} from '../utils'
+import {queryKeys, updateInquiry} from '../../api'
 
 type QnAListUserItemProps = {
   item: IInquiryNanumDto
   accountIdx: number
+  nanumIdx: number
 }
 
 type QuestionProps = {
   item: IInquiryNanumDto
   accountIdx: number
+  nanumIdx: number
 }
 
 type Answerprops = {
@@ -30,7 +35,7 @@ const QnASecret = () => {
   )
 }
 
-const Question = ({item, accountIdx}: QuestionProps) => {
+const Question = ({item, accountIdx, nanumIdx}: QuestionProps) => {
   // ******************** utils ********************
   const {secretYn, answerComments, creatorId, comments} = item
   const writerAccountIdx = item.accountIdx
@@ -46,6 +51,13 @@ const Question = ({item, accountIdx}: QuestionProps) => {
     return accountIdx == writerAccountIdx && answerComments == '' // 작성자가 본인이고, 답변이 달리지 않았을 때만 수정 및 삭제 가능
   }, [])
 
+  // ******************** react query ********************
+  const updateInquiryQuery = useMutation([queryKeys.inquiry, nanumIdx], updateInquiry, {
+    onSuccess(data, variables, context) {},
+    onError(error, variables, context) {},
+  })
+
+  // ******************** callbacks ********************
   const onPressEdit = useCallback(() => {
     setEditPressed(true)
   }, [])
@@ -59,7 +71,12 @@ const Question = ({item, accountIdx}: QuestionProps) => {
 
   return (
     <View>
-      <DeleteQnAModal deleteQnAModalVisible={deleteQnAModalVisible} setDeleteQnAModalVisible={setDeleteQnAModalVisible} />
+      <DeleteQnAModal
+        deleteQnAModalVisible={deleteQnAModalVisible}
+        setDeleteQnAModalVisible={setDeleteQnAModalVisible}
+        nanumIdx={nanumIdx}
+        accountIdx={accountIdx}
+      />
       <View style={[theme.styles.rowSpaceBetween, {marginBottom: 8}]}>
         <View style={[theme.styles.rowFlexStart]}>
           <Text style={[theme.styles.text12, {fontSize: 12, color: isAnswered ? theme.main : theme.gray500}]}>{isAnswered ? '답변완료' : '답변예정'}</Text>
@@ -119,14 +136,14 @@ const Answer = ({answer}: Answerprops) => {
   )
 }
 
-export const QnAListUserItem = ({item, accountIdx}: QnAListUserItemProps) => {
+export const QnAListUserItem = ({item, accountIdx, nanumIdx}: QnAListUserItemProps) => {
   return (
     <View style={[styles.qnaListItemContainer]}>
       {item.secretYn == 'Y' && item.accountIdx != accountIdx ? (
         <QnASecret />
       ) : (
         <>
-          <Question item={item} accountIdx={accountIdx} />
+          <Question item={item} accountIdx={accountIdx} nanumIdx={nanumIdx} />
           {item.answerComments != '' && <Answer answer={item.answerComments} />}
         </>
       )}

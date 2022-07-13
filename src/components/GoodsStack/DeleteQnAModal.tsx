@@ -1,26 +1,68 @@
 import React, {useCallback} from 'react'
 import {View, Text, Pressable, Dimensions, StyleSheet} from 'react-native'
 import Modal from 'react-native-modal'
+import {useMutation, useQueryClient} from 'react-query'
+import {showMessage, Message} from 'react-native-flash-message'
 import {XIcon} from '../utils'
 import * as theme from '../../theme'
-import {useDispatch} from 'react-redux'
+import {queryKeys, deleteInquiry} from '../../api'
 
 type LogoutModalProps = {
   deleteQnAModalVisible: boolean
-
   setDeleteQnAModalVisible: React.Dispatch<React.SetStateAction<boolean>>
+  nanumIdx: number
+  accountIdx: number
 }
 
 const MODAL_PADDING = 24
 const BUTTON_WIDTH = (Dimensions.get('window').width - theme.PADDING_SIZE * 2 - MODAL_PADDING * 2 - 8) / 2
 
-export const DeleteQnAModal = ({deleteQnAModalVisible, setDeleteQnAModalVisible}: LogoutModalProps) => {
-  const dispatch = useDispatch()
+export const DeleteQnAModal = ({deleteQnAModalVisible, setDeleteQnAModalVisible, nanumIdx, accountIdx}: LogoutModalProps) => {
+  const queryClient = useQueryClient()
+
+  const deleteInquiryQuery = useMutation([queryKeys.inquiry, nanumIdx], deleteInquiry, {
+    onSuccess(data, variables, context) {
+      showMessage({
+        message: '삭제가 완료됐습니다.',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+      })
+
+      queryClient.invalidateQueries([queryKeys.inquiry, nanumIdx])
+    },
+    onError(error, variables, context) {
+      showMessage({
+        message: '삭제 중 오류가 발생했습니다.',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+      })
+    },
+  })
   const hideModal = useCallback(() => setDeleteQnAModalVisible(false), [])
   const onPressDelete = useCallback(() => {
     // deletion code goes here...
     setDeleteQnAModalVisible(false)
-  }, [])
+    deleteInquiryQuery.mutate({
+      nanumIdx,
+      accountIdx,
+    })
+  }, [nanumIdx, accountIdx])
 
   return (
     <Modal isVisible={deleteQnAModalVisible == true} backdropColor={theme.gray800} backdropOpacity={0.6} onBackdropPress={hideModal}>
