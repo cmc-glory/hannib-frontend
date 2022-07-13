@@ -3,7 +3,7 @@ import {View, Text, Pressable, TextInput, StyleSheet, Dimensions} from 'react-na
 import Modal from 'react-native-modal'
 import {XIcon} from '../utils'
 import * as theme from '../../theme'
-import {useMutation} from 'react-query'
+import {useQueryClient, useMutation} from 'react-query'
 import {useNavigation} from '@react-navigation/native'
 import {queryKeys, deleteNanumForm} from '../../api'
 
@@ -20,8 +20,10 @@ const Separator = () => {
 }
 
 export const DeleteModal = ({deleteModalVisible, setDeleteModalVisible, nanumIdx}: DeleteModalProps) => {
-  // ******************** states ********************
+  // ******************** utils ********************
   const navigation = useNavigation()
+  const queryClient = useQueryClient()
+
   // ******************** states ********************
   const [deleteReason, setDeleteReason] = useState<string>('')
 
@@ -30,6 +32,7 @@ export const DeleteModal = ({deleteModalVisible, setDeleteModalVisible, nanumIdx
     onSuccess(data, variables, context) {
       console.log('success')
       console.log(data)
+      queryClient.invalidateQueries([queryKeys.nanumList])
       navigation.navigate('MainTabNavigator')
     },
     onError(error, variables, context) {
