@@ -23,7 +23,7 @@ export const Banner = ({imageUri, title, nanumIdx}: BannerProps) => {
       : undefined
   }, [])
   return imageUri == '' ? (
-    <Pressable style={[styles.container, styles.bannerImage, {backgroundColor: theme.main50}]} onPress={onPressBanner}>
+    <Pressable style={[styles.container, styles.bannerImage, {backgroundColor: theme.main50}]}>
       <View style={[styles.absolute, styles.textContainer]}>
         <View style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start'}}>
           <Text style={[theme.styles.bold16, {color: theme.gray700, marginRight: 4}, theme.styles.text16]}>좋아하는 셀럽의</Text>
@@ -35,10 +35,10 @@ export const Banner = ({imageUri, title, nanumIdx}: BannerProps) => {
             <Text style={[theme.styles.bold16, {color: theme.main}, theme.styles.text16]}>생일·공연 홍보 배너</Text>
             <Text style={[theme.styles.bold16, {color: theme.gray700}, theme.styles.text16]}>를 걸어보세요</Text>
           </View>
-          <View style={[theme.styles.rowFlexStart]}>
+          <Pressable style={[theme.styles.rowFlexStart]} onPress={onPressBanner}>
             <Text style={{fontSize: 12, fontFamily: 'Pretendard-Medium', color: theme.gray700}}>배너 신청하기</Text>
             <RightArrowSvg />
-          </View>
+          </Pressable>
         </View>
       </View>
     </Pressable>

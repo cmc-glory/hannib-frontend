@@ -1,11 +1,12 @@
 import React, {useState, useCallback, useMemo} from 'react'
 import {View, Text, TextInput, Pressable, StyleSheet} from 'react-native'
 import moment from 'moment'
-import {useMutation} from 'react-query'
+import {useMutation, useQueryClient} from 'react-query'
+import {showMessage} from 'react-native-flash-message'
 
 import {DeleteQnAModal} from './DeleteQnAModal'
 import * as theme from '../../theme'
-import {IInquiryNanumDto} from '../../types'
+import {IInquiryNanumDto, IInquiryEditDto, IInquiryDeleteDto} from '../../types'
 import {LockIcon} from '../utils'
 import {queryKeys, updateInquiry} from '../../api'
 
@@ -13,12 +14,14 @@ type QnAListUserItemProps = {
   item: IInquiryNanumDto
   accountIdx: number
   nanumIdx: number
+  inquiryIdx: number
 }
 
 type QuestionProps = {
   item: IInquiryNanumDto
   accountIdx: number
   nanumIdx: number
+  inquiryIdx: number
 }
 
 type Answerprops = {
@@ -35,10 +38,11 @@ const QnASecret = () => {
   )
 }
 
-const Question = ({item, accountIdx, nanumIdx}: QuestionProps) => {
+const Question = ({item, accountIdx, nanumIdx, inquiryIdx}: QuestionProps) => {
   // ******************** utils ********************
-  const {secretYn, answerComments, creatorId, comments} = item
+  const {secretYn, answerComments, creatorId, comments, createdDate} = item
   const writerAccountIdx = item.accountIdx
+  const queryClient = useQueryClient()
 
   // ******************** states ********************
   const [editPressed, setEditPressed] = useState<boolean>(false) // 수정하기 버튼 눌리면 에디터 띄움
@@ -53,8 +57,26 @@ const Question = ({item, accountIdx, nanumIdx}: QuestionProps) => {
 
   // ******************** react query ********************
   const updateInquiryQuery = useMutation([queryKeys.inquiry, nanumIdx], updateInquiry, {
-    onSuccess(data, variables, context) {},
-    onError(error, variables, context) {},
+    onSuccess(data, variables, context) {
+      queryClient.invalidateQueries([queryKeys.inquiry, nanumIdx])
+      setEditPressed(false)
+    },
+    onError(error, variables, context) {
+      showMessage({
+        // 에러 안내 메세지
+        message: '문의글 업데이트 중 에러가 발생했습니다',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+      })
+    },
   })
 
   // ******************** callbacks ********************
@@ -66,8 +88,14 @@ const Question = ({item, accountIdx, nanumIdx}: QuestionProps) => {
   }, [])
 
   const onPressEditComplete = useCallback(() => {
-    setEditPressed(false)
-  }, [])
+    const inquiryEditDto: IInquiryEditDto = {
+      inquiryIdx: inquiryIdx,
+      comments: editedContent,
+      secretYn: secretYn,
+    }
+    console.log(inquiryEditDto)
+    updateInquiryQuery.mutate(inquiryEditDto)
+  }, [editedContent, inquiryIdx])
 
   return (
     <View>
@@ -102,7 +130,10 @@ const Question = ({item, accountIdx, nanumIdx}: QuestionProps) => {
               textAlignVertical="top"
               multiline
               value={editedContent}
+              placeholder="최대 150자 작성 가능합니다"
+              placeholderTextColor={theme.gray300}
               onChangeText={setEditedContent}
+              maxLength={150}
               style={[theme.styles.input, {height: 150, paddingTop: 16}]}></TextInput>
             <Pressable style={styles.editButton} onPress={onPressEditComplete}>
               <Text style={{color: theme.white}}>수정하기</Text>
@@ -114,7 +145,7 @@ const Question = ({item, accountIdx, nanumIdx}: QuestionProps) => {
       </View>
       <View style={[theme.styles.rowSpaceBetween]}>
         <Text style={[styles.writer]}>{creatorId}</Text>
-        <Text style={[styles.date]}>{moment().format('YYYY.MM.DD HH:mm')}</Text>
+        <Text style={[styles.date]}>{moment(new Date(createdDate)).format('YYYY.MM.DD HH:mm')}</Text>
       </View>
     </View>
   )
@@ -136,14 +167,14 @@ const Answer = ({answer}: Answerprops) => {
   )
 }
 
-export const QnAListUserItem = ({item, accountIdx, nanumIdx}: QnAListUserItemProps) => {
+export const QnAListUserItem = ({item, accountIdx, nanumIdx, inquiryIdx}: QnAListUserItemProps) => {
   return (
     <View style={[styles.qnaListItemContainer]}>
       {item.secretYn == 'Y' && item.accountIdx != accountIdx ? (
         <QnASecret />
       ) : (
         <>
-          <Question item={item} accountIdx={accountIdx} nanumIdx={nanumIdx} />
+          <Question item={item} accountIdx={accountIdx} nanumIdx={nanumIdx} inquiryIdx={inquiryIdx} />
           {item.answerComments != '' && <Answer answer={item.answerComments} />}
         </>
       )}

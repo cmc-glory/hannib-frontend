@@ -148,9 +148,15 @@ export const EditCategory = () => {
       Alert.alert('최소 한 개의 카테고리를 선택해야 합니다.')
       return
     }
+
     let accountDto: IUpdateCategoryDto = {
       accountIdx: user.accountIdx,
-      accountCategoryDto: userSelectedCategories,
+      accountCategoryDto: userSelectedCategories.map(item => {
+        return {
+          ...item,
+          accountIdx: user.accountIdx,
+        }
+      }),
     }
     console.log(accountDto)
     updateUserSelectedCategoryQuery.mutate(accountDto)

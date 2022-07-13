@@ -87,10 +87,11 @@ export const WriteQnA = () => {
         <View style={{marginBottom: 20}}>
           <Text style={[theme.styles.label]}>문의 내용</Text>
           <TextInput
-            placeholder="내용 입력"
             placeholderTextColor={theme.gray300}
             textAlignVertical="top"
             multiline
+            placeholder="최대 150자 작성 가능합니다."
+            maxLength={150}
             style={[theme.styles.input, {paddingTop: 16, height: 250}]}
             value={comments}
             onChangeText={setComments}

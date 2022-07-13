@@ -62,7 +62,7 @@ export const checkNicknameDuplicated = async (nickname: string) => {
 }
 
 // 카테고리 업데이트
-export const updateUserSelectedCategory = async(updateCategoryDto : IUpdateCategoryDto) =>{
+export const updateUserSelectedCategory = async (updateCategoryDto: IUpdateCategoryDto) => {
   const {data} = await apiClient.put('/api/account/category', updateCategoryDto)
   return data
 }

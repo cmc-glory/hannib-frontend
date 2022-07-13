@@ -62,7 +62,7 @@ export const SplashScreen = () => {
       }
     })
 
-    // ************************* Deep Link *************************
+    // ************************* Deep Link *************************x
     //IOS && ANDROID : 앱이 딥링크로 처음 실행될때, 앱이 열려있지 않을 때
     Linking.getInitialURL().then(url => {
       deepLink(url!)
