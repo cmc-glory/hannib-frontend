@@ -1,7 +1,8 @@
 import React, {useCallback, useState} from 'react'
 import {View, Pressable, Text, StyleSheet} from 'react-native'
 import Modal from 'react-native-modal'
-import uuid from 'react-native-uuid'
+import {Shadow} from 'react-native-shadow-2'
+
 import {getStatusBarHeight} from 'react-native-status-bar-height'
 import {isIphoneX} from 'react-native-iphone-x-helper'
 import {useNavigation} from '@react-navigation/native'
@@ -28,14 +29,14 @@ type CategoryItemProps = {
 
 const CategoryItem = ({userCategory, currentCategory, borderTop, borderBottom, onPressItem}: CategoryItemProps) => {
   // ******************** utils ********************
-  const selected: boolean = userCategory.category == currentCategory.category && userCategory.job == userCategory.job
+  const selected: boolean = userCategory.categoryName == currentCategory.categoryName && userCategory.job == userCategory.job
 
   // ******************** renderer ********************
   return (
     <Pressable
       onPress={() => onPressItem(currentCategory)}
       style={[styles.itemContainer, selected && {backgroundColor: theme.main50}, borderTop && styles.borderTop, borderBottom && styles.borderBottom]}>
-      <Text style={[selected && {fontFamily: 'Pretendard-Bold'}]}>{currentCategory.category}</Text>
+      <Text style={[selected && {fontFamily: 'Pretendard-Bold'}]}>{currentCategory.categoryName}</Text>
     </Pressable>
   )
 }
@@ -78,21 +79,23 @@ export const CategoryDropdown = ({showCategoryModal, setShowCategoryModal, userC
         }
       }}
       style={{margin: 0}}>
-      <View style={[styles.container]}>
-        {categories.map((item, index) => {
-          if (index == 0) {
-            return <CategoryItem key={item.category + index} userCategory={userCategory} currentCategory={item} onPressItem={onPressItem} borderTop />
-          } else {
-            return <CategoryItem userCategory={userCategory} currentCategory={item} onPressItem={onPressItem} key={item.category + index} />
-          }
-        })}
-        <CategoryItem
-          userCategory={userCategory}
-          currentCategory={{category: '수정하기', job: '가수', accountIdx: 0}}
-          borderBottom
-          onPressItem={onPressEditCategory}
-        />
-      </View>
+      <Shadow containerViewStyle={[styles.container]} distance={20} startColor="rgba(0,0,0,0.06)">
+        <View style={{borderRadius: 4}}>
+          {categories.map((item, index) => {
+            if (index == 0) {
+              return <CategoryItem key={item.categoryName + index} userCategory={userCategory} currentCategory={item} onPressItem={onPressItem} borderTop />
+            } else {
+              return <CategoryItem userCategory={userCategory} currentCategory={item} onPressItem={onPressItem} key={item.categoryName + index} />
+            }
+          })}
+          <CategoryItem
+            userCategory={userCategory}
+            currentCategory={{categoryName: '수정하기', job: '가수', accountIdx: 0}}
+            borderBottom
+            onPressItem={onPressEditCategory}
+          />
+        </View>
+      </Shadow>
     </Modal>
   )
 }
@@ -104,13 +107,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 12,
     backgroundColor: theme.white,
-    left: -12,
+    left: 0,
   },
   container: {
     position: 'absolute',
     top: MARGIN_TOP,
     zIndex: 100,
-    left: 20,
+    left: 12,
+    width: 144,
   },
   borderTop: {
     borderTopLeftRadius: 4,

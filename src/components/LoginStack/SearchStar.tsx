@@ -18,7 +18,7 @@ export const SearchStar = ({keyword, setKeyword, searchKeyword, label = '최대 
       <View>
         <MagnifierIcon style={styles.maginfier} onPress={() => searchKeyword(keyword)} />
         <TextInput
-          style={[theme.styles.input, {color: theme.gray800}]}
+          style={[theme.styles.input, {color: theme.gray800, backgroundColor: theme.white}]}
           value={keyword}
           onChangeText={setKeyword}
           placeholder="검색어를 입력해 주세요."
@@ -39,6 +39,7 @@ const styles = StyleSheet.create({
   },
   container: {
     marginVertical: 15,
+    zIndex: 1,
   },
   label: {
     color: theme.gray500,

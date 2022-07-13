@@ -11,7 +11,7 @@ import {SearchStar, EmptyResult} from '../../components/LoginStack'
 import * as theme from '../../theme'
 import {ICategoryDto, IAccountCategoryDto} from '../../types'
 import {useAppDispatch, useAppSelector} from '../../hooks'
-import {getAccountInfo, queryKeys, searchCategory} from '../../api'
+import {queryKeys, searchCategory} from '../../api'
 import {updateCategory} from '../../redux/slices'
 
 const BUTTON_GAP = 10
@@ -34,7 +34,7 @@ export const EditCategory = () => {
   const [init, setInit] = useState<boolean>(true) // 처음에만 검색해보세요! 화면 띄움
   const [singerSelected, setSingerSelected] = useState<boolean>(true) // 선택한 대분류
   const [keyword, setKeyword] = useState<string>('')
-  const [result, setResult] = useState<ICategoryDto | ''>('')
+  const [result, setResult] = useState<ICategoryDto[]>([])
   const [userSelectedCategories, setUserSelectedCategories] = useState<IAccountCategoryDto[]>(user.accountCategoryDtoList)
 
   // ******************** react queries  ********************
@@ -69,24 +69,30 @@ export const EditCategory = () => {
       // 입력 값이 없을 때는 리턴
       if (keyword == '') return
       init && setInit(false) // 한번 검색을 하고 나면 init screen은 필요 없음
-      searchCategoryQuery.mutate(keyword)
+      searchCategoryQuery.mutate({
+        job: singerSelected ? '가수' : '배우',
+        nickName: keyword,
+        birth: '',
+        imgUrl: '',
+        email: '',
+      })
       setKeyword('')
     },
-    [keyword],
+    [keyword, singerSelected],
   )
 
   const onPressRemoveCategory = useCallback((param: IAccountCategoryDto) => {
     setUserSelectedCategories(userSelectedCategories =>
       userSelectedCategories.filter(item => {
         console.log(item, param)
-        return item.job != param.job || item.category != param.category
+        return item.job != param.job || item.categoryName != param.categoryName
       }),
     )
   }, [])
 
   const isSelected = useCallback(
     (category: ICategoryDto) => {
-      return userSelectedCategories.filter(item => item.job == category.job && item.category == category.nickName).length == 0 ? false : true
+      return userSelectedCategories.filter(item => item.job == category.job && item.categoryName == category.nickName).length == 0 ? false : true
     },
     [userSelectedCategories],
   )
@@ -94,7 +100,7 @@ export const EditCategory = () => {
   const onPressCategory = useCallback(
     (category: ICategoryDto) => {
       if (isSelected(category)) {
-        setUserSelectedCategories(userSelectedCategories.filter(item => item.job != category.job || item.category != category.nickName))
+        setUserSelectedCategories(userSelectedCategories.filter(item => item.job != category.job || item.categoryName != category.nickName))
       } else {
         if (userSelectedCategories.length == 5) {
           Alert.alert('최대 5명까지 선택 가능합니다')
@@ -103,7 +109,7 @@ export const EditCategory = () => {
         setUserSelectedCategories(
           userSelectedCategories.concat({
             job: category.job,
-            category: category.nickName,
+            categoryName: category.nickName,
             accountIdx: 0,
           }),
         )
@@ -140,11 +146,11 @@ export const EditCategory = () => {
         </View>
         <SearchStar keyword={keyword} setKeyword={setKeyword} searchKeyword={searchKeyword} />
         <View style={{flex: 1}}>
-          <View style={[theme.styles.rowFlexStart, {flexWrap: 'wrap', marginBottom: 16}, result == '' && {position: 'absolute'}]}>
+          <View style={[theme.styles.rowFlexStart, {flexWrap: 'wrap', marginBottom: 16}, result.length == 0 && {position: 'absolute'}]}>
             {userSelectedCategories.length > 0 &&
               userSelectedCategories.map(item => (
-                <View key={item.category + item.job} style={[theme.styles.rowFlexStart, {marginBottom: 8}, styles.selectedCategoryButton]}>
-                  <Text style={[{marginRight: 8}, theme.styles.text14]}>{item.category}</Text>
+                <View key={item.categoryName + item.job} style={[theme.styles.rowFlexStart, {marginBottom: 8}, styles.selectedCategoryButton]}>
+                  <Text style={[{marginRight: 8}, theme.styles.text14]}>{item.categoryName}</Text>
                   <XSmallIcon size={16} onPress={() => onPressRemoveCategory(item)} />
                 </View>
               ))}
@@ -153,16 +159,22 @@ export const EditCategory = () => {
             <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
               <Text style={theme.styles.bold20}>관심 있는 스타를 검색해 보세요!</Text>
             </View>
-          ) : result == '' ? (
+          ) : result.length == 0 ? (
             <EmptyResult />
           ) : (
-            <View style={{width: CIRCLE_SIZE}}>
-              <Pressable style={[styles.pressableView, isSelected(result) && styles.selectedPressable]} onPress={() => onPressCategory(result)}>
-                {isSelected(result) && <CheckboxMainIcon style={styles.checkboxMain} />}
-                <FastImage style={styles.image} source={{uri: result.imgUrl}}></FastImage>
-              </Pressable>
-              <Text style={styles.starName}>{result.nickName}</Text>
-            </View>
+            <FlatList
+              data={result}
+              numColumns={3}
+              columnWrapperStyle={{justifyContent: 'space-between', marginBottom: 16}}
+              renderItem={({item, index}) => (
+                <View style={{width: CIRCLE_SIZE}}>
+                  <Pressable style={[styles.pressableView, isSelected(item) && styles.selectedPressable]} onPress={() => onPressCategory(item)}>
+                    {isSelected(item) && <CheckboxMainIcon style={styles.checkboxMain} />}
+                    <FastImage style={styles.image} source={{uri: item.imgUrl}}></FastImage>
+                  </Pressable>
+                  <Text style={styles.starName}>{item.nickName}</Text>
+                </View>
+              )}></FlatList>
           )}
         </View>
       </View>

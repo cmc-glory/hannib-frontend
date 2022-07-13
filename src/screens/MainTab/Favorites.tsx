@@ -33,6 +33,7 @@ export const Favorites = () => {
   // ******************** utils ********************
   const scrollRef = useRef<FlatList>(null)
   const user = useAppSelector(state => state.auth.user)
+  console.log(user)
 
   // ******************** states ********************
   const [selectedCategory, setSelectedCategory] = useState<string>('0') // 선택된 카테고리의 id값 저장. (처음엔 전체의 id값)
@@ -63,7 +64,7 @@ export const Favorites = () => {
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={{marginBottom: 10}}
-                data={[{category: '전체보기'}].concat(user.accountCategoryDtoList)}
+                data={[{categoryName: '전체보기'}].concat(user.accountCategoryDtoList)}
                 renderItem={({item, index}) =>
                   index == 0 ? (
                     <CategoryItem
@@ -77,7 +78,7 @@ export const Favorites = () => {
                     />
                   ) : (
                     <CategoryItem
-                      name={item.category}
+                      name={item.categoryName}
                       currentIndex={index}
                       selectedIndex={selectedIndex}
                       id={index.toString()}
