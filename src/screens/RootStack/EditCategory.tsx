@@ -154,7 +154,7 @@ export const EditCategory = () => {
     }
     console.log(accountDto)
     updateUserSelectedCategoryQuery.mutate(accountDto)
-  }, [userSelectedCategories, user])
+  }, [userSelectedCategories, user.accountIdx])
 
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
