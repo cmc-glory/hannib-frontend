@@ -1,15 +1,16 @@
-import React, {useCallback, useState, useRef} from 'react'
+import React, {useCallback, useState, useRef, useMemo} from 'react'
 import {View, Text, ScrollView, TextInput, NativeSyntheticEvent, TextInputChangeEventData, StyleSheet, Dimensions, Platform} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import KeyboardManager from 'react-native-keyboard-manager'
 import {useQuery} from 'react-query'
-import {useNavigation} from '@react-navigation/native'
+import {useNavigation, useRoute} from '@react-navigation/native'
 
 import {StackHeader, FloatingBottomButton, NeccesaryField, SeparatorBold} from '../../components/utils'
 import {FindAddress, ProductInfoOnline, MakeNewField} from '../../components/GoodsStack'
-import {IRequestFormOnline, ISharingRequestInfo} from '../../types'
-import {queryKeys, getGoodsRequestInfo} from '../../api'
+import {IRequestFormOnline, INanumRequestRequiredDto} from '../../types'
+import {queryKeys, getGoodsRequestInfo, getNanumRequestRequiredInfo} from '../../api'
 import * as theme from '../../theme'
+import {GoodsRequestOnlineRouteProps} from '../../navigation/GoodsStackNavigator'
 
 const PHONE_INPUT_WIDTH = (Dimensions.get('window').width - theme.PADDING_SIZE * 2 - 16 * 2) / 3
 
@@ -37,11 +38,12 @@ export const GoodsReqeustOnline = () => {
   // ***************************** utils *****************************
   const [answers, setAnswers] = useState<string[]>([])
   const navigation = useNavigation()
+  const route = useRoute<GoodsRequestOnlineRouteProps>()
+  const nanumIdx = useMemo(() => route.params, [])
   // ***************************** states *****************************
-  const [info, setInfo] = useState<ISharingRequestInfo>({
-    products: [],
-    title: '',
-    additionalQuestions: [],
+  const [info, setInfo] = useState<INanumRequestRequiredDto>({
+    goodsList: [],
+    askList: [],
   })
   const [requestForm, setRequestForm] = useState<IRequestFormOnline>({
     name: '',
@@ -60,16 +62,33 @@ export const GoodsReqeustOnline = () => {
   const [selectedItems, setSelectedItems] = useState<any>({}) // 선택한 상품들
 
   // ***************************** react query *****************************
-  useQuery(queryKeys.goodsRequestInfo, getGoodsRequestInfo, {
+  // useQuery(queryKeys.goodsRequestInfo, getGoodsRequestInfo, {
+  //   onSuccess: data => {
+  //     setInfo(data)
+  //     setRequestForm({
+  //       ...requestForm,
+  //     })
+  //     data.products.forEach((item: any) => {
+  //       selectedItems[item.id] = false
+  //     })
+  //     setAnswers(new Array(data.additionalQuestions.length).fill(''))
+  //   },
+  // })
+
+  const {data} = useQuery([queryKeys.nanumRequestRequiredInfo, nanumIdx], () => getNanumRequestRequiredInfo(parseInt(nanumIdx)), {
+    //const {data} = useQuery(queryKeys.goodsDetail, getGoodsDetail, {
     onSuccess: data => {
+      console.log('success')
+      console.log(data)
       setInfo(data)
-      setRequestForm({
-        ...requestForm,
+      data.goodsList.forEach((item: any) => {
+        selectedItems[item.goodsNumber] = false
       })
-      data.products.forEach((item: any) => {
-        selectedItems[item.id] = false
-      })
-      setAnswers(new Array(data.additionalQuestions.length).fill(''))
+      setAnswers(new Array(data.askList.length).fill(''))
+    },
+    onError(err) {
+      console.log('err')
+      console.log(err)
     },
   })
 
@@ -89,8 +108,8 @@ export const GoodsReqeustOnline = () => {
       return false
     }
     // 추가 질문 사항 중 필수 질문에 대한 input이 비어 있으면 false 리턴
-    for (var i = 0; i < info.additionalQuestions.length; i++) {
-      if (info.additionalQuestions[i].necessary == true && answers[i] == '') {
+    for (var i = 0; i < info.askList.length; i++) {
+      if (info.askList[i].essential == 'Y' && answers[i] == '') {
         return false
       }
     }
@@ -128,10 +147,10 @@ export const GoodsReqeustOnline = () => {
           <Text style={[theme.styles.wrapper, styles.title]}>BTS 키링 나눔</Text>
           <View style={[theme.styles.wrapper]}>
             <Text style={[theme.styles.bold16]}>상품 선택</Text>
-            {info.products.map(item => (
+            {info.goodsList.map(item => (
               <ProductInfoOnline
                 item={item}
-                key={item.id}
+                key={item.goodsNumber}
                 selectedItems={selectedItems}
                 setSelectedItems={setSelectedItems}
                 requestForm={requestForm}
@@ -231,9 +250,10 @@ export const GoodsReqeustOnline = () => {
               />
             </View>
           </View>
-          {info.additionalQuestions.map((item, index) => (
-            <MakeNewField key={item.id} label={item.content} necessary={item.necessary} index={index} answers={answers} setAnswers={setAnswers} />
-          ))}
+          {/* api에 맞게 다시 개발 필요
+          {info.askList.map((item, index) => (
+            <MakeNewField key={index} label={item.content} necessary={item.necessary} index={index} answers={answers} setAnswers={setAnswers} />
+          ))} */}
         </View>
       </ScrollView>
       <FloatingBottomButton label="제출하기" enabled={isButtonEnabled()} onPress={() => onPressRequest(requestForm)} />

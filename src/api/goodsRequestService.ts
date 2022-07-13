@@ -1,8 +1,8 @@
 import axios from 'axios'
-import {API_URL} from '@env'
+import {BASE_URL} from '@env'
 
 const apiClient = axios.create({
-  baseURL: API_URL,
+  baseURL: BASE_URL,
   headers: {
     'Content-type': 'application/json',
   },
@@ -10,5 +10,11 @@ const apiClient = axios.create({
 
 export const getGoodsRequestInfo = async () => {
   const {data} = await apiClient.get('/dummySharingRequestInfo.json')
+  return data
+}
+
+export const getNanumRequestRequiredInfo = async (index: number) => {
+  const {data} = await apiClient.get(`/api/apply?nanumIdx=${index}`)
+
   return data
 }

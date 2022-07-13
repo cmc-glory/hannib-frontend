@@ -249,6 +249,11 @@ export type INanumImgDto = {
   imgUrl: string
 }
 
+export type INanumRequestRequiredDto = {
+  goodsList: INanumGoodsDto[]
+  askList: INanumAskDto[]
+}
+
 export type INanumForm = {
   nanumAskList: INanumAskDto[]
   nanumDatelist: INanumDateDto[]

@@ -17,8 +17,12 @@ type GoodsStackNavigatorParamList = {
   NanumDetail: {
     nanumIdx: string
   }
-  GoodsRequestOffline: undefined
-  GoodsRequestOnline: undefined
+  GoodsRequestOffline: {
+    nanumIdx: number
+  }
+  GoodsRequestOnline: {
+    nanumIdx: number
+  }
   QnAListUser: {
     nanumIdx: number
   }
@@ -45,6 +49,12 @@ const Stack = createStackNavigator<GoodsStackNavigatorParamList>()
 
 type GoodsDetailProps = NativeStackScreenProps<GoodsStackNavigatorParamList, 'NanumDetail'>
 export type GoodsDetailRouteProps = GoodsDetailProps['route']
+
+type GoodsRequestOfflineProps = NativeStackScreenProps<GoodsStackNavigatorParamList, 'GoodsRequestOffline'>
+export type GoodsRequestOfflineRouteProps = GoodsRequestOfflineProps['route']
+
+type GoodsRequestOnlineProps = NativeStackScreenProps<GoodsStackNavigatorParamList, 'GoodsRequestOnline'>
+export type GoodsRequestOnlineRouteProps = GoodsRequestOnlineProps['route']
 
 type QnAListCreatorProps = NativeStackScreenProps<GoodsStackNavigatorParamList, 'QnAListCreator'>
 export type QnAListCreatorRouteProps = QnAListCreatorProps['route']

@@ -2,11 +2,11 @@ import React, {useCallback} from 'react'
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native'
 import {CheckboxIcon} from '../utils'
 import * as theme from '../../theme'
-import {IProductInfo, IRequestFormOnline, IRequestFormOffline} from '../../types'
+import {INanumGoodsDto, IRequestFormOnline, IRequestFormOffline} from '../../types'
 
 type ProductInfoProps = {
-  item: IProductInfo
-  key: string
+  item: INanumGoodsDto
+  key: number
   selectedItems: any
   setSelectedItems: React.Dispatch<React.SetStateAction<any>>
   requestForm: IRequestFormOnline
@@ -14,9 +14,9 @@ type ProductInfoProps = {
 }
 
 export const ProductInfoOnline = ({item, selectedItems, setSelectedItems, requestForm, setRequestForm}: ProductInfoProps) => {
-  const selected = selectedItems[item.id]
+  const selected = selectedItems[item.goodsNumber]
   const onPressCheckbox = useCallback(() => {
-    setSelectedItems({...selectedItems, [item.id]: !selected})
+    setSelectedItems({...selectedItems, [item.goodsNumber]: !selected})
 
     // 선택된 상태면 제거
     if (selected) {
@@ -30,10 +30,10 @@ export const ProductInfoOnline = ({item, selectedItems, setSelectedItems, reques
   return (
     <View style={[theme.styles.rowFlexStart, {marginTop: 16}]}>
       {selected ? <CheckboxIcon onPress={onPressCheckbox} style={{marginRight: 8}} /> : <TouchableOpacity onPress={onPressCheckbox} style={styles.checkbox} />}
-      <Text style={[styles.itemName]}>{item.name}</Text>
+      <Text style={[styles.itemName]}>{item.goodsName}</Text>
       <View style={[theme.styles.rowFlexStart]}>
         <Text style={{marginRight: 5, color: theme.gray500}}>잔여 수량</Text>
-        <Text style={{color: theme.main}}>{item.quantity}</Text>
+        <Text style={{color: theme.main}}>{item.goodsNumber}</Text>
       </View>
     </View>
   )

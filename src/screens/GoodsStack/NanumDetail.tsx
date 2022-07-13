@@ -1,5 +1,5 @@
 import React, {useState, useRef, useMemo, useCallback} from 'react'
-import {View, ScrollView, Dimensions, Animated} from 'react-native'
+import {View, ScrollView, Dimensions, Animated, Platform, Alert} from 'react-native'
 import {getStatusBarHeight} from 'react-native-status-bar-height'
 import {useNavigation, useRoute} from '@react-navigation/native'
 import {useQuery} from 'react-query'
@@ -18,6 +18,7 @@ const TOP_HEIGHT = getStatusBarHeight() + 48
 const WIDTH = Dimensions.get('window').width
 
 export const NanumDetail = () => {
+  const isLoggedIn = useAppSelector(state => state.auth.isLoggedIn)
   const user = useAppSelector(state => state.auth.user)
   const navigation = useNavigation()
   const route = useRoute<GoodsDetailRouteProps>()
@@ -56,11 +57,41 @@ export const NanumDetail = () => {
   })
 
   const onPressRequest = useCallback(() => {
-    console.log('data type : ', data?.type)
-    if (data?.type == 'M') {
-      navigation.navigate('GoodsRequestOnline')
+    console.log('data nanumMethod : ', data?.nanumMethod)
+
+    if (isLoggedIn) {
+      if (data?.nanumMethod == 'M') {
+        navigation.navigate('GoodsStackNavigator', {
+          screen: 'GoodsRequestOnline',
+          params: nanumIdx,
+        })
+      } else {
+        navigation.navigate('GoodsStackNavigator', {
+          screen: 'GoodsRequestOffline',
+          params: nanumIdx,
+        })
+      }
     } else {
-      navigation.navigate('GoodsRequestOffline')
+      Platform.select({
+        ios: Alert.alert('로그인 후 이용할 수 있습니다. 로그인 페이지로 이동하시겠습니까?', '', [
+          {
+            text: '확인',
+            onPress: () => navigation.navigate('MyPageTabStackNavigator'),
+          },
+          {
+            text: '취소',
+          },
+        ]),
+        android: Alert.alert('로그인 후 이용할 수 있습니다', '로그인 페이지로 이동하시겠습니까?', [
+          {
+            text: '확인',
+            onPress: () => navigation.navigate('MyPageTabStackNavigator'),
+          },
+          {
+            text: '취소',
+          },
+        ]),
+      })
     }
   }, [data])
 
