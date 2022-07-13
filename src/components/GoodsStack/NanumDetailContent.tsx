@@ -22,7 +22,7 @@ type ContentProps = {
 
 const window = Dimensions.get('screen')
 
-export function GoodsDetailContent({headerHeight, nanumDetail, numInquires}: ContentProps) {
+export function NanumDetailContent({headerHeight, nanumDetail, numInquires}: ContentProps) {
   console.log(nanumDetail)
   const addFavoriteQuery = useMutation(addFavorite, {
     onSuccess: () => {},

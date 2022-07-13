@@ -28,7 +28,7 @@ const SharingTimeLocationItem = ({schedule}: SharingTimeLocationItemProps) => {
 export const SharingTimeLocation = ({schedules}: SharingTimeLocationProps) => {
   return (
     <View>
-      {schedules.map((schedule, index) => (
+      {schedules?.map((schedule, index) => (
         <SharingTimeLocationItem key={index} schedule={schedule} />
       ))}
     </View>

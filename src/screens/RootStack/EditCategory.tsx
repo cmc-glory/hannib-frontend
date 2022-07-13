@@ -3,15 +3,15 @@ import {View, Text, StyleSheet, Dimensions, Pressable, FlatList, Alert} from 're
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation} from '@react-navigation/native'
 import FastImage from 'react-native-fast-image'
-import {useMutation, useQuery} from 'react-query'
+import {useMutation, useQueryClient} from 'react-query'
 import {showMessage} from 'react-native-flash-message'
 
 import {StackHeader, Button, XSmallIcon, CheckboxMainIcon, FloatingBottomButton} from '../../components/utils'
 import {SearchStar, EmptyResult} from '../../components/LoginStack'
 import * as theme from '../../theme'
-import {ICategoryDto, IAccountCategoryDto} from '../../types'
+import {ICategoryDto, IAccountCategoryDto, IAccountDto} from '../../types'
 import {useAppDispatch, useAppSelector} from '../../hooks'
-import {queryKeys, searchCategory} from '../../api'
+import {queryKeys, searchCategory, updateAccountInfo} from '../../api'
 import {updateCategory} from '../../redux/slices'
 
 const BUTTON_GAP = 10
@@ -26,6 +26,7 @@ export const EditCategory = () => {
   // ******************** utils  ********************
   const navigation = useNavigation()
   const dispatch = useAppDispatch()
+  const queryClient = useQueryClient()
   const user = useAppSelector(state => state.auth.user)
 
   console.log('accountIdx : ', user.accountIdx)
@@ -61,6 +62,29 @@ export const EditCategory = () => {
         floating: true,
       })
       console.log(error)
+    },
+  })
+  const updateAccountInfoQuery = useMutation(queryKeys.accountInfo, updateAccountInfo, {
+    onSuccess(data, variables, context) {
+      console.log('update success')
+      queryClient.invalidateQueries(queryKeys.accountInfo)
+      dispatch(updateCategory(userSelectedCategories))
+      navigation.goBack()
+    },
+    onError(error, variables, context) {
+      showMessage({
+        message: '회원 정보 업데이트 중 에러가 발생했습니다',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+      })
     },
   })
   // ******************** callbacks  ********************
@@ -106,22 +130,31 @@ export const EditCategory = () => {
           Alert.alert('최대 5명까지 선택 가능합니다')
           return
         }
-        setUserSelectedCategories(
-          userSelectedCategories.concat({
-            job: category.job,
-            categoryName: category.nickName,
-            accountIdx: 0,
-          }),
-        )
+        const temp = userSelectedCategories.slice()
+        temp.unshift({
+          job: category.job,
+          categoryName: category.nickName,
+          accountIdx: 0,
+        })
+
+        setUserSelectedCategories(temp)
       }
     },
     [userSelectedCategories],
   )
 
   const onPressSave = useCallback(() => {
-    dispatch(updateCategory(userSelectedCategories))
-    navigation.goBack()
+    let accountDto: IAccountDto = {
+      accountIdx: user.accountIdx,
+      creatorId: user.creatorId,
+      accountCategoryDtoList: userSelectedCategories,
+      accountImg: user.accountImg == undefined ? '' : user.accountImg,
+      email: user.email,
+      creatorIdDatetime: '',
+    }
+    updateAccountInfoQuery.mutate(accountDto)
   }, [userSelectedCategories])
+
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
       <StackHeader title="카테고리 설정" x goBack />
@@ -181,7 +214,11 @@ export const EditCategory = () => {
           )}
         </View>
       </View>
-      <FloatingBottomButton label="저장하기" enabled={user.accountCategoryDtoList != userSelectedCategories} onPress={onPressSave} />
+      <FloatingBottomButton
+        label="저장하기"
+        enabled={user.accountCategoryDtoList != userSelectedCategories && updateAccountInfoQuery.isLoading == false}
+        onPress={onPressSave}
+      />
     </SafeAreaView>
   )
 }

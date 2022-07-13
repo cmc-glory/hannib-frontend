@@ -32,7 +32,7 @@ const initialState = {
     accountCategoryDtoList: [
       {
         job: '가수',
-        category: '전체보기',
+        categoryName: '전체보기',
         accountIdx: 0,
       },
     ],

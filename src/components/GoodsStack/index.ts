@@ -1,5 +1,5 @@
 export * from './HeaderImage'
-export * from './GoodsDetailContent'
+export * from './NanumDetailContent'
 export * from './NanumDetailHeader'
 export * from './NoticeBanner'
 export * from './RelatedSharing'

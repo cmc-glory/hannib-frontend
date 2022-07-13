@@ -1,5 +1,5 @@
 import React, {useState, useCallback, useEffect} from 'react'
-import {View, Text, FlatList, Pressable, StyleSheet, ActivityIndicator, Platform} from 'react-native'
+import {View, Text, FlatList, Pressable, StyleSheet, ActivityIndicator, Alert, Platform} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation} from '@react-navigation/native'
 import {useQueryClient, useQuery} from 'react-query'
@@ -8,9 +8,8 @@ import * as theme from '../../theme'
 import {DownArrowIcon, BellIcon, MagnifierIcon, BottomSheet, FloatingButtonIcon, EmptyIcon} from '../../components/utils'
 import {NanumListFilterTab, NanumListItem, GoodsListBottomSheetContent, Banner, CategoryDropdown} from '../../components/MainTab'
 import {INanumMethod, INanumListItem, IAccountCategoryDto} from '../../types'
-import {useAppSelector, useAppDispatch} from '../../hooks'
+import {useAppSelector} from '../../hooks'
 import {getNanumByRecent, getNanumByPopularity, getNanumAllByFavorites, queryKeys, getNanumAllByRecent} from '../../api'
-import {Shadow} from 'react-native-shadow-2'
 
 const NanumList = () => {
   // ******************** check login ********************
@@ -102,10 +101,28 @@ const NanumList = () => {
       // 로그인 했으면 작성 페이지
       navigation.navigate('WriteNanumFormStackNavigator')
     } else {
-      // 로그인 안했으면 로그인 페이지
-      navigation.navigate('MyPageTabStackNavigator')
+      Platform.select({
+        ios: Alert.alert('로그인 후 이용할 수 있습니다. 로그인 페이지로 이동하시겠습니까?', '', [
+          {
+            text: '확인',
+            onPress: () => navigation.navigate('MyPageTabStackNavigator'),
+          },
+          {
+            text: '취소',
+          },
+        ]),
+        android: Alert.alert('로그인 후 이용할 수 있습니다', '로그인 페이지로 이동하시겠습니까?', [
+          {
+            text: '확인',
+            onPress: () => navigation.navigate('MyPageTabStackNavigator'),
+          },
+          {
+            text: '취소',
+          },
+        ]),
+      })
     }
-  }, [])
+  }, [isLoggedIn])
 
   // 검색 버튼 클릭시
   const onPressMagnifier = useCallback(() => {

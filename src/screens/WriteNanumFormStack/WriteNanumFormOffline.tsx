@@ -139,7 +139,7 @@ export const WriteNanumFormOffline = () => {
       category: category.category,
       title: title,
       contents: contents,
-      nanumMethod: 'M', // M : Mail(우편), O : Offline(오프라인)
+      nanumMethod: 'O', // M : Mail(우편), O : Offline(오프라인)
       firstDate: moment(firstDate).format('YYYY-MM-DD HH:mm:ss'), // example: 2022-07-01 12:43:15
       secretForm: secretForm ? 'Y' : 'N',
       secretPwd: secretPwd == '' ? 1234 : parseInt(secretPwd),

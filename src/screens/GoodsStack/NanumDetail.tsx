@@ -5,7 +5,7 @@ import {useNavigation, useRoute} from '@react-navigation/native'
 import {useQuery} from 'react-query'
 
 import {FloatingBottomButton} from '../../components/utils'
-import {HeaderImage, GoodsDetailContent, NanumDetailHeader} from '../../components/GoodsStack'
+import {HeaderImage, NanumDetailContent, NanumDetailHeader} from '../../components/GoodsStack'
 import {useAnimatedValue, useAppSelector} from '../../hooks'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import LinearGradient from 'react-native-linear-gradient'
@@ -102,7 +102,7 @@ export const NanumDetail = () => {
         }}>
         <HeaderImage images={data?.nanumImglist} />
         {data != undefined && (
-          <GoodsDetailContent headerHeight={headerHeight} nanumDetail={data} numInquires={inquries.data == undefined ? 0 : inquries.data.length} />
+          <NanumDetailContent headerHeight={headerHeight} nanumDetail={data} numInquires={inquries.data == undefined ? 0 : inquries.data.length} />
         )}
       </ScrollView>
       <FloatingBottomButton label="신청하기" enabled onPress={onPressRequest} />

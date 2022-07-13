@@ -1,5 +1,5 @@
 import React, {useCallback, useState, useMemo} from 'react'
-import {View, Text, ScrollView, Pressable, StyleSheet, Alert, RefreshControl} from 'react-native'
+import {View, Text, ScrollView, Pressable, StyleSheet, Alert, RefreshControl, Platform} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation, useRoute} from '@react-navigation/native'
 import {useQuery, useQueryClient} from 'react-query'
@@ -49,15 +49,26 @@ export const QnAListUser = () => {
         title: nanumInfo.data.title, // 나눔 제목
       })
     } else {
-      Alert.alert('로그인 후 이용할 수 있습니다. 로그인 페이지로 이동하시겠습니까?', '', [
-        {
-          text: '확인',
-          onPress: () => navigation.navigate('MyPageTabStackNavigator'),
-        },
-        {
-          text: '취소',
-        },
-      ])
+      Platform.select({
+        ios: Alert.alert('로그인 후 이용할 수 있습니다. 로그인 페이지로 이동하시겠습니까?', '', [
+          {
+            text: '확인',
+            onPress: () => navigation.navigate('MyPageTabStackNavigator'),
+          },
+          {
+            text: '취소',
+          },
+        ]),
+        android: Alert.alert('로그인 후 이용할 수 있습니다', '로그인 페이지로 이동하시겠습니까?', [
+          {
+            text: '확인',
+            onPress: () => navigation.navigate('MyPageTabStackNavigator'),
+          },
+          {
+            text: '취소',
+          },
+        ]),
+      })
     }
   }, [nanumInfo, isLoggedIn])
 
