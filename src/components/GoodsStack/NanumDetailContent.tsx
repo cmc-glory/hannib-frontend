@@ -23,7 +23,6 @@ type ContentProps = {
 const window = Dimensions.get('screen')
 
 export function NanumDetailContent({headerHeight, nanumDetail, numInquires}: ContentProps) {
-  console.log(nanumDetail)
   const addFavoriteQuery = useMutation(addFavorite, {
     onSuccess: () => {},
   })
@@ -67,7 +66,7 @@ export function NanumDetailContent({headerHeight, nanumDetail, numInquires}: Con
       <View style={styles.padding}>
         <View style={[theme.styles.rowFlexStart]}>
           <Tag label={nanumDetail?.nanumMethod == 'O' ? '오프라인' : '우편'}></Tag>
-          {nanumDetail.secretForm && <LockIcon />}
+          {nanumDetail.secretForm == 'Y' && <LockIcon />}
         </View>
         <View style={[{marginVertical: 16}, theme.styles.rowSpaceBetween]}>
           <Text style={[styles.title]}>{nanumDetail?.title}</Text>
@@ -82,7 +81,7 @@ export function NanumDetailContent({headerHeight, nanumDetail, numInquires}: Con
         </View>
         <Text style={[styles.date]}>{moment(nanumDetail.firstDate).format('YYYY.MM.DD')}</Text>
         <SharingGoodsInfo products={nanumDetail.nanumGoodslist} />
-        {nanumDetail.nanumMethod == 'O' && <SharingTimeLocation schedules={nanumDetail.nanumDateList} />}
+        {nanumDetail.nanumMethod == 'O' && <SharingTimeLocation schedules={nanumDetail.nanumDatelist} />}
       </View>
       <NoticeBanner postid="1111" />
       <GoodsContentDetail description={nanumDetail.contents} />

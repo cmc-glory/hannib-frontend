@@ -18,7 +18,7 @@ type SecretModalProps = {
   secretModalVisible: boolean
   setSecretModalVisible: React.Dispatch<React.SetStateAction<boolean>>
 
-  secretPwd: string | undefined
+  secretPwd: string | undefined | number
   nanumIdx: number
 }
 
@@ -30,7 +30,7 @@ const SecretModal = ({secretModalVisible, setSecretModalVisible, secretPwd, nanu
     if (secretInput == secretPwd) {
       setSecretInput('')
       navigation.navigate('GoodsStackNavigator', {
-        screen: 'GoodsDetail',
+        screen: 'NanumDetail',
         params: {
           nanumIdx: nanumIdx,
         },
@@ -78,6 +78,7 @@ const SecretModal = ({secretModalVisible, setSecretModalVisible, secretPwd, nanu
 
 export const NanumListItem = ({item}: {item: INanumListItem}) => {
   // 나눔 게시글 아이템 구조분해 할당
+  console.log(item)
   const {nanumIdx, nanumMethod, title, creatorId, thumbnail, secretForm, secretPwd, isFavorite} = item
   console.log(nanumIdx)
   console.log(nanumMethod)
@@ -109,6 +110,7 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
   // 상세 페이지로 이동
   const onPressItem = useCallback(() => {
     const now = moment()
+    console.log(secretForm)
 
     if (now < openDate) {
       setIsBefore(true)
@@ -124,7 +126,7 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
         },
       })
     }
-  }, [nanumIdx])
+  }, [nanumIdx, secretForm])
 
   const onPressAddFavorite = useCallback(() => {
     // 즐겨찾기 버튼 클릭했을 때

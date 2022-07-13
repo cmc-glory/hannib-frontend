@@ -209,7 +209,7 @@ export type INanumListItem = {
   creatorId: string // 작성자 닉네임
   firstDate: Date // 나눔 시작일
   secretForm: 'Y' | 'N' // 시크릿폼 여부
-  secretPwd?: string // 시크릿폼 비밀번호
+  secretPwd?: string | number // 시크릿폼 비밀번호
   isFavorite: 'Y' | 'N' // 즐겨찾기 여부
 }
 
@@ -251,7 +251,7 @@ export type INanumForm = {
   nanumMethod: 'M' | 'O' // M : Mail(우편), O : Offline(오프라인)
   firstDate: string // example: 2022-07-01 12:43:15
   secretForm: 'Y' | 'N'
-  secretPwd: number
+  secretPwd: number | string
   favorites: number
   accountDto: {
     accountCategoryDtoList: IAccountCategoryDto[]
@@ -266,7 +266,7 @@ export type INanumForm = {
 
 export type INanum = {
   nanumAskList: INanumAskDto[]
-  nanumDateList: INanumDateDto[]
+  nanumDatelist: INanumDateDto[]
   nanumGoodslist: INanumGoodsDto[]
   nanumImglist: INanumImgDto[]
   nanumIdx: number // 나눔 db id
@@ -279,7 +279,7 @@ export type INanum = {
   nanumMethod: INanumMethod // 나눔 방식
   firstDate: Date // 나눔 시작일
   secretForm: 'Y' | 'N' // 시크릿폼 여부
-  secretPwd: number // 시크릿폼 패스워드
+  secretPwd: number | string // 시크릿폼 패스워드
   createDatetime: Date // 작성 시간
   deletedYn: boolean // 삭제 여부
   deletedReason: string // 삭제한 이유
@@ -340,7 +340,7 @@ export type INanumDate = {
 export type IAccountCategoryDto = {
   accountIdx: number
   job: '가수' | '배우'
-  category: string
+  categoryName: string
 }
 
 export type IAccountDto = {
