@@ -89,6 +89,7 @@ export function NanumDetailContent({headerHeight, nanumDetail, numInquires}: Con
         writername={nanumDetail.creatorId}
         nanumIdx={nanumDetail.nanumIdx}
         writerProfileImageUri={nanumDetail.accountDto?.accountImg}
+        writerAccountIdx={nanumDetail.accountDto?.accountIdx}
         askNum={numInquires}
       />
 
