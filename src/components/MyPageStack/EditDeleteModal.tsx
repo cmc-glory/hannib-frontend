@@ -12,8 +12,8 @@ const STATUSBAR_HEIGHT = getStatusBarHeight()
 type ModalProps = {
   isVisible: boolean
   toggleIsVisible: () => void
-  deleteSharingModalVisible: boolean
-  toggleDeleteSharingModalVisible: () => void
+  deleteSharingModalVisible?: boolean
+  toggleDeleteSharingModalVisible?: () => void
 }
 
 export const EditDeleteModal = ({isVisible, toggleIsVisible, deleteSharingModalVisible, toggleDeleteSharingModalVisible}: ModalProps) => {

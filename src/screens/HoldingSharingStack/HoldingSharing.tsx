@@ -1,24 +1,14 @@
 import React, {useCallback, useEffect, useState} from 'react'
 import {View, Pressable, ScrollView, Text, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
-import {StackHeader, FloatingBottomButton, SharingPreview, GoodsListItem, MenuIcon, BottomSheet} from '../../components/utils'
+import {StackHeader, FloatingBottomButton, SharingPreview, GoodsListItem, MenuIcon, BottomSheet, RoundButton} from '../../components/utils'
 import {IHoldingReceiverInfo, ISharingDetail} from '../../types'
 import {useToggle} from '../../hooks'
 import * as theme from '../../theme'
 import {useNavigation} from '@react-navigation/native'
 import {EditDeleteModal, HoldingSharingBottomSheetContent, DeleteHoldingSharingModal} from '../../components/MyPageStack'
 import {HoldingListItem, HoldingDetailItem} from '../../components/MyPageTabStack'
-
-const dataLists: Array<any> = [
-  {id: 123, data: 'aaa'},
-  {id: 4355435, data: 'bbb'},
-  {id: 12313, data: 'ccc'},
-  {id: 121241, data: 'ccc'},
-  {id: 7546, data: 'ccc'},
-  {id: 234324, data: 'ccc'},
-  {id: 2342343, data: 'ccc'},
-  {id: 7765754, data: 'ccc'},
-]
+import {main, white} from '../../theme'
 
 export const HoldingSharing = () => {
   const [list, setList] = useState<Array<IHoldingReceiverInfo>>()
@@ -29,35 +19,6 @@ export const HoldingSharing = () => {
   const [stateFilter, setStateFilter] = useState<'전체보기' | '수령완료' | '미수령'>('전체보기')
   const [locationFilter, setLocationFilter] = useState<0 | 1 | 2>(0) // 전체보기(0), 수령완료(1), 미수령(2)
   const [checkedItems, setCheckedItems] = useState<Array<any>>([])
-
-  // 전체 체크 클릭 시 발생하는 함수
-  // const onCheckedAll = useCallback(
-  //   checked => {
-  //     if (checked) {
-  //       const checkedListArray: Array<any> = []
-
-  //       dataLists.forEach(list => checkedListArray.push(list.id))
-
-  //       setCheckedList(checkedListArray)
-  //     } else {
-  //       setCheckedList([])
-  //     }
-  //   },
-  //   [dataLists],
-  // )
-
-  // // 개별 체크 클릭 시 발생하는 함수
-  // const onCheckedElement = useCallback(
-  //   (checked, list) => {
-  //     if (checked) {
-  //       setCheckedList([...checkedList, list])
-  //     } else {
-  //       setCheckedList(checkedList.filter(el => el !== list))
-  //     }
-  //   },
-  //   [checkedList],
-  // )
-  // 체크박스 전체 단일 개체 선택
 
   const navigation = useNavigation()
   const onPressViewDetail = () => {
@@ -110,9 +71,9 @@ export const HoldingSharing = () => {
           {sharingDetail?.products.map(product => (
             <GoodsListItem key={product.id} type="holding" title={product.name} quantity={product.quantity} />
           ))}
-
-          {/* <GoodsListItem type="holding" />
-          <GoodsListItem type="holding" /> */}
+          <Pressable style={[styles.endSharingBtn]}>
+            <Text style={styles.endSharingBtnText}>나눔 마감</Text>
+          </Pressable>
         </View>
         <View style={{width: '100%', height: 1, backgroundColor: theme.gray200, marginVertical: 10}} />
         {isDetail ? (
@@ -164,4 +125,19 @@ export const HoldingSharing = () => {
   )
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  endSharingBtn: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 14,
+    backgroundColor: white,
+    borderRadius: 24,
+    borderColor: main,
+    borderWidth: 1,
+  },
+  endSharingBtnText: {
+    color: theme.main,
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 16,
+  },
+})
