@@ -10,7 +10,7 @@ import {StackHeader, SharingPreview, RoundButton} from '../../components/utils'
 import {WriteQnARouteProps} from '../../navigation/GoodsStackNavigator'
 import {useToggle, useAppSelector} from '../../hooks'
 import * as theme from '../../theme'
-import {IQuestionNanumDto} from '../../types'
+import {IInquiryNanumDto, IQuestionNanumDto} from '../../types'
 
 const ProductItem = ({name, quantity, spacing}: {name: string; quantity: number; spacing?: boolean}) => {
   return (
@@ -31,21 +31,18 @@ export const WriteQnA = () => {
   const queryClient = useQueryClient()
 
   const {nanumIdx, accountIdx, imageuri, category, title} = useMemo(() => route.params, [])
-  const creatorId = useAppSelector(state => state.auth.user.name)
+  const creatorId = useAppSelector(state => state.auth.user.creatorId)
 
   console.log('nanumIdx : ', nanumIdx, 'accountIdx : ', accountIdx)
 
   // ******************** react queries********************
   const postInquiryQuery = useMutation(queryKeys.inquiry, postInquiry, {
     onSuccess(data, variables, context) {
-      console.log('success')
-      console.log(data)
       queryClient.invalidateQueries(queryKeys.inquiry)
       navigation.goBack()
     },
     onError(error, variables, context) {
       console.log('error')
-      console.log(error)
     },
   })
 
@@ -60,12 +57,13 @@ export const WriteQnA = () => {
   // ******************** callbacks ********************
   const onPressSubmit = useCallback(() => {
     // 백으로 내용이랑 비밀 여부 post 하는 api
-    const questionNanumDto: IQuestionNanumDto = {
+    const questionNanumDto: IInquiryNanumDto = {
       nanumIdx,
       accountIdx,
       creatorId,
       comments,
       secretYn: isSecret ? 'Y' : 'N',
+      answerComments: '',
     }
 
     postInquiryQuery.mutate(questionNanumDto)

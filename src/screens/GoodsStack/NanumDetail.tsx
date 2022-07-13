@@ -32,7 +32,7 @@ export const NanumDetail = () => {
   const [headerInvert, setHeaderInvert] = useState(false)
   const [numInqueries, setNumInqueries] = useState<number>(0)
 
-  const {data} = useQuery([queryKeys.goodsDetail, nanumIdx], () => getNanumByIndex(parseInt(nanumIdx)), {
+  const {data} = useQuery([queryKeys.nanumDetail, nanumIdx], () => getNanumByIndex(parseInt(nanumIdx)), {
     //const {data} = useQuery(queryKeys.goodsDetail, getGoodsDetail, {
     onSuccess: data => {
       console.log('success')

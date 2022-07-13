@@ -15,7 +15,11 @@ declare namespace ReactNavigation {
     FindId: undefined
     FindPassword: undefined
     CreateAccount: undefined
-    MainTabNavigator: undefined
+    MainTabNavigator:
+      | undefined
+      | {
+          screen: string
+        }
     NanumDetail: {
       nanumIdx: number
     }

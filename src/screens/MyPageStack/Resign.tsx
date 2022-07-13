@@ -27,9 +27,10 @@ type RadioButtons = {
   reasons: IResignReason[]
   selectedReason: string
   setSelectedReason: React.Dispatch<React.SetStateAction<string>>
+  setReasonEtc: React.Dispatch<React.SetStateAction<string>>
 }
 
-const RadioButtons = ({reasons, selectedReason, setSelectedReason}: RadioButtons) => {
+const RadioButtons = ({reasons, selectedReason, setSelectedReason, setReasonEtc}: RadioButtons) => {
   return (
     <View style={{marginTop: 24}}>
       {reasons.map(item => (
@@ -37,6 +38,9 @@ const RadioButtons = ({reasons, selectedReason, setSelectedReason}: RadioButtons
           <TouchableOpacity
             style={[styles.radioCircle, {borderColor: selectedReason == item.key ? theme.secondary : theme.gray300}]}
             onPress={() => {
+              if (item.key != '기타 문제') {
+                setReasonEtc('')
+              }
               setSelectedReason(item.key)
             }}>
             {selectedReason === item.key && <View style={styles.selectedRb} />}
@@ -92,7 +96,9 @@ export const Resign = () => {
           dispatch(logout()) // 로그아웃 시키고
           removeString('accountIdx') // async storage에서 accountIdx 제거
           removeString('email') // async storage에서 email 제거
-          navigation.navigate('MainTabNavigator')
+          navigation.navigate('MainTabNavigator', {
+            screen: 'GoodsList',
+          })
         })
         .catch(err => {
           showMessage({
@@ -121,13 +127,14 @@ export const Resign = () => {
       <ResignModal resignModalVisbile={resignModalVisible} setResignModalVisible={setResignModalVisible} resign={resign} setResign={setResign} />
       <View style={styles.container}>
         <Text style={[theme.styles.bold20]}>사유를 선택해 주세요</Text>
-        <RadioButtons reasons={reasons} selectedReason={selectedReason} setSelectedReason={setSelectedReason} />
+        <RadioButtons reasons={reasons} selectedReason={selectedReason} setSelectedReason={setSelectedReason} setReasonEtc={setReasonEtc} />
         <TextInput
           style={[theme.styles.input]}
           placeholder="자세한 내용을 입력해 주세요."
           placeholderTextColor={theme.gray300}
           value={reasonEtc}
           onChangeText={setReasonEtc}
+          editable={selectedReason == '기타 문제'}
         />
         <View style={{marginVertical: 24}}>
           <Text style={styles.agreetment}>탈퇴 시, 회원님의 모든 게시글과 활동내역이 삭제됩니다.</Text>

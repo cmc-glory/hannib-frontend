@@ -1,6 +1,6 @@
 import axios from 'axios'
 import {BASE_URL} from '@env'
-import {IInqueryNanumDto, IQuestionNanumDto, IAnswerNanumDto} from '../types'
+import {IInquiryNanumDto, IQuestionNanumDto, IAnswerNanumDto} from '../types'
 
 type DeleteInfo = {
   accountIdx: number
@@ -19,28 +19,28 @@ const apiClient = axios.create({
 // }
 
 // 문의 글 작성
-export const postInquiry = async (questionNanumDto: IQuestionNanumDto) => {
+export const postInquiry = async (questionNanumDto: IInquiryNanumDto) => {
   const {data} = await apiClient.post('/api/nanum/inquiry', questionNanumDto)
   return data
 }
 
 // 문의 글 수정
-export const postAnswer = async (questionNanumDto: IQuestionNanumDto) => {
-  const {data} = await apiClient.put('/api/nanum/inquiry/answer', questionNanumDto)
+export const postAnswer = async (questionNanumDto: IInquiryNanumDto) => {
+  const {data} = await apiClient.put('/api/nanum/inquiry', questionNanumDto)
+  return data
+}
+
+// 문의글 삭제
+export const deleteInquiry = async (form: DeleteInfo) => {
+  const {data} = await apiClient.delete('/api/nanum/inquiry', {data: form})
   return data
 }
 
 // 문의글 답변 작성
-export const updateInquiry = async (answerNanumDto: IAnswerNanumDto) => {
-  const {data} = await apiClient.put('/api/nanum/inquiry', answerNanumDto)
+export const updateInquiry = async (answerNanumDto: IInquiryNanumDto) => {
+  const {data} = await apiClient.put('/api/nanum/inquiry/answer', answerNanumDto)
   return data
 }
-
-// // 문의글 삭제
-// export const deleteInquiry = async (form: DeleteInfo) => {
-//   const {data} = await apiClient.delete('/api/nanum/inquiry', form)
-//   return data
-// }
 
 // 문의글 가져오기
 export const getInquiryByIndex = async (nanumIdx: number) => {

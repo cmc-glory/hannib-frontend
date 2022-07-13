@@ -3,7 +3,7 @@ export const queryKeys = {
   recentSearch: ['recentSearch'],
   popularSearch: ['popularSearch'],
   nanumList: ['nanumList'],
-  goodsDetail: ['goodsDetail'],
+  nanumDetail: ['nanumDetail'],
   goodsRequestInfo: ['goodsRequestInfo'],
   calendar: ['calendar'],
   profileImage: ['profileImage'],

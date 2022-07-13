@@ -89,7 +89,7 @@ export function GoodsDetailContent({headerHeight, nanumDetail, numInquires}: Con
       <WriterProfileBanner
         writername={nanumDetail.creatorId}
         nanumIdx={nanumDetail.nanumIdx}
-        writerProfileImageUri={nanumDetail.accountDto.accountImg}
+        writerProfileImageUri={nanumDetail.accountDto?.accountImg}
         askNum={numInquires}
       />
 

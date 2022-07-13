@@ -8,8 +8,9 @@ import * as theme from '../../theme'
 import {DownArrowIcon, BellIcon, MagnifierIcon, BottomSheet, FloatingButtonIcon, EmptyIcon} from '../../components/utils'
 import {NanumListFilterTab, NanumListItem, GoodsListBottomSheetContent, Banner, CategoryDropdown} from '../../components/MainTab'
 import {INanumMethod, INanumListItem, IAccountCategoryDto} from '../../types'
-import {useAppSelector} from '../../hooks'
+import {useAppSelector, useAppDispatch} from '../../hooks'
 import {getNanumByRecent, getNanumByPopularity, getNanumAll, queryKeys} from '../../api'
+import {login} from '../../redux/slices'
 
 const NanumList = () => {
   // ******************** check login ********************
@@ -17,6 +18,7 @@ const NanumList = () => {
 
   // ******************** utils ********************
   const navigation = useNavigation()
+  const dispatch = useAppDispatch()
   const user = useAppSelector(state => state.auth.user)
   const currentCategory = user.accountCategoryDtoList[0]
 

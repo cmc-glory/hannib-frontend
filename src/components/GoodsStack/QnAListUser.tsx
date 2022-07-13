@@ -3,22 +3,22 @@ import {View, Text, TextInput, Pressable, StyleSheet} from 'react-native'
 import moment from 'moment'
 import {DeleteQnAModal} from './DeleteQnAModal'
 import * as theme from '../../theme'
-import {IQnAList} from '../../types'
+import {IInquiryNanumDto} from '../../types'
 import {LockIcon} from '../utils'
 
 type QnAListUserItemProps = {
-  item: IQnAList
+  item: IInquiryNanumDto
   accountIdx: number
 }
 
 type QuestionProps = {
-  item: IQnAList
+  item: IInquiryNanumDto
   accountIdx: number
 }
 
 type Answerprops = {
   answer: string | undefined
-  answeredDate: Date | undefined
+  //answeredDate: Date | undefined
 }
 
 const QnASecret = () => {
@@ -32,15 +32,18 @@ const QnASecret = () => {
 
 const Question = ({item, accountIdx}: QuestionProps) => {
   // ******************** utils ********************
-  const {isSecret, isAnswered, writer, content, date, writerId} = item
+  const {secretYn, answerComments, creatorId, comments} = item
+  const writerAccountIdx = item.accountIdx
 
   // ******************** states ********************
   const [editPressed, setEditPressed] = useState<boolean>(false) // 수정하기 버튼 눌리면 에디터 띄움
   const [deleteQnAModalVisible, setDeleteQnAModalVisible] = useState<boolean>(false) // 삭제하기 모달
-  const [editedContent, setEditedContent] = useState<string>(content)
+  const [editedContent, setEditedContent] = useState<string>(comments)
+  const isAnswered = answerComments != ''
+  const isSecret = secretYn == 'Y' ? true : false
 
   const showMenuIcon = useMemo(() => {
-    return accountIdx == writerId && isAnswered == false // 작성자가 본인이고, 답변이 달리지 않았을 때만 수정 및 삭제 가능
+    return accountIdx == writerAccountIdx && answerComments == '' // 작성자가 본인이고, 답변이 달리지 않았을 때만 수정 및 삭제 가능
   }, [])
 
   const onPressEdit = useCallback(() => {
@@ -93,14 +96,15 @@ const Question = ({item, accountIdx}: QuestionProps) => {
         )}
       </View>
       <View style={[theme.styles.rowSpaceBetween]}>
-        <Text style={[styles.writer]}>{writer}</Text>
-        <Text style={[styles.date]}>{moment(date).format('YYYY.MM.DD HH:mm')}</Text>
+        <Text style={[styles.writer]}>{creatorId}</Text>
+        <Text style={[styles.date]}>{moment().format('YYYY.MM.DD HH:mm')}</Text>
       </View>
     </View>
   )
 }
 
-const Answer = ({answer, answeredDate}: Answerprops) => {
+const Answer = ({answer}: Answerprops) => {
+  //const Answer = ({answer, answeredDate}: Answerprops) => {
   return (
     <View>
       <View style={[theme.styles.rowFlexStart, {marginTop: 16, marginBottom: 8}]}>
@@ -109,7 +113,7 @@ const Answer = ({answer, answeredDate}: Answerprops) => {
       </View>
       <View style={[theme.styles.rowSpaceBetween]}>
         <Text style={[styles.writer, {color: theme.main}]}>나눔진행자</Text>
-        <Text style={[styles.date]}>{moment(answeredDate).format('YYYY.MM.DD HH:mm')}</Text>
+        <Text style={[styles.date]}>{moment().format('YYYY.MM.DD HH:mm')}</Text>
       </View>
     </View>
   )
@@ -118,12 +122,12 @@ const Answer = ({answer, answeredDate}: Answerprops) => {
 export const QnAListUserItem = ({item, accountIdx}: QnAListUserItemProps) => {
   return (
     <View style={[styles.qnaListItemContainer]}>
-      {item.isSecret ? (
+      {item.secretYn == 'Y' && item.accountIdx != accountIdx ? (
         <QnASecret />
       ) : (
         <>
           <Question item={item} accountIdx={accountIdx} />
-          {item.isAnswered && <Answer answer={item.answer} answeredDate={item.answeredDate} />}
+          {item.answerComments != '' && <Answer answer={item.answerComments} />}
         </>
       )}
     </View>

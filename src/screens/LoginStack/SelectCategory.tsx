@@ -152,11 +152,11 @@ export const SelectCategory = () => {
       accountCategoryDtoList: userSelectedCategories,
       accountIdx: 0,
       creatorId: name,
-      creatorIdDatetime: moment().format('YYYY-MM-DD HH:mm:ss'),
+      creatorIdDatetime: '',
       accountImg: profileImage,
       email: email,
     }
-    console.log()
+    console.log(JSON.stringify(signUpForm))
     // 회원 가입 post api 호출
     postSignUpQuery.mutate(signUpForm)
   }, [userSelectedCategories])
