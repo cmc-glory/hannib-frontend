@@ -27,6 +27,7 @@ type MenuModalProps = {
 type ShareModalProps = {
   shareVisible: boolean
   toggleShareVisible: () => void
+  shareUrl: string
 }
 
 type NanumDetailHeaderProps = {
@@ -36,10 +37,10 @@ type NanumDetailHeaderProps = {
   nanumIdx: number
 }
 
-const ShareModal = ({shareVisible, toggleShareVisible}: ShareModalProps) => {
-  const link = '링크 자동 생성'
+const ShareModal = ({shareVisible, toggleShareVisible, shareUrl}: ShareModalProps) => {
+  //const link = '링크 자동 생성'
   const copyToClipboard = () => {
-    Clipboard.setString(link)
+    Clipboard.setString(shareUrl)
     Alert.alert('복사가 완료되었습니다', '', [{text: '확인'}])
   }
   return (
@@ -54,7 +55,7 @@ const ShareModal = ({shareVisible, toggleShareVisible}: ShareModalProps) => {
           <Text style={{fontSize: 16, marginBottom: 12}}>복사할 링크</Text>
           <View style={[theme.styles.rowFlexStart]}>
             <View style={[theme.styles.input, {flex: 1, justifyContent: 'center'}]}>
-              <Text style={{color: theme.gray700}}>{link}</Text>
+              <Text style={{color: theme.gray700}}>{shareUrl}</Text>
             </View>
             <Pressable onPress={copyToClipboard} style={styles.copyButton}>
               <Text style={{fontSize: 16, color: theme.white}}>복사</Text>
@@ -114,6 +115,7 @@ export const NanumDetailHeader = ({inverted, userAccountIdx, writerAccountIdx, n
   const [deleteModalVisible, setDeleteModalVisible] = useState<boolean>(false)
   //const isWriter = userid == writerid
   const isWriter = userAccountIdx == writerAccountIdx
+  const shareUrl = `hannip://hannip/goods/${nanumIdx}`
 
   const onPressGoback = useCallback(() => {
     navigation.goBack()
@@ -138,7 +140,7 @@ export const NanumDetailHeader = ({inverted, userAccountIdx, writerAccountIdx, n
         <LeftArrowWhiteIcon onPress={onPressGoback} style={{marginRight: 10}} />
       )}
 
-      <ShareModal shareVisible={shareVisible} toggleShareVisible={toggleShareVisible} />
+      <ShareModal shareVisible={shareVisible} toggleShareVisible={toggleShareVisible} shareUrl={shareUrl} />
       <View style={{flexDirection: 'row', alignItems: 'center', width: 65, justifyContent: 'space-between'}}>
         <MenuModal
           moreVisible={moreVisible}
