@@ -1,6 +1,8 @@
 import React from 'react'
 import {Pressable, StyleSheet} from 'react-native'
 import FastImage from 'react-native-fast-image'
+import {Shadow} from 'react-native-shadow-2'
+
 import {main} from '../../theme'
 
 type FloatingButtonProps = {
@@ -11,9 +13,11 @@ type FloatingButtonProps = {
 
 export const FloatingButton = ({onPress, children}: FloatingButtonProps) => {
   return (
-    <Pressable onPress={onPress}>
-      <FastImage source={require('../../assets/images/FloatingButton.png')} style={styles.container} />
-    </Pressable>
+    <Shadow distance={10} startColor="rgba(0,0,0,0.9)">
+      <Pressable onPress={onPress}>
+        <FastImage source={require('../../assets/images/FloatingButton.png')} style={styles.container} />
+      </Pressable>
+    </Shadow>
   )
 }
 

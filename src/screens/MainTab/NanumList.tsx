@@ -1,5 +1,5 @@
 import React, {useState, useCallback, useEffect} from 'react'
-import {View, Text, FlatList, Pressable, StyleSheet, ActivityIndicator} from 'react-native'
+import {View, Text, FlatList, Pressable, StyleSheet, ActivityIndicator, Platform} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation} from '@react-navigation/native'
 import {useQueryClient, useQuery} from 'react-query'
@@ -10,6 +10,7 @@ import {NanumListFilterTab, NanumListItem, GoodsListBottomSheetContent, Banner, 
 import {INanumMethod, INanumListItem, IAccountCategoryDto} from '../../types'
 import {useAppSelector, useAppDispatch} from '../../hooks'
 import {getNanumByRecent, getNanumByPopularity, getNanumAllByFavorites, queryKeys, getNanumAllByRecent} from '../../api'
+import {Shadow} from 'react-native-shadow-2'
 
 const NanumList = () => {
   // ******************** check login ********************
@@ -211,14 +212,20 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 10,
     right: 10,
-    shadowColor: theme.gray800,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.24,
-    elevation: 5,
+    ...Platform.select({
+      ios: {
+        shadowColor: theme.gray800,
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.24,
+      },
+      android: {
+        elevation: 5,
+      },
+    }),
   },
 
   title: {
