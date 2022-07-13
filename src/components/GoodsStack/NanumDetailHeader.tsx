@@ -115,7 +115,7 @@ export const NanumDetailHeader = ({inverted, userAccountIdx, writerAccountIdx, n
   const [deleteModalVisible, setDeleteModalVisible] = useState<boolean>(false)
   //const isWriter = userid == writerid
   const isWriter = userAccountIdx == writerAccountIdx
-  const shareUrl = `hannip://hannip/goods/${nanumIdx}`
+  const shareUrl = `hannip://hannip/goods&idx=${nanumIdx}`
 
   const onPressGoback = useCallback(() => {
     navigation.goBack()
