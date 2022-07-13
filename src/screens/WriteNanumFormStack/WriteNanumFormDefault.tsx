@@ -3,7 +3,7 @@ import {View, Text, ScrollView, TextInput, StyleSheet, Pressable, Dimensions, Pl
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation} from '@react-navigation/native'
 import KeyboardManager from 'react-native-keyboard-manager'
-import BottomSheet, {BottomSheetBackdrop, BottomSheetScrollView} from '@gorhom/bottom-sheet'
+import BottomSheet, {BottomSheetBackdrop, BottomSheetView, BottomSheetScrollView} from '@gorhom/bottom-sheet'
 import {isIphoneX} from 'react-native-iphone-x-helper'
 import StackHeader from '../../components/utils/StackHeader'
 import {ImagePicker, StepIndicator, SetSharingType, BookSharingDate, SelectCategory} from '../../components/WriteGoodsStack'
@@ -190,7 +190,7 @@ export const WriteNanumFormDefault = () => {
         detached={true}
         bottomInset={0}
         backdropComponent={renderBackdrop}>
-        <BottomSheetScrollView contentContainerStyle={{flex: 1}} style={{flex: 1}}>
+        <BottomSheetView style={{flex: 1}}>
           <View style={[{alignItems: 'flex-end'}]}>
             <XIcon
               style={{padding: 16}}
@@ -200,7 +200,7 @@ export const WriteNanumFormDefault = () => {
             />
           </View>
           <SelectCategory category={category} setCategory={setCategory} bottomSheetRef={bottomSheetRef} />
-        </BottomSheetScrollView>
+        </BottomSheetView>
       </BottomSheet>
     </SafeAreaView>
   )

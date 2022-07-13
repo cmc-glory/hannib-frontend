@@ -1,15 +1,15 @@
 import React, {useCallback, useState} from 'react'
-import {View, Text, StyleSheet, FlatList, Pressable, Dimensions, Alert} from 'react-native'
+import {View, Text, StyleSheet, Pressable, Dimensions, Alert} from 'react-native'
 import {useMutation} from 'react-query'
 import {showMessage} from 'react-native-flash-message'
 import FastImage from 'react-native-fast-image'
-import {SafeAreaView} from 'react-native-safe-area-context'
+import {BottomSheetFlatList} from '@gorhom/bottom-sheet'
 import {getBottomSpace, isIphoneX} from 'react-native-iphone-x-helper'
 import {BottomSheetMethods} from '@gorhom/bottom-sheet/lib/typescript/types'
 
 import {Button, CheckboxMainIcon, FloatingBottomButton, XSmallIcon} from '../utils'
 import {SearchStar, EmptyResult} from '../LoginStack'
-import {IAccountCategoryDto, ICategoryDto} from '../../types'
+import {ICategoryDto} from '../../types'
 import {queryKeys, searchCategory} from '../../api'
 import * as theme from '../../theme'
 
@@ -119,30 +119,54 @@ export const SelectCategory = ({category, setCategory, bottomSheetRef}: SelectCa
 
   return (
     <View style={{flex: 1}}>
-      <View style={[theme.styles.wrapper, {flex: 1}]}>
-        <View style={[styles.mainCategoryContainer]}>
-          <Button selected={singerSelected} label="가수" style={{width: BUTTON_WIDTH}} onPress={() => setSingerSelected(true)} />
-          <Button selected={!singerSelected} label="배우" style={{width: BUTTON_WIDTH}} onPress={() => setSingerSelected(false)} />
+      <View style={[{flex: 1}]}>
+        <View style={[styles.mainCategoryContainer, theme.styles.wrapper]}>
+          <Button
+            selected={singerSelected}
+            label="가수"
+            style={{width: BUTTON_WIDTH}}
+            onPress={() => {
+              setSingerSelected(true)
+              setInit(true)
+            }}
+          />
+          <Button
+            selected={!singerSelected}
+            label="배우"
+            style={{width: BUTTON_WIDTH}}
+            onPress={() => {
+              setSingerSelected(false)
+              setInit(true)
+            }}
+          />
         </View>
 
-        <SearchStar keyword={keyword} setKeyword={setKeyword} searchKeyword={searchKeyword} label="카테고리를 선택해 주세요." />
+        <View style={[theme.styles.wrapper]}>
+          <SearchStar keyword={keyword} setKeyword={setKeyword} searchKeyword={searchKeyword} label="카테고리를 선택해 주세요." />
+        </View>
         <View style={{flex: 1}}>
-          {category.category != '' && (
-            <View style={[theme.styles.rowFlexStart, {marginBottom: 16}, styles.selectedCategoryButton]}>
-              <Text style={[{marginRight: 8}, theme.styles.text14]}>{category.category}</Text>
-              <XSmallIcon size={16} onPress={onPressX} />
-            </View>
-          )}
+          <View style={[theme.styles.wrapper]}>
+            {category.category != '' && (
+              <View style={[theme.styles.rowFlexStart, {marginBottom: 16}, styles.selectedCategoryButton]}>
+                <Text style={[{marginRight: 8}, theme.styles.text14]}>{category.category}</Text>
+                <XSmallIcon size={16} onPress={onPressX} />
+              </View>
+            )}
+          </View>
+
           {init == true ? (
-            <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center'}]}>
+            <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center'}, theme.styles.wrapper]}>
               <Text style={theme.styles.bold20}>관심 있는 스타를 검색해 보세요!</Text>
             </View>
           ) : result.length == 0 ? (
-            <EmptyResult />
+            <View style={[theme.styles.wrapper, {flex: 1}]}>
+              <EmptyResult />
+            </View>
           ) : (
-            <FlatList
+            <BottomSheetFlatList
               data={result}
               numColumns={3}
+              contentContainerStyle={[theme.styles.wrapper]}
               columnWrapperStyle={{justifyContent: 'space-between', marginBottom: 16}}
               renderItem={({item, index}) => (
                 <View style={{width: CIRCLE_SIZE}}>
@@ -154,7 +178,7 @@ export const SelectCategory = ({category, setCategory, bottomSheetRef}: SelectCa
                   </Pressable>
                   <Text style={styles.starName}>{item.nickName}</Text>
                 </View>
-              )}></FlatList>
+              )}></BottomSheetFlatList>
           )}
         </View>
       </View>

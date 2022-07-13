@@ -133,6 +133,7 @@ export const EditCategory = () => {
             style={{width: BUTTON_WIDTH}}
             onPress={() => {
               setSingerSelected(true)
+              setInit(true)
             }}
           />
           <Button
@@ -140,6 +141,8 @@ export const EditCategory = () => {
             label="배우"
             style={{width: BUTTON_WIDTH}}
             onPress={() => {
+              setInit(true)
+
               setSingerSelected(false)
             }}
           />
