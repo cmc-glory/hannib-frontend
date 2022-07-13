@@ -135,12 +135,6 @@ export const EditProfile = () => {
       return
     }
 
-    if (leftChangeNum == 0) {
-      Alert.alert('이번 달에는 닉네임 수정이 불가능합니다.', '', [{text: '확인'}])
-      return
-    }
-    checkNicknameDuplicatedQuery.mutate(name)
-
     if (name && profileImage) {
       let accountDto: IAccountDto = {
         accountIdx: user.accountIdx,
@@ -152,7 +146,7 @@ export const EditProfile = () => {
       }
       updateAccountInfoQuery.mutate(accountDto)
     }
-  }, [name, profileImage, leftChangeNum])
+  }, [name, profileImage])
 
   const onImageLibraryPress = useCallback(async () => {
     const response = await launchImageLibrary({selectionLimit: 1, mediaType: 'photo', includeBase64: false})

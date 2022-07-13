@@ -2,6 +2,7 @@ import React, {useCallback} from 'react'
 import {View, StyleSheet, Text, Dimensions} from 'react-native'
 import moment from 'moment'
 import {useMutation} from 'react-query'
+import {showMessage} from 'react-native-flash-message'
 
 import {Tag, StarFilledIcon, StarUnfilledIcon, LockIcon} from '../utils'
 import {NoticeBanner} from './NoticeBanner'
@@ -12,6 +13,7 @@ import {WriterProfileBanner} from './WriterProfileBanner'
 import {SharingGoodsInfo} from './SharingGoodsInfo'
 import {INanum} from '../../types'
 import {addFavorite, removeFavorite} from '../../api'
+import {useAppSelector} from '../../hooks'
 import * as theme from '../../theme'
 
 type ContentProps = {
@@ -23,33 +25,70 @@ type ContentProps = {
 const window = Dimensions.get('screen')
 
 export function NanumDetailContent({headerHeight, nanumDetail, numInquires}: ContentProps) {
+  const accountIdx = useAppSelector(state => state.auth.user.accountIdx)
   const addFavoriteQuery = useMutation(addFavorite, {
-    onSuccess: () => {},
+    onSuccess: () => {
+      showMessage({
+        // 에러 안내 메세지
+        message: '찜 목록에 추가되었습니다.',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+      })
+    },
   })
   // 찜 해제
   const removeFavoriteQuery = useMutation(removeFavorite, {
-    onSuccess: () => {},
+    onSuccess: () => {
+      showMessage({
+        // 에러 안내 메세지
+        message: '찜 목록에서 삭제되었습니다.',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+      })
+    },
   })
 
   const onPressAddFavorite = useCallback(() => {
+    if (addFavoriteQuery.isLoading || removeFavoriteQuery.isLoading) {
+      return
+    }
     // 즐겨찾기 버튼 클릭했을 때
     nanumDetail.isFavorite = 'Y' // 프론트 단에서만 즐겨찾기 여부 수정.
     nanumDetail.favorites += 1
     addFavoriteQuery.mutate({
-      accountIdx: 0,
-      nanumIdx: 0,
+      accountIdx: accountIdx,
+      nanumIdx: nanumDetail.nanumIdx,
     }) // 인자에는 query params 넣기
-  }, [])
+  }, [nanumDetail, accountIdx, addFavoriteQuery, removeFavoriteQuery])
 
   const onPressRemoveFavorite = useCallback(() => {
+    if (addFavoriteQuery.isLoading || removeFavoriteQuery.isLoading || nanumDetail.favorites == 0) {
+      return
+    }
     // 즐겨찾기 버튼 클릭했을 때
     nanumDetail.isFavorite = 'N' //  프론트 단에서만 즐겨찾기 여부 수정. (invalidate query로 새로 가져오기 X)
     nanumDetail.favorites -= 1
     removeFavoriteQuery.mutate({
-      accountIdx: 0,
-      nanumIdx: 0,
+      accountIdx: accountIdx,
+      nanumIdx: nanumDetail.nanumIdx,
     }) // 인자에는 query params 넣기
-  }, [])
+  }, [nanumDetail, accountIdx, addFavoriteQuery, removeFavoriteQuery])
 
   return (
     <View
@@ -71,7 +110,7 @@ export function NanumDetailContent({headerHeight, nanumDetail, numInquires}: Con
         <View style={[{marginVertical: 16}, theme.styles.rowSpaceBetween]}>
           <Text style={[styles.title]}>{nanumDetail?.title}</Text>
           <View style={{alignItems: 'center'}}>
-            {nanumDetail?.isFavorite ? (
+            {nanumDetail?.isFavorite == 'Y' ? (
               <StarFilledIcon size={30} onPress={onPressRemoveFavorite} />
             ) : (
               <StarUnfilledIcon size={30} onPress={onPressAddFavorite} />
