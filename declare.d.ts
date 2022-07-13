@@ -134,9 +134,11 @@ declare namespace ReactNavigation {
     AskAddStar: undefined
     AskAddStarComplete: undefined
     BlockedUsers: undefined
-    MyPageStackNavigator: {
-      screen: string
-    }
+    MyPageStackNavigator:
+      | {
+          screen: string
+        }
+      | undefined
     SetProfile: {
       email?: string
     }

@@ -1,5 +1,5 @@
-import React, {useEffect} from 'react'
-import {View, Text, StyleSheet, Alert} from 'react-native'
+import React, {useEffect, useState} from 'react'
+import {View, Text, StyleSheet, Alert, Linking} from 'react-native'
 import {useNavigation} from '@react-navigation/native'
 import {useMutation} from 'react-query'
 
@@ -8,10 +8,12 @@ import {getString} from '../../hooks'
 import {storeAccessToken, login} from '../../redux/slices'
 import {queryKeys, getAccountInfoByIdx} from '../../api'
 import {useAppDispatch} from '../../hooks'
+import {removeListener} from '@reduxjs/toolkit'
 
 export const SplashScreen = () => {
   const dispatch = useAppDispatch()
   const navigation = useNavigation()
+  const [isDeepLink, setIsDeepLink] = useState<boolean>(false)
 
   const getAccountInfoQuery = useMutation('init', getAccountInfoByIdx, {
     onSuccess(data, variables, context) {
@@ -32,6 +34,8 @@ export const SplashScreen = () => {
       console.log(error)
     },
   })
+
+  //useEffect(() => {}, [isDeepLink])
 
   useEffect(() => {
     // async storage에서 account Idx가져오기
@@ -57,8 +61,50 @@ export const SplashScreen = () => {
         })
       }
     })
-    // })
+
+    // ************************* Deep Link *************************
+    //IOS && ANDROID : 앱이 딥링크로 처음 실행될때, 앱이 열려있지 않을 때
+    Linking.getInitialURL().then(url => {
+      deepLink(url!)
+      console.log('url1 : ', url)
+      console.log('isDeepLink11 : ', isDeepLink)
+      return () => removeListener
+      //return () => removeListener
+    })
+
+    //IOS : 앱이 딥링크로 처음 실행될때, 앱이 열려있지 않을 때 && 앱이 실행 중일 때
+    //ANDROID : 앱이 실행 중일 때
+    Linking.addEventListener('url', url => {
+      console.log('url2 : ', url)
+      addListenerLink
+      return () => removeListener
+    })
   }, [])
+
+  const deepLink = (url: string) => {
+    if (url) {
+      navigation.navigate('GoodsStackNavigator', {
+        screen: 'NanumDetail',
+        params: {
+          nanumIdx: 68,
+        },
+      })
+    }
+  }
+  const addListenerLink = ({url}) => {
+    if (url) {
+      navigation.navigate('GoodsStackNavigator', {
+        screen: 'NanumDetail',
+        params: {
+          nanumIdx: 68,
+        },
+      })
+    }
+  }
+
+  // const remover = () => {
+  //   Linking.removeEventListener('url')
+  // }
 
   return (
     <View style={styles.container}>
