@@ -45,7 +45,7 @@ const NanumList = () => {
 
   // ******************** react query ********************
   // 카테고리가 설정되지 않았을 때 (로그인하지 않았을 때) 전부 불러오기
-  const nanumAllByRecent = useQuery(queryKeys.nanumList, getNanumAllByRecent, {
+  const nanumAllByRecent = useQuery([queryKeys.nanumList], getNanumAllByRecent, {
     onSuccess(data) {
       setRefreshing(false)
       setSharings(data)
@@ -53,7 +53,7 @@ const NanumList = () => {
     enabled: isLoggedIn == false && itemFilter == '최신순', // 로그인 하지 않았을 때 전체 보기
   })
 
-  const nanumAllByFavorites = useQuery(queryKeys.nanumList, getNanumAllByFavorites, {
+  const nanumAllByFavorites = useQuery([queryKeys.nanumList], getNanumAllByFavorites, {
     onSuccess(data) {
       setRefreshing(false)
       setSharings(data)
@@ -80,8 +80,11 @@ const NanumList = () => {
     onSuccess(data) {
       setRefreshing(false) // 새로고침중이면 로딩 종료
       setSharings(data)
+      console.log(data)
     },
-    onError(err) {},
+    onError(err) {
+      console.log(err)
+    },
     enabled: isLoggedIn == true && itemFilter == '인기순',
   })
   // 카테고리가 설정 됐을 때 최신순
@@ -90,7 +93,7 @@ const NanumList = () => {
   // 새로고침침 pull up이 일어났을 때
   const onRefresh = useCallback(() => {
     setRefreshing(true)
-    queryClient.invalidateQueries(queryKeys.nanumList)
+    queryClient.invalidateQueries([queryKeys.nanumList])
   }, [])
 
   // 모집글 작성 버튼 클릭 시
