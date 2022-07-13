@@ -56,6 +56,9 @@ export const WriteQnA = () => {
 
   // ******************** callbacks ********************
   const onPressSubmit = () => {
+    if (postInquiryQuery.isLoading) {
+      return
+    }
     // 백으로 내용이랑 비밀 여부 post 하는 api
     const questionNanumDto: IInquiryNanumDto = {
       inquiryIdx: 0,

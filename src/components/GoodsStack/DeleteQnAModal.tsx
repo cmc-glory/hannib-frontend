@@ -37,6 +37,7 @@ export const DeleteQnAModal = ({deleteQnAModalVisible, setDeleteQnAModalVisible,
       })
 
       queryClient.invalidateQueries([queryKeys.inquiry, nanumIdx])
+      queryClient.invalidateQueries([queryKeys.nanumDetail, nanumIdx])
     },
     onError(error, variables, context) {
       showMessage({

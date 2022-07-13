@@ -1,5 +1,5 @@
 import React, {useState, useCallback, useMemo} from 'react'
-import {View, Text, TextInput, Pressable, StyleSheet} from 'react-native'
+import {View, Text, TextInput, Pressable, ActivityIndicator, StyleSheet} from 'react-native'
 import moment from 'moment'
 import {useMutation, useQueryClient} from 'react-query'
 import {showMessage} from 'react-native-flash-message'
@@ -58,7 +58,8 @@ const Question = ({item, accountIdx, nanumIdx, inquiryIdx}: QuestionProps) => {
   // ******************** react query ********************
   const updateInquiryQuery = useMutation([queryKeys.inquiry, nanumIdx], updateInquiry, {
     onSuccess(data, variables, context) {
-      queryClient.invalidateQueries([queryKeys.inquiry, nanumIdx])
+      queryClient.invalidateQueries([queryKeys.inquiry, nanumIdx]) // 문의글 목록 다시 get
+      queryClient.invalidateQueries([queryKeys.nanumDetail, nanumIdx]) // 문의글 숫자가 바뀌었으므로 나눔 상세 페이지 다시 get
       setEditPressed(false)
     },
     onError(error, variables, context) {
@@ -88,6 +89,9 @@ const Question = ({item, accountIdx, nanumIdx, inquiryIdx}: QuestionProps) => {
   }, [])
 
   const onPressEditComplete = useCallback(() => {
+    if (updateInquiryQuery.isLoading) {
+      return
+    }
     const inquiryEditDto: IInquiryEditDto = {
       inquiryIdx: inquiryIdx,
       comments: editedContent,
@@ -136,7 +140,7 @@ const Question = ({item, accountIdx, nanumIdx, inquiryIdx}: QuestionProps) => {
               maxLength={150}
               style={[theme.styles.input, {height: 150, paddingTop: 16}]}></TextInput>
             <Pressable style={styles.editButton} onPress={onPressEditComplete}>
-              <Text style={{color: theme.white}}>수정하기</Text>
+              {updateInquiryQuery.isLoading ? <ActivityIndicator /> : <Text style={{color: theme.white}}>수정하기</Text>}
             </Pressable>
           </View>
         ) : (
