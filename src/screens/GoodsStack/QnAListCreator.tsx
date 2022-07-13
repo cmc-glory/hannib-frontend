@@ -7,7 +7,6 @@ import {useQueryClient, useQuery} from 'react-query'
 import {QnAListCreatorRouteProps} from '../../navigation/GoodsStackNavigator'
 import {StackHeader, SharingPreview, EmptyIcon} from '../../components/utils'
 import {QnAListCreatorItem} from '../../components/GoodsStack'
-import {QnAListUserRouteProps} from '../../navigation/GoodsStackNavigator'
 import * as theme from '../../theme'
 import {queryKeys, getNanumByIndex, getInquiryByIndex} from '../../api'
 import {IInquiryNanumDto} from '../../types'
@@ -20,7 +19,7 @@ export const QnAListCreator = () => {
   const userAccountIdx = auth.user.accountIdx
 
   const navigation = useNavigation()
-  const route = useRoute<QnAListUserRouteProps>()
+  const route = useRoute<QnAListCreatorRouteProps>()
   const queryClient = useQueryClient()
 
   const {nanumIdx} = useMemo(() => route.params, [])
@@ -37,40 +36,6 @@ export const QnAListCreator = () => {
       setRefreshing(false)
     },
   })
-
-  // 문의글 작성으로 이동
-  const onPressWrite = useCallback(() => {
-    if (isLoggedIn) {
-      navigation.navigate('WriteQnA', {
-        nanumIdx, // 해당 나눔 게시글의 id
-        accountIdx: userAccountIdx, // 문의글을 남기는 사용자의 id,
-        imageuri: nanumInfo.data.thumbnail, // 썸네일 uri
-        category: nanumInfo.data.category, // 카테고리
-        title: nanumInfo.data.title, // 나눔 제목
-      })
-    } else {
-      Platform.select({
-        ios: Alert.alert('로그인 후 이용할 수 있습니다. 로그인 페이지로 이동하시겠습니까?', '', [
-          {
-            text: '확인',
-            onPress: () => navigation.navigate('MyPageTabStackNavigator'),
-          },
-          {
-            text: '취소',
-          },
-        ]),
-        android: Alert.alert('로그인 후 이용할 수 있습니다', '로그인 페이지로 이동하시겠습니까?', [
-          {
-            text: '확인',
-            onPress: () => navigation.navigate('MyPageTabStackNavigator'),
-          },
-          {
-            text: '취소',
-          },
-        ]),
-      })
-    }
-  }, [nanumInfo, isLoggedIn])
 
   return (
     <SafeAreaView style={theme.styles.safeareaview}>

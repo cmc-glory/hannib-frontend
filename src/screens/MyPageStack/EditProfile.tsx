@@ -9,7 +9,7 @@ import {useNavigation} from '@react-navigation/native'
 import {showMessage} from 'react-native-flash-message'
 
 import {StackHeader, SelectImageIcon} from '../../components/utils'
-import {queryKeys, uploadProfileImage, updateAccountInfo, getAccountInfoByIdx} from '../../api'
+import {queryKeys, uploadProfileImage, updateAccountInfo, getAccountInfoByIdx, checkNicknameDuplicated} from '../../api'
 
 import {updateName, updateProfileImage} from '../../redux/slices'
 import {useAppSelector, useAppDispatch} from '../../hooks'
@@ -94,9 +94,34 @@ export const EditProfile = () => {
     },
   })
 
+  const checkNicknameDuplicatedQuery = useMutation(queryKeys.nicknameDuplicated, checkNicknameDuplicated, {
+    onSuccess(data, variables, context) {
+      // 같은 닉네임을 찾지 못해서 응답이 blank이면
+      setDuplicated(true)
+    },
+    onError(error, variables, context) {
+      showMessage({
+        // 에러 안내 메세지
+        message: '닉네임 중복 확인 중 에러가 발생했습니다',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+      })
+      console.log(error)
+    },
+  })
+
   // ******************** states ********************
   const [name, setName] = useState<string>(data.creatorId)
   const [profileImage, setProfileImage] = useState<string | undefined>(data.accountImg)
+  const [duplicated, setDuplicated] = useState<boolean>(false)
 
   // ******************** callbacks ********************
   const checkButtonEnabled = useCallback((name: string, profileImage: string | undefined) => {
@@ -105,11 +130,17 @@ export const EditProfile = () => {
   }, [])
 
   const onPressComplete = useCallback(async () => {
-    console.log('here')
     // 이름, 프로필 사진 중 바뀐 게 없으면 리턴.
     if (checkButtonEnabled(name, profileImage) == false) {
       return
     }
+
+    if (leftChangeNum == 0) {
+      Alert.alert('이번 달에는 닉네임 수정이 불가능합니다.', '', [{text: '확인'}])
+      return
+    }
+    checkNicknameDuplicatedQuery.mutate(name)
+
     if (name && profileImage) {
       let accountDto: IAccountDto = {
         accountIdx: user.accountIdx,
@@ -121,7 +152,7 @@ export const EditProfile = () => {
       }
       updateAccountInfoQuery.mutate(accountDto)
     }
-  }, [name, profileImage])
+  }, [name, profileImage, leftChangeNum])
 
   const onImageLibraryPress = useCallback(async () => {
     const response = await launchImageLibrary({selectionLimit: 1, mediaType: 'photo', includeBase64: false})
@@ -198,11 +229,22 @@ export const EditProfile = () => {
           )}
 
           <SelectImageIcon style={styles.cameraIcon} onPress={onImageLibraryPress} />
+          <View style={[theme.styles.rowFlexStart]}>
+            <Text style={[theme.styles.text14, {marginTop: 12, marginBottom: 32, textAlign: 'center', color: theme.gray500}]}>
+              이번달 수정 가능 횟수 {leftChangeNum}회
+            </Text>
+          </View>
         </View>
-
         <Text style={theme.styles.label}>닉네임</Text>
-        <TextInput style={theme.styles.input} placeholder={user.creatorId} placeholderTextColor={theme.gray300} value={name} onChangeText={setName} />
-        <Text style={[theme.styles.text14, {marginTop: 8, color: theme.gray500}]}>이번달 잔여 수정 가능 횟수 : {leftChangeNum}회</Text>
+        <TextInput
+          style={[theme.styles.input, leftChangeNum == 0 && {color: theme.gray500}]}
+          placeholder={user.creatorId}
+          placeholderTextColor={theme.gray300}
+          value={name}
+          onChangeText={setName}
+          editable={leftChangeNum == 1}
+        />
+        {duplicated && <Text style={[{color: theme.red, fontSize: 12, marginTop: 4}, theme.styles.text12]}>중복된 닉네임입니다.</Text>}
       </View>
     </SafeAreaView>
   )
@@ -211,7 +253,7 @@ export const EditProfile = () => {
 const styles = StyleSheet.create({
   cameraIcon: {
     position: 'absolute',
-    left: 72,
+    left: 96,
     top: 108,
   },
   image: {
@@ -220,7 +262,8 @@ const styles = StyleSheet.create({
     borderRadius: 54,
     justifyContent: 'center',
     alignItems: 'center',
-    marginVertical: 32,
+    marginTop: 32,
+    alignSelf: 'center',
   },
   selectImage: {
     backgroundColor: theme.gray100,

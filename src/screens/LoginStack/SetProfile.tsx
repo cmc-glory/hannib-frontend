@@ -154,7 +154,7 @@ export const SetProfile = () => {
           ) : (
             <FastImage source={{uri: image}} style={styles.image}></FastImage>
           )}
-
+          <Text>sdfsd</Text>
           <SelectImageIcon style={styles.cameraIcon} onPress={onImageLibraryPress} />
         </View>
 
