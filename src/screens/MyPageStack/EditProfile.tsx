@@ -134,6 +134,7 @@ export const EditProfile = () => {
       return
     }
 
+    // 한글, 영어, 숫자, 공백 제외 validation
     if (regex.test(name) == false) {
       showMessage({
         // 에러 안내 메세지

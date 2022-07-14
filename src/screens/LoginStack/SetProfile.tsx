@@ -12,6 +12,8 @@ import NoUserSvg from '../../assets/Icon/noUser.svg'
 import * as theme from '../../theme'
 import {queryKeys, uploadProfileImage, checkNicknameDuplicated} from '../../api'
 
+const regex = /^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|]+$/
+
 export const SetProfile = () => {
   // ****************** utils  ******************
   const navigation = useNavigation()
@@ -85,6 +87,46 @@ export const SetProfile = () => {
   }, [])
 
   const onPressNext = useCallback(() => {
+    // 닉네임 길이 validation
+    if (name.length > 10 || name.length < 2) {
+      showMessage({
+        // 에러 안내 메세지
+        message: '닉네임을 2~10자 사이로 입력해주세요.',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+        position: 'center',
+      })
+      return
+    }
+
+    // 한글, 영어, 숫자, 공백 제외 validation
+    if (regex.test(name) == false) {
+      showMessage({
+        // 에러 안내 메세지
+        message: '공백 제외 한글, 영문, 숫자만 입력 가능합니다.',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+        position: 'center',
+      })
+      return
+    }
+
     // 중복 닉네임 판별
     checkNicknameDuplicatedQuery.mutate(name)
   }, [name, image])
