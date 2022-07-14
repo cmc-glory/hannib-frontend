@@ -22,7 +22,6 @@ const NanumList = () => {
   const queryClient = useQueryClient()
 
   // ******************** states ********************
-  const [sharingsAll, setSharingsAll] = useState<INanumListItem[]>([]) // 나눔 게시글들
   const [sharings, setSharings] = useState<INanumListItem[]>([]) // 나눔 게시글들
   const [refreshing, setRefreshing] = useState<boolean>(false) // 새로고침 state
   const [nanumMethodFilter, setNanumMethodFilter] = useState<'전체' | INanumMethod>('전체') // 필터1 : 전체, 우편, 오프라인
@@ -48,7 +47,6 @@ const NanumList = () => {
   const nanumAllByRecent = useQuery([queryKeys.nanumList], getNanumAllByRecent, {
     onSuccess(data) {
       setRefreshing(false)
-      setSharingsAll(data)
       setSharings(data)
     },
     enabled: isLoggedIn == false && itemFilter == '최신순', // 로그인 하지 않았을 때 전체 보기
@@ -132,26 +130,6 @@ const NanumList = () => {
   // 카테고리(에스파, 세븐틴 등) 클릭시
   const onPressSelectCategory = useCallback(() => {
     setShowSelectCategoryModal(showSelectCategoryModal => !showSelectCategoryModal)
-  }, [])
-
-  // // 전체, 우편, 오프라인 클릭시
-  // const onPressLocationFilter = useCallback(
-  //   (type: INanumMethod | '전체') => {
-  //     // if (type == '전체') {
-  //     //   setSharings(sharingsAll)
-  //     // } else {
-  //     //   if (sharings != undefined) {
-  //     //     const temp = sharingsAll.filter((item: INanumListItem) => item.nanumMethod == type)
-  //     //     setSharings(temp)
-  //     //   }
-  //     // }
-  //   },
-  //   [sharingsAll, sharings],
-  // )
-
-  useEffect(() => {
-    console.log('sharings changed')
-    console.log(sharings)
   }, [])
 
   return (

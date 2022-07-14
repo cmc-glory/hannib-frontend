@@ -14,7 +14,7 @@ import {INanum} from '../../types'
 import {queryKeys, getNanumByIndex, getInquiryByIndex} from '../../api'
 
 const IMAGE_HEIGHT = 350
-const TOP_HEIGHT = getStatusBarHeight() + 52
+const TOP_HEIGHT = getStatusBarHeight() + 56
 const SHADOW_HEIGHT = getStatusBarHeight() + 120
 const WIDTH = Dimensions.get('window').width
 

@@ -22,24 +22,26 @@ export const getNanumAllByFavorites = async () => {
   return data
 }
 
-// 최신순으로 가져 오기
+// 카테고리가 있을 때 최신순으로 가져 오기
 export const getNanumByRecent = async (category: string) => {
   const {data} = await apiClient.get(`/api/nanum/list/login1?category=${category}`)
   return data
 }
 
-// 인기순으로 가져 오기
+// 키테고리가 있을 때 인기순으로 가져 오기
 export const getNanumByPopularity = async (category: string) => {
   const {data} = await apiClient.get(`/api/nanum/list/login2?category=${category}`)
   return data
 }
 
+// 나눔 상세 페이지 index로 검색
 export const getNanumByIndex = async (index: number) => {
   const {data} = await apiClient.get(`/api/nanum/${index}`)
 
   return data
 }
 
+// 나눔폼 작성
 export const postNanumForm = async (nanumForm: INanumForm) => {
   const {data} = await apiClient.post('/api/nanum/write', nanumForm)
 
@@ -51,7 +53,7 @@ export const getNanumForm = async (nanumIdx: number) => {
 
   return data
 }
-
+// 나눔글 삭제
 export const deleteNanumForm = async (nanumIdx: number) => {
   const {data} = await apiClient.delete(`/api/nanum/?nanumIdx=${nanumIdx}`)
 
@@ -67,5 +69,17 @@ export const addFavorite = async ({nanumIdx, accountIdx}: {nanumIdx: number; acc
 // 즐겨찾기 취소
 export const removeFavorite = async ({nanumIdx, accountIdx}: {nanumIdx: number; accountIdx: number}) => {
   const {data} = await apiClient.delete(`/api/nanum/favorites?nanumIdx=${nanumIdx}&accountIdx=${accountIdx}`)
+  return data
+}
+
+// 검색 인기순
+export const searchNanumByFavorites = async (title: string) => {
+  const {data} = await apiClient.post(`api/nanum/list/favorites?title=${title}`)
+  return data
+}
+
+// 검색 최신순
+export const searchNanumByRecent = async (title: string) => {
+  const {data} = await apiClient.post(`api/nanum/list/recent?title=${title}`)
   return data
 }

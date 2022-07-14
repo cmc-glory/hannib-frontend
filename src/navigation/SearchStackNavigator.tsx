@@ -1,14 +1,25 @@
 import React from 'react'
 import {createStackNavigator} from '@react-navigation/stack'
-import {Search, SearchContent} from '../screens/SearchStack'
+import type {NativeStackScreenProps} from '@react-navigation/native-stack'
+import {Search, SearchDetail} from '../screens/SearchStack'
 
-const Stack = createStackNavigator()
+type SearchStackNavigatorParamList = {
+  Search: undefined
+  SearchDetail: {
+    keyword: string
+  }
+}
+
+type SearchDetailProps = NativeStackScreenProps<SearchStackNavigatorParamList, 'SearchDetail'>
+export type SearchDetailRouteProps = SearchDetailProps['route']
+
+const Stack = createStackNavigator<SearchStackNavigatorParamList>()
 
 const SearchStackNavigator = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false, cardStyle: {backgroundColor: 'white'}}}>
       <Stack.Screen name="Search" component={Search} />
-      <Stack.Screen name="SearchContent" component={SearchContent} />
+      <Stack.Screen name="SearchDetail" component={SearchDetail} />
     </Stack.Navigator>
   )
 }

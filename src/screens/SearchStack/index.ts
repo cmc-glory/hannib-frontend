@@ -1,2 +1,2 @@
 export * from './Search'
-export * from './SearchContent'
+export * from './SearchDetail'
