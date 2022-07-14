@@ -137,9 +137,9 @@ export function NanumDetailContent({headerHeight, nanumDetail, numInquires}: Con
         askNum={numInquires}
       />
 
-      <View style={[styles.padding]}>
+      {/* <View style={[styles.padding]}>
         <RelatedSharing />
-      </View>
+      </View> */}
     </View>
   )
 }

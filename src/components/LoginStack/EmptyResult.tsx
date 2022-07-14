@@ -14,7 +14,7 @@ export const EmptyResult = () => {
 
   // ******************** callbacks  ********************
   const onPressAsk = useCallback(() => {
-    navigation.navigate('AskAddStar')
+    navigation.navigate('LoginStackNavigator', {screen: 'AskAddStar'})
   }, [])
   return (
     <View style={[styles.container]}>

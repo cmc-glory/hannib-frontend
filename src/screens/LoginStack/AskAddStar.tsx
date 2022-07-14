@@ -140,7 +140,7 @@ export const AskAddStar = () => {
   const onPressCategory = useCallback(() => {
     // 카테고리 선택하면, set하고 닫음
     open.start(toggleOpend)
-    //setMainCategory(mainCategory => (mainCategory == '가수' ? '배우' : '가수'))
+    setMainCategory(mainCategory => (mainCategory == '가수' ? '배우' : '가수'))
   }, [opend])
 
   // 선택한 이미지 삭제
@@ -341,7 +341,7 @@ export const AskAddStar = () => {
             style={[theme.styles.input]}
           />
         </View>
-        <RoundButton label="카테고리 문의하기" enabled={checkEnabled()} onPress={onPressSubmit} />
+        <RoundButton label="카테고리 문의하기" enabled={postCategoryQuery.isLoading == false && checkEnabled()} onPress={onPressSubmit} />
       </View>
     </SafeAreaView>
   )

@@ -65,12 +65,6 @@ export const MyPageScreen = () => {
     })
   }, [])
 
-  const onPressBlockedUsers = useCallback(() => {
-    navigation.navigate('MyPageStackNavigator', {
-      screen: 'BlockedUsers',
-    })
-  }, [])
-
   const onPressResign = useCallback(() => {
     navigation.navigate('MyPageStackNavigator', {
       screen: 'Resign',
@@ -135,8 +129,7 @@ export const MyPageScreen = () => {
           <Text style={[theme.styles.bold16, {marginBottom: 8, marginTop: 16}]}>설정 및 문의</Text>
           <MyPageItem label="카테고리 설정" onPress={onPressEditCategory} />
           <SeparatorLight />
-          <MyPageItem label="차단계정 관리" onPress={onPressBlockedUsers} />
-          <SeparatorLight />
+
           <MyPageItem label="고객센터 문의" onPress={onPressCustomerService} />
         </View>
         <Separator />
