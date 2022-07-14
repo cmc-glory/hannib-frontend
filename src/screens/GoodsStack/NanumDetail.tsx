@@ -57,12 +57,20 @@ export const NanumDetail = () => {
   })
 
   const onPressRequest = useCallback(() => {
+
+    console.log('data nanumMethod : ', data?.nanumMethod)
+
     if (isLoggedIn) {
-      console.log('data type : ', data?.type)
-      if (data?.type == 'M') {
-        navigation.navigate('GoodsRequestOnline')
+      if (data?.nanumMethod == 'M') {
+        navigation.navigate('GoodsStackNavigator', {
+          screen: 'GoodsRequestOnline',
+          params: nanumIdx,
+        })
       } else {
-        navigation.navigate('GoodsRequestOffline')
+        navigation.navigate('GoodsStackNavigator', {
+          screen: 'GoodsRequestOffline',
+          params: nanumIdx,
+        })
       }
     } else {
       Platform.select({

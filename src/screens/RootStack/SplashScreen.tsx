@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react'
 import {View, Text, StyleSheet, Alert, Linking} from 'react-native'
 import {useNavigation} from '@react-navigation/native'
 import {useMutation} from 'react-query'
+import {URL, URLSearchParams} from 'react-native-url-polyfill'
 
 import * as theme from '../../theme'
 import {getString} from '../../hooks'
@@ -13,7 +14,8 @@ import {removeListener} from '@reduxjs/toolkit'
 export const SplashScreen = () => {
   const dispatch = useAppDispatch()
   const navigation = useNavigation()
-  const [isDeepLink, setIsDeepLink] = useState<boolean>(false)
+  // const prefix = 'hannip://hannip/goods/idx='
+  // const url = new URL(prefix);
 
   const getAccountInfoQuery = useMutation('init', getAccountInfoByIdx, {
     onSuccess(data, variables, context) {
@@ -65,46 +67,45 @@ export const SplashScreen = () => {
     // ************************* Deep Link *************************x
     //IOS && ANDROID : 앱이 딥링크로 처음 실행될때, 앱이 열려있지 않을 때
     Linking.getInitialURL().then(url => {
-      deepLink(url!)
-      console.log('url1 : ', url)
-      console.log('isDeepLink11 : ', isDeepLink)
+      //console.log('url1 : ', url)
+      const searchParams = new URLSearchParams(url!)
+      const idx = searchParams.get('idx')
+      deepLink(idx!)
       return () => removeListener
-      //return () => removeListener
     })
 
     //IOS : 앱이 딥링크로 처음 실행될때, 앱이 열려있지 않을 때 && 앱이 실행 중일 때
     //ANDROID : 앱이 실행 중일 때
     Linking.addEventListener('url', url => {
-      console.log('url2 : ', url)
-      addListenerLink
+      //console.log('url2 : ', url)
+      const searchParams = new URLSearchParams(url!)
+      const idx = searchParams.get('idx')
+      addListenerLink(idx!)
       return () => removeListener
     })
   }, [])
 
-  const deepLink = (url: string) => {
-    if (url) {
+  const deepLink = (idx: string) => {
+    if (idx) {
+      console.log('idx ini deepLink : ', idx)
       navigation.navigate('GoodsStackNavigator', {
         screen: 'NanumDetail',
         params: {
-          nanumIdx: 68,
+          nanumIdx: idx,
         },
       })
     }
   }
-  const addListenerLink = ({url}) => {
-    if (url) {
+  const addListenerLink = (idx: string) => {
+    if (idx) {
       navigation.navigate('GoodsStackNavigator', {
         screen: 'NanumDetail',
         params: {
-          nanumIdx: 68,
+          nanumIdx: idx,
         },
       })
     }
   }
-
-  // const remover = () => {
-  //   Linking.removeEventListener('url')
-  // }
 
   return (
     <View style={styles.container}>
