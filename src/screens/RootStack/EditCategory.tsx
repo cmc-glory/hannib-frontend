@@ -1,4 +1,4 @@
-import React, {useMemo, useState, useCallback} from 'react'
+import React, {useState, useCallback} from 'react'
 import {View, Text, StyleSheet, Dimensions, Pressable, FlatList, Alert} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation} from '@react-navigation/native'
@@ -9,9 +9,9 @@ import {showMessage} from 'react-native-flash-message'
 import {StackHeader, Button, XSmallIcon, CheckboxMainIcon, FloatingBottomButton} from '../../components/utils'
 import {SearchStar, EmptyResult} from '../../components/LoginStack'
 import * as theme from '../../theme'
-import {ICategoryDto, IAccountCategoryDto, IAccountDto} from '../../types'
+import {ICategoryDto, IAccountCategoryDto, IUpdateCategoryDto} from '../../types'
 import {useAppDispatch, useAppSelector} from '../../hooks'
-import {queryKeys, searchCategory, updateAccountInfo} from '../../api'
+import {queryKeys, searchCategory, updateUserSelectedCategory} from '../../api'
 import {updateCategory} from '../../redux/slices'
 
 const BUTTON_GAP = 10
@@ -28,9 +28,6 @@ export const EditCategory = () => {
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const user = useAppSelector(state => state.auth.user)
-
-  console.log('accountIdx : ', user.accountIdx)
-
   // ******************** states  ********************
   const [init, setInit] = useState<boolean>(true) // 처음에만 검색해보세요! 화면 띄움
   const [singerSelected, setSingerSelected] = useState<boolean>(true) // 선택한 대분류
@@ -64,7 +61,7 @@ export const EditCategory = () => {
       console.log(error)
     },
   })
-  const updateAccountInfoQuery = useMutation(queryKeys.accountInfo, updateAccountInfo, {
+  const updateUserSelectedCategoryQuery = useMutation(queryKeys.accountInfo, updateUserSelectedCategory, {
     onSuccess(data, variables, context) {
       console.log('update success')
       queryClient.invalidateQueries(queryKeys.accountInfo)
@@ -104,14 +101,18 @@ export const EditCategory = () => {
     [keyword, singerSelected],
   )
 
-  const onPressRemoveCategory = useCallback((param: IAccountCategoryDto) => {
-    setUserSelectedCategories(userSelectedCategories =>
-      userSelectedCategories.filter(item => {
-        console.log(item, param)
-        return item.job != param.job || item.categoryName != param.categoryName
-      }),
-    )
-  }, [])
+  const onPressRemoveCategory = useCallback(
+    (param: IAccountCategoryDto) => {
+      console.log('pressed')
+      setUserSelectedCategories(userSelectedCategories =>
+        userSelectedCategories.filter(item => {
+          console.log(item, param)
+          return item.job != param.job || item.categoryName != param.categoryName
+        }),
+      )
+    },
+    [userSelectedCategories],
+  )
 
   const isSelected = useCallback(
     (category: ICategoryDto) => {
@@ -143,16 +144,23 @@ export const EditCategory = () => {
   )
 
   const onPressSave = useCallback(() => {
-    let accountDto: IAccountDto = {
-      accountIdx: user.accountIdx,
-      creatorId: user.creatorId,
-      accountCategoryDtoList: userSelectedCategories,
-      accountImg: user.accountImg == undefined ? '' : user.accountImg,
-      email: user.email,
-      creatorIdDatetime: '',
+    if (userSelectedCategories.length == 0) {
+      Alert.alert('최소 한 개의 카테고리를 선택해야 합니다.')
+      return
     }
-    updateAccountInfoQuery.mutate(accountDto)
-  }, [userSelectedCategories])
+
+    let accountDto: IUpdateCategoryDto = {
+      accountIdx: user.accountIdx,
+      accountCategoryDto: userSelectedCategories.map(item => {
+        return {
+          ...item,
+          accountIdx: user.accountIdx,
+        }
+      }),
+    }
+    console.log(accountDto)
+    updateUserSelectedCategoryQuery.mutate(accountDto)
+  }, [userSelectedCategories, user.accountIdx])
 
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
@@ -181,7 +189,7 @@ export const EditCategory = () => {
         </View>
         <SearchStar keyword={keyword} setKeyword={setKeyword} searchKeyword={searchKeyword} />
         <View style={{flex: 1}}>
-          <View style={[theme.styles.rowFlexStart, {flexWrap: 'wrap', marginBottom: 16}, result.length == 0 && {position: 'absolute'}]}>
+          <View style={[theme.styles.rowFlexStart, {flexWrap: 'wrap', marginBottom: 16}, result.length == 0 && {position: 'absolute', zIndex: 1}]}>
             {userSelectedCategories.length > 0 &&
               userSelectedCategories.map(item => (
                 <View key={item.categoryName + item.job} style={[theme.styles.rowFlexStart, {marginBottom: 8}, styles.selectedCategoryButton]}>
@@ -215,7 +223,7 @@ export const EditCategory = () => {
       </View>
       <FloatingBottomButton
         label="저장하기"
-        enabled={user.accountCategoryDtoList != userSelectedCategories && updateAccountInfoQuery.isLoading == false}
+        enabled={user.accountCategoryDtoList != userSelectedCategories && updateUserSelectedCategoryQuery.isLoading == false}
         onPress={onPressSave}
       />
     </SafeAreaView>

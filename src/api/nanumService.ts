@@ -58,11 +58,13 @@ export const deleteNanumForm = async (nanumIdx: number) => {
   return data
 }
 
+// 즐겨찾기 추가
 export const addFavorite = async ({nanumIdx, accountIdx}: {nanumIdx: number; accountIdx: number}) => {
   const {data} = await apiClient.post(`/api/nanum/favorites?nanumIdx=${nanumIdx}&accountIdx=${accountIdx}`)
   return data
 }
 
+// 즐겨찾기 취소
 export const removeFavorite = async ({nanumIdx, accountIdx}: {nanumIdx: number; accountIdx: number}) => {
   const {data} = await apiClient.delete(`/api/nanum/favorites?nanumIdx=${nanumIdx}&accountIdx=${accountIdx}`)
   return data

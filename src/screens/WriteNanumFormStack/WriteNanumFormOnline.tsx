@@ -5,7 +5,7 @@ import {Switch} from 'react-native-paper'
 import {useNavigation, useRoute} from '@react-navigation/native'
 import KeyboardManager from 'react-native-keyboard-manager'
 import moment from 'moment'
-import {useMutation} from 'react-query'
+import {useMutation, useQueryClient} from 'react-query'
 import {showMessage} from 'react-native-flash-message'
 
 import {WriteNanumFormOnlineRouteProps} from '../../navigation/WriteNanumFormStackNavigator' // route props
@@ -40,6 +40,7 @@ export const WriteNanumFormOnline = () => {
   // ******************** utils  ********************
   const navigation = useNavigation()
   const route = useRoute<WriteNanumFormOnlineRouteProps>()
+  const queryClient = useQueryClient()
   const user = useAppSelector(state => state.auth.user)
 
   // ******************** react queries  ********************
@@ -47,6 +48,7 @@ export const WriteNanumFormOnline = () => {
     onSuccess(data, variables, context) {
       console.log('success')
       console.log(data)
+      queryClient.invalidateQueries([queryKeys.nanumList])
 
       const nanumIdx = data
       navigation.navigate('WriteNanumFormComplete', {
@@ -86,6 +88,10 @@ export const WriteNanumFormOnline = () => {
 
   // ******************** callbacks  ********************
   const onPressNext = useCallback(() => {
+    // post api가 실행중일때 다시 post하는 거 방지
+    if (postNanumFormQuery.isLoading) {
+      return
+    }
     const nanumForm: INanumForm = {
       nanumAskList:
         nanumAsks.length == 0
@@ -152,12 +158,15 @@ export const WriteNanumFormOnline = () => {
   }, [secretForm, nanumAsks, nanumGoods, secretPwd, user])
 
   const checkNextEnabled = useCallback(() => {
+    if (postNanumFormQuery.isLoading) {
+      return
+    }
     if (nanumGoods.length > 0) {
       return true
     } else {
       return false
     }
-  }, [nanumGoods])
+  }, [nanumGoods, postNanumFormQuery])
 
   return (
     <SafeAreaView style={{backgroundColor: '#fff', flex: 1}}>

@@ -11,13 +11,13 @@ type LogoutModalProps = {
   deleteQnAModalVisible: boolean
   setDeleteQnAModalVisible: React.Dispatch<React.SetStateAction<boolean>>
   nanumIdx: number
-  accountIdx: number
+  inquiryIdx: number
 }
 
 const MODAL_PADDING = 24
 const BUTTON_WIDTH = (Dimensions.get('window').width - theme.PADDING_SIZE * 2 - MODAL_PADDING * 2 - 8) / 2
 
-export const DeleteQnAModal = ({deleteQnAModalVisible, setDeleteQnAModalVisible, nanumIdx, accountIdx}: LogoutModalProps) => {
+export const DeleteQnAModal = ({deleteQnAModalVisible, setDeleteQnAModalVisible, nanumIdx, inquiryIdx}: LogoutModalProps) => {
   const queryClient = useQueryClient()
 
   const deleteInquiryQuery = useMutation([queryKeys.inquiry, nanumIdx], deleteInquiry, {
@@ -37,6 +37,7 @@ export const DeleteQnAModal = ({deleteQnAModalVisible, setDeleteQnAModalVisible,
       })
 
       queryClient.invalidateQueries([queryKeys.inquiry, nanumIdx])
+      queryClient.invalidateQueries([queryKeys.nanumDetail, nanumIdx])
     },
     onError(error, variables, context) {
       showMessage({
@@ -59,10 +60,9 @@ export const DeleteQnAModal = ({deleteQnAModalVisible, setDeleteQnAModalVisible,
     // deletion code goes here...
     setDeleteQnAModalVisible(false)
     deleteInquiryQuery.mutate({
-      nanumIdx,
-      accountIdx,
+      inquiryIdx,
     })
-  }, [nanumIdx, accountIdx])
+  }, [inquiryIdx])
 
   return (
     <Modal isVisible={deleteQnAModalVisible == true} backdropColor={theme.gray800} backdropOpacity={0.6} onBackdropPress={hideModal}>

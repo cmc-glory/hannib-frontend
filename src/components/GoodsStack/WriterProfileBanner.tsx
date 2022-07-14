@@ -11,9 +11,10 @@ type WriterProfileBannerProps = {
   writerProfileImageUri: string | undefined
   writername: string
   askNum: number
+  writerAccountIdx: number
 }
 
-export const WriterProfileBanner = ({nanumIdx, writerProfileImageUri, writername, askNum}: WriterProfileBannerProps) => {
+export const WriterProfileBanner = ({nanumIdx, writerProfileImageUri, writername, askNum, writerAccountIdx}: WriterProfileBannerProps) => {
   // ******************** utils ********************
   const userAccountIdx = useAppSelector(state => state.auth.user.accountIdx)
   const navigation = useNavigation()
@@ -26,8 +27,8 @@ export const WriterProfileBanner = ({nanumIdx, writerProfileImageUri, writername
   // ******************** callbacks ********************
   // 문의글 리스트로 이동하는 네비게이션
   const onPressQnA = useCallback(() => {
-    console.log(userAccountIdx, nanumIdx)
-    if (userAccountIdx == nanumIdx) {
+    console.log(userAccountIdx, writerAccountIdx)
+    if (userAccountIdx == writerAccountIdx) {
       navigation.navigate('QnAListCreator', {
         nanumIdx,
       })
@@ -36,7 +37,7 @@ export const WriterProfileBanner = ({nanumIdx, writerProfileImageUri, writername
         nanumIdx,
       })
     }
-  }, [userAccountIdx])
+  }, [userAccountIdx, writerAccountIdx])
 
   const onPressWriterProfile = useCallback(() => {
     navigation.navigate('WriterProfile', {

@@ -5,7 +5,7 @@ import {Switch} from 'react-native-paper'
 import moment from 'moment'
 import KeyboardManager from 'react-native-keyboard-manager'
 import {useNavigation, useRoute} from '@react-navigation/native'
-import {useMutation} from 'react-query'
+import {useMutation, useQueryClient} from 'react-query'
 import {showMessage} from 'react-native-flash-message'
 
 import {useToggle, useAppSelector} from '../../hooks'
@@ -40,6 +40,7 @@ export const WriteNanumFormOffline = () => {
   // ***************************** utils *****************************
   const navigation = useNavigation<WriteNanumFormOfflineNavigationProps>()
   const route = useRoute<WriteNanumFormOfflineRouteProps>()
+  const queryClient = useQueryClient()
   const user = useAppSelector(state => state.auth.user)
 
   const {images, category, title, contents, nanumMethod, firstDate} = useMemo(() => {
@@ -52,6 +53,7 @@ export const WriteNanumFormOffline = () => {
     onSuccess(data, variables, context) {
       console.log('success')
       console.log(data)
+      queryClient.invalidateQueries([queryKeys.nanumList])
 
       const nanumIdx = data
       navigation.navigate('WriteNanumFormComplete', {
@@ -88,13 +90,20 @@ export const WriteNanumFormOffline = () => {
 
   // ***************************** callbacks *****************************
   const isButtonEnabled = useCallback(() => {
+    if (postNanumFormQuery.isLoading) {
+      return
+    }
     if (nanumDates.length == 0 || nanumGoods.length == 0) {
       return false
     }
     return true
-  }, [nanumDates, nanumGoods])
+  }, [nanumDates, nanumGoods, postNanumFormQuery])
 
   const onPressNext = useCallback(() => {
+    // post api가 진행중이면 다시 시도하지 않기
+    if (postNanumFormQuery.isLoading) {
+      return
+    }
     const nanumForm: INanumForm = {
       nanumAskList:
         nanumAsks.length == 0

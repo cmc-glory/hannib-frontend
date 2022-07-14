@@ -1,5 +1,5 @@
 import React, {useState, useCallback, useEffect, useMemo} from 'react'
-import {View, Text, TextInput, StyleSheet} from 'react-native'
+import {View, Text, TextInput, StyleSheet, ActivityIndicator} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation, useRoute} from '@react-navigation/native'
 import {Switch} from 'react-native-paper'
@@ -56,6 +56,9 @@ export const WriteQnA = () => {
 
   // ******************** callbacks ********************
   const onPressSubmit = () => {
+    if (postInquiryQuery.isLoading) {
+      return
+    }
     // 백으로 내용이랑 비밀 여부 post 하는 api
     const questionNanumDto: IInquiryNanumDto = {
       inquiryIdx: 0,
@@ -87,10 +90,11 @@ export const WriteQnA = () => {
         <View style={{marginBottom: 20}}>
           <Text style={[theme.styles.label]}>문의 내용</Text>
           <TextInput
-            placeholder="내용 입력"
             placeholderTextColor={theme.gray300}
             textAlignVertical="top"
             multiline
+            placeholder="최대 150자 작성 가능합니다."
+            maxLength={150}
             style={[theme.styles.input, {paddingTop: 16, height: 250}]}
             value={comments}
             onChangeText={setComments}

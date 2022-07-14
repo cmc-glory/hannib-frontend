@@ -1,14 +1,21 @@
-import React, {useState, useCallback, useMemo, useEffect} from 'react'
+import React, {useState, useCallback, useEffect, useMemo} from 'react'
 import {View, Text, TextInput, Pressable, StyleSheet} from 'react-native'
 import moment from 'moment'
-import * as theme from '../../theme'
-import {IQnAList} from '../../types'
-import {LockIcon} from '../utils'
+import {useMutation, useQueryClient} from 'react-query'
+import {showMessage} from 'react-native-flash-message'
+
 import {useToggle} from '../../hooks'
 import {DeleteQnAModal} from './DeleteQnAModal'
+import * as theme from '../../theme'
+import {IInquiryNanumDto, IInquiryEditDto} from '../../types'
+import {LockIcon} from '../utils'
+import {queryKeys, updateInquiry} from '../../api'
 
 type QnAListCreatorItemProps = {
-  item: IQnAList
+  item: IInquiryNanumDto
+  accountIdx: number
+  nanumIdx: number
+  inquiryIdx: number
 }
 
 type WriteAnswerProps = {
@@ -47,18 +54,21 @@ const WriteAnswer = ({writeAnswerPressed, toggleWriteAnswerPressed}: WriteAnswer
   )
 }
 
-export const QnAListCreatorItem = ({item}: QnAListCreatorItemProps) => {
+export const QnAListCreatorItem = ({item, accountIdx, nanumIdx, inquiryIdx}: QnAListCreatorItemProps) => {
   const [writeAnswerPressed, toggleWriteAnswerPressed] = useToggle()
-  const {isSecret, isAnswered, writer, content, date, answer, answeredDate} = item
+  const {secretYn, answerComments, creatorId, comments, createdDate, answerDate} = item
+  console.log(createdDate, answerDate)
 
   // ******************** states ********************
   const [editPressed, setEditPressed] = useState<boolean>(false) // 수정하기 버튼 눌리면 에디터 띄움
   const [deleteQnAModalVisible, setDeleteQnAModalVisible] = useState<boolean>(false) // 삭제하기 모달
   const [editedContent, setEditedContent] = useState<string>()
+  const isAnswered = answerComments != ''
+  const isSecret = secretYn == 'Y' ? true : false
 
   useEffect(() => {
-    if (isAnswered) {
-      setEditedContent(answer)
+    if (answerComments != '' && answerComments && undefined && answerComments != null) {
+      setEditedContent(answerComments)
     }
   }, [])
 
@@ -76,7 +86,12 @@ export const QnAListCreatorItem = ({item}: QnAListCreatorItemProps) => {
 
   return (
     <View style={[styles.qnaListItemContainer]}>
-      <DeleteQnAModal deleteQnAModalVisible={deleteQnAModalVisible} setDeleteQnAModalVisible={setDeleteQnAModalVisible} />
+      <DeleteQnAModal
+        deleteQnAModalVisible={deleteQnAModalVisible}
+        setDeleteQnAModalVisible={setDeleteQnAModalVisible}
+        nanumIdx={nanumIdx}
+        inquiryIdx={inquiryIdx}
+      />
 
       <View>
         <View style={[theme.styles.rowSpaceBetween, {marginBottom: 8}]}>
@@ -97,15 +112,15 @@ export const QnAListCreatorItem = ({item}: QnAListCreatorItemProps) => {
         </View>
         <View style={[theme.styles.rowFlexStart, {marginBottom: 8}]}>
           <Text style={[styles.q, {alignSelf: 'flex-start'}]}>Q.</Text>
-          <Text style={[styles.content, {flex: 1}]}>{content}</Text>
+          <Text style={[styles.content, {flex: 1}]}>{comments}</Text>
         </View>
         <View style={[theme.styles.rowSpaceBetween]}>
-          <Text style={[styles.writer]}>{writer}</Text>
-          <Text style={[styles.date]}>{moment(date).format('YYYY.MM.DD HH:mm')}</Text>
+          <Text style={[styles.writer]}>{creatorId}</Text>
+          <Text style={[styles.date]}>{moment(new Date(createdDate)).format('YYYY.MM.DD HH:mm')}</Text>
         </View>
       </View>
 
-      {item.isAnswered ? (
+      {isAnswered ? (
         <View>
           <View style={[theme.styles.rowFlexStart, {marginTop: 16, marginBottom: 8}]}>
             <Text style={[styles.q, {alignSelf: 'flex-start', color: theme.main}]}>A.</Text>
@@ -127,7 +142,7 @@ export const QnAListCreatorItem = ({item}: QnAListCreatorItemProps) => {
           </View>
           <View style={[theme.styles.rowSpaceBetween]}>
             <Text style={[styles.writer, {color: theme.main}]}>나눔진행자</Text>
-            <Text style={[styles.date]}>{moment(answeredDate).format('YYYY.MM.DD HH:mm')}</Text>
+            <Text style={[styles.date]}>{moment(new Date(answerDate)).format('YYYY.MM.DD HH:mm')}</Text>
           </View>
         </View>
       ) : (

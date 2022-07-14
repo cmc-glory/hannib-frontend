@@ -377,3 +377,8 @@ export type ICategoryDto = {
   imgUrl: string | undefined
   email: string
 }
+
+export type IUpdateCategoryDto = {
+  accountIdx: number
+  accountCategoryDto: IAccountCategoryDto[]
+}

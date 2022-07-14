@@ -68,7 +68,7 @@ export const Favorites = () => {
                 renderItem={({item, index}) =>
                   index == 0 ? (
                     <CategoryItem
-                      name={'전체 보기'}
+                      name={'전체보기'}
                       currentIndex={index}
                       selectedIndex={selectedIndex}
                       id={index.toString()}
@@ -121,7 +121,7 @@ export const Favorites = () => {
             <Text style={[theme.styles.bold20, {marginBottom: 8}]}>현재 찜 리스트가 비어있어요.</Text>
             <View>
               <Text style={[{color: theme.gray700, fontSize: 16, textAlign: 'center'}, theme.styles.text16]}>관심 있는, 오픈 예정인 나눔을</Text>
-              <Text style={[{color: theme.gray700, fontSize: 16, textAlign: 'center'}, theme.styles.text16]}>찜 리스트에 추가해보세요!</Text>
+              <Text style={[{color: theme.gray700, fontSize: 16, textAlign: 'center'}, theme.styles.text16]}>찜 리스트에 추가해보세요!!</Text>
             </View>
           </View>
         </View>
@@ -134,29 +134,33 @@ const styles = StyleSheet.create({
   selectedCategoryButton: {
     borderColor: theme.secondary,
     backgroundColor: theme.secondary,
+    paddingHorizontal: 12,
   },
   unselectedCategoryButton: {
     borderColor: theme.gray500,
     backgroundColor: theme.white,
+    paddingHorizontal: 12,
   },
   selectedCategoryText: {
     color: theme.white,
-    fontFamily: 'Pretendard-Bold',
+    fontFamily: 'Pretendard-SemiBold',
   },
   unselectedCategoryText: {
     color: theme.gray500,
-    // fontFamily: 'Pretendard-Bold',
+    fontFamily: 'Pretendard-SemiBold',
   },
   categoryButton: {
     paddingVertical: 6,
-    paddingHorizontal: 12,
+    //paddingHorizontal: 12,
     borderRadius: 4,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
     marginRight: 8,
   },
-  categoryText: {},
+  categoryText: {
+    fontFamily: 'Pretendard-Medium',
+  },
   container: {
     paddingHorizontal: theme.PADDING_SIZE,
   },

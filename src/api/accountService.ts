@@ -1,6 +1,6 @@
 import axios from 'axios'
 import {BASE_URL} from '@env'
-import {IAccountDto} from '../types'
+import {IAccountDto, IUpdateCategoryDto} from '../types'
 
 /*
 type IAccountDto = {
@@ -58,5 +58,11 @@ export const deleteAccount = async (deleteAccountForm: deleteAccountForm) => {
 // 닉네임 중복 확인
 export const checkNicknameDuplicated = async (nickname: string) => {
   const {data} = await apiClient.get(`api/account/nickname?nickName=${nickname}`)
+  return data
+}
+
+// 카테고리 업데이트
+export const updateUserSelectedCategory = async (updateCategoryDto: IUpdateCategoryDto) => {
+  const {data} = await apiClient.put('/api/account/category', updateCategoryDto)
   return data
 }

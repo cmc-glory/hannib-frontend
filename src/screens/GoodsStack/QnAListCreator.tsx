@@ -1,48 +1,79 @@
-import React, {useEffect, useCallback, useState, useMemo} from 'react'
-import {View, Text, ScrollView, Pressable, StyleSheet} from 'react-native'
+import React, {useEffect, useState, useMemo, useCallback} from 'react'
+import {View, Text, Pressable, ScrollView, StyleSheet, Alert, RefreshControl, Platform} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation, useRoute} from '@react-navigation/native'
+import {useQueryClient, useQuery} from 'react-query'
 
 import {QnAListCreatorRouteProps} from '../../navigation/GoodsStackNavigator'
-import {StackHeader, SharingPreview} from '../../components/utils'
+import {StackHeader, SharingPreview, EmptyIcon} from '../../components/utils'
 import {QnAListCreatorItem} from '../../components/GoodsStack'
 import * as theme from '../../theme'
-import {IQnAList} from '../../types'
+import {queryKeys, getNanumByIndex, getInquiryByIndex} from '../../api'
+import {IInquiryNanumDto} from '../../types'
 import {useAppSelector} from '../../hooks'
 
 export const QnAListCreator = () => {
   // ******************** utils ********************
-  const userId = useAppSelector(state => state.auth.user.email)
+  const auth = useAppSelector(state => state.auth)
+  const isLoggedIn = auth.isLoggedIn
+  const userAccountIdx = auth.user.accountIdx
+
+  const navigation = useNavigation()
   const route = useRoute<QnAListCreatorRouteProps>()
+  const queryClient = useQueryClient()
+
   const {nanumIdx} = useMemo(() => route.params, [])
 
+  console.log('nanumIdx : ', nanumIdx)
+
   // ******************** states ********************
-  const [qnas, setQnas] = useState<IQnAList[]>([]) // 문의 목록 state
+  const [refreshing, setRefreshing] = useState<boolean>(false)
 
-  useEffect(() => {
-    // qna list 받아오기
-    fetch('http://localhost:8081/src/data/dummyQnA.json', {
-      method: 'get',
-    })
-      .then(res => res.json())
-      .then(result => {
-        setQnas(result)
-      })
-
-    // redux에서 사용자 id를 가져오고 writer인지를 체크.
-    // setIsOwner(true)
-  }, [])
+  // ******************** reactQueries ********************
+  const nanumInfo = useQuery([queryKeys.nanumDetail, nanumIdx], () => getNanumByIndex(nanumIdx))
+  const inquiries = useQuery([queryKeys.inquiry, nanumIdx], () => getInquiryByIndex(nanumIdx), {
+    onSuccess(data) {
+      setRefreshing(false)
+    },
+  })
 
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
       <StackHeader goBack title="문의" />
-      <ScrollView bounces={false} style={[styles.container]} contentOffset={{x: 0, y: 200}}>
-        <SharingPreview uri="http://localhost:8081/src/assets/images/detail_image_example.png" category="BTS" title="BTS 키링 나눔" />
+      <View style={styles.container}>
+        <SharingPreview uri={nanumInfo.data?.thumbnail} category={nanumInfo.data?.category} title={nanumInfo.data?.title} />
+      </View>
 
-        {qnas.map(qna => (
-          <QnAListCreatorItem item={qna} key={qna.id} />
-        ))}
-      </ScrollView>
+      {inquiries?.data?.length > 0 ? (
+        <ScrollView
+          style={{flex: 1}}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => {
+                setRefreshing(true)
+                queryClient.invalidateQueries([queryKeys.inquiry, nanumIdx])
+              }}
+            />
+          }>
+          <ScrollView contentContainerStyle={{flex: 1, paddingHorizontal: theme.PADDING_SIZE}}>
+            {inquiries?.data?.map((qna: IInquiryNanumDto) => (
+              <QnAListCreatorItem item={qna} key={qna.inquiryIdx} inquiryIdx={qna.inquiryIdx} accountIdx={userAccountIdx} nanumIdx={nanumIdx} />
+            ))}
+          </ScrollView>
+        </ScrollView>
+      ) : (
+        <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
+          <EmptyIcon style={{marginBottom: 32}} />
+          <View>
+            <Text style={[theme.styles.bold20, {marginBottom: 8, textAlign: 'center'}]}>문의글이 없습니다.</Text>
+            <View>
+              <Text style={[{color: theme.gray700, fontSize: 16, textAlign: 'center'}, theme.styles.text16]}>새로운 문의글이 등록될 경우</Text>
+              <Text style={[{color: theme.gray700, fontSize: 16, textAlign: 'center'}, theme.styles.text16]}>푸시 알림을 통해 알려드리겠습니다.</Text>
+            </View>
+          </View>
+        </View>
+      )}
     </SafeAreaView>
   )
 }
@@ -58,7 +89,5 @@ const styles = StyleSheet.create({
   },
   container: {
     paddingHorizontal: theme.PADDING_SIZE,
-    marginBottom: 24,
-    flex: 1,
   },
 })

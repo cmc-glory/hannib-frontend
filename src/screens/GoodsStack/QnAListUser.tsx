@@ -96,7 +96,7 @@ export const QnAListUser = () => {
           }>
           <ScrollView contentContainerStyle={{flex: 1, paddingHorizontal: theme.PADDING_SIZE}}>
             {inquiries?.data?.map((qna: IInquiryNanumDto) => (
-              <QnAListUserItem item={qna} key={qna.inquiryIdx} accountIdx={userAccountIdx} nanumIdx={nanumIdx} />
+              <QnAListUserItem item={qna} key={qna.inquiryIdx} inquiryIdx={qna.inquiryIdx} accountIdx={userAccountIdx} nanumIdx={nanumIdx} />
             ))}
           </ScrollView>
         </ScrollView>
