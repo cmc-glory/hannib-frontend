@@ -15,7 +15,7 @@ type RecentSearchProps = {
 
 type RecentSearchItemProps = {
   keyword: string
-  onPressDelete: () => void
+  onPressDelete: (currentKeyword: string) => void
   onPressRecentSearchItem: (currentKeyword: string) => void
 }
 
@@ -23,7 +23,7 @@ const RecentSearchItem = ({keyword, onPressDelete, onPressRecentSearchItem}: Rec
   return (
     <Pressable style={[theme.styles.rowSpaceBetween, styles.itemContainer]} onPress={() => onPressRecentSearchItem(keyword)}>
       <Text>{keyword}</Text>
-      <XSmallIcon style={{marginLeft: 8}} onPress={onPressDelete} />
+      <XSmallIcon style={{marginLeft: 8}} onPress={() => onPressDelete(keyword)} />
     </Pressable>
   )
 }
