@@ -1,11 +1,15 @@
 import React, {useCallback, useState} from 'react'
 import {View, Pressable, Text, StyleSheet} from 'react-native'
 import Modal from 'react-native-modal'
+import {useMutation} from 'react-query'
 import {Shadow} from 'react-native-shadow-2'
 
 import {getStatusBarHeight} from 'react-native-status-bar-height'
 import {isIphoneX} from 'react-native-iphone-x-helper'
 import {useNavigation} from '@react-navigation/native'
+import {queryKeys, searchCategory, updateUserSelectedCategory} from '../../api'
+import {updateCategory} from '../../redux/slices'
+import {useAppSelector, useAppDispatch} from '../../hooks'
 import {IAccountCategoryDto} from '../../types'
 import * as theme from '../../theme'
 
@@ -44,16 +48,46 @@ const CategoryItem = ({userCategory, currentCategory, borderTop, borderBottom, o
 export const CategoryDropdown = ({showCategoryModal, setShowCategoryModal, userCategory, setUserCategory, categories}: CategoryDropdownProps) => {
   // ******************** utils ********************
   const navigation = useNavigation()
+  const dispatch = useAppDispatch()
 
   // ******************** states ********************
   const [categoryPressed, setCategoryPressed] = useState<boolean>(false)
+  const [accountCategoryDtoList, setAccountCategoryDtoList] = useState(useAppSelector(state => state.auth.user.accountCategoryDtoList))
+  const accountIdx = useAppSelector(state => state.auth.user.accountIdx)
+
+  const updateUserSelectedCategoryQuery = useMutation(queryKeys.accountInfo, updateUserSelectedCategory, {
+    onSuccess(data, variables, context) {
+      console.log('update success')
+    },
+    onError(error, variables, context) {
+      console.log(error)
+    },
+  })
 
   // ******************** callbacks ********************
 
-  const onPressItem = useCallback((category: IAccountCategoryDto) => {
-    setUserCategory(category)
-    setShowCategoryModal(false)
-  }, [])
+  const onPressItem = useCallback(
+    (category: IAccountCategoryDto) => {
+      setUserCategory(category)
+      const temp = accountCategoryDtoList.slice()
+      const idx = accountCategoryDtoList.indexOf(category)
+      temp.splice(idx, 1)
+      temp.unshift(category)
+      updateUserSelectedCategoryQuery.mutate({
+        accountCategoryDto: temp.map(item => {
+          return {
+            ...item,
+            accountIdx: accountIdx,
+          }
+        }),
+        accountIdx: accountIdx,
+      })
+      setAccountCategoryDtoList(temp)
+      dispatch(updateCategory(temp))
+      setShowCategoryModal(false)
+    },
+    [accountCategoryDtoList, accountIdx],
+  )
 
   const onPressEditCategory = useCallback(() => {
     setShowCategoryModal(false)

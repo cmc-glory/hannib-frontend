@@ -14,7 +14,8 @@ import {INanum} from '../../types'
 import {queryKeys, getNanumByIndex, getInquiryByIndex} from '../../api'
 
 const IMAGE_HEIGHT = 350
-const TOP_HEIGHT = getStatusBarHeight() + 120
+const TOP_HEIGHT = getStatusBarHeight() + 52
+const SHADOW_HEIGHT = getStatusBarHeight() + 120
 const WIDTH = Dimensions.get('window').width
 
 export const NanumDetail = () => {
@@ -57,7 +58,6 @@ export const NanumDetail = () => {
   })
 
   const onPressRequest = useCallback(() => {
-
     console.log('data nanumMethod : ', data?.nanumMethod)
 
     if (isLoggedIn) {
@@ -104,7 +104,7 @@ export const NanumDetail = () => {
         <LinearGradient
           colors={['rgba(33, 33, 33, 0.4)', 'rgba(255, 255, 255, 0)']}
           locations={[0, 0.99]}
-          style={{position: 'absolute', width: WIDTH, height: TOP_HEIGHT, zIndex: 99}}></LinearGradient>
+          style={{position: 'absolute', width: WIDTH, height: SHADOW_HEIGHT, zIndex: 99}}></LinearGradient>
       )}
 
       {data != undefined && (

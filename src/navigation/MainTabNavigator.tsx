@@ -35,7 +35,7 @@ function BottomTab() {
         tabBarInactiveTintColor: theme.gray500,
         headerShown: false,
         tabBarStyle: {
-          borderTopColor: theme.gray500,
+          borderTopColor: theme.gray300,
           height: 56 + bottomSpace,
         },
         tabBarLabelStyle: {
