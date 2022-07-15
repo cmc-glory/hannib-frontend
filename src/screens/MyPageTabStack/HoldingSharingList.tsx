@@ -17,7 +17,6 @@ const STATUSBAR_HEIGHT = getStatusBarHeight()
 
 export const HoldingSharingList = () => {
   // ******************** utils ********************
-
   const user = useAppSelector(state => state.auth.user) // user.id로 이 user가 진행한 나눔 목록 불러옴
   const queryClient = useQueryClient()
   // ******************** states ********************
@@ -37,11 +36,12 @@ export const HoldingSharingList = () => {
       console.log(err)
     },
   })
-  // pull up refresh event가 발생하면 진행 목록 가져옴
+
   const onRefresh = useCallback(() => {
     setRefreshing(true)
     queryClient.invalidateQueries([queryKeys.holdingNanumList])
   }, [])
+
 
   //api 나오기 전 사용했던것
   const [sharings, setSharings] = useState<ISharingInfo[]>([])
@@ -55,6 +55,7 @@ export const HoldingSharingList = () => {
   //       setSharings([])
   //     })
   // }, [])
+
 
   return (
     <SafeAreaView style={theme.styles.safeareaview} edges={['top', 'left', 'right']}>
