@@ -42,6 +42,8 @@ export const MyPageScreen = () => {
   const user = useAppSelector(state => state.auth.user)
   //console.log('user in mypagescreen : ', user)
 
+  const {data} = useQuery(queryKeys.accountInfo, () => getAccountInfoByIdx(user.accountIdx))
+
   // ******************** states ********************
   const [logoutModalVisible, setLogoutModalVisible] = useState<boolean>(false)
 
