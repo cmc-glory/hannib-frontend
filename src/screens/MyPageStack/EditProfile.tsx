@@ -37,11 +37,11 @@ export const EditProfile = () => {
   })
   const leftChangeNum = useMemo(() => {
     // 처음에 회원 가입을 하면(회원 정보를 한번도 수정한 적 없으면) creatorIdDatetime == null
-    if (data.creatorIdDatetime == null) {
+    if (user.creatorIdDatetime == null) {
       return 1
     }
     const thisMonth = moment().format('YYYY.MM')
-    const lastMonthChanged = data.creatorIdDatetime.slice(0, 7)
+    const lastMonthChanged = user.creatorIdDatetime.slice(0, 7)
 
     console.log(thisMonth, lastMonthChanged)
 
@@ -98,8 +98,8 @@ export const EditProfile = () => {
   })
 
   // ******************** states ********************
-  const [name, setName] = useState<string>(data.creatorId)
-  const [profileImage, setProfileImage] = useState<string | undefined>(data.accountImg)
+  const [name, setName] = useState<string>(user.creatorId)
+  const [profileImage, setProfileImage] = useState<string | undefined>(user.accountImg)
   const [duplicated, setDuplicated] = useState<boolean>(false)
 
   // ******************** callbacks ********************
@@ -156,7 +156,7 @@ export const EditProfile = () => {
 
     checkNicknameDuplicated(name)
       .then(res => {
-        console.log(res)
+        console.log('res: ', res)
         // 중복된 닉네임이 없는 경우
         if (res == '') {
           if (name && profileImage) {

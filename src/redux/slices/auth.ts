@@ -59,6 +59,7 @@ export const authSlice = createSlice({
       state.user.holdingSharingCnt = action.payload.holdingSharingCnt
       state.user.participateSharingCnt = action.payload.participateSharingCnt
       state.user.accountIdx = action.payload.accountIdx
+      state.user.creatorIdDatetime = action.payload.creatorIdDatetime
     },
     storeAccessToken: (state, action: PayloadAction<string>) => {
       state.accessToken = action.payload
