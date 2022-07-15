@@ -45,6 +45,7 @@ export const GoodsReqeustOnline = () => {
     goodsList: [],
     askList: [],
   })
+  // type INanumApplyOnlineDto 로 바꿔야함.
   const [requestForm, setRequestForm] = useState<IRequestFormOnline>({
     name: '',
     address: {
@@ -76,7 +77,6 @@ export const GoodsReqeustOnline = () => {
   // })
 
   const {data} = useQuery([queryKeys.nanumRequestRequiredInfo, nanumIdx], () => getNanumRequestRequiredInfo(parseInt(nanumIdx)), {
-    //const {data} = useQuery(queryKeys.goodsDetail, getGoodsDetail, {
     onSuccess: data => {
       console.log('success')
       console.log(data)
@@ -91,6 +91,37 @@ export const GoodsReqeustOnline = () => {
       console.log(err)
     },
   })
+
+  // const postNanumFormQuery = useMutation(queryKeys.nanumForm, postNanumForm, {
+  //   onSuccess(data, variables, context) {
+  //     console.log('success')
+  //     console.log(data)
+  //     queryClient.invalidateQueries([queryKeys.nanumList])
+
+  //     const nanumIdx = data
+  //     navigation.navigate('WriteNanumFormComplete', {
+  //       nanumIdx: nanumIdx,
+  //     })
+  //   },
+  //   onError(error, variables, context) {
+  //     console.log('error')
+  //     console.log(error)
+  //     showMessage({
+  //       // 에러 안내 메세지
+  //       message: '나눔폼 업로드 중 에러가 발생했습니다',
+  //       type: 'info',
+  //       animationDuration: 300,
+  //       duration: 1350,
+  //       style: {
+  //         backgroundColor: 'rgba(36, 36, 36, 0.9)',
+  //       },
+  //       titleStyle: {
+  //         fontFamily: 'Pretendard-Medium',
+  //       },
+  //       floating: true,
+  //     })
+  //   },
+  // })
 
   // ***************************** callbacks *****************************
   const isButtonEnabled = useCallback(() => {
@@ -120,7 +151,12 @@ export const GoodsReqeustOnline = () => {
     (requestForm: IRequestFormOnline) => {
       console.log(answers)
       console.log(requestForm)
-      navigation.navigate('GoodsRequestComplete')
+      navigation.navigate('GoodsStackNavigator', {
+        screen: 'GoodsRequestComplete',
+        params: {
+          nanumIdx: nanumIdx,
+        },
+      })
     },
     [requestForm, answers],
   )
@@ -250,10 +286,17 @@ export const GoodsReqeustOnline = () => {
               />
             </View>
           </View>
-          {/* api에 맞게 다시 개발 필요
+
           {info.askList.map((item, index) => (
-            <MakeNewField key={index} label={item.content} necessary={item.necessary} index={index} answers={answers} setAnswers={setAnswers} />
-          ))} */}
+            <MakeNewField
+              key={index}
+              label={item.contents}
+              necessary={item.essential == 'Y' ? true : false}
+              index={index}
+              answers={answers}
+              setAnswers={setAnswers}
+            />
+          ))}
         </View>
       </ScrollView>
       <FloatingBottomButton label="제출하기" enabled={isButtonEnabled()} onPress={() => onPressRequest(requestForm)} />

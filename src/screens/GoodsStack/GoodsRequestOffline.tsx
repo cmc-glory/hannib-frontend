@@ -1,16 +1,17 @@
-import React, {useCallback, useState} from 'react'
+import React, {useCallback, useMemo, useState} from 'react'
 import {View, ScrollView, Text, Pressable, TextInput, TouchableOpacity, Platform, StyleSheet, Animated, Alert} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import moment from 'moment'
 import {useQuery} from 'react-query'
 import KeyboardManager from 'react-native-keyboard-manager'
-import {useNavigation} from '@react-navigation/native'
+import {useNavigation, useRoute} from '@react-navigation/native'
 import {StackHeader, FloatingBottomButton, CheckboxIcon, DownArrowIcon, SeparatorBold, NeccesaryField} from '../../components/utils'
 import * as theme from '../../theme'
 import {useAnimatedValue, useToggle, useAnimatedStyle} from '../../hooks'
-import {IRequestFormOffline, ISharingRequestInfo} from '../../types'
-import {queryKeys, getGoodsRequestInfo} from '../../api'
+import {INanumRequestRequiredDto, IRequestFormOffline, ISharingRequestInfo} from '../../types'
+import {queryKeys, getGoodsRequestInfo, getNanumRequestRequiredInfo} from '../../api'
 import {ProductInfoOffline, MakeNewField} from '../../components/GoodsStack'
+import {GoodsRequestOfflineRouteProps, GoodsRequestOnlineRouteProps} from '../../navigation/GoodsStackNavigator'
 
 // ***************************** ios keyboard settings *****************************
 if (Platform.OS === 'ios') {
@@ -38,12 +39,12 @@ export const GoodsRequestOffline = () => {
   // ***************************** utils *****************************
   const [answers, setAnswers] = useState<string[]>([])
   const navigation = useNavigation()
+  const route = useRoute<GoodsRequestOfflineRouteProps>()
+  const nanumIdx = useMemo(() => route.params, [])
   // ***************************** states *****************************
-  const [info, setInfo] = useState<ISharingRequestInfo>({
-    products: [],
-    schedule: [],
-    title: '',
-    additionalQuestions: [],
+  const [info, setInfo] = useState<INanumRequestRequiredDto>({
+    goodsList: [],
+    askList: [],
   })
   const [selectedItems, setSelectedItems] = useState<any>({}) // 선택한 상품들
   const [scheduleLength, setScheduleLength] = useState<number>(1)
@@ -62,10 +63,26 @@ export const GoodsRequestOffline = () => {
         receiveDate: data.schedule[0].time,
       })
       setScheduleLength(data.schedule ? data.schedule.length : 1)
-      data.products.forEach((item: any) => {
+      data.goodsList.forEach((item: any) => {
         selectedItems[item.id] = false
       })
       setAnswers(new Array(data.additionalQuestions.length).fill(''))
+    },
+  })
+
+  const {data} = useQuery([queryKeys.nanumRequestRequiredInfo, nanumIdx], () => getNanumRequestRequiredInfo(parseInt(nanumIdx)), {
+    onSuccess: data => {
+      console.log('success')
+      console.log(data)
+      setInfo(data)
+      data.goodsList.forEach((item: any) => {
+        selectedItems[item.goodsNumber] = false
+      })
+      setAnswers(new Array(data.askList.length).fill(''))
+    },
+    onError(err) {
+      console.log('err')
+      console.log(err)
     },
   })
 
@@ -120,9 +137,9 @@ export const GoodsRequestOffline = () => {
       return false
     }
     // 추가 질문 사항 중 필수 질문에 대한 input이 비어 있으면 false 리턴
-    for (var i = 0; i < info.additionalQuestions.length; i++) {
-      console.log(info.additionalQuestions[i].necessary, answers[i])
-      if (info.additionalQuestions[i].necessary == true && answers[i] == '') {
+    for (var i = 0; i < info.askList.length; i++) {
+      console.log(info.askList[i].essential, answers[i])
+      if (info.askList[i].essential == 'Y' && answers[i] == '') {
         return false
       }
     }
@@ -146,10 +163,10 @@ export const GoodsRequestOffline = () => {
           <Text style={[theme.styles.wrapper, styles.title]}>{info.title}</Text>
           <View style={[theme.styles.wrapper]}>
             <Text style={[theme.styles.bold16]}>상품 선택</Text>
-            {info.products.map((item, index) => (
+            {info.goodsList.map((item, index) => (
               <ProductInfoOffline
                 item={item}
-                key={item.id}
+                key={item.goodsNumber}
                 selectedItems={selectedItems}
                 setSelectedItems={setSelectedItems}
                 requestForm={requestForm}
@@ -183,7 +200,7 @@ export const GoodsRequestOffline = () => {
               </Animated.View>
             </Pressable>
             <Animated.View style={[{marginTop: -1, borderColor: theme.gray300}, animatedSelectionBoxStyle, styles.borderBottomRadius]}>
-              {info.schedule?.map((schedule, index) => (
+              {/* {info.schedule?.map((schedule, index) => (
                 <Animated.View
                   key={index}
                   style={[{...animatedSelectionInputStyle, justifyContent: 'center'}, index !== scheduleLength - 1 && styles.inputItemSeparator]}>
@@ -191,11 +208,11 @@ export const GoodsRequestOffline = () => {
                     <Animated.Text style={{marginLeft: 16}}>{moment(schedule.time).format('YYYY.MM.DD HH:mm')}</Animated.Text>
                   </Pressable>
                 </Animated.View>
-              ))}
+              ))} */}
             </Animated.View>
           </View>
-          {info.additionalQuestions.map((item, index) => (
-            <MakeNewField key={item.id} label={item.content} necessary={item.necessary} index={index} answers={answers} setAnswers={setAnswers} />
+          {info.askList.map((item, index) => (
+            <MakeNewField key={index} label={item.contents} necessary={item.essential} index={index} answers={answers} setAnswers={setAnswers} />
           ))}
         </View>
       </ScrollView>

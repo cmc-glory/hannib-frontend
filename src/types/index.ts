@@ -266,6 +266,15 @@ export type INanumRequestRequiredDto = {
   askList: INanumAskDto[]
 }
 
+export type INanumApplyOnlineDto = {
+  nanumAskAnswerList: []
+  nanumGoodsRequestList: []
+  accountIdx: number
+  nanumIdx: number
+  realName: string
+  //api에 따라 수정 필요
+}
+
 export type INanumForm = {
   nanumAskList: INanumAskDto[]
   nanumDatelist: INanumDateDto[]
