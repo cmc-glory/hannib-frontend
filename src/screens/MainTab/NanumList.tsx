@@ -3,6 +3,7 @@ import {View, Text, FlatList, Pressable, StyleSheet, ActivityIndicator, Alert, P
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation} from '@react-navigation/native'
 import {useQueryClient, useQuery} from 'react-query'
+import 'moment/locale/ko'
 
 import * as theme from '../../theme'
 import {DownArrowIcon, BellIcon, MagnifierIcon, BottomSheet, FloatingButtonIcon, EmptyIcon} from '../../components/utils'
@@ -11,6 +12,8 @@ import {INanumMethod, INanumListItem, IAccountCategoryDto} from '../../types'
 import {useAppSelector} from '../../hooks'
 import {getNanumByRecent, getNanumByPopularity, getNanumAllByFavorites, queryKeys, getNanumAllByRecent} from '../../api'
 import {storeString} from '../../hooks'
+import moment from 'moment'
+moment.locale('ko')
 
 const NanumList = () => {
   // ******************** check login ********************

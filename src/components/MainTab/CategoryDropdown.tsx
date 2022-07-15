@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import {View, Pressable, Text, StyleSheet} from 'react-native'
 import Modal from 'react-native-modal'
 import {useMutation} from 'react-query'
@@ -52,8 +52,11 @@ export const CategoryDropdown = ({showCategoryModal, setShowCategoryModal, userC
 
   // ******************** states ********************
   const [categoryPressed, setCategoryPressed] = useState<boolean>(false)
-  const [accountCategoryDtoList, setAccountCategoryDtoList] = useState(useAppSelector(state => state.auth.user.accountCategoryDtoList))
+  const user = useAppSelector(state => state.auth.user)
+  const [accountCategoryDtoList, setAccountCategoryDtoList] = useState(user.accountCategoryDtoList)
   const accountIdx = useAppSelector(state => state.auth.user.accountIdx)
+
+  console.log(accountIdx)
 
   const updateUserSelectedCategoryQuery = useMutation(queryKeys.accountInfo, updateUserSelectedCategory, {
     onSuccess(data, variables, context) {
@@ -64,6 +67,10 @@ export const CategoryDropdown = ({showCategoryModal, setShowCategoryModal, userC
     },
   })
 
+  useEffect(() => {
+    setAccountCategoryDtoList(user.accountCategoryDtoList)
+  }, [user])
+
   // ******************** callbacks ********************
 
   const onPressItem = useCallback(
@@ -71,8 +78,10 @@ export const CategoryDropdown = ({showCategoryModal, setShowCategoryModal, userC
       setUserCategory(category)
       const temp = accountCategoryDtoList.slice()
       const idx = accountCategoryDtoList.indexOf(category)
+      console.log(temp)
       temp.splice(idx, 1)
       temp.unshift(category)
+      console.log(temp)
       updateUserSelectedCategoryQuery.mutate({
         accountCategoryDto: temp.map(item => {
           return {

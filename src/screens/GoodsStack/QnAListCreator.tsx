@@ -27,7 +27,7 @@ export const QnAListCreator = () => {
   const [inquires, setInquires] = useState<IInquiryNanumDto[]>([])
 
   // ******************** reactQueries ********************
-  const nanumInfo = useQuery([queryKeys.nanumDetail, nanumIdx], () => getNanumByIndex(nanumIdx))
+  const nanumInfo = useQuery([queryKeys.nanumDetail, nanumIdx], () => getNanumByIndex({nanumIdx: nanumIdx, accountIdx: userAccountIdx, favoritesYn: 'N'}))
   useQuery([queryKeys.inquiry, nanumIdx], () => getInquiryByIndex(nanumIdx), {
     onSuccess(data) {
       setInquires(data)

@@ -54,8 +54,8 @@ export const getNanumForm = async (nanumIdx: number) => {
   return data
 }
 // 나눔글 삭제
-export const deleteNanumForm = async (nanumIdx: number) => {
-  const {data} = await apiClient.delete(`/api/nanum/?nanumIdx=${nanumIdx}`)
+export const deleteNanumForm = async (deleteForm: {nanumIdx: number; deletedReason: string}) => {
+  const {data} = await apiClient.delete(`/api/nanum/`, {data: deleteForm})
 
   return data
 }

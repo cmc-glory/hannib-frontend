@@ -44,9 +44,12 @@ export const DeleteModal = ({deleteModalVisible, setDeleteModalVisible, nanumIdx
 
   const hideModal = useCallback(() => setDeleteModalVisible(false), [])
   const onPressDelete = useCallback(() => {
-    deleteQuery.mutate(nanumIdx)
+    deleteQuery.mutate({
+      nanumIdx: nanumIdx,
+      deletedReason: deleteReason,
+    })
     hideModal()
-  }, [nanumIdx])
+  }, [nanumIdx, deleteReason])
   return (
     <Modal isVisible={deleteModalVisible} onBackdropPress={hideModal} backdropOpacity={0.2}>
       <View style={styles.deleteModalContainer}>

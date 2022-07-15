@@ -8,7 +8,7 @@ const apiClient = axios.create({
   },
 })
 
-export const report = async ({accountIdx, contents}: {accountIdx: number; contents: string}) => {
-  const {data} = await apiClient.post(`/api/report?accountIdx=${accountIdx}&contents=${contents}`)
+export const report = async (form: {nanumIdx: number; contents: string}) => {
+  const {data} = await apiClient.post(`/api/report`, form)
   return data
 }
