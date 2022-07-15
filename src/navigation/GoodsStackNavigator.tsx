@@ -18,10 +18,10 @@ type GoodsStackNavigatorParamList = {
     nanumIdx: string
   }
   GoodsRequestOffline: {
-    nanumIdx: number
+    nanumIdx: string
   }
   GoodsRequestOnline: {
-    nanumIdx: number
+    nanumIdx: string
   }
   QnAListUser: {
     nanumIdx: number
