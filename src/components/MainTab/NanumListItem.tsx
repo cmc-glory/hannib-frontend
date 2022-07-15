@@ -171,10 +171,12 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
     const now = moment()
     console.log(secretForm)
 
-    if (now < openDate) {
+    // 오픈 시간 전이고, 작성자가 아니라면 나눔 게시글에 들어가지 못함
+    if (now < openDate && writerAccountIdx != accountIdx) {
       setIsBefore(true)
       return // 오픈 전인 경우엔 이동 X
     }
+    // 시크릿 폼이고 작성자가 아니라면
     if (secretForm == 'Y' && writerAccountIdx != accountIdx) {
       // 나눔글 작성자는 그냥 통과 시킴
       setSecretModalVisible(true)

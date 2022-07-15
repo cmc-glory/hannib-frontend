@@ -76,7 +76,7 @@ export const ReportIssueStep1 = () => {
     onError(error, variables, context) {
       showMessage({
         // 에러 안내 메세지
-        message: '이미지 업로드 중 에러가 발생했습니다',
+        message: '신고하기 폼 전송 중 에러가 발생했습니다',
         type: 'info',
         animationDuration: 300,
         duration: 1350,
@@ -92,9 +92,9 @@ export const ReportIssueStep1 = () => {
   })
 
   const onPressSelect = useCallback(() => {
-    const form: {accountIdx: number; contents: string} = {
-      accountIdx: route.params.nanumIdx,
+    const form: {nanumIdx: number; contents: string} = {
       contents: selectedIssue == '기타문제' ? '기타문제:' + reasonEtc : selectedIssue,
+      nanumIdx: route.params.nanumIdx,
     }
     reportQuery.mutate(form)
   }, [selectedIssue, reasonEtc, route.params])

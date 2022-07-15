@@ -49,6 +49,9 @@ export const Login = () => {
       // 해당 이메일로 가입된 회원인지 확인
       getAccountInfoByEmail(profile.email)
         .then(res => {
+          console.log(res)
+
+          storeString('accountIdx', res.accountIdx.toString())
           dispatch(ReduxLogin(res))
           navigation.navigate('MainTabNavigator', {
             screen: 'NanumList',
@@ -94,6 +97,8 @@ export const Login = () => {
       // 해당 이메일로 가입된 회원인지 확인
       getAccountInfoByEmail(user.email)
         .then(res => {
+          storeString('accountIdx', res.accountIdx.toString())
+
           dispatch(ReduxLogin(res))
           navigation.navigate('MainTabNavigator', {
             screen: 'NanumList',
@@ -145,6 +150,8 @@ export const Login = () => {
           if (email != undefined && email != null) {
             // 그 이메일로 계정 정보를 찾고 로그인 시킴
             getAccountInfoByEmail(email).then(res => {
+              storeString('accountIdx', res.accountIdx.toString())
+
               dispatch(ReduxLogin(res))
               navigation.navigate('MainTabNavigator', {
                 screen: 'NanumList',
@@ -156,6 +163,8 @@ export const Login = () => {
         // 애플 계정 이메일로 가입한 적 있는지 확인 (ex. js7056@naver.com으로 카카오 가입을 한 후 js7056@naver.com으로 첫 애플 로그인을 시도한 경우)
         getAccountInfoByEmail(appleAuthRequestResponse.email)
           .then(res => {
+            storeString('accountIdx', res.accountIdx.toString())
+
             dispatch(ReduxLogin(res))
             navigation.navigate('MainTabNavigator', {
               screen: 'NanumList',
