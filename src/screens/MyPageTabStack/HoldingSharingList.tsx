@@ -3,6 +3,8 @@ import {View, FlatList, Text, StyleSheet, Pressable} from 'react-native'
 import Modal from 'react-native-modal'
 import {getStatusBarHeight} from 'react-native-status-bar-height'
 import {SafeAreaView} from 'react-native-safe-area-context'
+import {useQuery, useQueryClient} from 'react-query'
+
 import {EditDeleteModal} from '../../components/MyPageStack/EditDeleteModal'
 import {useAppSelector, useToggle} from '../../hooks'
 import {EmptyIcon, MenuIcon, StackHeader} from '../../components/utils'
@@ -10,7 +12,6 @@ import {HoldingSharingItem} from '../../components/MyPageTabStack'
 import * as theme from '../../theme'
 import {ISharingInfo, IHoldingSharingList} from '../../types'
 import {getMyNanumList, queryKeys} from '../../api'
-import {useQuery, useQueryClient} from 'react-query'
 
 const STATUSBAR_HEIGHT = getStatusBarHeight()
 
@@ -40,6 +41,21 @@ export const HoldingSharingList = () => {
     setRefreshing(true)
     queryClient.invalidateQueries([queryKeys.holdingNanumList])
   }, [])
+
+
+  //api 나오기 전 사용했던것
+  const [sharings, setSharings] = useState<ISharingInfo[]>([])
+
+  // // 컴포넌트가 마운트 되면 진행한 나눔 목록 가져옴
+  // useEffect(() => {
+  //   fetch('http://localhost:8081/src/data/dummySharings.json')
+  //     .then(res => res.json())
+  //     .then(result => {
+  //       //setSharings(result)
+  //       setSharings([])
+  //     })
+  // }, [])
+
 
   return (
     <SafeAreaView style={theme.styles.safeareaview} edges={['top', 'left', 'right']}>

@@ -52,6 +52,8 @@ export const Login = () => {
           console.log(res)
 
           storeString('accountIdx', res.accountIdx.toString())
+          storeString('email', res.email)
+
           dispatch(ReduxLogin(res))
           navigation.navigate('MainTabNavigator', {
             screen: 'NanumList',
@@ -98,6 +100,7 @@ export const Login = () => {
       getAccountInfoByEmail(user.email)
         .then(res => {
           storeString('accountIdx', res.accountIdx.toString())
+          storeString('email', res.email)
 
           dispatch(ReduxLogin(res))
           navigation.navigate('MainTabNavigator', {
@@ -151,6 +154,7 @@ export const Login = () => {
             // 그 이메일로 계정 정보를 찾고 로그인 시킴
             getAccountInfoByEmail(email).then(res => {
               storeString('accountIdx', res.accountIdx.toString())
+              storeString('email', res.email)
 
               dispatch(ReduxLogin(res))
               navigation.navigate('MainTabNavigator', {

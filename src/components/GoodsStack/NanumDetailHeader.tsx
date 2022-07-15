@@ -4,13 +4,12 @@ import Modal from 'react-native-modal'
 import {useNavigation} from '@react-navigation/native'
 import {getStatusBarHeight} from 'react-native-status-bar-height'
 import Clipboard from '@react-native-clipboard/clipboard'
-import {useMutation} from 'react-query'
+import {Shadow} from 'react-native-shadow-2'
 
 import {DeleteModal} from './DeleteModal'
 import * as theme from '../../theme'
 import {useToggle, useAsyncState} from '../../hooks'
 import {LeftArrowIcon, ShareIcon, XIcon, MenuIcon, LeftArrowWhiteIcon, ShareWhiteIcon, MenuWhiteIcon} from '../utils'
-import {queryKeys, deleteNanumForm} from '../../api'
 
 const STATUSBAR_HEIGHT = getStatusBarHeight()
 
@@ -41,7 +40,7 @@ const ShareModal = ({shareVisible, toggleShareVisible, shareUrl}: ShareModalProp
   //const link = '링크 자동 생성'
   const copyToClipboard = () => {
     Clipboard.setString(shareUrl)
-    Alert.alert('복사가 완료되었습니다', '', [{text: '확인'}])
+    Alert.alert('복사가 완료되었습니다', '', [{text: '확인', onPress: () => toggleShareVisible()}])
   }
   return (
     <Modal isVisible={shareVisible} onBackdropPress={toggleShareVisible} backdropColor={theme.gray800} backdropOpacity={0.6}>
@@ -90,17 +89,28 @@ const MenuModal = ({moreVisible, setMoreVisible, onPressReportIssue, isWriter, s
       animationIn={'fadeIn'}
       animationOut="fadeOut">
       {isWriter ? (
-        <View style={styles.menuModalWrapper}>
-          <Pressable style={styles.menuModalButton} onPress={onPressDelete}>
-            <Text>삭제하기</Text>
-          </Pressable>
-        </View>
+        <Shadow
+          containerViewStyle={{position: 'absolute', width: 144, right: 0, borderRadius: 4, top: STATUSBAR_HEIGHT + 28}}
+          distance={28}
+          startColor="rgba(0,0,0,0.04)">
+          <View style={{borderRadius: 4}}>
+            <Pressable onPress={onPressDelete} style={[styles.menuModalButton, {backgroundColor: 'rgba(250,250,250,0.96)', width: 144, borderRadius: 4}]}>
+              <Text>삭제하기</Text>
+            </Pressable>
+          </View>
+        </Shadow>
       ) : (
-        <View style={styles.menuModalWrapper}>
-          <Pressable style={styles.menuModalButton} onPress={onPressReportIssue}>
-            <Text style={{color: theme.gray800}}>신고하기</Text>
-          </Pressable>
-        </View>
+        <Shadow
+          containerViewStyle={{position: 'absolute', width: 144, right: 0, borderRadius: 4, top: STATUSBAR_HEIGHT + 28}}
+          distance={28}
+          offset={[0, 0]}
+          startColor="rgba(0,0,0,0.04)">
+          <View style={{borderRadius: 4}}>
+            <Pressable onPress={onPressReportIssue} style={[styles.menuModalButton, {backgroundColor: 'rgba(250,250,250,0.96)', width: 144, borderRadius: 4}]}>
+              <Text>신고하기</Text>
+            </Pressable>
+          </View>
+        </Shadow>
       )}
     </Modal>
   )
@@ -189,7 +199,8 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   menuModalWrapper: {
-    backgroundColor: theme.white,
+    //backgroundColor: theme.white,
+    //backgroundColor: 'rgba(255,255,255,0.1)',
     position: 'absolute',
     width: 144,
     right: 0,

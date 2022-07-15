@@ -302,6 +302,7 @@ export type INanumForm = {
   secretForm: 'Y' | 'N'
   secretPwd: number | string
   favorites: number
+  favorites_yn: 'Y' | 'N'
   accountDto: {
     accountCategoryDtoList: IAccountCategoryDto[]
     accountIdx: number
@@ -333,7 +334,7 @@ export type INanum = {
   deletedYn: boolean // 삭제 여부
   deletedReason: string // 삭제한 이유
   qnaNumber: number // 문의 수
-  favoritesYn: 'Y' | 'N'
+  favorites_yn: 'Y' | 'N'
   favorites: number // 즐겨찾기한 사람 수
   accountDto: {
     accountCategoryDtoList: IAccountCategoryDto[]

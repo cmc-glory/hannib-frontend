@@ -1,10 +1,9 @@
 import React, {useCallback, useState} from 'react'
-import {View, Text, TextInput, Animated, Pressable, Alert, Platform, StyleSheet} from 'react-native'
+import {View, Text, TextInput, Animated, Pressable, Alert, ActivityIndicator, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {launchImageLibrary} from 'react-native-image-picker'
 import {useNavigation} from '@react-navigation/native'
 import FastImage from 'react-native-fast-image'
-import KeyboardManager from 'react-native-keyboard-manager'
 import DatePicker from 'react-native-date-picker'
 import moment from 'moment'
 import {useMutation} from 'react-query'
@@ -88,6 +87,7 @@ export const AskAddStar = () => {
   const [email, setEmail] = useState<string>('') // 연락 받을 이메일
   const [date, setDate] = useState<Date>(new Date())
   const [modalOpen, setModalOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   // ******************** animations  ********************
   const animatedValue = useAnimatedValue(0.01)
@@ -274,6 +274,7 @@ export const AskAddStar = () => {
             open={modalOpen}
             date={date}
             mode={'date'}
+            locale="ko"
             onConfirm={date => {
               setModalOpen(false)
               setDate(date)
@@ -281,6 +282,9 @@ export const AskAddStar = () => {
             onCancel={() => {
               setModalOpen(false)
             }}
+            title="생년월일 혹은 데뷔일 선택"
+            confirmText="확인"
+            cancelText="취소"
           />
           <Pressable onPress={() => setModalOpen(true)}>
             <TextInput
@@ -302,10 +306,23 @@ export const AskAddStar = () => {
                 <PlusIcon onPress={onImageLibraryPress} />
               </View>
             </Pressable>
+            {uploadCategoryImageQuery.isLoading == true && (
+              <View style={[styles.imageWrapper, {backgroundColor: theme.gray50, justifyContent: 'center', alignItems: 'center'}]}>
+                <ActivityIndicator />
+              </View>
+            )}
             {image !== undefined && (
               <View>
                 <RemoveButtonIcon style={[styles.removeButton]} onPress={onPressRemoveImage} />
-                <FastImage source={{uri: image}} style={styles.image} />
+                <FastImage
+                  source={{uri: image}}
+                  style={styles.imageWrapper}
+                  onLoadStart={() => setIsLoading(true)}
+                  onLoadEnd={() => {
+                    setIsLoading(false)
+                  }}>
+                  <ActivityIndicator animating={isLoading} />
+                </FastImage>
               </View>
             )}
           </View>
@@ -327,6 +344,16 @@ export const AskAddStar = () => {
 }
 
 const styles = StyleSheet.create({
+  imageWrapper: {
+    width: IMAGE_SIZE,
+    height: IMAGE_SIZE,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: theme.gray300,
+    backgroundColor: theme.gray50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   removeButton: {
     position: 'absolute',
     zIndex: 1,

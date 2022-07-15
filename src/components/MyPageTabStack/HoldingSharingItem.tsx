@@ -24,26 +24,26 @@ export const HoldingSharingItem = ({item}: {item: IHoldingSharingList}) => {
 
   const [isBefore, setIsBefore] = useState(false)
 
-  const [secretModalVisible, setSecretModalVisible] = useState(false)
-
   useEffect(() => {
     setIsBefore(now < openDate ? true : false)
-  }, [])
+  }, [openDate])
 
   // 상세 페이지로 이동
   const onPressItem = useCallback(() => {
-    if (secretForm == 'Y') {
-      setSecretModalVisible(true)
-    } else {
-      navigation.navigate('HoldingSharingStackNavigator')
-    }
+    // 내가 진행한 나눔은 시크릿폼, 난눔 시작 예약 여부 상관 없이 이동
+    navigation.navigate('HoldingSharingStackNavigator', {
+      screen: 'HoldingSharing',
+      params: {
+        nanumIdx: nanumIdx,
+      },
+    })
   }, [])
 
   return (
     <Pressable onPress={onPressItem} style={[styles.container]}>
       {isBefore && (
         <View style={styles.overlay}>
-          <Text style={[styles.overlayText, {marginBottom: 2.5}]}>{openDate.format('YYYY MM')}</Text>
+          <Text style={[styles.overlayText, {marginBottom: 2.5}]}>{openDate.format('YY/MM/DD HH:mm')}</Text>
           <Text style={styles.overlayText}>오픈 예정</Text>
         </View>
       )}

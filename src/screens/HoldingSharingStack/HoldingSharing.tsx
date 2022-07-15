@@ -1,14 +1,17 @@
 import React, {useCallback, useEffect, useState} from 'react'
 import {View, Pressable, ScrollView, Text, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
+import {useQuery} from 'react-query'
 import {StackHeader, FloatingBottomButton, SharingPreview, GoodsListItem, MenuIcon, BottomSheet, RoundButton} from '../../components/utils'
 import {IHoldingReceiverInfo, ISharingDetail} from '../../types'
-import {useToggle} from '../../hooks'
+import {useAppSelector, useToggle} from '../../hooks'
 import * as theme from '../../theme'
-import {useNavigation} from '@react-navigation/native'
+import {useNavigation, useRoute} from '@react-navigation/native'
+import {HoldingSharingRouteProps} from '../../navigation/HoldingSharingStackNavigator'
 import {EditDeleteModal, HoldingSharingBottomSheetContent, DeleteHoldingSharingModal} from '../../components/MyPageStack'
 import {HoldingListItem, HoldingDetailItem} from '../../components/MyPageTabStack'
 import {main, white} from '../../theme'
+import {queryKeys, getNanumByIndex} from '../../api'
 
 export const HoldingSharing = () => {
   const [list, setList] = useState<Array<IHoldingReceiverInfo>>()
@@ -19,28 +22,17 @@ export const HoldingSharing = () => {
   const [stateFilter, setStateFilter] = useState<'전체보기' | '수령완료' | '미수령'>('전체보기')
   const [locationFilter, setLocationFilter] = useState<0 | 1 | 2>(0) // 전체보기(0), 수령완료(1), 미수령(2)
   const [checkedItems, setCheckedItems] = useState<Array<any>>([])
+  const accountIdx = useAppSelector(state => state.auth.user.accountIdx)
+  const route = useRoute<HoldingSharingRouteProps>()
+
+  const nanumInfo = useQuery([queryKeys.nanumDetail, route.params.nanumIdx], () =>
+    getNanumByIndex({nanumIdx: route.params.nanumIdx, accountIdx: accountIdx, favoritesYn: 'N'}),
+  )
 
   const navigation = useNavigation()
   const onPressViewDetail = () => {
     setIsDetail(true)
   }
-
-  // 컴포넌트가 마운트 되면 진행 나눔 참여자 리스트 가져옴
-  useEffect(() => {
-    fetch('http://localhost:8081/src/data/dummyHoldingReceiverList.json')
-      .then(res => res.json())
-      .then(result => {
-        setList(result)
-      })
-  }, [])
-
-  useEffect(() => {
-    fetch('http://localhost:8081/src/data/dummySharingDetail.json')
-      .then(res => res.json())
-      .then(result => {
-        setSharingDetail(result)
-      })
-  }, [])
 
   useEffect(() => {
     // console.log('list : ', list)
@@ -65,7 +57,7 @@ export const HoldingSharing = () => {
         <MenuIcon onPress={toggleEditDeleteModalVisible}></MenuIcon>
       </StackHeader>
       <ScrollView contentContainerStyle={[theme.styles.wrapper, {paddingBottom: 100}]}>
-        <SharingPreview uri="http://localhost:8081/src/assets/images/detail_image_example.png" category="BTS" title="BTS 키링 나눔" />
+        <SharingPreview uri={nanumInfo.data?.thumbnail} category={nanumInfo.data?.category} title={nanumInfo.data?.title} />
 
         <View style={{marginTop: 16}}>
           {sharingDetail?.products.map(product => (

@@ -100,6 +100,7 @@ export const EditProfile = () => {
 
   const [name, setName] = useState<string>(data?.creatorId)
   const [profileImage, setProfileImage] = useState<string | undefined>(data?.accountImg)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const [duplicated, setDuplicated] = useState<boolean>(false)
 
@@ -155,31 +156,48 @@ export const EditProfile = () => {
       return
     }
 
-    checkNicknameDuplicated(name)
-      .then(res => {
-        console.log('res: ', res)
-        // 중복된 닉네임이 없는 경우
-        if (res == '') {
-          if (name && profileImage) {
-            let accountDto: IAccountDto = {
-              accountIdx: user.accountIdx,
-              creatorId: name,
-              accountCategoryDtoList: user.accountCategoryDtoList,
-              accountImg: profileImage,
-              email: user.email,
-              creatorIdDatetime: '',
+    // 닉네임을 바꿀 수 있을 땐 닉네임 중복 검사
+    if (leftChangeNum == 1) {
+      checkNicknameDuplicated(name)
+        .then(res => {
+          console.log('res: ', res)
+          // 중복된 닉네임이 없는 경우
+          if (res == '') {
+            if (name && profileImage) {
+              let accountDto: IAccountDto = {
+                accountIdx: user.accountIdx,
+                creatorId: name,
+                accountCategoryDtoList: user.accountCategoryDtoList,
+                accountImg: profileImage,
+                email: user.email,
+                creatorIdDatetime: '',
+              }
+              updateAccountInfoQuery.mutate(accountDto)
             }
-            updateAccountInfoQuery.mutate(accountDto)
+          } else {
+            setDuplicated(true)
           }
-        } else {
-          setDuplicated(true)
+        })
+        .catch(err => {
+          if (err.response.status == 500) {
+            setDuplicated(true)
+          }
+        })
+    }
+    // 프사만 바꿀 땐 중복 검사 없이 바로 업데이트
+    else {
+      if (name && profileImage) {
+        let accountDto: IAccountDto = {
+          accountIdx: user.accountIdx,
+          creatorId: name,
+          accountCategoryDtoList: user.accountCategoryDtoList,
+          accountImg: profileImage,
+          email: user.email,
+          creatorIdDatetime: '',
         }
-      })
-      .catch(err => {
-        if (err.response.status == 500) {
-          setDuplicated(true)
-        }
-      })
+        updateAccountInfoQuery.mutate(accountDto)
+      }
+    }
   }, [name, profileImage])
 
   const onImageLibraryPress = useCallback(async () => {
@@ -206,10 +224,10 @@ export const EditProfile = () => {
     } else if (response.assets) {
       // 이미지가 제대로 들어오면
       const fileSize = response.assets[0].fileSize
-      if (fileSize && fileSize >= 1048576) {
+      if (fileSize && fileSize >= 10485760) {
         showMessage({
           // 에러 안내 메세지
-          message: '최대 1MB까지 업로드 가능합니다',
+          message: '최대 10MB까지 업로드 가능합니다',
           type: 'info',
           animationDuration: 300,
           duration: 1350,
@@ -239,7 +257,7 @@ export const EditProfile = () => {
     <SafeAreaView style={theme.styles.safeareaview}>
       <StackHeader goBack title="프로필 수정">
         {updateAccountInfoQuery.isLoading ? (
-          <ActivityIndicator animating={updateAccountInfoQuery.isLoading} />
+          <ActivityIndicator />
         ) : (
           <Pressable onPress={onPressComplete}>
             <Text style={[theme.styles.bold16, {color: checkButtonEnabled(name, profileImage) ? theme.main : theme.gray300}]}>완료</Text>
@@ -253,7 +271,15 @@ export const EditProfile = () => {
               <NoUserSvg width={54} height={54} />
             </Pressable>
           ) : (
-            <FastImage source={{uri: profileImage}} style={styles.image}></FastImage>
+            <FastImage
+              source={{uri: profileImage}}
+              style={styles.image}
+              onLoadStart={() => setIsLoading(true)}
+              onLoadEnd={() => {
+                setIsLoading(false)
+              }}>
+              <ActivityIndicator animating={uploadProfileImageQuery.isLoading || isLoading == true} />
+            </FastImage>
           )}
 
           <SelectImageIcon style={styles.cameraIcon} onPress={onImageLibraryPress} />
@@ -295,6 +321,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 32,
     alignSelf: 'center',
+    backgroundColor: theme.gray50,
   },
   selectImage: {
     backgroundColor: theme.gray100,
