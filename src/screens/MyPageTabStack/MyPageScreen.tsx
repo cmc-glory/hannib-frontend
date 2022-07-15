@@ -40,20 +40,7 @@ export const MyPageScreen = () => {
   // ******************** utils ********************
   const navigation = useNavigation()
   const user = useAppSelector(state => state.auth.user)
-  console.log('user in mypagescreen : ', user)
-
-  //account idx api 나오면 수정하기
-  // const {data} = useQuery(queryKeys.accountInfo, () => getAccountInfoByIdx(user.accountIdx), {
-  //   onSuccess: data => {
-  //     console.log('success')
-  //     console.log('data', data)
-  //   },
-  //   onError(err) {
-  //     console.log('err')
-  //     console.log(err)
-  //   },
-  // })
-  //console.log('data22 : ', data)
+  //console.log('user in mypagescreen : ', user)
 
   // ******************** states ********************
   const [logoutModalVisible, setLogoutModalVisible] = useState<boolean>(false)

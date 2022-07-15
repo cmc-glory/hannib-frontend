@@ -21,4 +21,5 @@ export const queryKeys = {
   nanumAll: ['nanumAll'], // 카테고리 상관 없이 전부 불러오기
   nicknameDuplicated: ['nicknameDuplicated'], // 닉네임 중복 확인
   report: ['report'], // 신고하기
+  holdingNanumList: ['holdingNanumList'],
 }
