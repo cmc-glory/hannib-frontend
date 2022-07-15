@@ -97,6 +97,7 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
 
   // ------------- react queries -------------
   const accountIdx = useAppSelector(state => state.auth.user.accountIdx)
+  const thisCreatorId = useAppSelector(state => state.auth.user.creatorId)
   const addFavoriteQuery = useMutation(addFavorite, {
     onSuccess: () => {
       showMessage({
@@ -174,7 +175,8 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
       setIsBefore(true)
       return // 오픈 전인 경우엔 이동 X
     }
-    if (secretForm == 'Y') {
+    if (secretForm == 'Y' && thisCreatorId != creatorId) {
+      // 나눔글 작성자는 그냥 통과 시킴
       setSecretModalVisible(true)
     } else {
       navigation.navigate('GoodsStackNavigator', {

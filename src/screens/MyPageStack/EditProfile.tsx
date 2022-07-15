@@ -17,6 +17,8 @@ import * as theme from '../../theme'
 import NoUserSvg from '../../assets/Icon/noUser.svg'
 import {IAccountDto} from '../../types'
 
+const regex = /^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|]+$/
+
 export const EditProfile = () => {
   // ******************** utils ********************
   const navigation = useNavigation()
@@ -44,6 +46,7 @@ export const EditProfile = () => {
     console.log(thisMonth, lastMonthChanged)
 
     return thisMonth == lastMonthChanged ? 0 : 1
+    //return 1
   }, [data])
 
   const updateAccountInfoQuery = useMutation(queryKeys.accountInfo, updateAccountInfo, {
@@ -94,30 +97,6 @@ export const EditProfile = () => {
     },
   })
 
-  const checkNicknameDuplicatedQuery = useMutation(queryKeys.nicknameDuplicated, checkNicknameDuplicated, {
-    onSuccess(data, variables, context) {
-      // 같은 닉네임을 찾지 못해서 응답이 blank이면
-      setDuplicated(true)
-    },
-    onError(error, variables, context) {
-      showMessage({
-        // 에러 안내 메세지
-        message: '닉네임 중복 확인 중 에러가 발생했습니다',
-        type: 'info',
-        animationDuration: 300,
-        duration: 1350,
-        style: {
-          backgroundColor: 'rgba(36, 36, 36, 0.9)',
-        },
-        titleStyle: {
-          fontFamily: 'Pretendard-Medium',
-        },
-        floating: true,
-      })
-      console.log(error)
-    },
-  })
-
   // ******************** states ********************
   const [name, setName] = useState<string>(data.creatorId)
   const [profileImage, setProfileImage] = useState<string | undefined>(data.accountImg)
@@ -135,17 +114,71 @@ export const EditProfile = () => {
       return
     }
 
-    if (name && profileImage) {
-      let accountDto: IAccountDto = {
-        accountIdx: user.accountIdx,
-        creatorId: name,
-        accountCategoryDtoList: user.accountCategoryDtoList,
-        accountImg: profileImage,
-        email: user.email,
-        creatorIdDatetime: '',
-      }
-      updateAccountInfoQuery.mutate(accountDto)
+    // 닉네임 길이 validation
+    if (name.length > 10 || name.length < 2) {
+      showMessage({
+        // 에러 안내 메세지
+        message: '닉네임을 2~10자 사이로 입력해주세요.',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+        position: 'center',
+      })
+      return
     }
+
+    // 한글, 영어, 숫자, 공백 제외 validation
+    if (regex.test(name) == false) {
+      showMessage({
+        // 에러 안내 메세지
+        message: '공백 제외 한글, 영문, 숫자만 입력 가능합니다.',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+        position: 'center',
+      })
+      return
+    }
+
+    checkNicknameDuplicated(name)
+      .then(res => {
+        console.log(res)
+        // 중복된 닉네임이 없는 경우
+        if (res == '') {
+          if (name && profileImage) {
+            let accountDto: IAccountDto = {
+              accountIdx: user.accountIdx,
+              creatorId: name,
+              accountCategoryDtoList: user.accountCategoryDtoList,
+              accountImg: profileImage,
+              email: user.email,
+              creatorIdDatetime: '',
+            }
+            updateAccountInfoQuery.mutate(accountDto)
+          }
+        } else {
+          setDuplicated(true)
+        }
+      })
+      .catch(err => {
+        if (err.response.status == 500) {
+          setDuplicated(true)
+        }
+      })
   }, [name, profileImage])
 
   const onImageLibraryPress = useCallback(async () => {
@@ -235,7 +268,10 @@ export const EditProfile = () => {
           placeholder={user.creatorId}
           placeholderTextColor={theme.gray300}
           value={name}
-          onChangeText={setName}
+          onChangeText={text => {
+            setDuplicated(false)
+            setName(text)
+          }}
           editable={leftChangeNum == 1}
         />
         {duplicated && <Text style={[{color: theme.red, fontSize: 12, marginTop: 4}, theme.styles.text12]}>중복된 닉네임입니다.</Text>}

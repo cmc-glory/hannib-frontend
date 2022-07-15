@@ -87,10 +87,10 @@ export const ImagePicker = ({images, setImages}: ImagePickerProps) => {
     } else if (response.assets) {
       // 이미지가 제대로 들어오면
       const fileSize = response.assets[0].fileSize
-      if (fileSize && fileSize >= 1048576) {
+      if (fileSize && fileSize >= 10485760) {
         showMessage({
           // 에러 안내 메세지
-          message: '최대 1MB까지 업로드 가능합니다',
+          message: '최대 10MB까지 업로드 가능합니다',
           type: 'info',
           animationDuration: 300,
           duration: 1350,

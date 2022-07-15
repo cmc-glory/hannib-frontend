@@ -28,6 +28,7 @@ export const WriterProfileBanner = ({nanumIdx, writerProfileImageUri, writername
   // 문의글 리스트로 이동하는 네비게이션
   const onPressQnA = useCallback(() => {
     console.log(userAccountIdx, writerAccountIdx)
+
     if (userAccountIdx == writerAccountIdx) {
       navigation.navigate('QnAListCreator', {
         nanumIdx,

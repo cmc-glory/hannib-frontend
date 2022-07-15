@@ -15,24 +15,22 @@ import {useAppSelector} from '../../hooks'
 export const QnAListCreator = () => {
   // ******************** utils ********************
   const auth = useAppSelector(state => state.auth)
-  const isLoggedIn = auth.isLoggedIn
   const userAccountIdx = auth.user.accountIdx
 
-  const navigation = useNavigation()
   const route = useRoute<QnAListCreatorRouteProps>()
   const queryClient = useQueryClient()
 
   const {nanumIdx} = useMemo(() => route.params, [])
 
-  console.log('nanumIdx : ', nanumIdx)
-
   // ******************** states ********************
   const [refreshing, setRefreshing] = useState<boolean>(false)
+  const [inquires, setInquires] = useState<IInquiryNanumDto[]>([])
 
   // ******************** reactQueries ********************
   const nanumInfo = useQuery([queryKeys.nanumDetail, nanumIdx], () => getNanumByIndex(nanumIdx))
-  const inquiries = useQuery([queryKeys.inquiry, nanumIdx], () => getInquiryByIndex(nanumIdx), {
+  useQuery([queryKeys.inquiry, nanumIdx], () => getInquiryByIndex(nanumIdx), {
     onSuccess(data) {
+      setInquires(data)
       setRefreshing(false)
     },
   })
@@ -44,7 +42,7 @@ export const QnAListCreator = () => {
         <SharingPreview uri={nanumInfo.data?.thumbnail} category={nanumInfo.data?.category} title={nanumInfo.data?.title} />
       </View>
 
-      {inquiries?.data?.length > 0 ? (
+      {inquires?.length > 0 ? (
         <ScrollView
           style={{flex: 1}}
           refreshControl={
@@ -57,7 +55,7 @@ export const QnAListCreator = () => {
             />
           }>
           <ScrollView contentContainerStyle={{flex: 1, paddingHorizontal: theme.PADDING_SIZE}}>
-            {inquiries?.data?.map((qna: IInquiryNanumDto) => (
+            {inquires.map((qna: IInquiryNanumDto) => (
               <QnAListCreatorItem item={qna} key={qna.inquiryIdx} inquiryIdx={qna.inquiryIdx} accountIdx={userAccountIdx} nanumIdx={nanumIdx} />
             ))}
           </ScrollView>

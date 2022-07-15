@@ -15,27 +15,6 @@ import {useToggle, useAnimatedValue, useMonitorAnimatedValue} from '../../hooks'
 import {StackHeader, DownArrowIcon, PlusIcon, RemoveButtonIcon, NeccesaryField, RoundButton} from '../../components/utils'
 import {ICategoryDto} from '../../types'
 import * as theme from '../../theme'
-import {CategoryDropdown} from '../../components/MainTab'
-
-// ***************************** ios keyboard settings *****************************
-if (Platform.OS === 'ios') {
-  KeyboardManager.setEnable(true)
-  KeyboardManager.setEnableDebugging(false)
-  KeyboardManager.setKeyboardDistanceFromTextField(10)
-  KeyboardManager.setLayoutIfNeededOnUpdate(true)
-  KeyboardManager.setEnableAutoToolbar(false)
-  KeyboardManager.setToolbarDoneBarButtonItemText('확인')
-  KeyboardManager.setToolbarManageBehaviourBy('subviews') // "subviews" | "tag" | "position"
-  KeyboardManager.setToolbarPreviousNextButtonEnable(false)
-  KeyboardManager.setToolbarTintColor('#007aff') // Only #000000 format is supported
-  KeyboardManager.setToolbarBarTintColor('#FFFFFF') // Only #000000 format is supported
-  KeyboardManager.setShouldShowToolbarPlaceholder(true)
-  KeyboardManager.setOverrideKeyboardAppearance(false)
-  KeyboardManager.setKeyboardAppearance('default') // "default" | "light" | "dark"
-  KeyboardManager.setShouldResignOnTouchOutside(true)
-  KeyboardManager.setShouldPlayInputClicks(true)
-  KeyboardManager.resignFirstResponder()
-}
 
 const IMAGE_SIZE = 64
 
@@ -140,7 +119,7 @@ export const AskAddStar = () => {
   const onPressCategory = useCallback(() => {
     // 카테고리 선택하면, set하고 닫음
     open.start(toggleOpend)
-    //setMainCategory(mainCategory => (mainCategory == '가수' ? '배우' : '가수'))
+    setMainCategory(mainCategory => (mainCategory == '가수' ? '배우' : '가수'))
   }, [opend])
 
   // 선택한 이미지 삭제
@@ -341,7 +320,7 @@ export const AskAddStar = () => {
             style={[theme.styles.input]}
           />
         </View>
-        <RoundButton label="카테고리 문의하기" enabled={checkEnabled()} onPress={onPressSubmit} />
+        <RoundButton label="카테고리 문의하기" enabled={postCategoryQuery.isLoading == false && checkEnabled()} onPress={onPressSubmit} />
       </View>
     </SafeAreaView>
   )

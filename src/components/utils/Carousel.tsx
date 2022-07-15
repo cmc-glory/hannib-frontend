@@ -24,8 +24,6 @@ export const Carousel = ({imageUrls, imageWidth}: CarouselProps) => {
   const circleMarginRightAnimValue = useAnimatedValue(CIRCLE_MARGIN_RIGHT) // Animated 연산을 하기 위해 Animated.value type으로 만듦
   const [showImageView, setShowImageView] = useState(false)
   const [imageIndex, setImageIndex] = useState<number>(0)
-  const [moving, setMoving] = useState<boolean>(false)
-  const [scrollEnabled, setScrollEnabled] = useScrollEnabled()
 
   const imageViewAssets = useMemo(() => {
     return imageUrls.map(url => {
@@ -45,25 +43,36 @@ export const Carousel = ({imageUrls, imageWidth}: CarouselProps) => {
   const circles = useMemo(() => imageUrls.map((uri, index) => <View key={index} style={styles.circle} />), [])
 
   const onScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const targetContentOffsetX = event.nativeEvent.targetContentOffset?.x
-    if (targetContentOffsetX !== undefined) {
-      const curIndex = targetContentOffsetX / imageWidth
-      const contentOffset = event.nativeEvent.contentOffset.x
-      if (contentOffset - targetContentOffsetX > 20) {
-        const index = curIndex == imageUrls.length - 1 ? imageUrls.length - 1 : curIndex + 1
-        selectedIndexAnimValue.setValue(index)
-        flatlistRef.current?.scrollToIndex({
-          index,
-        })
-      } else if (contentOffset - targetContentOffsetX < -20) {
-        const index = curIndex == 0 ? 0 : curIndex - 1
-        selectedIndexAnimValue.setValue(index)
+    // if (Platform.OS == 'android') {
+    //   const {contentOffset} = event.nativeEvent
+    //   const index = Math.round(contentOffset.x / imageWidth)
+    //   selectedIndexAnimValue.setValue(index)
+    // } else {
+    //   const targetContentOffsetX = event.nativeEvent.targetContentOffset?.x
 
-        flatlistRef.current?.scrollToIndex({
-          index,
-        })
-      }
-    }
+    //   if (targetContentOffsetX !== undefined) {
+    //     const curIndex = targetContentOffsetX / imageWidth
+    //     const contentOffset = event.nativeEvent.contentOffset.x
+
+    //     if (contentOffset - targetContentOffsetX > 20) {
+    //       const index = curIndex == imageUrls.length - 1 ? imageUrls.length - 1 : curIndex + 1
+    //       selectedIndexAnimValue.setValue(index)
+    //       flatlistRef.current?.scrollToIndex({
+    //         index,
+    //       })
+    //     } else if (contentOffset - targetContentOffsetX < -20) {
+    //       const index = curIndex == 0 ? 0 : curIndex - 1
+
+    //       selectedIndexAnimValue.setValue(index)
+    //       flatlistRef.current?.scrollToIndex({
+    //         index,
+    //       })
+    //     }
+    //   }
+    // }
+    const {contentOffset} = event.nativeEvent
+    const index = Math.round(contentOffset.x / imageWidth)
+    selectedIndexAnimValue.setValue(index)
   }, [])
 
   const onPressImage = useCallback((index: number) => {
@@ -84,6 +93,7 @@ export const Carousel = ({imageUrls, imageWidth}: CarouselProps) => {
           showsHorizontalScrollIndicator={false}
           horizontal={true}
           data={imageUrls}
+          onScroll={onScroll}
           onScrollEndDrag={onScroll}
           renderItem={({item, index}) => (
             <Pressable onPress={() => onPressImage(index)}>
@@ -94,6 +104,9 @@ export const Carousel = ({imageUrls, imageWidth}: CarouselProps) => {
         />
         <View style={[styles.iconBar, {justifyContent: 'center', marginLeft: CIRCLE_MARGIN}]}>
           <View style={{flexDirection: 'row'}}>
+            {/* {imageUrls.map((uri, index) => (
+              <View key={index} style={[styles.circle, index == imageIndex && styles.selectedCircle]} />
+            ))} */}
             {circles}
             <Animated.View style={[styles.circle, styles.selectedCircle, translateX]} />
           </View>

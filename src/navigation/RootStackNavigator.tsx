@@ -30,8 +30,7 @@ const RootStackNavigator = () => {
       <Stack.Screen name="ParticipatingSharingStackNavigator" component={ParticipatingSharingStackNavigator}></Stack.Screen>
       <Stack.Screen name="ReportIssueStackNavigator" component={ReportIssueStackNavigator}></Stack.Screen>
       <Stack.Screen name="MyPageStackNavigator" component={MyPageStackNavigator}></Stack.Screen>
-      <Stack.Screen name="EditCategory" component={EditCategory} options={{cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS}}></Stack.Screen>
-      {/* <Stack.Screen name="QnAStackNavigator" component={QnAStackNavigator}></Stack.Screen> */}
+      <Stack.Screen name="EditCategory" component={EditCategory} options={{cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS}} />
     </Stack.Navigator>
   )
 }

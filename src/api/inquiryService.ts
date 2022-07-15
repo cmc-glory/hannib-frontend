@@ -1,6 +1,6 @@
 import axios from 'axios'
 import {BASE_URL} from '@env'
-import {IInquiryNanumDto, IQuestionNanumDto, IAnswerNanumDto, IInquiryDeleteDto, IInquiryEditDto} from '../types'
+import {IInquiryNanumDto, IInquiryAnswerDto, IInquiryDeleteDto, IInquiryEditDto} from '../types'
 
 type DeleteInfo = {
   accountIdx: number
@@ -37,8 +37,8 @@ export const deleteInquiry = async (inquirydeleteDto: IInquiryDeleteDto) => {
 }
 
 // 문의글 답변 작성
-export const postAnswer = async (answerNanumDto: IInquiryNanumDto) => {
-  const {data} = await apiClient.put('/api/nanum/inquiry/answer', answerNanumDto)
+export const answerInquiry = async (inquiryAnswerDto: IInquiryAnswerDto) => {
+  const {data} = await apiClient.put('/api/nanum/inquiry/answer', inquiryAnswerDto)
   return data
 }
 

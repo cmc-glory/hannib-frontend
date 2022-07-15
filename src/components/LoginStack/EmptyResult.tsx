@@ -9,12 +9,11 @@ import NotExistsSvg from '../../assets/Icon/NotExists.svg'
 
 export const EmptyResult = () => {
   // ******************** utils  ********************
-  // ******************** utils  ********************
   const navigation = useNavigation()
 
   // ******************** callbacks  ********************
   const onPressAsk = useCallback(() => {
-    navigation.navigate('AskAddStar')
+    navigation.navigate('LoginStackNavigator', {screen: 'AskAddStar'})
   }, [])
   return (
     <View style={[styles.container]}>

@@ -1,5 +1,5 @@
 import React, {useState, useCallback, useEffect, useMemo} from 'react'
-import {View, Text, TextInput, Pressable, StyleSheet} from 'react-native'
+import {View, Text, TextInput, Pressable, StyleSheet, ActivityIndicator, Alert} from 'react-native'
 import moment from 'moment'
 import {useMutation, useQueryClient} from 'react-query'
 import {showMessage} from 'react-native-flash-message'
@@ -7,9 +7,9 @@ import {showMessage} from 'react-native-flash-message'
 import {useToggle} from '../../hooks'
 import {DeleteQnAModal} from './DeleteQnAModal'
 import * as theme from '../../theme'
-import {IInquiryNanumDto, IInquiryEditDto} from '../../types'
+import {IInquiryNanumDto, IInquiryAnswerDto} from '../../types'
 import {LockIcon} from '../utils'
-import {queryKeys, updateInquiry} from '../../api'
+import {queryKeys, answerInquiry} from '../../api'
 
 type QnAListCreatorItemProps = {
   item: IInquiryNanumDto
@@ -18,71 +18,200 @@ type QnAListCreatorItemProps = {
   inquiryIdx: number
 }
 
-type WriteAnswerProps = {
-  writeAnswerPressed: boolean
-  toggleWriteAnswerPressed: () => void
-}
-
-const WriteAnswer = ({writeAnswerPressed, toggleWriteAnswerPressed}: WriteAnswerProps) => {
-  const [content, setContent] = useState<string>('')
-  const onPressSubmitAnswer = useCallback(() => {
-    // 문의글 id, 답변 내용 post.
-    // 완료 후에는 문의 글 list invalide queries
-  }, [])
-  return (
-    <View style={{marginTop: 16}}>
-      {writeAnswerPressed ? (
-        <View>
-          <TextInput
-            placeholder="답변 내용 입력"
-            placeholderTextColor={theme.gray300}
-            textAlignVertical="top"
-            multiline
-            style={[theme.styles.input, {paddingTop: 16, height: 100}]}
-            value={content}
-            onChangeText={setContent}></TextInput>
-          <Pressable style={styles.submitAnswerButton} onPress={onPressSubmitAnswer}>
-            <Text style={{fontSize: 16, color: theme.white}}>등록하기</Text>
-          </Pressable>
-        </View>
-      ) : (
-        <Pressable style={styles.writeAnswerButton} onPress={toggleWriteAnswerPressed}>
-          <Text style={{fontSize: 16}}>답변하기</Text>
-        </Pressable>
-      )}
-    </View>
-  )
-}
-
 export const QnAListCreatorItem = ({item, accountIdx, nanumIdx, inquiryIdx}: QnAListCreatorItemProps) => {
   const [writeAnswerPressed, toggleWriteAnswerPressed] = useToggle()
-  const {secretYn, answerComments, creatorId, comments, createdDate, answerDate} = item
-  console.log(createdDate, answerDate)
+  const [inquiryItem, setInquiryItem] = useState<IInquiryNanumDto>(item)
+  //const {secretYn, answerComments, creatorId, comments, createdDate, answerDate} = item
 
   // ******************** states ********************
   const [editPressed, setEditPressed] = useState<boolean>(false) // 수정하기 버튼 눌리면 에디터 띄움
   const [deleteQnAModalVisible, setDeleteQnAModalVisible] = useState<boolean>(false) // 삭제하기 모달
-  const [editedContent, setEditedContent] = useState<string>()
-  const isAnswered = answerComments != ''
-  const isSecret = secretYn == 'Y' ? true : false
+  const [editedContent, setEditedContent] = useState<string>('')
+  const isAnswered = inquiryItem.answerComments != ''
+  const isSecret = inquiryItem.secretYn == 'Y' ? true : false
+  const [content, setContent] = useState<string>('')
+  const queryClient = useQueryClient()
 
   useEffect(() => {
-    if (answerComments != '' && answerComments && undefined && answerComments != null) {
-      setEditedContent(answerComments)
+    if (inquiryItem.answerComments != '' && inquiryItem.answerComments != undefined && inquiryItem.answerComments != null) {
+      setEditedContent(inquiryItem.answerComments)
     }
-  }, [])
+  }, [inquiryItem])
+
+  useEffect(() => {
+    setInquiryItem(item)
+  }, [item])
+
+  // ********************* react qureires *********************
+  const answerInquiryQuery = useMutation([queryKeys.inquiry, nanumIdx], answerInquiry, {
+    onSuccess(data, variables, context) {
+      queryClient.invalidateQueries([queryKeys.inquiry, nanumIdx])
+      toggleWriteAnswerPressed()
+      showMessage({
+        // 에러 안내 메세지
+        message: '답변이 등록됐습니다.',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+      })
+    },
+    onError(error, variables, context) {
+      showMessage({
+        // 에러 안내 메세지
+        message: '문의글 업데이트 중 에러가 발생했습니다',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+      })
+    },
+  })
+
+  const editAnswerInquiryQuery = useMutation([queryKeys.inquiry, nanumIdx], answerInquiry, {
+    onSuccess(data, variables, context) {
+      showMessage({
+        // 에러 안내 메세지
+        message: '답변 수정이 완료됐습니다.',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+      })
+      setEditPressed(false)
+      queryClient.invalidateQueries([queryKeys.inquiry, nanumIdx])
+    },
+    onError(error, variables, context) {
+      showMessage({
+        // 에러 안내 메세지
+        message: '문의글 업데이트 중 에러가 발생했습니다',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+      })
+    },
+  })
+
+  const deleteAnswerInquiryQuery = useMutation([queryKeys.inquiry, nanumIdx], answerInquiry, {
+    onSuccess(data, variables, context) {
+      showMessage({
+        // 에러 안내 메세지
+        message: '답변 삭제가 완료됐습니다.',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+      })
+      setEditPressed(false)
+      setContent('')
+      queryClient.invalidateQueries([queryKeys.inquiry, nanumIdx])
+    },
+    onError(error, variables, context) {
+      showMessage({
+        // 에러 안내 메세지
+        message: '문의글 업데이트 중 에러가 발생했습니다',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+      })
+    },
+  })
 
   // ******************** callbacks ********************
   const onPressEdit = useCallback(() => {
     setEditPressed(true)
   }, [])
   const onPressDelete = useCallback(() => {
-    setDeleteQnAModalVisible(true)
-  }, [])
+    // setDeleteQnAModalVisible(true)
+    if (deleteAnswerInquiryQuery.isLoading) {
+      return
+    }
+
+    Alert.alert('답변을 삭제하시겠습니까?', '', [
+      {
+        text: '확인',
+        onPress: () => {
+          const inquiryAnswerDto: IInquiryAnswerDto = {
+            inquiryIdx,
+            secretYn: inquiryItem.secretYn,
+            answerComments: '',
+          }
+          deleteAnswerInquiryQuery.mutate(inquiryAnswerDto)
+        },
+      },
+      {text: '취소'},
+    ])
+    // 문의글 id, 답변 내용 post.
+    // 완료 후에는 문의 글 list invalide queries
+  }, [inquiryItem])
+
+  const onPressSubmitAnswer = useCallback(() => {
+    // 중복 post 방지
+    if (answerInquiryQuery.isLoading) {
+      return
+    }
+    // 문의글 id, 답변 내용 post.
+    // 완료 후에는 문의 글 list invalide queries
+    const inquiryAnswerDto: IInquiryAnswerDto = {
+      inquiryIdx,
+      secretYn: inquiryItem.secretYn,
+      answerComments: content,
+    }
+    answerInquiryQuery.mutate(inquiryAnswerDto)
+  }, [content])
 
   const onPressEditComplete = useCallback(() => {
-    setEditPressed(false)
-  }, [])
+    // 중복 post 방지
+    if (editAnswerInquiryQuery.isLoading) {
+      return
+    }
+    // 문의글 id, 답변 내용 post.
+    // 완료 후에는 문의 글 list invalide queries
+    const inquiryAnswerDto: IInquiryAnswerDto = {
+      inquiryIdx,
+      secretYn: inquiryItem.secretYn,
+      answerComments: editedContent,
+    }
+    editAnswerInquiryQuery.mutate(inquiryAnswerDto)
+  }, [editedContent])
 
   return (
     <View style={[styles.qnaListItemContainer]}>
@@ -112,11 +241,11 @@ export const QnAListCreatorItem = ({item, accountIdx, nanumIdx, inquiryIdx}: QnA
         </View>
         <View style={[theme.styles.rowFlexStart, {marginBottom: 8}]}>
           <Text style={[styles.q, {alignSelf: 'flex-start'}]}>Q.</Text>
-          <Text style={[styles.content, {flex: 1}]}>{comments}</Text>
+          <Text style={[styles.content, {flex: 1}]}>{inquiryItem.comments}</Text>
         </View>
         <View style={[theme.styles.rowSpaceBetween]}>
-          <Text style={[styles.writer]}>{creatorId}</Text>
-          <Text style={[styles.date]}>{moment(new Date(createdDate)).format('YYYY.MM.DD HH:mm')}</Text>
+          <Text style={[styles.writer]}>{inquiryItem.creatorId}</Text>
+          <Text style={[styles.date]}>{moment(new Date(inquiryItem.createdDate)).format('YYYY.MM.DD HH:mm')}</Text>
         </View>
       </View>
 
@@ -142,11 +271,31 @@ export const QnAListCreatorItem = ({item, accountIdx, nanumIdx, inquiryIdx}: QnA
           </View>
           <View style={[theme.styles.rowSpaceBetween]}>
             <Text style={[styles.writer, {color: theme.main}]}>나눔진행자</Text>
-            <Text style={[styles.date]}>{moment(new Date(answerDate)).format('YYYY.MM.DD HH:mm')}</Text>
+            <Text style={[styles.date]}>{moment(new Date(inquiryItem.answerDate)).format('YYYY.MM.DD HH:mm')}</Text>
           </View>
         </View>
       ) : (
-        <WriteAnswer writeAnswerPressed={writeAnswerPressed} toggleWriteAnswerPressed={toggleWriteAnswerPressed} />
+        <View style={{marginTop: 16}}>
+          {writeAnswerPressed ? (
+            <View>
+              <TextInput
+                placeholder="답변 내용 입력"
+                placeholderTextColor={theme.gray300}
+                textAlignVertical="top"
+                multiline
+                style={[theme.styles.input, {paddingTop: 16, height: 100}]}
+                value={content}
+                onChangeText={setContent}></TextInput>
+              <Pressable style={styles.submitAnswerButton} onPress={onPressSubmitAnswer}>
+                <Text style={{fontSize: 16, color: theme.white}}>등록하기</Text>
+              </Pressable>
+            </View>
+          ) : (
+            <Pressable style={styles.writeAnswerButton} onPress={toggleWriteAnswerPressed}>
+              {answerInquiryQuery.isLoading ? <ActivityIndicator /> : <Text style={{fontSize: 16}}>답변하기</Text>}
+            </Pressable>
+          )}
+        </View>
       )}
     </View>
   )

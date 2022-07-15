@@ -123,7 +123,7 @@ export function NanumDetailContent({headerHeight, nanumDetail, numInquires}: Con
         {nanumDetail.nanumMethod == 'O' && <SharingTimeLocation schedules={nanumDetail.nanumDatelist} />}
       </View>
       <NoticeBanner postid="1111" />
-      <View style={{padding: theme.PADDING_SIZE}}>
+      <View style={{padding: theme.PADDING_SIZE, justifyContent: 'center'}}>
         <Text style={theme.styles.bold16}>상세 설명</Text>
         <View style={[styles.descriptionContainer]}>
           <Text style={{fontSize: 16}}>{nanumDetail.contents}</Text>
@@ -137,9 +137,9 @@ export function NanumDetailContent({headerHeight, nanumDetail, numInquires}: Con
         askNum={numInquires}
       />
 
-      <View style={[styles.padding]}>
+      {/* <View style={[styles.padding]}>
         <RelatedSharing />
-      </View>
+      </View> */}
     </View>
   )
 }
@@ -147,6 +147,8 @@ export function NanumDetailContent({headerHeight, nanumDetail, numInquires}: Con
 const styles = StyleSheet.create({
   descriptionContainer: {
     paddingTop: theme.PADDING_SIZE,
+    //justifyContent: 'center',
+    flex: 1,
   },
   userName: {
     color: theme.gray800,

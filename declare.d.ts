@@ -86,7 +86,9 @@ declare namespace ReactNavigation {
     }
     SearchStackNavigator: undefined
     Search: undefined
-    SearchContent: undefined
+    SearchDetail: {
+      keyword: string
+    }
     HoldingSharing: undefined
     HoldingSharingStackNavigator:
       | undefined
@@ -175,5 +177,8 @@ declare namespace ReactNavigation {
       | {
           screen: string
         }
+    EditCategoryStackNavigator: undefined
+    EditCategoryAskAddStar: undefined
+    EditCategoryAskAddStarComplete: undefined
   }
 }
