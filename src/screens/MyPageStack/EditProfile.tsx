@@ -25,6 +25,7 @@ export const EditProfile = () => {
   const queryClient = useQueryClient()
   const dispatch = useAppDispatch()
   const user = useAppSelector(state => state.auth.user)
+  console.log(user)
 
   const {data} = useQuery(queryKeys.accountInfo, () => getAccountInfoByIdx(user.accountIdx), {
     onSuccess: data => {
@@ -36,6 +37,7 @@ export const EditProfile = () => {
     },
   })
   const leftChangeNum = useMemo(() => {
+    if (data == undefined) return
     // 처음에 회원 가입을 하면(회원 정보를 한번도 수정한 적 없으면) creatorIdDatetime == null
     if (data.creatorIdDatetime == null || data.createdIdDatetime == undefined) {
       return 1
@@ -44,7 +46,6 @@ export const EditProfile = () => {
     const lastMonthChanged = data.creatorIdDatetime.slice(0, 7)
 
     return thisMonth == lastMonthChanged ? 0 : 1
-    //return 1
   }, [data])
 
   const updateAccountInfoQuery = useMutation(queryKeys.accountInfo, updateAccountInfo, {
@@ -96,8 +97,8 @@ export const EditProfile = () => {
   })
 
   // ******************** states ********************
-  const [name, setName] = useState<string>(data.creatorId)
-  const [profileImage, setProfileImage] = useState<string | undefined>(data.accountImg)
+  const [name, setName] = useState<string>(data?.creatorId)
+  const [profileImage, setProfileImage] = useState<string | undefined>(data?.accountImg)
   const [duplicated, setDuplicated] = useState<boolean>(false)
 
   // ******************** callbacks ********************

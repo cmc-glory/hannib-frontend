@@ -31,21 +31,21 @@ export const postSignUp = async (accountDto: IAccountDto) => {
   return data
 }
 
-// accountIdx로 회원 정보 가져오기
-// export const getAccountInfoByIdx = async (accountIdx: number) => {
-//   const {data} = await apiClient.get(`/api/account/accountidx?accountIdx=${accountIdx}`)
-//   return data
-// }
-
+//accountIdx로 회원 정보 가져오기
 export const getAccountInfoByIdx = async (accountIdx: number) => {
-  const {data} = await fetch(`${BASE_URL}/api/account/accountidx?accountIdx=${accountIdx}`, {
-    method: 'get',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  }).then(res => res.json())
+  const {data} = await apiClient.get(`/api/account/accountidx?accountIdx=${accountIdx}`)
   return data
 }
+
+// export const getAccountInfoByIdx = async (accountIdx: number) => {
+//   const {data} = await fetch(`${BASE_URL}/api/account/accountidx?accountIdx=${accountIdx}`, {
+//     method: 'get',
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//   }).then(res => res.json())
+//   return data
+// }
 
 // 이메일로 회원 정보 가져오기
 export const getAccountInfoByEmail = async (email: string) => {

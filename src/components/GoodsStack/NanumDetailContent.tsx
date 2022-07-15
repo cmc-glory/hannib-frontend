@@ -22,8 +22,6 @@ type ContentProps = {
   numInquires: number
 }
 
-const window = Dimensions.get('screen')
-
 export function NanumDetailContent({headerHeight, nanumDetail, numInquires}: ContentProps) {
   const accountIdx = useAppSelector(state => state.auth.user.accountIdx)
   const addFavoriteQuery = useMutation(addFavorite, {
@@ -69,7 +67,7 @@ export function NanumDetailContent({headerHeight, nanumDetail, numInquires}: Con
       return
     }
     // 즐겨찾기 버튼 클릭했을 때
-    nanumDetail.isFavorite = 'Y' // 프론트 단에서만 즐겨찾기 여부 수정.
+    nanumDetail.favoritesYn = 'Y' // 프론트 단에서만 즐겨찾기 여부 수정.
     nanumDetail.favorites += 1
     addFavoriteQuery.mutate({
       accountIdx: accountIdx,
@@ -82,7 +80,7 @@ export function NanumDetailContent({headerHeight, nanumDetail, numInquires}: Con
       return
     }
     // 즐겨찾기 버튼 클릭했을 때
-    nanumDetail.isFavorite = 'N' //  프론트 단에서만 즐겨찾기 여부 수정. (invalidate query로 새로 가져오기 X)
+    nanumDetail.favoritesYn = 'N' //  프론트 단에서만 즐겨찾기 여부 수정. (invalidate query로 새로 가져오기 X)
     nanumDetail.favorites -= 1
     removeFavoriteQuery.mutate({
       accountIdx: accountIdx,
@@ -95,7 +93,6 @@ export function NanumDetailContent({headerHeight, nanumDetail, numInquires}: Con
       style={[
         styles.container,
         {
-          minHeight: window.height - headerHeight,
           borderTopLeftRadius: 24,
           borderTopRightRadius: 24,
           marginTop: -24,
@@ -110,7 +107,7 @@ export function NanumDetailContent({headerHeight, nanumDetail, numInquires}: Con
         <View style={[{marginVertical: 16}, theme.styles.rowSpaceBetween]}>
           <Text style={[styles.title]}>{nanumDetail?.title}</Text>
           <View style={{alignItems: 'center'}}>
-            {nanumDetail?.isFavorite == 'Y' ? (
+            {nanumDetail?.favoritesYn == 'Y' ? (
               <StarFilledIcon size={30} onPress={onPressRemoveFavorite} />
             ) : (
               <StarUnfilledIcon size={30} onPress={onPressAddFavorite} />
@@ -125,7 +122,7 @@ export function NanumDetailContent({headerHeight, nanumDetail, numInquires}: Con
       <NoticeBanner postid="1111" />
       <View style={{padding: theme.PADDING_SIZE, justifyContent: 'center'}}>
         <Text style={theme.styles.bold16}>상세 설명</Text>
-        <View style={[styles.descriptionContainer]}>
+        <View style={[styles.descriptionContainer, {minHeight: 120}]}>
           <Text style={{fontSize: 16}}>{nanumDetail.contents}</Text>
         </View>
       </View>
@@ -137,9 +134,7 @@ export function NanumDetailContent({headerHeight, nanumDetail, numInquires}: Con
         askNum={numInquires}
       />
 
-      {/* <View style={[styles.padding]}>
-        <RelatedSharing />
-      </View> */}
+      <View style={[styles.padding]}>{/* <RelatedSharing /> */}</View>
     </View>
   )
 }

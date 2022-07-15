@@ -39,6 +39,7 @@ export const SplashScreen = () => {
 
   const getAccountInfoQuery = useMutation('init', getAccountInfoByIdx, {
     onSuccess(data, variables, context) {
+      console.log('data :', data)
       if (data == undefined) {
         removeString('accountIdx')
       } else {
