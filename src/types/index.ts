@@ -35,7 +35,7 @@ export type IRequestFormOffline = {
 }
 
 export type IRequestFormOnline = {
-  product: {productid: string}[]
+  product: {productid: number}[]
   address: {postcode: string; roadAddress: string; detailedAddress: string}
   phonenumber: {
     first: string
@@ -261,9 +261,18 @@ export type INanumImgDto = {
   imgUrl: string
 }
 
+//************ 나눔 신청************* */
 export type INanumRequestRequiredDto = {
-  goodsList: INanumGoodsDto[]
-  askList: INanumAskDto[]
+  nanumIdx: string
+  goodsList: INanumGoods[]
+  askList: INanumRequestReuiredAsk[]
+}
+
+export type INanumRequestReuiredAsk = {
+  nanumIdx: string
+  contents: string
+  essential: 'Y' | 'N'
+  askIdx: number
 }
 
 export type INanumApplyOnlineDto = {
