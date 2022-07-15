@@ -11,7 +11,7 @@ import {EmptyIcon, MenuIcon, StackHeader} from '../../components/utils'
 import {HoldingSharingItem} from '../../components/MyPageTabStack'
 import * as theme from '../../theme'
 import {ISharingInfo, IHoldingSharingList} from '../../types'
-import {getMyNanumList, queryKeys} from '../../api'
+import {getHoldingNanumList, queryKeys} from '../../api'
 
 const STATUSBAR_HEIGHT = getStatusBarHeight()
 
@@ -24,7 +24,7 @@ export const HoldingSharingList = () => {
   const [refreshing, setRefreshing] = useState<boolean>(false)
   const [moreVisible, toggleMoreVisible] = useToggle() //수정, 삭제하기 모달 띄울지
 
-  const {data} = useQuery([queryKeys.holdingNanumList], () => getMyNanumList(user.accountIdx), {
+  const {data} = useQuery([queryKeys.holdingNanumList], () => getHoldingNanumList(user.accountIdx), {
     onSuccess: data => {
       setRefreshing(false)
       console.log('success')
@@ -42,7 +42,6 @@ export const HoldingSharingList = () => {
     queryClient.invalidateQueries([queryKeys.holdingNanumList])
   }, [])
 
-
   //api 나오기 전 사용했던것
   const [sharings, setSharings] = useState<ISharingInfo[]>([])
 
@@ -55,7 +54,6 @@ export const HoldingSharingList = () => {
   //       setSharings([])
   //     })
   // }, [])
-
 
   return (
     <SafeAreaView style={theme.styles.safeareaview} edges={['top', 'left', 'right']}>
