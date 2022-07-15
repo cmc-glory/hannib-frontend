@@ -31,7 +31,7 @@ export const QnAListUser = () => {
   const [refreshing, setRefreshing] = useState<boolean>(false)
 
   // ******************** reactQueries ********************
-  const nanumInfo = useQuery([queryKeys.nanumDetail, nanumIdx], () => getNanumByIndex(nanumIdx))
+  const nanumInfo = useQuery([queryKeys.nanumDetail, nanumIdx], () => getNanumByIndex({nanumIdx, accountIdx: userAccountIdx, favoritesYn: 'N'}))
   const inquiries = useQuery([queryKeys.inquiry, nanumIdx], () => getInquiryByIndex(nanumIdx), {
     onSuccess(data) {
       setRefreshing(false)
@@ -49,8 +49,8 @@ export const QnAListUser = () => {
         title: nanumInfo.data.title, // 나눔 제목
       })
     } else {
-      Platform.select({
-        ios: Alert.alert('로그인 후 이용할 수 있습니다. 로그인 페이지로 이동하시겠습니까?', '', [
+      if (Platform.OS == 'ios') {
+        Alert.alert('로그인 후 이용할 수 있습니다. 로그인 페이지로 이동하시겠습니까?', '', [
           {
             text: '확인',
             onPress: () => navigation.navigate('MyPageTabStackNavigator'),
@@ -58,8 +58,9 @@ export const QnAListUser = () => {
           {
             text: '취소',
           },
-        ]),
-        android: Alert.alert('로그인 후 이용할 수 있습니다', '로그인 페이지로 이동하시겠습니까?', [
+        ])
+      } else {
+        Alert.alert('로그인 후 이용할 수 있습니다', '로그인 페이지로 이동하시겠습니까?', [
           {
             text: '확인',
             onPress: () => navigation.navigate('MyPageTabStackNavigator'),
@@ -67,8 +68,8 @@ export const QnAListUser = () => {
           {
             text: '취소',
           },
-        ]),
-      })
+        ])
+      }
     }
   }, [nanumInfo, isLoggedIn])
 

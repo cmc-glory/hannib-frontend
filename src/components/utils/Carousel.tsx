@@ -105,7 +105,7 @@ export const Carousel = ({imageUrls, imageWidth}: CarouselProps) => {
         <View style={[styles.iconBar, {justifyContent: 'center', marginLeft: CIRCLE_MARGIN}]}>
           <View style={{flexDirection: 'row'}}>
             {/* {imageUrls.map((uri, index) => (
-              <View key={index} style={[styles.circle, index == imageIndex && styles.selectedCircle]} />
+              <View key={index} style={[styles.circle, index == imageIndex ? styles.selectedCircle : {backgroundColor: theme.white}]} />
             ))} */}
             {circles}
             <Animated.View style={[styles.circle, styles.selectedCircle, translateX]} />

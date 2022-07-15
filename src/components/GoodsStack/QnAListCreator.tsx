@@ -1,6 +1,5 @@
 import React, {useState, useCallback, useEffect, useMemo} from 'react'
 import {View, Text, TextInput, Pressable, StyleSheet, ActivityIndicator, Alert} from 'react-native'
-import moment from 'moment'
 import {useMutation, useQueryClient} from 'react-query'
 import {showMessage} from 'react-native-flash-message'
 
@@ -245,7 +244,7 @@ export const QnAListCreatorItem = ({item, accountIdx, nanumIdx, inquiryIdx}: QnA
         </View>
         <View style={[theme.styles.rowSpaceBetween]}>
           <Text style={[styles.writer]}>{inquiryItem.creatorId}</Text>
-          <Text style={[styles.date]}>{moment(new Date(inquiryItem.createdDate)).format('YYYY.MM.DD HH:mm')}</Text>
+          <Text style={[styles.date]}>{inquiryItem.createdDate.slice(0, 16)}</Text>
         </View>
       </View>
 
@@ -271,7 +270,7 @@ export const QnAListCreatorItem = ({item, accountIdx, nanumIdx, inquiryIdx}: QnA
           </View>
           <View style={[theme.styles.rowSpaceBetween]}>
             <Text style={[styles.writer, {color: theme.main}]}>나눔진행자</Text>
-            <Text style={[styles.date]}>{moment(new Date(inquiryItem.answerDate)).format('YYYY.MM.DD HH:mm')}</Text>
+            <Text style={[styles.date]}>{inquiryItem.answerDate.slice(0, 16)}</Text>
           </View>
         </View>
       ) : (

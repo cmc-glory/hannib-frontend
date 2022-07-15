@@ -1,6 +1,5 @@
 import React, {useState, useCallback, useMemo} from 'react'
 import {View, Text, TextInput, Pressable, ActivityIndicator, StyleSheet} from 'react-native'
-import moment from 'moment'
 import {useMutation, useQueryClient} from 'react-query'
 import {showMessage} from 'react-native-flash-message'
 
@@ -26,6 +25,7 @@ type QuestionProps = {
 
 type Answerprops = {
   answer: string | undefined
+  answerDate: string
   //answeredDate: Date | undefined
 }
 
@@ -96,9 +96,10 @@ const Question = ({item, accountIdx, nanumIdx, inquiryIdx}: QuestionProps) => {
       comments: editedContent,
       secretYn: secretYn,
     }
-    console.log(inquiryEditDto)
     updateInquiryQuery.mutate(inquiryEditDto)
   }, [editedContent, inquiryIdx])
+
+  console.log(createdDate)
 
   return (
     <View>
@@ -148,13 +149,13 @@ const Question = ({item, accountIdx, nanumIdx, inquiryIdx}: QuestionProps) => {
       </View>
       <View style={[theme.styles.rowSpaceBetween]}>
         <Text style={[styles.writer]}>{creatorId}</Text>
-        <Text style={[styles.date]}>{moment(new Date(createdDate)).format('YYYY.MM.DD HH:mm')}</Text>
+        <Text style={[styles.date]}>{createdDate.slice(0, 16)}</Text>
       </View>
     </View>
   )
 }
 
-const Answer = ({answer}: Answerprops) => {
+const Answer = ({answer, answerDate}: Answerprops) => {
   //const Answer = ({answer, answeredDate}: Answerprops) => {
   return (
     <View>
@@ -164,7 +165,7 @@ const Answer = ({answer}: Answerprops) => {
       </View>
       <View style={[theme.styles.rowSpaceBetween]}>
         <Text style={[styles.writer, {color: theme.main}]}>나눔진행자</Text>
-        <Text style={[styles.date]}>{moment().format('YYYY.MM.DD HH:mm')}</Text>
+        <Text style={[styles.date]}>{answerDate}</Text>
       </View>
     </View>
   )
@@ -178,7 +179,7 @@ export const QnAListUserItem = ({item, accountIdx, nanumIdx, inquiryIdx}: QnALis
       ) : (
         <>
           <Question item={item} accountIdx={accountIdx} nanumIdx={nanumIdx} inquiryIdx={inquiryIdx} />
-          {item.answerComments != '' && <Answer answer={item.answerComments} />}
+          {item.answerComments != '' && <Answer answer={item.answerComments} answerDate={item.answerDate.slice(0, 16)} />}
         </>
       )}
     </View>

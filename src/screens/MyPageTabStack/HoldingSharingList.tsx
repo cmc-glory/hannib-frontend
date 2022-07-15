@@ -3,6 +3,8 @@ import {View, FlatList, Text, StyleSheet, Pressable} from 'react-native'
 import Modal from 'react-native-modal'
 import {getStatusBarHeight} from 'react-native-status-bar-height'
 import {SafeAreaView} from 'react-native-safe-area-context'
+import {useQuery, useQueryClient} from 'react-query'
+
 import {EditDeleteModal} from '../../components/MyPageStack/EditDeleteModal'
 import {useAppSelector, useToggle} from '../../hooks'
 import {EmptyIcon, MenuIcon, StackHeader} from '../../components/utils'
@@ -10,12 +12,14 @@ import {HoldingSharingItem} from '../../components/MyPageTabStack'
 import * as theme from '../../theme'
 import {ISharingInfo, IHoldingSharingList} from '../../types'
 import {getMyNanumList, queryKeys} from '../../api'
-import {useQuery} from 'react-query'
 
 const STATUSBAR_HEIGHT = getStatusBarHeight()
 
 export const HoldingSharingList = () => {
+  // ******************** utils ********************
+
   const user = useAppSelector(state => state.auth.user) // user.id로 이 user가 진행한 나눔 목록 불러옴
+  const queryClient = useQueryClient()
   // ******************** states ********************
   const [list, setList] = useState<IHoldingSharingList[]>([])
   const [refreshing, setRefreshing] = useState<boolean>(false)
@@ -23,6 +27,7 @@ export const HoldingSharingList = () => {
 
   const {data} = useQuery([queryKeys.holdingNanumList], () => getMyNanumList(user.accountIdx), {
     onSuccess: data => {
+      setRefreshing(false)
       console.log('success')
       console.log(data)
       setList(data)
@@ -35,27 +40,21 @@ export const HoldingSharingList = () => {
   // pull up refresh event가 발생하면 진행 목록 가져옴
   const onRefresh = useCallback(() => {
     setRefreshing(true)
-    fetch('http://localhost:8081/src/data/dummySharings.json')
-      .then(res => res.json())
-      .then(result => {
-        //setSharings(result)
-        setSharings([])
-        setRefreshing(false)
-      })
+    queryClient.invalidateQueries([queryKeys.holdingNanumList])
   }, [])
 
   //api 나오기 전 사용했던것
   const [sharings, setSharings] = useState<ISharingInfo[]>([])
 
-  // 컴포넌트가 마운트 되면 진행한 나눔 목록 가져옴
-  useEffect(() => {
-    fetch('http://localhost:8081/src/data/dummySharings.json')
-      .then(res => res.json())
-      .then(result => {
-        //setSharings(result)
-        setSharings([])
-      })
-  }, [])
+  // // 컴포넌트가 마운트 되면 진행한 나눔 목록 가져옴
+  // useEffect(() => {
+  //   fetch('http://localhost:8081/src/data/dummySharings.json')
+  //     .then(res => res.json())
+  //     .then(result => {
+  //       //setSharings(result)
+  //       setSharings([])
+  //     })
+  // }, [])
 
   return (
     <SafeAreaView style={theme.styles.safeareaview} edges={['top', 'left', 'right']}>

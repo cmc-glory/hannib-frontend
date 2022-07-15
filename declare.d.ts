@@ -90,11 +90,10 @@ declare namespace ReactNavigation {
       keyword: string
     }
     HoldingSharing: undefined
-    HoldingSharingStackNavigator:
-      | undefined
-      | {
-          screen: string
-        }
+    HoldingSharingStackNavigator?: {
+      screen: string
+      params?: any
+    }
     HoldingSharingDetail: undefined
     EditGoodsOnline: {
       images: Asset[]

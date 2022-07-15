@@ -44,13 +44,7 @@ export const WriterProfile = () => {
 
   return (
     <SafeAreaView style={[theme.styles.safeareaview]}>
-      <StackHeader title="작가 프로필" goBack>
-        <MenuIcon
-          onPress={() => {
-            setBlockUserModalVisible(blockUserModalVisible => !blockUserModalVisible)
-          }}
-        />
-      </StackHeader>
+      <StackHeader title="작가 프로필" goBack></StackHeader>
       <BlockUserModal
         blockUserModalVisible={blockUserModalVisible}
         setBlockUserModalVisible={setBlockUserModalVisible}

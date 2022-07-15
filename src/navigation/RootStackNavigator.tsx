@@ -20,7 +20,7 @@ const RootStackNavigator = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false, cardStyle: {backgroundColor: '#fff'}}} initialRouteName="SplashScreen">
       <Stack.Screen name="SplashScreen" component={SplashScreen} />
-      <Stack.Screen name="LoginStackNavigator" options={{gestureEnabled: false}} component={LoginStackNavigator} />
+      <Stack.Screen name="LoginStackNavigator" component={LoginStackNavigator} />
       <Stack.Screen name="MainTabNavigator" options={{gestureEnabled: false}} component={MainTabNavigator} />
       <Stack.Screen name="GoodsStackNavigator" component={GoodsStackNavigator}></Stack.Screen>
       <Stack.Screen name="WriteNanumFormStackNavigator" component={WriteNanumFormStackNavigator}></Stack.Screen>
@@ -30,7 +30,11 @@ const RootStackNavigator = () => {
       <Stack.Screen name="ParticipatingSharingStackNavigator" component={ParticipatingSharingStackNavigator}></Stack.Screen>
       <Stack.Screen name="ReportIssueStackNavigator" component={ReportIssueStackNavigator}></Stack.Screen>
       <Stack.Screen name="MyPageStackNavigator" component={MyPageStackNavigator}></Stack.Screen>
-      <Stack.Screen name="EditCategory" component={EditCategory} options={{cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS}} />
+      <Stack.Screen
+        name="EditCategory"
+        component={EditCategory}
+        options={{cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS, gestureDirection: 'vertical'}}
+      />
     </Stack.Navigator>
   )
 }

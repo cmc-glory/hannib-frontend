@@ -61,7 +61,7 @@ export const DeleteModal = ({deleteModalVisible, setDeleteModalVisible, nanumIdx
         <View>
           <Text style={[theme.styles.label]}>삭제 사유</Text>
           <TextInput
-            style={[theme.styles.input, {height: 108, paddingTop: 20}]}
+            style={[theme.styles.input, {height: 108, paddingTop: 16}]}
             placeholder="기존 신청자들에게 전달할 사유가 있을 경우 작성해주세요."
             placeholderTextColor={theme.gray300}
             textAlignVertical="top"

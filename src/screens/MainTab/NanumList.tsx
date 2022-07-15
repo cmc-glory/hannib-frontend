@@ -1,5 +1,5 @@
 import React, {useState, useCallback, useEffect} from 'react'
-import {View, Text, FlatList, Pressable, StyleSheet, ActivityIndicator, Alert, Platform} from 'react-native'
+import {View, Text, ScrollView, FlatList, Pressable, StyleSheet, ActivityIndicator, Alert, Platform} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation} from '@react-navigation/native'
 import {useQueryClient, useQuery} from 'react-query'

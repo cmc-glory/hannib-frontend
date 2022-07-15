@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react'
-import {View, Text, Pressable, TextInput, StyleSheet, Alert, Dimensions} from 'react-native'
+import {View, Text, Pressable, TextInput, StyleSheet, Dimensions} from 'react-native'
 import FastImage from 'react-native-fast-image'
 import {useNavigation} from '@react-navigation/native'
 import Modal from 'react-native-modal'
@@ -167,10 +167,6 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
   const onPressItem = useCallback(() => {
     const now = new Date()
 
-    console.log(secretForm)
-    console.log(now < openDate)
-    console.log(writerAccountIdx, accountIdx)
-
     // 오픈 시간 전이고, 작성자가 아니라면 나눔 게시글에 들어가지 못함
     if (now < openDate && writerAccountIdx != accountIdx) {
       setIsBefore(true)
@@ -261,6 +257,7 @@ const styles = StyleSheet.create({
   image: {
     borderRadius: 8,
     aspectRatio: 1 / 1,
+    backgroundColor: theme.gray50,
   },
   imageHeader: {
     position: 'absolute',

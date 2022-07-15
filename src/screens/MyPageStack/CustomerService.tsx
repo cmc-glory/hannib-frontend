@@ -7,7 +7,7 @@ import * as theme from '../../theme'
 export const CustomerService = () => {
   // ******************** callbacks ********************
   const onPressButton = useCallback(() => {
-    Linking.openURL('mailto:support@example.com')
+    Linking.openURL('mailto:hannip.manager@gmail.com')
   }, [])
   return (
     <SafeAreaView style={theme.styles.safeareaview}>

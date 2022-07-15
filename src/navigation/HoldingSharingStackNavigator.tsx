@@ -1,8 +1,24 @@
 import React from 'react'
 import {createStackNavigator} from '@react-navigation/stack'
+import type {NativeStackScreenProps} from '@react-navigation/native-stack'
+
 import {HoldingSharing, SendNotice, EditGoodsDefault, EditGoodsOffline, EditGoodsOnline} from '../screens/HoldingSharingStack'
 
-const Stack = createStackNavigator()
+type HoldingSharingStackNavigatorParamList = {
+  HoldingSharing: {
+    nanumIdx: number
+  }
+  SendNotice: undefined
+  EditGoodsDefault: undefined
+  EditGoodsOnline: undefined
+  EditGoodsOffline: undefined
+}
+
+type HoldingSharingProps = NativeStackScreenProps<HoldingSharingStackNavigatorParamList, 'HoldingSharing'>
+export type HoldingSharingNavigationProps = HoldingSharingProps['navigation']
+export type HoldingSharingRouteProps = HoldingSharingProps['route']
+
+const Stack = createStackNavigator<HoldingSharingStackNavigatorParamList>()
 
 const HoldingSharingStackNavigator = () => {
   return (
