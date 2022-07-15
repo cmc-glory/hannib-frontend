@@ -170,5 +170,8 @@ declare namespace ReactNavigation {
     EditCategoryMyPage: undefined // 마이 페이지에서 이동할 때
     SetCategoryNanumForm: undefined
     MyPageTabStackNavigator: undefined
+    EditCategoryStackNavigator: undefined
+    EditCategoryAskAddStar: undefined
+    EditCategoryAskAddStarComplete: undefined
   }
 }

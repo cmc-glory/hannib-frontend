@@ -101,7 +101,7 @@ export const MyPageScreen = () => {
         <BellIcon />
       </StackHeader>
       <LogoutModal logoutModalVisible={logoutModalVisible} setLogoutModalVisible={setLogoutModalVisible} />
-      <ScrollView>
+      <ScrollView bounces={false}>
         <View style={[theme.styles.rowFlexStart, styles.profileContainer]}>
           <FastImage
             style={styles.profileImage}

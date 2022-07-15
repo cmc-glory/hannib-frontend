@@ -3,13 +3,16 @@ import {View, Text, StyleSheet, Dimensions} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {getStatusBarHeight} from 'react-native-status-bar-height'
 import {isIphoneX, getBottomSpace} from 'react-native-iphone-x-helper'
-import type {NativeStackNavigationProp} from '@react-navigation/native-stack'
 import {useNavigation} from '@react-navigation/native'
+import type {NativeStackNavigationProp} from '@react-navigation/native-stack'
+
+import {useAppSelector} from '../../hooks'
 import {StackHeader, RoundButton, CompleteIcon} from '../../components/utils'
 import * as theme from '../../theme'
 
 export const AskAddStarComplete = () => {
   const [height, setHeight] = useState<number>(0)
+  const isLoggedIn = useAppSelector(state => state.auth.isLoggedIn)
 
   const MARGIN_TOP = useMemo(() => {
     const status = getStatusBarHeight()
@@ -22,8 +25,8 @@ export const AskAddStarComplete = () => {
 
   const navigation = useNavigation<NativeStackNavigationProp<any>>()
   const onPressNext = useCallback(() => {
-    navigation.pop(2)
-  }, [])
+    isLoggedIn ? navigation.navigate('EditCategory') : navigation.pop(2)
+  }, [isLoggedIn])
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
       <StackHeader title="문의하기" goBack />

@@ -185,6 +185,12 @@ export type IInquiryDeleteDto = {
   inquiryIdx: number
 }
 
+export type IInquiryAnswerDto = {
+  inquiryIdx: number
+  answerComments: string
+  secretYn: 'Y' | 'N'
+}
+
 export type IInquiryNanumDto = {
   inquiryIdx: number
   nanumIdx: number

@@ -9,7 +9,6 @@ import NotExistsSvg from '../../assets/Icon/NotExists.svg'
 
 export const EmptyResult = () => {
   // ******************** utils  ********************
-  // ******************** utils  ********************
   const navigation = useNavigation()
 
   // ******************** callbacks  ********************

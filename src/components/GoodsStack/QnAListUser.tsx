@@ -59,7 +59,6 @@ const Question = ({item, accountIdx, nanumIdx, inquiryIdx}: QuestionProps) => {
   const updateInquiryQuery = useMutation([queryKeys.inquiry, nanumIdx], updateInquiry, {
     onSuccess(data, variables, context) {
       queryClient.invalidateQueries([queryKeys.inquiry, nanumIdx]) // 문의글 목록 다시 get
-      queryClient.invalidateQueries([queryKeys.nanumDetail, nanumIdx]) // 문의글 숫자가 바뀌었으므로 나눔 상세 페이지 다시 get
       setEditPressed(false)
     },
     onError(error, variables, context) {

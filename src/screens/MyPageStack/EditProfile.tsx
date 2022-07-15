@@ -45,8 +45,8 @@ export const EditProfile = () => {
 
     console.log(thisMonth, lastMonthChanged)
 
-    //return thisMonth == lastMonthChanged ? 0 : 1
-    return 1
+    return thisMonth == lastMonthChanged ? 0 : 1
+    //return 1
   }, [data])
 
   const updateAccountInfoQuery = useMutation(queryKeys.accountInfo, updateAccountInfo, {
@@ -154,24 +154,31 @@ export const EditProfile = () => {
       return
     }
 
-    checkNicknameDuplicated(name).then(res => {
-      // 중복된 닉네임이 없는 경우
-      if (res == '') {
-        if (name && profileImage) {
-          let accountDto: IAccountDto = {
-            accountIdx: user.accountIdx,
-            creatorId: name,
-            accountCategoryDtoList: user.accountCategoryDtoList,
-            accountImg: profileImage,
-            email: user.email,
-            creatorIdDatetime: '',
+    checkNicknameDuplicated(name)
+      .then(res => {
+        console.log(res)
+        // 중복된 닉네임이 없는 경우
+        if (res == '') {
+          if (name && profileImage) {
+            let accountDto: IAccountDto = {
+              accountIdx: user.accountIdx,
+              creatorId: name,
+              accountCategoryDtoList: user.accountCategoryDtoList,
+              accountImg: profileImage,
+              email: user.email,
+              creatorIdDatetime: '',
+            }
+            updateAccountInfoQuery.mutate(accountDto)
           }
-          updateAccountInfoQuery.mutate(accountDto)
+        } else {
+          setDuplicated(true)
         }
-      } else {
-        setDuplicated(true)
-      }
-    })
+      })
+      .catch(err => {
+        if (err.response.status == 500) {
+          setDuplicated(true)
+        }
+      })
   }, [name, profileImage])
 
   const onImageLibraryPress = useCallback(async () => {

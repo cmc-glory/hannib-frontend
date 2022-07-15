@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from 'react'
-import {View, Text, StyleSheet, Alert, Linking} from 'react-native'
+import {View, Text, StyleSheet, Alert, Linking, Platform} from 'react-native'
 import {useNavigation} from '@react-navigation/native'
 import {useMutation} from 'react-query'
 import {URL, URLSearchParams} from 'react-native-url-polyfill'
+import KeyboardManager from 'react-native-keyboard-manager'
 
 import * as theme from '../../theme'
 import {getString} from '../../hooks'
@@ -10,6 +11,25 @@ import {storeAccessToken, login} from '../../redux/slices'
 import {queryKeys, getAccountInfoByIdx} from '../../api'
 import {useAppDispatch} from '../../hooks'
 import {removeListener} from '@reduxjs/toolkit'
+
+if (Platform.OS === 'ios') {
+  KeyboardManager.setEnable(true)
+  KeyboardManager.setEnableDebugging(false)
+  KeyboardManager.setKeyboardDistanceFromTextField(10)
+  KeyboardManager.setLayoutIfNeededOnUpdate(true)
+  KeyboardManager.setEnableAutoToolbar(false)
+  KeyboardManager.setToolbarDoneBarButtonItemText('확인')
+  KeyboardManager.setToolbarManageBehaviourBy('subviews') // "subviews" | "tag" | "position"
+  KeyboardManager.setToolbarPreviousNextButtonEnable(false)
+  KeyboardManager.setToolbarTintColor('#007aff') // Only #000000 format is supported
+  KeyboardManager.setToolbarBarTintColor('#FFFFFF') // Only #000000 format is supported
+  KeyboardManager.setShouldShowToolbarPlaceholder(true)
+  KeyboardManager.setOverrideKeyboardAppearance(false)
+  KeyboardManager.setKeyboardAppearance('default') // "default" | "light" | "dark"
+  KeyboardManager.setShouldResignOnTouchOutside(true)
+  KeyboardManager.setShouldPlayInputClicks(true)
+  KeyboardManager.resignFirstResponder()
+}
 
 export const SplashScreen = () => {
   const dispatch = useAppDispatch()
@@ -21,7 +41,6 @@ export const SplashScreen = () => {
     onSuccess(data, variables, context) {
       console.log('reached')
       //나중에 api 수정되면 data 값 넣어주기
-
       dispatch(
         login({
           ...data,
@@ -38,6 +57,8 @@ export const SplashScreen = () => {
   })
 
   //useEffect(() => {}, [isDeepLink])
+
+  console.log(getAccountInfoQuery.isLoading)
 
   useEffect(() => {
     // async storage에서 account Idx가져오기
