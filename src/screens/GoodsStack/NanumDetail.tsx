@@ -34,18 +34,27 @@ export const NanumDetail = () => {
   const [headerInvert, setHeaderInvert] = useState(false)
   const [numInqueries, setNumInqueries] = useState<number>(0)
 
-  const {data} = useQuery([queryKeys.nanumDetail, nanumIdx], () => getNanumByIndex(parseInt(nanumIdx)), {
-    //const {data} = useQuery(queryKeys.goodsDetail, getGoodsDetail, {
-    onSuccess: data => {
-      console.log('success')
-      console.log(data)
-      setNanumDetail(data)
+  const {data} = useQuery(
+    [queryKeys.nanumDetail, nanumIdx],
+    () =>
+      getNanumByIndex({
+        nanumIdx: parseInt(nanumIdx),
+        accountIdx: user.accountIdx,
+        favoritesYn: 'N',
+      }),
+    {
+      //const {data} = useQuery(queryKeys.goodsDetail, getGoodsDetail, {
+      onSuccess: data => {
+        console.log('success')
+        console.log(data)
+        setNanumDetail(data)
+      },
+      onError(err) {
+        console.log('err')
+        console.log(err)
+      },
     },
-    onError(err) {
-      console.log('err')
-      console.log(err)
-    },
-  })
+  )
 
   const inquries = useQuery(queryKeys.inquiry, () => getInquiryByIndex(parseInt(nanumIdx)), {
     onSuccess(data) {

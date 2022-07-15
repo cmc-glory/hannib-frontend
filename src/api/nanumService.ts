@@ -1,6 +1,6 @@
 import axios from 'axios'
 import {BASE_URL} from '@env'
-import {INanumForm, IAccountCategoryDto} from '../types'
+import {INanumForm, INanumAccountFavoritesDto} from '../types'
 
 const apiClient = axios.create({
   baseURL: BASE_URL,
@@ -35,8 +35,8 @@ export const getNanumByPopularity = async (category: string) => {
 }
 
 // 나눔 상세 페이지 index로 검색
-export const getNanumByIndex = async (index: number) => {
-  const {data} = await apiClient.get(`/api/nanum/${index}`)
+export const getNanumByIndex = async (nanumAccountFavoritesDto: INanumAccountFavoritesDto) => {
+  const {data} = await apiClient.post(`/api/nanum/`, nanumAccountFavoritesDto)
 
   return data
 }

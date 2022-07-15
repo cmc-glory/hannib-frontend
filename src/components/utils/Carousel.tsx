@@ -43,33 +43,36 @@ export const Carousel = ({imageUrls, imageWidth}: CarouselProps) => {
   const circles = useMemo(() => imageUrls.map((uri, index) => <View key={index} style={styles.circle} />), [])
 
   const onScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    if (Platform.OS == 'android') {
-      const {contentOffset} = event.nativeEvent
-      const index = Math.round(contentOffset.x / imageWidth)
-      selectedIndexAnimValue.setValue(index)
-    } else {
-      const targetContentOffsetX = event.nativeEvent.targetContentOffset?.x
+    // if (Platform.OS == 'android') {
+    //   const {contentOffset} = event.nativeEvent
+    //   const index = Math.round(contentOffset.x / imageWidth)
+    //   selectedIndexAnimValue.setValue(index)
+    // } else {
+    //   const targetContentOffsetX = event.nativeEvent.targetContentOffset?.x
 
-      if (targetContentOffsetX !== undefined) {
-        const curIndex = targetContentOffsetX / imageWidth
-        const contentOffset = event.nativeEvent.contentOffset.x
+    //   if (targetContentOffsetX !== undefined) {
+    //     const curIndex = targetContentOffsetX / imageWidth
+    //     const contentOffset = event.nativeEvent.contentOffset.x
 
-        if (contentOffset - targetContentOffsetX > 20) {
-          const index = curIndex == imageUrls.length - 1 ? imageUrls.length - 1 : curIndex + 1
-          selectedIndexAnimValue.setValue(index)
-          flatlistRef.current?.scrollToIndex({
-            index,
-          })
-        } else if (contentOffset - targetContentOffsetX < -20) {
-          const index = curIndex == 0 ? 0 : curIndex - 1
+    //     if (contentOffset - targetContentOffsetX > 20) {
+    //       const index = curIndex == imageUrls.length - 1 ? imageUrls.length - 1 : curIndex + 1
+    //       selectedIndexAnimValue.setValue(index)
+    //       flatlistRef.current?.scrollToIndex({
+    //         index,
+    //       })
+    //     } else if (contentOffset - targetContentOffsetX < -20) {
+    //       const index = curIndex == 0 ? 0 : curIndex - 1
 
-          selectedIndexAnimValue.setValue(index)
-          flatlistRef.current?.scrollToIndex({
-            index,
-          })
-        }
-      }
-    }
+    //       selectedIndexAnimValue.setValue(index)
+    //       flatlistRef.current?.scrollToIndex({
+    //         index,
+    //       })
+    //     }
+    //   }
+    // }
+    const {contentOffset} = event.nativeEvent
+    const index = Math.round(contentOffset.x / imageWidth)
+    selectedIndexAnimValue.setValue(index)
   }, [])
 
   const onPressImage = useCallback((index: number) => {

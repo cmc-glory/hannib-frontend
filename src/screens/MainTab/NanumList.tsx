@@ -19,6 +19,7 @@ const NanumList = () => {
   // ******************** utils ********************
   const navigation = useNavigation()
   const user = useAppSelector(state => state.auth.user)
+  console.log(user)
   const currentCategory = user.accountCategoryDtoList[0]
   const queryClient = useQueryClient()
 
@@ -100,8 +101,8 @@ const NanumList = () => {
       // 로그인 했으면 작성 페이지
       navigation.navigate('WriteNanumFormStackNavigator')
     } else {
-      Platform.select({
-        ios: Alert.alert('로그인 후 이용할 수 있습니다. 로그인 페이지로 이동하시겠습니까?', '', [
+      if (Platform.OS == 'ios') {
+        Alert.alert('로그인 후 이용할 수 있습니다. 로그인 페이지로 이동하시겠습니까?', '', [
           {
             text: '확인',
             onPress: () => navigation.navigate('MyPageTabStackNavigator'),
@@ -109,8 +110,9 @@ const NanumList = () => {
           {
             text: '취소',
           },
-        ]),
-        android: Alert.alert('로그인 후 이용할 수 있습니다', '로그인 페이지로 이동하시겠습니까?', [
+        ])
+      } else {
+        Alert.alert('로그인 후 이용할 수 있습니다', '로그인 페이지로 이동하시겠습니까?', [
           {
             text: '확인',
             onPress: () => navigation.navigate('MyPageTabStackNavigator'),
@@ -118,8 +120,8 @@ const NanumList = () => {
           {
             text: '취소',
           },
-        ]),
-      })
+        ])
+      }
     }
   }, [isLoggedIn])
 

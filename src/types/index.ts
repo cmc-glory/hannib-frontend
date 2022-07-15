@@ -62,7 +62,7 @@ export type ISharingInfo = {
   openDate: Date
   isSecret: boolean
   secretKey?: string
-  isFavorite: boolean
+  favoritesYn: boolean
 }
 
 export type ISharingDetail = {
@@ -75,7 +75,7 @@ export type ISharingDetail = {
   writerProfileImageUri: string
   date: Date | undefined
   isSecret: boolean
-  isFavorite: boolean
+  favoritesYn: boolean
   favoriteNum: number
   products: IProductInfo[]
   schedule?: {
@@ -175,6 +175,11 @@ export type ISearch = {
 }
 
 // ******************** backend variable names below ********************
+export type INanumAccountFavoritesDto = {
+  nanumIdx: number
+  accountIdx: number
+  favoritesYn: 'Y' | 'N'
+}
 export type IInquiryEditDto = {
   inquiryIdx: number
   comments: string
@@ -229,7 +234,8 @@ export type INanumListItem = {
   firstDate: Date // 나눔 시작일
   secretForm: 'Y' | 'N' // 시크릿폼 여부
   secretPwd?: string | number // 시크릿폼 비밀번호
-  isFavorite: 'Y' | 'N' // 즐겨찾기 여부
+  favoritesYn: 'Y' | 'N' // 즐겨찾기 여부
+  favorites: number
 }
 
 // 모집폼 작성 시 기본 정보
@@ -308,7 +314,7 @@ export type INanum = {
   deletedYn: boolean // 삭제 여부
   deletedReason: string // 삭제한 이유
   qnaNumber: number // 문의 수
-  isFavorite: 'Y' | 'N'
+  favoritesYn: 'Y' | 'N'
   favorites: number // 즐겨찾기한 사람 수
   accountDto: {
     accountCategoryDtoList: IAccountCategoryDto[]
