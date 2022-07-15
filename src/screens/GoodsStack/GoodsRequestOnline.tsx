@@ -42,6 +42,7 @@ export const GoodsReqeustOnline = () => {
   const nanumIdx = useMemo(() => route.params, [])
   // ***************************** states *****************************
   const [info, setInfo] = useState<INanumRequestRequiredDto>({
+    nanumIdx: nanumIdx.nanumIdx,
     goodsList: [],
     askList: [],
   })
@@ -82,7 +83,7 @@ export const GoodsReqeustOnline = () => {
       console.log(data)
       setInfo(data)
       data.goodsList.forEach((item: any) => {
-        selectedItems[item.goodsNumber] = false
+        selectedItems[item.goodsIdx] = false
       })
       setAnswers(new Array(data.askList.length).fill(''))
     },
@@ -186,7 +187,7 @@ export const GoodsReqeustOnline = () => {
             {info.goodsList.map(item => (
               <ProductInfoOnline
                 item={item}
-                key={item.goodsNumber}
+                key={item.goodsIdx}
                 selectedItems={selectedItems}
                 setSelectedItems={setSelectedItems}
                 requestForm={requestForm}
@@ -289,7 +290,7 @@ export const GoodsReqeustOnline = () => {
 
           {info.askList.map((item, index) => (
             <MakeNewField
-              key={index}
+              key={item.askIdx}
               label={item.contents}
               necessary={item.essential == 'Y' ? true : false}
               index={index}

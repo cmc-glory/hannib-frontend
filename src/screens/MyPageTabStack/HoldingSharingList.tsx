@@ -8,27 +8,30 @@ import {useAppSelector, useToggle} from '../../hooks'
 import {EmptyIcon, MenuIcon, StackHeader} from '../../components/utils'
 import {HoldingSharingItem} from '../../components/MyPageTabStack'
 import * as theme from '../../theme'
-import {ISharingInfo} from '../../types'
+import {ISharingInfo, IHoldingSharingList} from '../../types'
+import {getMyNanumList, queryKeys} from '../../api'
+import {useQuery} from 'react-query'
 
 const STATUSBAR_HEIGHT = getStatusBarHeight()
 
 export const HoldingSharingList = () => {
-  const [sharings, setSharings] = useState<ISharingInfo[]>([])
+  const user = useAppSelector(state => state.auth.user) // user.id로 이 user가 진행한 나눔 목록 불러옴
+  // ******************** states ********************
+  const [list, setList] = useState<IHoldingSharingList[]>([])
   const [refreshing, setRefreshing] = useState<boolean>(false)
   const [moreVisible, toggleMoreVisible] = useToggle() //수정, 삭제하기 모달 띄울지
 
-  const user = useAppSelector(state => state.auth.user) // user.id로 이 user가 진행한 나눔 목록 불러옴
-
-  // 컴포넌트가 마운트 되면 진행한 나눔 목록 가져옴
-  useEffect(() => {
-    fetch('http://localhost:8081/src/data/dummySharings.json')
-      .then(res => res.json())
-      .then(result => {
-        //setSharings(result)
-        setSharings([])
-      })
-  }, [])
-
+  const {data} = useQuery([queryKeys.holdingNanumList], () => getMyNanumList(user.accountIdx), {
+    onSuccess: data => {
+      console.log('success')
+      console.log(data)
+      setList(data)
+    },
+    onError(err) {
+      console.log('err')
+      console.log(err)
+    },
+  })
   // pull up refresh event가 발생하면 진행 목록 가져옴
   const onRefresh = useCallback(() => {
     setRefreshing(true)
@@ -41,11 +44,24 @@ export const HoldingSharingList = () => {
       })
   }, [])
 
+  //api 나오기 전 사용했던것
+  const [sharings, setSharings] = useState<ISharingInfo[]>([])
+
+  // 컴포넌트가 마운트 되면 진행한 나눔 목록 가져옴
+  useEffect(() => {
+    fetch('http://localhost:8081/src/data/dummySharings.json')
+      .then(res => res.json())
+      .then(result => {
+        //setSharings(result)
+        setSharings([])
+      })
+  }, [])
+
   return (
     <SafeAreaView style={theme.styles.safeareaview} edges={['top', 'left', 'right']}>
       <StackHeader title="진행한 나눔" goBack />
       <View style={styles.container}>
-        {sharings.length == 0 ? (
+        {list.length == 0 ? (
           <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
             <EmptyIcon style={{marginBottom: 32}} />
             <View>
@@ -59,7 +75,7 @@ export const HoldingSharingList = () => {
         ) : (
           <FlatList
             contentContainerStyle={{paddingHorizontal: theme.PADDING_SIZE, paddingVertical: 10}}
-            data={sharings}
+            data={list}
             renderItem={({item}) => <HoldingSharingItem item={item}></HoldingSharingItem>}
             refreshing={refreshing}
             numColumns={2}

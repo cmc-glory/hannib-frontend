@@ -30,12 +30,12 @@ export type IProductInfo = {
 }
 
 export type IRequestFormOffline = {
-  product: {productid: string}[]
+  product: {productid: number}[]
   receiveDate: string | Date | undefined
 }
 
 export type IRequestFormOnline = {
-  product: {productid: string}[]
+  product: {productid: number}[]
   address: {postcode: string; roadAddress: string; detailedAddress: string}
   phonenumber: {
     first: string
@@ -262,9 +262,18 @@ export type INanumImgDto = {
   imgUrl: string
 }
 
+//************ 나눔 신청************* */
 export type INanumRequestRequiredDto = {
-  goodsList: INanumGoodsDto[]
-  askList: INanumAskDto[]
+  nanumIdx: string
+  goodsList: INanumGoods[]
+  askList: INanumRequestReuiredAsk[]
+}
+
+export type INanumRequestReuiredAsk = {
+  nanumIdx: string
+  contents: string
+  essential: 'Y' | 'N'
+  askIdx: number
 }
 
 export type INanumApplyOnlineDto = {
@@ -403,4 +412,21 @@ export type ICategoryDto = {
 export type IUpdateCategoryDto = {
   accountIdx: number
   accountCategoryDto: IAccountCategoryDto[]
+}
+
+// *************** 마이페이지 ***************
+//진행한 나눔 리스트 get
+export type IHoldingSharingList = {
+  accountIdx: number
+  nanumIdx: number
+  creatorId: string
+  thumbnail: string
+  category: string
+  nanumMethod: 'M' | 'O'
+  title: string
+  createdDatetime: Date
+  favorites: string //api 수정 되면 number로 바꿔야함 haveto
+  secretForm: 'Y' | 'N'
+  secretPwd: string
+  firstDate: Date //haveto 날짜 전반적으로 수정
 }
