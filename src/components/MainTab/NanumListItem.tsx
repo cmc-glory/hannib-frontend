@@ -81,7 +81,8 @@ const SecretModal = ({secretModalVisible, setSecretModalVisible, secretPwd, nanu
 export const NanumListItem = ({item}: {item: INanumListItem}) => {
   // 나눔 게시글 아이템 구조분해 할당
   //console.log(item)
-  const {nanumIdx, nanumMethod, title, creatorId, thumbnail, secretForm, secretPwd, isFavorite} = item
+  const {nanumIdx, nanumMethod, title, creatorId, thumbnail, secretForm, secretPwd, favoritesYn} = item
+  const writerAccountIdx = item.accountIdx
   //console.log(nanumIdx)
   //console.log(nanumMethod)
 
@@ -97,7 +98,6 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
 
   // ------------- react queries -------------
   const accountIdx = useAppSelector(state => state.auth.user.accountIdx)
-  const thisCreatorId = useAppSelector(state => state.auth.user.creatorId)
   const addFavoriteQuery = useMutation(addFavorite, {
     onSuccess: () => {
       showMessage({
@@ -141,7 +141,7 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
       return
     }
     // 즐겨찾기 버튼 클릭했을 때
-    item.isFavorite = 'Y' // 프론트 단에서만 즐겨찾기 여부 수정.
+    item.favoritesYn = 'Y' // 프론트 단에서만 즐겨찾기 여부 수정.
     item.favorites += 1
     addFavoriteQuery.mutate({
       accountIdx: accountIdx,
@@ -154,7 +154,7 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
       return
     }
     // 즐겨찾기 버튼 클릭했을 때
-    item.isFavorite = 'N' //  프론트 단에서만 즐겨찾기 여부 수정. (invalidate query로 새로 가져오기 X)
+    item.favoritesYn = 'N' //  프론트 단에서만 즐겨찾기 여부 수정. (invalidate query로 새로 가져오기 X)
     item.favorites -= 1
     removeFavoriteQuery.mutate({
       accountIdx: accountIdx,
@@ -175,7 +175,7 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
       setIsBefore(true)
       return // 오픈 전인 경우엔 이동 X
     }
-    if (secretForm == 'Y' && thisCreatorId != creatorId) {
+    if (secretForm == 'Y' && writerAccountIdx != accountIdx) {
       // 나눔글 작성자는 그냥 통과 시킴
       setSecretModalVisible(true)
     } else {
@@ -195,7 +195,7 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
         {isBefore && (
           <View style={{...styles.overlay}}>
             <View style={[styles.imageHeader, {width: IMAGE_SIZE}]}>
-              {isFavorite == 'Y' ? <StarFilledIcon onPress={onPressRemoveFavorite} size={24} /> : <StarUnfilledIcon onPress={onPressAddFavorite} size={24} />}
+              {favoritesYn == 'Y' ? <StarFilledIcon onPress={onPressRemoveFavorite} size={24} /> : <StarUnfilledIcon onPress={onPressAddFavorite} size={24} />}
             </View>
             <Text style={[styles.overlayText, {marginBottom: 2.5}]}>{openDate.format('YY/MM/DD HH:MM')}</Text>
             <Text style={styles.overlayText}>오픈 예정</Text>
@@ -204,7 +204,7 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
         <View style={{width: IMAGE_SIZE, height: IMAGE_SIZE, borderRadius: 8}}>
           {!isBefore && (
             <View style={[styles.imageHeader, {width: IMAGE_SIZE}]}>
-              {isFavorite == 'Y' ? <StarFilledIcon onPress={onPressRemoveFavorite} size={24} /> : <StarUnfilledIcon onPress={onPressAddFavorite} size={24} />}
+              {favoritesYn == 'Y' ? <StarFilledIcon onPress={onPressRemoveFavorite} size={24} /> : <StarUnfilledIcon onPress={onPressAddFavorite} size={24} />}
             </View>
           )}
           <FastImage

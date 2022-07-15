@@ -235,7 +235,8 @@ export type INanumListItem = {
   secretForm: 'Y' | 'N' // 시크릿폼 여부
   secretPwd?: string | number // 시크릿폼 비밀번호
   favoritesYn: 'Y' | 'N' // 즐겨찾기 여부
-  favorites: number
+  favorites: number // 즐겨찾기 사람 수
+  accountIdx: number // 작성자의 account Idx
 }
 
 // 모집폼 작성 시 기본 정보
