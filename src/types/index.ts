@@ -30,7 +30,7 @@ export type IProductInfo = {
 }
 
 export type IRequestFormOffline = {
-  product: {productid: string}[]
+  product: {productid: number}[]
   receiveDate: string | Date | undefined
 }
 

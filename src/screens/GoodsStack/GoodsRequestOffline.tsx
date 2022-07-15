@@ -43,12 +43,14 @@ export const GoodsRequestOffline = () => {
   const nanumIdx = useMemo(() => route.params, [])
   // ***************************** states *****************************
   const [info, setInfo] = useState<INanumRequestRequiredDto>({
+    nanumIdx: nanumIdx.nanumIdx,
     goodsList: [],
     askList: [],
   })
   const [selectedItems, setSelectedItems] = useState<any>({}) // 선택한 상품들
   const [scheduleLength, setScheduleLength] = useState<number>(1)
   const [requestForm, setRequestForm] = useState<IRequestFormOffline>({
+    //api 수정 후 고쳐야함
     receiveDate: '',
     product: [],
   })
@@ -76,7 +78,7 @@ export const GoodsRequestOffline = () => {
       console.log(data)
       setInfo(data)
       data.goodsList.forEach((item: any) => {
-        selectedItems[item.goodsNumber] = false
+        selectedItems[item.goodsIdx] = false
       })
       setAnswers(new Array(data.askList.length).fill(''))
     },
@@ -150,7 +152,12 @@ export const GoodsRequestOffline = () => {
     (requestForm: IRequestFormOffline) => {
       console.log(answers)
       console.log(requestForm)
-      navigation.navigate('GoodsRequestComplete')
+      navigation.navigate('GoodsStackNavigator', {
+        screen: 'GoodsRequestComplete',
+        params: {
+          nanumIdx: nanumIdx,
+        },
+      })
     },
     [requestForm, answers],
   )
@@ -160,13 +167,13 @@ export const GoodsRequestOffline = () => {
       <StackHeader title="신청하기" goBack />
       <ScrollView>
         <View style={{marginBottom: 20, marginTop: 10}}>
-          <Text style={[theme.styles.wrapper, styles.title]}>{info.title}</Text>
+          <Text style={[theme.styles.wrapper, styles.title]}>BTS 키링 나눔</Text>
           <View style={[theme.styles.wrapper]}>
             <Text style={[theme.styles.bold16]}>상품 선택</Text>
             {info.goodsList.map((item, index) => (
               <ProductInfoOffline
                 item={item}
-                key={item.goodsNumber}
+                key={item.goodsIdx}
                 selectedItems={selectedItems}
                 setSelectedItems={setSelectedItems}
                 requestForm={requestForm}

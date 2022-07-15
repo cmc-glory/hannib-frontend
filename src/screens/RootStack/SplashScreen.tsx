@@ -66,8 +66,6 @@ export const SplashScreen = () => {
     },
   })
 
-  //useEffect(() => {}, [isDeepLink])
-
   useEffect(() => {
     // async storage에서 account Idx가져오기
     getString('accountIdx').then(accountIdx => {
@@ -96,9 +94,10 @@ export const SplashScreen = () => {
     // ************************* Deep Link *************************x
     //IOS && ANDROID : 앱이 딥링크로 처음 실행될때, 앱이 열려있지 않을 때
     Linking.getInitialURL().then(url => {
-      //console.log('url1 : ', url)
+      console.log('url1 : ', url)
       const searchParams = new URLSearchParams(url!)
       const idx = searchParams.get('idx')
+      console.log(url)
       deepLink(idx!)
       return () => removeListener
     })
