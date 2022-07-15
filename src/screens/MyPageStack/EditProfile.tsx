@@ -158,31 +158,45 @@ export const EditProfile = () => {
 
     // 닉네임을 바꿀 수 있을 땐 닉네임 중복 검사
     if (leftChangeNum == 1) {
-      checkNicknameDuplicated(name)
-        .then(res => {
-          console.log('res: ', res)
-          // 중복된 닉네임이 없는 경우
-          if (res == '') {
-            if (name && profileImage) {
-              let accountDto: IAccountDto = {
-                accountIdx: user.accountIdx,
-                creatorId: name,
-                accountCategoryDtoList: user.accountCategoryDtoList,
-                accountImg: profileImage,
-                email: user.email,
-                creatorIdDatetime: '',
+      if (name != user.creatorId) {
+        checkNicknameDuplicated(name)
+          .then(res => {
+            console.log('res: ', res)
+            // 중복된 닉네임이 없는 경우
+            if (res == '') {
+              if (name && profileImage) {
+                let accountDto: IAccountDto = {
+                  accountIdx: user.accountIdx,
+                  creatorId: name,
+                  accountCategoryDtoList: user.accountCategoryDtoList,
+                  accountImg: profileImage,
+                  email: user.email,
+                  creatorIdDatetime: '',
+                }
+                updateAccountInfoQuery.mutate(accountDto)
               }
-              updateAccountInfoQuery.mutate(accountDto)
+            } else {
+              setDuplicated(true)
             }
-          } else {
-            setDuplicated(true)
+          })
+          .catch(err => {
+            if (err.response.status == 500) {
+              setDuplicated(true)
+            }
+          })
+      } else {
+        if (name && profileImage) {
+          let accountDto: IAccountDto = {
+            accountIdx: user.accountIdx,
+            creatorId: name,
+            accountCategoryDtoList: user.accountCategoryDtoList,
+            accountImg: profileImage,
+            email: user.email,
+            creatorIdDatetime: '',
           }
-        })
-        .catch(err => {
-          if (err.response.status == 500) {
-            setDuplicated(true)
-          }
-        })
+          updateAccountInfoQuery.mutate(accountDto)
+        }
+      }
     }
     // 프사만 바꿀 땐 중복 검사 없이 바로 업데이트
     else {

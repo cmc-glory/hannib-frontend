@@ -42,7 +42,6 @@ export const HoldingSharingList = () => {
     queryClient.invalidateQueries([queryKeys.holdingNanumList])
   }, [])
 
-
   //api 나오기 전 사용했던것
   const [sharings, setSharings] = useState<ISharingInfo[]>([])
 
@@ -55,7 +54,6 @@ export const HoldingSharingList = () => {
   //       setSharings([])
   //     })
   // }, [])
-
 
   return (
     <SafeAreaView style={theme.styles.safeareaview} edges={['top', 'left', 'right']}>

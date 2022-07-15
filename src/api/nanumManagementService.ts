@@ -20,3 +20,5 @@ export const getMyNanumList = async (accountIdx: number) => {
   const {data} = await apiClient.get(`/api/nanum/list/mynanum/send?accountIdx=${accountIdx}`)
   return data
 }
+
+//export const get
