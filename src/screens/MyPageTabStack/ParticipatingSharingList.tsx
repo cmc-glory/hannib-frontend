@@ -5,21 +5,40 @@ import {useAppSelector} from '../../hooks'
 import {EmptyIcon, StackHeader} from '../../components/utils'
 import {ParticipatingSharingItem} from '../../components/MyPageTabStack'
 import * as theme from '../../theme'
-import {ISharingInfo} from '../../types'
+import {IParticipatingSharingList} from '../../types'
+import {useQuery, useQueryClient} from 'react-query'
+import {getParticipatingNanumList, queryKeys} from '../../api'
 
 export const ParticipatingSharingList = () => {
-  const [sharings, setSharings] = useState<ISharingInfo[]>([])
+  // ******************** utils ********************
+  const user = useAppSelector(state => state.auth.user) // user.id로 이 user가 진행한 나눔 목록 불러옴
+  const queryClient = useQueryClient()
+
+  // ******************** states ********************
+  const [list, setList] = useState<IParticipatingSharingList[]>([])
   const [refreshing, setRefreshing] = useState<boolean>(false)
 
-  const user = useAppSelector(state => state.auth.user) // user.id로 이 user가 진행한 나눔 목록 불러옴
+  const {data} = useQuery([queryKeys.participatingNanumList], () => getParticipatingNanumList(user.accountIdx), {
+    onSuccess: data => {
+      setRefreshing(false)
+      console.log('success')
+      console.log(data)
+      setList(data)
+    },
+    onError(err) {
+      console.log('err')
+      console.log(err)
+    },
+  })
 
+  //api 적용 전
   // 컴포넌트가 마운트 되면 진행한 나눔 목록 가져옴
   useEffect(() => {
     fetch('http://localhost:8081/src/data/dummySharings.json')
       .then(res => res.json())
       .then(result => {
         // setSharings(result)
-        setSharings([])
+        //setSharings([])
       })
   }, [])
 
@@ -30,7 +49,7 @@ export const ParticipatingSharingList = () => {
       .then(res => res.json())
       .then(result => {
         // setSharings(result)
-        setSharings([])
+        //setSharings([])
         setRefreshing(false)
       })
   }, [])
@@ -39,7 +58,7 @@ export const ParticipatingSharingList = () => {
     <SafeAreaView style={theme.styles.safeareaview} edges={['top', 'left', 'right']}>
       <StackHeader title="참여한 나눔" goBack />
       <View style={styles.container}>
-        {sharings.length == 0 ? (
+        {list.length == 0 ? (
           <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
             <EmptyIcon style={{marginBottom: 32}} />
             <View>
@@ -53,7 +72,7 @@ export const ParticipatingSharingList = () => {
         ) : (
           <FlatList
             contentContainerStyle={{paddingHorizontal: theme.PADDING_SIZE, paddingVertical: 10}}
-            data={sharings}
+            data={list}
             renderItem={({item}) => <ParticipatingSharingItem item={item}></ParticipatingSharingItem>}
             refreshing={refreshing}
             numColumns={2}

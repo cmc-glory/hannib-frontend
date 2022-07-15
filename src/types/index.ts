@@ -431,3 +431,19 @@ export type IHoldingSharingList = {
   secretPwd: string
   firstDate: Date //haveto 날짜 전반적으로 수정
 }
+
+//참여한 나눔 리스트 get
+export type IParticipatingSharingList = {
+  accountIdx: number
+  nanumIdx: number
+  creatorId: string
+  thumbnail: string
+  category: string
+  nanumMethod: 'M' | 'O'
+  title: string
+  createdDatetime: Date
+  favorites: string //api 수정 되면 number로 바꿔야함 haveto
+  secretForm: 'Y' | 'N'
+  secretPwd: string
+  firstDate: Date //haveto 날짜 전반적으로 수정
+}
