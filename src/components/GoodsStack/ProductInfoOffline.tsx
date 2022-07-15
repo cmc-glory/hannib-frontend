@@ -2,10 +2,10 @@ import React, {useCallback} from 'react'
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native'
 import {CheckboxIcon} from '../utils'
 import * as theme from '../../theme'
-import {INanumGoodsDto, IProductInfo, IRequestFormOffline} from '../../types'
+import {INanumGoods, INanumGoodsDto, IProductInfo, IRequestFormOffline} from '../../types'
 
 type ProductInfoProps = {
-  item: INanumGoodsDto
+  item: INanumGoods
   key: number
   selectedItems: any
   setSelectedItems: React.Dispatch<React.SetStateAction<any>>
@@ -14,16 +14,16 @@ type ProductInfoProps = {
 }
 
 export const ProductInfoOffline = ({item, selectedItems, setSelectedItems, requestForm, setRequestForm}: ProductInfoProps) => {
-  const selected = selectedItems[item.goodsNumber]
+  const selected = selectedItems[item.goodsIdx]
   const onPressCheckbox = useCallback(() => {
-    setSelectedItems({...selectedItems, [item.goodsNumber]: !selected})
+    setSelectedItems({...selectedItems, [item.goodsIdx]: !selected})
 
     // 선택된 상태면 제거
     if (selected) {
-      const temp = requestForm.product.filter(productItem => productItem.productid != item.id)
+      const temp = requestForm.product.filter(productItem => productItem.productid != item.goodsIdx)
       setRequestForm({...requestForm, product: temp})
     } else {
-      const temp = requestForm.product.concat({productid: item.id})
+      const temp = requestForm.product.concat({productid: item.goodsIdx})
       setRequestForm({...requestForm, product: temp})
     }
   }, [selectedItems, requestForm])

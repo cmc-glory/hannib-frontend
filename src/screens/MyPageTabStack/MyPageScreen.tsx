@@ -40,20 +40,7 @@ export const MyPageScreen = () => {
   // ******************** utils ********************
   const navigation = useNavigation()
   const user = useAppSelector(state => state.auth.user)
-  console.log('user in mypagescreen : ', user)
-
-  //account idx api 나오면 수정하기
-  const {data} = useQuery(queryKeys.accountInfo, () => getAccountInfoByIdx(user.accountIdx), {
-    onSuccess: data => {
-      console.log('success')
-      console.log('data', data)
-    },
-    onError(err) {
-      console.log('err')
-      console.log(err)
-    },
-  })
-  //console.log('data22 : ', data)
+  //console.log('user in mypagescreen : ', user)
 
   // ******************** states ********************
   const [logoutModalVisible, setLogoutModalVisible] = useState<boolean>(false)
@@ -106,11 +93,12 @@ export const MyPageScreen = () => {
           <FastImage
             style={styles.profileImage}
             source={{
-              uri: data?.accountImg == undefined || data?.accountImg == '' ? 'http://localhost:8081/src/assets/images/noUser.png' : data.accountImg,
+              uri: user.accountImg == undefined || user.accountImg == '' ? 'http://localhost:8081/src/assets/images/noUser.png' : user.accountImg,
             }}
           />
           <View style={{alignSelf: 'stretch', justifyContent: 'center'}}>
             <Text style={[theme.styles.bold20, {color: theme.gray700, marginBottom: 8}]}>{data?.creatorId}</Text>
+
             <Pressable style={[theme.styles.rowFlexStart]} onPress={onPressEditProfile}>
               <Text style={[{color: theme.gray500}, theme.styles.text14]}>프로필 수정</Text>
               <RightArrowIcon size={20} onPress={onPressEditProfile} />
