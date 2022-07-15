@@ -83,7 +83,7 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
   const {nanumIdx, nanumMethod, title, creatorId, thumbnail, secretForm, secretPwd, favoritesYn, firstDate} = item
   const writerAccountIdx = item.accountIdx
 
-  const openDate = moment(firstDate)
+  const openDate = new Date(firstDate)
 
   // 이미지가 존재하면 이미지의 uri로, 없으면 기본 이미지로
   const imageUri = thumbnail ? thumbnail : 'http://localhost:8081/src/assets/images/no-image.jpeg'
@@ -160,13 +160,16 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
   }, [item, accountIdx, addFavoriteQuery, removeFavoriteQuery])
 
   useEffect(() => {
-    setIsBefore(moment() < openDate ? true : false)
-  }, [])
+    setIsBefore(new Date() < openDate ? true : false)
+  }, [item])
 
   // 상세 페이지로 이동
   const onPressItem = useCallback(() => {
-    const now = moment()
+    const now = new Date()
+
     console.log(secretForm)
+    console.log(now < openDate)
+    console.log(writerAccountIdx, accountIdx)
 
     // 오픈 시간 전이고, 작성자가 아니라면 나눔 게시글에 들어가지 못함
     if (now < openDate && writerAccountIdx != accountIdx) {
@@ -196,7 +199,7 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
             <View style={[styles.imageHeader, {width: IMAGE_SIZE}]}>
               {favoritesYn == 'Y' ? <StarFilledIcon onPress={onPressRemoveFavorite} size={24} /> : <StarUnfilledIcon onPress={onPressAddFavorite} size={24} />}
             </View>
-            <Text style={[styles.overlayText, {marginBottom: 2.5}]}>{openDate.format('YY/MM/DD HH:mm')}</Text>
+            <Text style={[styles.overlayText, {marginBottom: 2.5}]}>{moment(openDate).format('YY/MM/DD HH:mm')}</Text>
             <Text style={styles.overlayText}>오픈 예정</Text>
           </View>
         )}
