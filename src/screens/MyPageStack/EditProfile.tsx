@@ -39,7 +39,7 @@ export const EditProfile = () => {
   const leftChangeNum = useMemo(() => {
     if (data == undefined) return
     // 처음에 회원 가입을 하면(회원 정보를 한번도 수정한 적 없으면) creatorIdDatetime == null
-    if (data.creatorIdDatetime == null || data.createdIdDatetime == undefined) {
+    if (data.creatorIdDatetime == null || data.creatorIdDatetime == undefined) {
       return 1
     }
     const thisMonth = moment().format('YYYY.MM')
