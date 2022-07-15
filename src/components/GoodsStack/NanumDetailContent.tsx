@@ -24,6 +24,9 @@ type ContentProps = {
 
 export function NanumDetailContent({headerHeight, nanumDetail, numInquires}: ContentProps) {
   const accountIdx = useAppSelector(state => state.auth.user.accountIdx)
+
+  console.log(nanumDetail.firstDate)
+
   const addFavoriteQuery = useMutation(addFavorite, {
     onSuccess: () => {
       showMessage({
@@ -115,7 +118,7 @@ export function NanumDetailContent({headerHeight, nanumDetail, numInquires}: Con
             <Text style={{color: theme.gray500, fontSize: 12, fontFamily: 'Pretendard-Medium'}}>{nanumDetail.favorites}</Text>
           </View>
         </View>
-        <Text style={[styles.date]}>{moment(nanumDetail.firstDate).format('YYYY.MM.DD')}</Text>
+        <Text style={[styles.date]}>{moment(new Date(nanumDetail.firstDate)).format('YYYY.MM.DD')}</Text>
         <SharingGoodsInfo products={nanumDetail.nanumGoodslist} />
         {nanumDetail.nanumMethod == 'O' && <SharingTimeLocation schedules={nanumDetail.nanumDatelist} />}
       </View>

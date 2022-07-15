@@ -317,7 +317,7 @@ export type INanum = {
   title: string // 제목
   contents: string // 내용
   nanumMethod: INanumMethod // 나눔 방식
-  firstDate: Date // 나눔 시작일
+  firstDate: string // 나눔 시작일
   secretForm: 'Y' | 'N' // 시크릿폼 여부
   secretPwd: number | string // 시크릿폼 패스워드
   createDatetime: Date // 작성 시간

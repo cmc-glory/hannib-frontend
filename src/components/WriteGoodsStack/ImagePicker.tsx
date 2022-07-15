@@ -1,5 +1,5 @@
 import React, {useState, useCallback} from 'react'
-import {View, Text, Pressable, StyleSheet, Alert} from 'react-native'
+import {View, Text, Pressable, StyleSheet, Alert, ActivityIndicator} from 'react-native'
 import FastImage from 'react-native-fast-image'
 import type {Asset} from 'react-native-image-picker'
 import {launchImageLibrary} from 'react-native-image-picker'
@@ -17,10 +17,20 @@ type ImagePickerProps = {
 }
 
 export const ImagePreview = ({uri, onPressRemove}: {uri: string | undefined; onPressRemove: (filename: string | undefined) => void}) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   return (
     <View>
       <RemoveButtonIcon style={[styles.removeButton]} size={22} onPress={() => onPressRemove(uri)} />
-      <FastImage source={{uri: uri}} style={styles.image}></FastImage>
+
+      <FastImage
+        source={{uri: uri}}
+        style={styles.imageWrapper}
+        onLoadStart={() => setIsLoading(true)}
+        onLoadEnd={() => {
+          setIsLoading(false)
+        }}>
+        <ActivityIndicator animating={isLoading} />
+      </FastImage>
     </View>
   )
 }
@@ -30,7 +40,6 @@ export const ImagePicker = ({images, setImages}: ImagePickerProps) => {
   const uploadImageQuery = useMutation(queryKeys.nanumImage, uploadNanumImage, {
     onSuccess(data) {
       setImages(images => [...images, data]) // 이미지 저장 성공하면 s3 url을 images 배열에 저장
-      console.log('here')
     },
     onError(error) {
       showMessage({
@@ -141,6 +150,11 @@ export const ImagePicker = ({images, setImages}: ImagePickerProps) => {
         {images?.map(image => (
           <ImagePreview key={image} uri={image} onPressRemove={onPressRemove} />
         ))}
+        {uploadImageQuery.isLoading == true && (
+          <View style={[styles.imageWrapper, {backgroundColor: theme.gray50, justifyContent: 'center', alignItems: 'center'}]}>
+            <ActivityIndicator />
+          </View>
+        )}
       </View>
     </View>
   )
@@ -158,8 +172,7 @@ const styles = StyleSheet.create({
   contianer: {
     marginBottom: 16,
   },
-
-  image: {
+  imageWrapper: {
     width: IMAGE_SIZE,
     height: IMAGE_SIZE,
     borderRadius: 5,
@@ -167,6 +180,14 @@ const styles = StyleSheet.create({
     marginRight: 16,
     borderWidth: 1,
     borderColor: theme.gray300,
+    backgroundColor: theme.gray50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  image: {
+    width: IMAGE_SIZE,
+    height: IMAGE_SIZE,
+    borderRadius: 5,
   },
   imageContainer: {
     flexDirection: 'row',
