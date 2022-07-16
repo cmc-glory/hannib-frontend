@@ -11,7 +11,7 @@ import {showMessage} from 'react-native-flash-message'
 import {useToggle, useAppSelector} from '../../hooks'
 import {queryKeys, postNanumForm} from '../../api'
 import {WriteNanumFormOfflineRouteProps, WriteNanumFormOfflineNavigationProps} from '../../navigation/WriteNanumFormStackNavigator'
-import {StackHeader, FloatingBottomButton} from '../../components/utils'
+import {StackHeader, FloatingBottomButton, CheckboxIcon, EmptyCheckboxIcon} from '../../components/utils'
 import {StepIndicator, NanumGoodsInfo, NanumAsks, SelectTimeLocation} from '../../components/WriteGoodsStack'
 import * as theme from '../../theme'
 import {INanumAskInfo, INanumGoodsInfo, INanumDateInfo, INanumForm} from '../../types'
@@ -85,19 +85,23 @@ export const WriteNanumFormOffline = () => {
   const [nanumGoods, setNanumGoods] = useState<INanumGoodsInfo[]>([]) // 상품 정보 state
   const [secretPwd, setSecretPwd] = useState('')
   const [nanumDates, setNanumDates] = useState<INanumDateInfo[]>([])
+  const [agreed, setAgreed] = useState<boolean>(false)
 
   // 처음에 화면 로드될 때 이전 페이지 작성 정보 가져옴
 
   // ***************************** callbacks *****************************
   const isButtonEnabled = useCallback(() => {
     if (postNanumFormQuery.isLoading) {
-      return
+      return false
+    }
+    if (agreed == false) {
+      return false
     }
     if (nanumDates.length == 0 || nanumGoods.length == 0) {
       return false
     }
     return true
-  }, [nanumDates, nanumGoods, postNanumFormQuery])
+  }, [nanumDates, nanumGoods, postNanumFormQuery, agreed])
 
   const onPressNext = useCallback(() => {
     // post api가 진행중이면 다시 시도하지 않기
@@ -168,6 +172,10 @@ export const WriteNanumFormOffline = () => {
     postNanumFormQuery.mutate(nanumForm)
   }, [secretForm, nanumAsks, nanumGoods, secretPwd, user])
 
+  const onPressAgreed = useCallback(() => {
+    setAgreed(agreed => !agreed)
+  }, [])
+
   return (
     <SafeAreaView style={{backgroundColor: '#fff', flex: 1}}>
       <StackHeader goBack title="모집폼 작성" />
@@ -199,6 +207,10 @@ export const WriteNanumFormOffline = () => {
             placeholderTextColor={theme.gray300}
           />
         </View>
+        <View style={[theme.styles.wrapper, styles.spacing, theme.styles.rowFlexStart]}>
+          {agreed ? <CheckboxIcon onPress={onPressAgreed} /> : <EmptyCheckboxIcon onPress={onPressAgreed} />}
+          <Text style={styles.agreedText}>개인정보를 다른 목적으로 이용하지 않겠습니다.</Text>
+        </View>
       </ScrollView>
       <FloatingBottomButton enabled={isButtonEnabled()} label="다음" onPress={onPressNext} />
     </SafeAreaView>
@@ -206,6 +218,11 @@ export const WriteNanumFormOffline = () => {
 }
 
 const styles = StyleSheet.create({
+  agreedText: {
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 16,
+    marginLeft: 8,
+  },
   container: {
     backgroundColor: '#fff',
   },

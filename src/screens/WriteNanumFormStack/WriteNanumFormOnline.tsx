@@ -10,7 +10,7 @@ import {showMessage} from 'react-native-flash-message'
 
 import {WriteNanumFormOnlineRouteProps} from '../../navigation/WriteNanumFormStackNavigator' // route props
 import {INanumGoodsInfo, INanumAskInfo, INanumForm} from '../../types' // types
-import {StackHeader, FloatingBottomButton, LoadingScreen} from '../../components/utils' // components
+import {StackHeader, FloatingBottomButton, LoadingScreen, CheckboxIcon, EmptyCheckboxIcon} from '../../components/utils' // components
 import {StepIndicator, NanumAsks, NanumGoodsInfo} from '../../components/WriteGoodsStack' // components
 import * as theme from '../../theme' // themes
 import {useToggle, useAppSelector} from '../../hooks' // hooks
@@ -85,6 +85,7 @@ export const WriteNanumFormOnline = () => {
   const [nanumAsks, setNanumAsks] = useState<INanumAskInfo[]>([])
   const [nanumGoods, setNanumGoods] = useState<INanumGoodsInfo[]>([]) // 상품 정보 state
   const [secretPwd, setSecretPwd] = useState('')
+  const [agreed, setAgreed] = useState<boolean>(false)
 
   // ******************** callbacks  ********************
   const onPressNext = useCallback(() => {
@@ -159,14 +160,23 @@ export const WriteNanumFormOnline = () => {
 
   const checkNextEnabled = useCallback(() => {
     if (postNanumFormQuery.isLoading) {
-      return
+      return false
     }
+
+    if (agreed == false) {
+      return false
+    }
+
     if (nanumGoods.length > 0) {
       return true
     } else {
       return false
     }
-  }, [nanumGoods, postNanumFormQuery])
+  }, [nanumGoods, postNanumFormQuery, agreed])
+
+  const onPressAgreed = useCallback(() => {
+    setAgreed(agreed => !agreed)
+  }, [])
 
   return (
     <SafeAreaView style={{backgroundColor: '#fff', flex: 1}}>
@@ -198,6 +208,10 @@ export const WriteNanumFormOnline = () => {
             placeholderTextColor={theme.gray300}
           />
         </View>
+        <View style={[theme.styles.wrapper, styles.spacing, theme.styles.rowFlexStart]}>
+          {agreed ? <CheckboxIcon onPress={onPressAgreed} /> : <EmptyCheckboxIcon onPress={onPressAgreed} />}
+          <Text style={styles.agreedText}>개인정보를 다른 목적으로 이용하지 않겠습니다.</Text>
+        </View>
       </ScrollView>
       <FloatingBottomButton label="다음" onPress={onPressNext} enabled={checkNextEnabled()} />
     </SafeAreaView>
@@ -205,6 +219,11 @@ export const WriteNanumFormOnline = () => {
 }
 
 const styles = StyleSheet.create({
+  agreedText: {
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 16,
+    marginLeft: 8,
+  },
   container: {
     backgroundColor: 'white',
   },

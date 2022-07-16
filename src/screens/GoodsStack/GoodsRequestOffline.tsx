@@ -223,7 +223,14 @@ export const GoodsRequestOffline = () => {
             </Animated.View>
           </View>
           {info.askList.map((item, index) => (
-            <MakeNewField key={index} label={item.contents} necessary={item.essential} index={index} answers={answers} setAnswers={setAnswers} />
+            <MakeNewField
+              key={index}
+              label={item.contents}
+              necessary={item.essential == 'Y' ? true : false}
+              index={index}
+              answers={answers}
+              setAnswers={setAnswers}
+            />
           ))}
 
           <View style={styles.spacing}>

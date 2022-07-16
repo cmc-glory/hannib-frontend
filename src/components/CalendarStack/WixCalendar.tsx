@@ -73,7 +73,7 @@ export const WixCalendar = ({scheduleAll, setSelectedDate}: WixCalendarProps) =>
         textDayHeaderFontWeight: undefined,
         textDayHeaderFontFamily: 'Pretendard-Bold',
 
-        todayTextColor: theme.gray800,
+        todayTextColor: theme.main,
         dayTextColor: theme.gray800,
         monthTextColor: theme.gray800,
         textSectionTitleColor: theme.gray800,

@@ -176,6 +176,14 @@ export type ISearch = {
 
 // ******************** backend variable names below ********************
 
+export type ICalendarDto = {
+  applyGoodsDto: {nanumIdx: number; goodsName: string}[] // 신청 굿즈 리스트
+  calendarDto3: {acceptDate: string; location: string; nanumIdx: number; title: string}[] // 신청한 나눔 수령 일자
+
+  nanumGoodsDto: {nanumIdx: number; goodsName: string; goodsNumber: string}[] // 진행한 굿즈 리스트
+  calendarDto2: {acceptDate: string; location: string; nanumIdx: number; title: string}[] // 진행한 나눔 수령 일자
+}
+
 export type IReviewDto = {
   reviewImgDtoList: IReviewImgDto[]
   accountIdx: number

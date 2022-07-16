@@ -143,6 +143,8 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
     addFavoriteQuery.mutate({
       accountIdx: accountIdx,
       nanumIdx: item.nanumIdx,
+      category: item.category,
+      //category: '에스파',
     }) // 인자에는 query params 넣기
   }, [item, accountIdx, addFavoriteQuery, removeFavoriteQuery])
 
@@ -156,6 +158,8 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
     removeFavoriteQuery.mutate({
       accountIdx: accountIdx,
       nanumIdx: item.nanumIdx,
+      category: item.category,
+      //category: '에스파',
     }) // 인자에는 query params 넣기
   }, [item, accountIdx, addFavoriteQuery, removeFavoriteQuery])
 
