@@ -3,6 +3,7 @@ import {View, Text, TextInput, StyleSheet, Alert} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useMutation} from 'react-query'
 import {useNavigation, useRoute} from '@react-navigation/native'
+import {showMessage} from 'react-native-flash-message'
 
 import {queryKeys, sendNotice} from '../../api'
 import {SendNoticeRouteProps} from '../../navigation/HoldingSharingStackNavigator'
@@ -20,10 +21,30 @@ export const SendNotice = () => {
   const [title, setTitle] = useState<string>('')
   const [comments, setComments] = useState<string>('')
 
-  const sendNoticeQuery = useMutation(queryKeys.sendNotice, sendNotice, {})
+  const sendNoticeQuery = useMutation(queryKeys.sendNotice, sendNotice, {
+    onSuccess(data, variables, context) {
+      navigation.goBack()
+      showMessage({
+        // 에러 안내 메세지
+        message: '공지사항이 전송되었습니다.',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+      })
+    },
+  })
+
+  console.log(route.params)
 
   const onPressSendNotice = useCallback(() => {
-    for (var i = 0; i < comments.length; i++) {
+    for (var i = 0; i < accountIdxList.length; i++) {
       sendNoticeQuery.mutate({
         nanumIdx,
         accountIdx: accountIdxList[i],

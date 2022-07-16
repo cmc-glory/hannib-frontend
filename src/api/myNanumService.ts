@@ -33,7 +33,7 @@ export const getReceiverDetail = async ({accountIdx, nanumIdx}: {accountIdx: num
 
 // 나눔 마감
 export const endNanum = async (nanumIdx: number) => {
-  const {data} = await apiClient.get(`/api/nanuming/end?nanumIdx=${nanumIdx}}`)
+  const {data} = await apiClient.get(`/api/nanuming/end?nanumIdx=${nanumIdx}`)
   return data
 }
 

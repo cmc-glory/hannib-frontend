@@ -132,7 +132,7 @@ export const HoldingSharing = () => {
       setReceiverInfoList(tempReceiverList)
     },
   })
-  const endNanumQuery = useMutation([queryKeys.endNanum], endNanum, {
+  const endNanumQuery = useMutation([queryKeys.endNanum, nanumIdx], endNanum, {
     onSuccess(data, variables, context) {
       showMessage({
         // 에러 안내 메세지
@@ -167,6 +167,10 @@ export const HoldingSharing = () => {
       nanumIdx,
       accountIdxList: receiverInfoList.filter(item => item.selected == true).map(item => item.accountIdx),
     })
+  }, [receiverInfoList])
+
+  const sendNoticeButtonEnabled = useCallback(() => {
+    return receiverInfoList.filter(item => item.selected == true).map(item => item.accountIdx).length > 0 ? true : false
   }, [receiverInfoList])
 
   const onPressViewDetail = () => {
@@ -263,7 +267,7 @@ export const HoldingSharing = () => {
           )}
         </View>
       </ScrollView>
-      <FloatingBottomButton label="공지 보내기" enabled={true} onPress={onPressSendNotice} />
+      <FloatingBottomButton label="공지 보내기" enabled={sendNoticeButtonEnabled()} onPress={onPressSendNotice} />
     </SafeAreaView>
   )
 }
