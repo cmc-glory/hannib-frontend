@@ -276,12 +276,39 @@ export type INanumRequestReuiredAsk = {
   askIdx: number
 }
 
-export type INanumApplyOnlineDto = {
-  nanumAskAnswerList: []
-  nanumGoodsRequestList: []
+//haveto api 수정 예정
+//나눔 신청하기 폼 내부 추가질문사항 답변 객체
+export type INanumRequestAnswer = {
   accountIdx: number
   nanumIdx: number
+  askList: string //삭제 필요
+  answerList: string
+}
+
+//haveto api 수정 예정
+//나눔 신청하기 폼 내부 굿즈 신청 정보 객체
+export type INanumRequestGoods = {
+  goodsIdx: number //필수x
+  accountIdx: number
+  nanumIdx: number
+  goodsName: string //삭제 필요
+  //creatorId: string //삭제 필요, 필수x
+  //goodsNumber: number //삭제 필요, 필수x
   realName: string
+}
+
+//나눔 신청하기 온라인 폼 dto
+export type INanumApplyOnlineDto = {
+  applyAskAnswerLists: INanumRequestAnswer[]
+  nanumGoodsDtoList: INanumRequestGoods[]
+  accountIdx: number
+  nanumIdx: number
+  //acceptDate: Date
+  realName: string
+  address1: number
+  address2: string
+  //creatorId: string //삭제 필요
+  phoneNumber: string
   //api에 따라 수정 필요
 }
 

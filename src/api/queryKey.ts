@@ -5,6 +5,7 @@ export const queryKeys = {
   nanumList: ['nanumList'],
   nanumDetail: ['nanumDetail'],
   goodsRequestInfo: ['goodsRequestInfo'],
+  nanumRequestOnlineForm: ['nanumRequestOnlineForm'],
   nanumRequestRequiredInfo: ['nanumRequestRequiredInfo'],
   calendar: ['calendar'],
   profileImage: ['profileImage'],

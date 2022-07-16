@@ -15,6 +15,7 @@ export const getHoldingNanumList = async (accountIdx: number) => {
   return data
 }
 
+//참여한 나눔 리스트 get
 export const getParticipatingNanumList = async (accountIdx: number) => {
   const {data} = await apiClient.get(`/api/nanum/list/mynanum/apply?accountIdx=${accountIdx}`)
   return data

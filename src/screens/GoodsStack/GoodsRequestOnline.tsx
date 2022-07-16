@@ -1,16 +1,19 @@
-import React, {useCallback, useState, useRef, useMemo} from 'react'
+import React, {useCallback, useState, useRef, useMemo, useEffect} from 'react'
 import {View, Text, ScrollView, TextInput, NativeSyntheticEvent, TextInputChangeEventData, StyleSheet, Dimensions, Platform} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import KeyboardManager from 'react-native-keyboard-manager'
-import {useQuery} from 'react-query'
+import {useMutation, useQuery, useQueryClient} from 'react-query'
 import {useNavigation, useRoute} from '@react-navigation/native'
 
 import {StackHeader, FloatingBottomButton, NeccesaryField, SeparatorBold} from '../../components/utils'
 import {FindAddress, ProductInfoOnline, MakeNewField} from '../../components/GoodsStack'
-import {IRequestFormOnline, INanumRequestRequiredDto} from '../../types'
-import {queryKeys, getGoodsRequestInfo, getNanumRequestRequiredInfo} from '../../api'
+import {IRequestFormOnline, INanumRequestRequiredDto, INanumApplyOnlineDto, INanumRequestReuiredAsk, INanumRequestGoods} from '../../types'
+import {queryKeys, getGoodsRequestInfo, getNanumRequestRequiredInfo, postNanumRequestOnlineForm} from '../../api'
 import * as theme from '../../theme'
 import {GoodsRequestOnlineRouteProps} from '../../navigation/GoodsStackNavigator'
+import {userSelector} from '../../redux/slices'
+import {useAppSelector} from '../../hooks'
+import {showMessage} from 'react-native-flash-message'
 
 const PHONE_INPUT_WIDTH = (Dimensions.get('window').width - theme.PADDING_SIZE * 2 - 16 * 2) / 3
 
@@ -36,17 +39,19 @@ if (Platform.OS === 'ios') {
 
 export const GoodsReqeustOnline = () => {
   // ***************************** utils *****************************
+  const user = useAppSelector(state => state.auth.user)
   const [answers, setAnswers] = useState<string[]>([])
   const navigation = useNavigation()
   const route = useRoute<GoodsRequestOnlineRouteProps>()
   const nanumIdx = useMemo(() => route.params, [])
+  const queryClient = useQueryClient()
   // ***************************** states *****************************
+  const [selectedItems, setSelectedItems] = useState<any>({}) // 선택한 상품들
   const [info, setInfo] = useState<INanumRequestRequiredDto>({
     nanumIdx: nanumIdx.nanumIdx,
     goodsList: [],
     askList: [],
   })
-  // type INanumApplyOnlineDto 로 바꿔야함.
   const [requestForm, setRequestForm] = useState<IRequestFormOnline>({
     name: '',
     address: {
@@ -61,23 +66,9 @@ export const GoodsReqeustOnline = () => {
       third: '',
     },
   })
-  const [selectedItems, setSelectedItems] = useState<any>({}) // 선택한 상품들
 
-  // ***************************** react query *****************************
-  // useQuery(queryKeys.goodsRequestInfo, getGoodsRequestInfo, {
-  //   onSuccess: data => {
-  //     setInfo(data)
-  //     setRequestForm({
-  //       ...requestForm,
-  //     })
-  //     data.products.forEach((item: any) => {
-  //       selectedItems[item.id] = false
-  //     })
-  //     setAnswers(new Array(data.additionalQuestions.length).fill(''))
-  //   },
-  // })
-
-  const {data} = useQuery([queryKeys.nanumRequestRequiredInfo, nanumIdx], () => getNanumRequestRequiredInfo(parseInt(nanumIdx)), {
+  // ******************** react query ********************
+  const data = useQuery([queryKeys.nanumRequestRequiredInfo, nanumIdx], () => getNanumRequestRequiredInfo(parseInt(nanumIdx)), {
     onSuccess: data => {
       console.log('success')
       console.log(data)
@@ -93,38 +84,81 @@ export const GoodsReqeustOnline = () => {
     },
   })
 
-  // const postNanumFormQuery = useMutation(queryKeys.nanumForm, postNanumForm, {
-  //   onSuccess(data, variables, context) {
-  //     console.log('success')
-  //     console.log(data)
-  //     queryClient.invalidateQueries([queryKeys.nanumList])
+  const postNanumRequestOnlineFormQuery = useMutation(queryKeys.nanumRequestOnlineForm, postNanumRequestOnlineForm, {
+    onSuccess(data, variables, context) {
+      console.log('success')
+      console.log(data)
+      queryClient.invalidateQueries([queryKeys.nanumRequestOnlineForm])
 
-  //     const nanumIdx = data
-  //     navigation.navigate('WriteNanumFormComplete', {
-  //       nanumIdx: nanumIdx,
-  //     })
-  //   },
-  //   onError(error, variables, context) {
-  //     console.log('error')
-  //     console.log(error)
-  //     showMessage({
-  //       // 에러 안내 메세지
-  //       message: '나눔폼 업로드 중 에러가 발생했습니다',
-  //       type: 'info',
-  //       animationDuration: 300,
-  //       duration: 1350,
-  //       style: {
-  //         backgroundColor: 'rgba(36, 36, 36, 0.9)',
-  //       },
-  //       titleStyle: {
-  //         fontFamily: 'Pretendard-Medium',
-  //       },
-  //       floating: true,
-  //     })
-  //   },
-  // })
+      //const nanumIdx = data
+      navigation.navigate('GoodsStackNavigator', {
+        screen: 'GoodsRequestComplete',
+      })
+    },
+    onError(error, variables, context) {
+      console.log('error')
+      console.log(error)
+      showMessage({
+        // 에러 안내 메세지
+        message: '나눔 신청 중 에러가 발생했습니다',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+      })
+
+      navigation.navigate('GoodsStackNavigator', {
+        screen: 'GoodsRequestComplete',
+      })
+    },
+  })
 
   // ***************************** callbacks *****************************
+  const onPressRequest = useCallback(() => {
+    if (postNanumRequestOnlineFormQuery.isLoading) {
+      return
+    }
+
+    const requestApplyForm: INanumApplyOnlineDto = {
+      applyAskAnswerLists: data.data.askList.map((item: INanumRequestReuiredAsk, index: number) => {
+        return {
+          accountIdx: user.accountIdx,
+          nanumIdx: nanumIdx.nanumIdx,
+          askList: item.contents,
+          aswerList: answers[index],
+        }
+      }),
+      nanumGoodsDtoList: data.data.goodsList
+        .map((item: INanumRequestGoods, index: number) => {
+          if (selectedItems[item.goodsIdx] == true && item != null) {
+            return {
+              goodsIdx: item.goodsIdx,
+              accountIdx: user.accountIdx,
+              nanumIdx: nanumIdx.nanumIdx,
+              goodsName: item.goodsName,
+              realName: requestForm.name,
+            }
+          } else return
+        })
+        .filter((n: INanumRequestGoods) => n),
+      accountIdx: user.accountIdx,
+      nanumIdx: parseInt(nanumIdx.nanumIdx),
+      realName: requestForm.name,
+      address1: parseInt(requestForm.address.postcode),
+      address2: requestForm.address.roadAddress + ' ' + requestForm.address.detailedAddress,
+      phoneNumber: requestForm.phonenumber.first + '-' + requestForm.phonenumber.second + '-' + requestForm.phonenumber.third,
+    }
+    console.log(JSON.stringify(requestApplyForm))
+
+    postNanumRequestOnlineFormQuery.mutate(requestApplyForm)
+  }, [requestForm, selectedItems, answers, data])
+
   const isButtonEnabled = useCallback(() => {
     // 기본 필수 정보 중에 하나라도 안 채워진 게 있으면 false 리턴
     if (
@@ -148,20 +182,6 @@ export const GoodsReqeustOnline = () => {
     return true
   }, [requestForm, answers, info])
 
-  const onPressRequest = useCallback(
-    (requestForm: IRequestFormOnline) => {
-      console.log(answers)
-      console.log(requestForm)
-      navigation.navigate('GoodsStackNavigator', {
-        screen: 'GoodsRequestComplete',
-        params: {
-          nanumIdx: nanumIdx,
-        },
-      })
-    },
-    [requestForm, answers],
-  )
-
   const ref_input: Array<React.RefObject<TextInput>> = []
   ref_input[0] = useRef(null)
   ref_input[1] = useRef(null)
@@ -175,6 +195,10 @@ export const GoodsReqeustOnline = () => {
       ref_input[index].current?.blur()
     }
   }, [])
+
+  useEffect(() => {
+    //console.log('selected : ', selectedItems)
+  }, [selectedItems])
 
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
@@ -300,7 +324,7 @@ export const GoodsReqeustOnline = () => {
           ))}
         </View>
       </ScrollView>
-      <FloatingBottomButton label="제출하기" enabled={isButtonEnabled()} onPress={() => onPressRequest(requestForm)} />
+      <FloatingBottomButton label="제출하기" enabled={isButtonEnabled()} onPress={onPressRequest} />
     </SafeAreaView>
   )
 }
