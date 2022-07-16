@@ -176,6 +176,19 @@ export type ISearch = {
 
 // ******************** backend variable names below ********************
 
+export type IReviewDto = {
+  reviewImgDtoList: IReviewImgDto[]
+  accountIdx: number
+  nanumIdx: number
+  comments: string
+}
+
+export type IReviewImgDto = {
+  accountIdx: number
+  nanumIdx: number
+  imgUrl: string
+}
+
 export type INoticeDto = {
   accountIdx: number
   nanumIdx: number
@@ -198,6 +211,18 @@ export type IApplyAskAnswer = {
   answerList: string
 }
 
+export type IApplyingGoodsDto = {
+  accountIdx: number
+  nanumIdx: number
+  goodsName: string
+}
+
+// 진행한 나눔 상세 페이지
+export type IAppliedNanumDetailDto = {
+  applyDto: IApplyDto
+  applyingGoodsDto: IApplyingGoodsDto[]
+}
+
 // 진행한 나눔 상세 페이지
 export type IMyNanumDetailDto = {
   applyDto: IApplyDto
@@ -216,11 +241,12 @@ export type IApplyDto = {
   unsongYn: 'Y' | 'N'
   acceptDate: string
   realName: string
-  address1: number // 우편번호
+  address1: string // 우편번호
   address2: string
   creatorId: string
   phoneNumber: string
   nanumMethod: 'O' | 'M'
+  trackingNumber: string
 }
 
 // 진행한 나눔 페이지 신청자 리스트 정보
@@ -252,8 +278,8 @@ export type INanumGoodsOrderDto = {
 
 export type ICancelDto = {
   accountIdx: number
-  nanumDeletereason: string
-  nanumIDx: number
+  nanumDeleteReason: string
+  nanumIdx: number
 }
 
 export type INanumAccountFavoritesDto = {
@@ -386,7 +412,7 @@ export type INanumApplyOnlineDto = {
   nanumIdx: number
   //acceptDate: Date
   realName: string
-  address1: number
+  address1: string
   address2: string
   //creatorId: string //삭제 필요
   phoneNumber: string

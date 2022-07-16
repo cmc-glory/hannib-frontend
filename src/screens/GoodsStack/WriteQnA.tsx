@@ -4,6 +4,7 @@ import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation, useRoute} from '@react-navigation/native'
 import {Switch} from 'react-native-paper'
 import {useMutation, useQueryClient} from 'react-query'
+import {showMessage} from 'react-native-flash-message'
 
 import {queryKeys, postInquiry} from '../../api'
 import {StackHeader, SharingPreview, RoundButton} from '../../components/utils'
@@ -39,6 +40,19 @@ export const WriteQnA = () => {
   const postInquiryQuery = useMutation(queryKeys.inquiry, postInquiry, {
     onSuccess(data, variables, context) {
       queryClient.invalidateQueries([queryKeys.inquiry, nanumIdx])
+      showMessage({
+        message: '문의글 작성이 완료되었습니다.',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+      })
       navigation.goBack()
     },
     onError(error, variables, context) {

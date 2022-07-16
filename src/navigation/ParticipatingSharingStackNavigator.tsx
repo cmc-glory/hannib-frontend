@@ -4,17 +4,19 @@ import {ParticipatingSharingOnline, ParticipatingSharingOffline, WriteQnA, Write
 import type {NativeStackScreenProps} from '@react-navigation/native-stack'
 
 type ParticipatingSharingStackNavigatorParamList = {
-  ParticipatingSharingOnline: undefined
-  ParticipatingSharingOffline: {id: string}
+  ParticipatingSharingOnline: {
+    nanumIdx: number
+  }
+  ParticipatingSharingOffline: {
+    nanumIdx: number
+  }
   WriteQnA: {
-    userid: string
-    imageuri: string
-    category: string
-    title: string
+    nanumIdx: number
+    accountIdx: number
   }
   WriteReview: {
-    postid: string
-    userid: string
+    nanumIdx: number
+    accountIdx: number
     imageuri: string
     category: string
     title: string
@@ -22,6 +24,11 @@ type ParticipatingSharingStackNavigatorParamList = {
 }
 
 const Stack = createStackNavigator<ParticipatingSharingStackNavigatorParamList>()
+
+type ParticipatingSharingOnlineProps = NativeStackScreenProps<ParticipatingSharingStackNavigatorParamList, 'ParticipatingSharingOnline'>
+export type ParticipatingSharingOnlineRouteProps = ParticipatingSharingOnlineProps['route']
+type ParticipatingSharingOfflineProps = NativeStackScreenProps<ParticipatingSharingStackNavigatorParamList, 'ParticipatingSharingOffline'>
+export type ParticipatingSharingOfflineRouteProps = ParticipatingSharingOfflineProps['route']
 
 type WriteQnAProps = NativeStackScreenProps<ParticipatingSharingStackNavigatorParamList, 'WriteQnA'>
 export type WriteQnARouteProps = WriteQnAProps['route']

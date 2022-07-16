@@ -3,7 +3,6 @@ import {View, Pressable, ScrollView, Text, StyleSheet, Alert, ActivityIndicator,
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useQuery, useMutation} from 'react-query'
 import {showMessage} from 'react-native-flash-message'
-import {getStatusBarHeight} from 'react-native-status-bar-height'
 import moment from 'moment'
 
 import {
@@ -92,7 +91,7 @@ export const HoldingSharing = () => {
       acceptDate: '1995-03-21 12:43:15',
       realName: '김또도',
       acceptedYn: 'N',
-      address1: 13053,
+      address1: '13053',
       address2: '서울특별시 장충단로',
       cancelYn: 'N',
       creatorId: '사과나무',
@@ -101,6 +100,7 @@ export const HoldingSharing = () => {
       reviewYn: 'N',
       unsongYn: 'N',
       nanumMethod: 'O',
+      trackingNumber: '',
     },
     nanumGoodsDto: [
       {

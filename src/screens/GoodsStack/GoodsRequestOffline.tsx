@@ -5,7 +5,7 @@ import moment from 'moment'
 import {useQuery} from 'react-query'
 import KeyboardManager from 'react-native-keyboard-manager'
 import {useNavigation, useRoute} from '@react-navigation/native'
-import {StackHeader, FloatingBottomButton, CheckboxIcon, DownArrowIcon, SeparatorBold, NeccesaryField} from '../../components/utils'
+import {StackHeader, FloatingBottomButton, CheckboxIcon, EmptyCheckboxIcon, DownArrowIcon, SeparatorBold, NeccesaryField} from '../../components/utils'
 import * as theme from '../../theme'
 import {useAnimatedValue, useToggle, useAnimatedStyle} from '../../hooks'
 import {INanumRequestRequiredDto, IRequestFormOffline, ISharingRequestInfo} from '../../types'
@@ -55,6 +55,7 @@ export const GoodsRequestOffline = () => {
     product: [],
   })
   const [opened, toggleOpened] = useToggle()
+  const [agreed, setAgreed] = useState<boolean>(false) // 개인정보 수집 항목 동의
 
   // ***************************** react query *****************************
   useQuery(queryKeys.goodsRequestInfo, getGoodsRequestInfo, {
@@ -118,6 +119,9 @@ export const GoodsRequestOffline = () => {
   const animatedSelectionInputStyle = useAnimatedStyle({height: animatedInputHeight, opacity: animatedValue})
 
   // ***************************** callbacks *****************************
+  const onPressAgreed = useCallback(() => {
+    setAgreed(agreed => !agreed)
+  }, [])
   const onPressOpen = useCallback(() => {
     // select box누르면 애니메이션 시작
     open.start(toggleOpened)
@@ -135,7 +139,7 @@ export const GoodsRequestOffline = () => {
 
   const isButtonEnabled = useCallback(() => {
     // 기본 필수 정보 중에 하나라도 안 채워진 게 있으면 false 리턴
-    if (requestForm.receiveDate == '' || requestForm.product.length == 0) {
+    if (requestForm.receiveDate == '' || requestForm.product.length == 0 || agreed == false) {
       return false
     }
     // 추가 질문 사항 중 필수 질문에 대한 input이 비어 있으면 false 리턴
@@ -146,7 +150,7 @@ export const GoodsRequestOffline = () => {
       }
     }
     return true
-  }, [requestForm, answers, info])
+  }, [requestForm, answers, info, agreed])
 
   const onPressRequest = useCallback(
     (requestForm: IRequestFormOffline) => {
@@ -221,6 +225,19 @@ export const GoodsRequestOffline = () => {
           {info.askList.map((item, index) => (
             <MakeNewField key={index} label={item.contents} necessary={item.essential} index={index} answers={answers} setAnswers={setAnswers} />
           ))}
+
+          <View style={styles.spacing}>
+            <View style={[theme.styles.rowFlexStart]}>
+              {agreed ? <CheckboxIcon onPress={onPressAgreed} /> : <EmptyCheckboxIcon onPress={onPressAgreed} />}
+              <Text style={styles.label}>개인정보 수집 및 동의</Text>
+            </View>
+            <View style={styles.agreedContentView}>
+              <Text style={styles.agreedContentText}>
+                상품 주문 및 배송을 위해 입력된 개인정보를 수집합니다. 수집한 개인정보는 주문과 배송 이외의 목적으로는 사용하지 않습니다.
+              </Text>
+              <Text style={styles.agreedContentText}>개인정보의 수집 및 이용에 대한 동의를 거부할수 있으며, 이 경우 상품 주문이 어려울 수 있습니다.</Text>
+            </View>
+          </View>
         </View>
       </ScrollView>
 
@@ -230,6 +247,21 @@ export const GoodsRequestOffline = () => {
 }
 
 const styles = StyleSheet.create({
+  label: {
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 16,
+    marginLeft: 8,
+  },
+  agreedContentText: {
+    fontSize: 12,
+    lineHeight: 16,
+    color: theme.gray700,
+  },
+  agreedContentView: {
+    marginTop: 8,
+    padding: 12,
+    backgroundColor: theme.gray50,
+  },
   inputItemSeparator: {
     borderBottomColor: theme.gray100,
     borderBottomWidth: 1,

@@ -35,12 +35,12 @@ export const ParticipatingSharingItem = ({item}: {item: IParticipatingSharingLis
       //메일(온라인)
       navigation.navigate('ParticipatingSharingStackNavigator', {
         screen: 'ParticipatingSharingOnline',
-        params: {id: item.nanumIdx},
+        params: {nanumIdx: item.nanumIdx},
       })
     } else {
       navigation.navigate('ParticipatingSharingStackNavigator', {
         screen: 'ParticipatingSharingOffline',
-        params: {id: item.nanumIdx},
+        params: {nanumIdx: item.nanumIdx},
       })
     }
   }, [])
@@ -50,7 +50,7 @@ export const ParticipatingSharingItem = ({item}: {item: IParticipatingSharingLis
       <Pressable onPress={() => onPressItem(nanumMethod)} style={[styles.container]}>
         {isBefore && (
           <View style={styles.overlay}>
-            <Text style={[styles.overlayText, {marginBottom: 2.5}]}>{openDate.format('YYYY MM')}</Text>
+            <Text style={[styles.overlayText, {marginBottom: 2.5}]}>{openDate.format('YY/MM/DD HH:mm')}</Text>
             <Text style={styles.overlayText}>오픈 예정</Text>
           </View>
         )}

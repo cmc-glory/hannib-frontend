@@ -11,6 +11,7 @@ declare module '@env' {
 }
 declare namespace ReactNavigation {
   interface RootParamList {
+    GoodsRequestError: undefined
     NanumList: undefined
     Login: undefined
     FindId: undefined
@@ -186,5 +187,12 @@ declare namespace ReactNavigation {
     EditCategoryStackNavigator: undefined
     EditCategoryAskAddStar: undefined
     EditCategoryAskAddStarComplete: undefined
+    WriteReview: {
+      nanumIdx: number
+      accountIdx: number
+      imageuri: string
+      category: string
+      title: string
+    }
   }
 }
