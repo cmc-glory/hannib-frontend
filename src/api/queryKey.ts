@@ -22,4 +22,7 @@ export const queryKeys = {
   nicknameDuplicated: ['nicknameDuplicated'], // 닉네임 중복 확인
   report: ['report'], // 신고하기
   holdingNanumList: ['holdingNanumList'],
+  receiverList: ['receiverList'], // 진행한 나눔 페이지 수령자 리스트
+  endNanum: ['endNanum'], // 나눔 마감
+  sendNotice: ['sendNotice'], // 공지 보내기
 }

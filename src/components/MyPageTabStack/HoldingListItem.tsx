@@ -1,14 +1,16 @@
 import React, {useCallback, useEffect, useState} from 'react'
 import {View, Pressable, ScrollView, Text, StyleSheet} from 'react-native'
-import {IHoldingReceiverInfo} from '../../types'
+import {IReceiverDto} from '../../types'
+import {useQuery} from 'react-query'
 import BouncyCheckbox from 'react-native-bouncy-checkbox'
 import {useToggle} from '../../hooks'
 import * as theme from '../../theme'
 import {ReceiverListItem} from './ReceiverListItem'
 import {HoldingSharingFilterTab} from '../MyPageStack'
+import {queryKeys, getReceiverList} from '../../api'
 
 type HoldingListItem = {
-  dataLists?: Array<IHoldingReceiverInfo>
+  dataLists?: Array<IReceiverDto[]>
   onPressViewDetail: () => void
   index: number
   showStateFilterBottomSheet: boolean
@@ -94,7 +96,7 @@ export const HoldingListItem = ({
             key={list.id}
             checkedItems={checkedItems}
             handleSingleCheck={handleSingleCheck}
-            receiveState={list.receiveState}
+            acceptedYn={list.acceptedYn}
             products={list.products}
             receiverName={list.receiverName}
           />

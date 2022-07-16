@@ -113,7 +113,10 @@ declare namespace ReactNavigation {
       isOpenDateBooked: boolean
       openDate?: Date | undefined
     }
-    SendNotice: undefined
+    SendNotice: {
+      nanumIdx: number
+      accountIdxList: number[]
+    }
     ParticipatingSharingStackNavigator:
       | undefined
       | {

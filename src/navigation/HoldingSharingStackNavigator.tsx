@@ -8,7 +8,10 @@ type HoldingSharingStackNavigatorParamList = {
   HoldingSharing: {
     nanumIdx: number
   }
-  SendNotice: undefined
+  SendNotice: {
+    nanumIdx: number
+    accountIdxList: number[]
+  }
   EditGoodsDefault: undefined
   EditGoodsOnline: undefined
   EditGoodsOffline: undefined
@@ -17,6 +20,10 @@ type HoldingSharingStackNavigatorParamList = {
 type HoldingSharingProps = NativeStackScreenProps<HoldingSharingStackNavigatorParamList, 'HoldingSharing'>
 export type HoldingSharingNavigationProps = HoldingSharingProps['navigation']
 export type HoldingSharingRouteProps = HoldingSharingProps['route']
+
+type SendNoticeProps = NativeStackScreenProps<HoldingSharingStackNavigatorParamList, 'SendNotice'>
+export type SendNoticeNavigationProps = SendNoticeProps['navigation']
+export type SendNoticeRouteProps = SendNoticeProps['route']
 
 const Stack = createStackNavigator<HoldingSharingStackNavigatorParamList>()
 
