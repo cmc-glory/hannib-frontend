@@ -129,7 +129,7 @@ export const GoodsReqeustOnline = () => {
       applyAskAnswerLists: data.data.askList.map((item: INanumRequestReuiredAsk, index: number) => {
         return {
           accountIdx: user.accountIdx,
-          nanumIdx: nanumIdx.nanumIdx,
+          nanumIdx: data.data.nanumIdx,
           askList: item.contents,
           aswerList: answers[index],
         }
@@ -140,7 +140,7 @@ export const GoodsReqeustOnline = () => {
             return {
               goodsIdx: item.goodsIdx,
               accountIdx: user.accountIdx,
-              nanumIdx: nanumIdx.nanumIdx,
+              nanumIdx: data.data.nanumIdx,
               goodsName: item.goodsName,
               realName: requestForm.name,
             }
@@ -148,7 +148,7 @@ export const GoodsReqeustOnline = () => {
         })
         .filter((n: INanumRequestGoods) => n),
       accountIdx: user.accountIdx,
-      nanumIdx: parseInt(nanumIdx.nanumIdx),
+      nanumIdx: parseInt(data.data.nanumIdx),
       realName: requestForm.name,
       address1: parseInt(requestForm.address.postcode),
       address2: requestForm.address.roadAddress + ' ' + requestForm.address.detailedAddress,
@@ -180,7 +180,7 @@ export const GoodsReqeustOnline = () => {
       }
     }
     return true
-  }, [requestForm, answers, info])
+  }, [requestForm, answers, info, nanumIdx])
 
   const ref_input: Array<React.RefObject<TextInput>> = []
   ref_input[0] = useRef(null)
