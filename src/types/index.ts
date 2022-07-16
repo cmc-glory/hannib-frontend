@@ -209,12 +209,18 @@ export type IApplyDto = {
   nanumGoodsDtoList: INanumGoodsOrderDto[]
   accountIdx: number
   nanumIdx: number
+  acceptedYn: 'Y' | 'N'
+  cancelYn: 'Y' | 'N'
+  misacceptedYn: 'Y' | 'N'
+  reviewYn: 'Y' | 'N'
+  unsongYn: 'Y' | 'N'
   acceptDate: string
   realName: string
   address1: number // 우편번호
   address2: string
   creatorId: string
   phoneNumber: string
+  nanumMethod: 'O' | 'M'
 }
 
 // 진행한 나눔 페이지 신청자 리스트 정보
