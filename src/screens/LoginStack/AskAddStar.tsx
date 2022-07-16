@@ -300,6 +300,9 @@ export const AskAddStar = () => {
         </View>
         <View style={[styles.spacing]}>
           <Text style={[theme.styles.label]}>공식 대표 이미지</Text>
+          <Text style={{marginBottom: 12, color: theme.gray500, lineHeight: 20, fontSize: 14}}>
+            사진의 경우 200*200px이여야하며, 비공식 사진이거나 부적합할 경우 거절될 수 있습니다.
+          </Text>
           <View style={[theme.styles.rowFlexStart]}>
             <Pressable onPress={onImageLibraryPress}>
               <View style={[styles.addImage]}>

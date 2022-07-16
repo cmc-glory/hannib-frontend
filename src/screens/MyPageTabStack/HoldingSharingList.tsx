@@ -1,6 +1,5 @@
 import React, {useState, useCallback, useEffect} from 'react'
 import {View, FlatList, Text, StyleSheet, Pressable} from 'react-native'
-import Modal from 'react-native-modal'
 import {getStatusBarHeight} from 'react-native-status-bar-height'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useQuery, useQueryClient} from 'react-query'
@@ -22,7 +21,6 @@ export const HoldingSharingList = () => {
   // ******************** states ********************
   const [list, setList] = useState<IHoldingSharingList[]>([])
   const [refreshing, setRefreshing] = useState<boolean>(false)
-  const [moreVisible, toggleMoreVisible] = useToggle() //수정, 삭제하기 모달 띄울지
 
   const {data} = useQuery([queryKeys.holdingNanumList], () => getHoldingNanumList(user.accountIdx), {
     onSuccess: data => {
@@ -41,19 +39,6 @@ export const HoldingSharingList = () => {
     setRefreshing(true)
     queryClient.invalidateQueries([queryKeys.holdingNanumList])
   }, [])
-
-  //api 나오기 전 사용했던것
-  const [sharings, setSharings] = useState<ISharingInfo[]>([])
-
-  // // 컴포넌트가 마운트 되면 진행한 나눔 목록 가져옴
-  // useEffect(() => {
-  //   fetch('http://localhost:8081/src/data/dummySharings.json')
-  //     .then(res => res.json())
-  //     .then(result => {
-  //       //setSharings(result)
-  //       setSharings([])
-  //     })
-  // }, [])
 
   return (
     <SafeAreaView style={theme.styles.safeareaview} edges={['top', 'left', 'right']}>
@@ -82,12 +67,17 @@ export const HoldingSharingList = () => {
           />
         )}
       </View>
-      <EditDeleteModal isVisible={moreVisible} toggleIsVisible={toggleMoreVisible} />
     </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
+  menuModalButton: {
+    height: 40,
+    padding: 10,
+    justifyContent: 'center',
+    zIndex: 1,
+  },
   container: {
     flex: 1,
   },

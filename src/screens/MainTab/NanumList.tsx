@@ -11,7 +11,6 @@ import {NanumListFilterTab, NanumListItem, GoodsListBottomSheetContent, Banner, 
 import {INanumMethod, INanumListItem, IAccountCategoryDto} from '../../types'
 import {useAppSelector} from '../../hooks'
 import {getNanumByRecent, getNanumByPopularity, getNanumAllByFavorites, queryKeys, getNanumAllByRecent} from '../../api'
-import {storeString} from '../../hooks'
 import moment from 'moment'
 moment.locale('ko')
 

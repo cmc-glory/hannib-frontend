@@ -19,6 +19,7 @@ import FastImage from 'react-native-fast-image'
 const BUTTON_GAP = 10
 
 const IMAGE_SIZE = (Dimensions.get('window').width - 40 - 32 - 18) / 3
+const IMAGE_GAP = (Dimensions.get('window').width - 40 - IMAGE_SIZE * 3) / 3
 const IMAGE_BORDER = IMAGE_SIZE / 2
 const CIRCLE_SIZE = IMAGE_SIZE + 8
 const CIRCLE_BORDER = CIRCLE_SIZE / 2
@@ -69,9 +70,17 @@ export const SelectCategory = () => {
   const searchCategoryQuery = useMutation(queryKeys.searchCategory, searchCategory, {
     // 검색 api
     onSuccess(data, variables, context) {
-      console.log('search category has been complete successfully')
-      console.log('data:', data)
-      setResult(data)
+      setResult(
+        data.sort((a: ICategoryDto, b: ICategoryDto) => {
+          if (a.nickName < b.nickName) {
+            return -1
+          }
+          if (a.nickName > b.nickName) {
+            return 1
+          }
+          return 0
+        }),
+      )
     },
     onError(error, variables, context) {
       showMessage({
@@ -134,6 +143,7 @@ export const SelectCategory = () => {
       // 입력 값이 없을 때는 리턴
       //if (keyword == '') return
       init && setInit(false) // 한번 검색을 하고 나면 init screen은 필요 없음
+
       searchCategoryQuery.mutate({
         job: singerSelected ? '가수' : '배우',
         nickName: keyword,
@@ -247,9 +257,9 @@ export const SelectCategory = () => {
             <FlatList
               data={result}
               numColumns={3}
-              columnWrapperStyle={{justifyContent: 'space-between', marginBottom: 16}}
+              columnWrapperStyle={{justifyContent: 'flex-start', marginBottom: 16}}
               renderItem={({item, index}) => (
-                <View style={{width: CIRCLE_SIZE}}>
+                <View style={[{width: CIRCLE_SIZE}, index % 3 != 2 && {marginRight: IMAGE_GAP}]}>
                   <Pressable style={[styles.pressableView, isSelected(item) && styles.selectedPressable]} onPress={() => onPressCategory(item)}>
                     {isSelected(item) && <CheckboxMainIcon style={styles.checkboxMain} />}
                     <FastImage style={styles.image} source={{uri: item.imgUrl}}></FastImage>

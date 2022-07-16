@@ -58,6 +58,7 @@ import XSmallSvg from '../../assets/Icon/XSmall.svg'
 import EmptySvg from '../../assets/Icon/Empty.svg'
 import HeartRedSvg from '../../assets/Icon/HeartRed.svg'
 import StarYellowSvg from '../../assets/Icon/StarYellow.svg'
+import RightArrowIconBoldSvg from '../../assets/Icon/RightArrowIconBold.svg'
 
 import * as theme from '../../theme'
 
@@ -71,6 +72,14 @@ type IconPropss = {
   onPress?: () => void
   style?: any
   size?: number
+}
+
+export const RightArrowBoldIcon = ({onPress, style, size = 24}: IconPropss) => {
+  return (
+    <Pressable onPress={onPress} style={style}>
+      <RightArrowIconBoldSvg width={size} height={size} />
+    </Pressable>
+  )
 }
 
 export const StarYellowIcon = ({onPress, style, size = 24}: IconPropss) => {

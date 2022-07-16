@@ -24,4 +24,7 @@ export const queryKeys = {
   report: ['report'], // 신고하기
   holdingNanumList: ['holdingNanumList'],
   participatingNanumList: ['participatingNanumList'],
-}
+  receiverList: ['receiverList'], // 진행한 나눔 페이지 수령자 리스트
+  endNanum: ['endNanum'], // 나눔 마감
+  sendNotice: ['sendNotice'], // 공지 보내기
+  myNanumDetail: ['myNanumDetail'], // 진행한 나눔 상세 페이지

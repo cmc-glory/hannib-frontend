@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react'
+import React, {useState, useCallback, useEffect} from 'react'
 import {View, Text, StyleSheet, Dimensions, Pressable, FlatList, Alert} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation} from '@react-navigation/native'
@@ -17,6 +17,7 @@ import {updateCategory} from '../../redux/slices'
 const BUTTON_GAP = 10
 
 const IMAGE_SIZE = (Dimensions.get('window').width - 40 - 32 - 18) / 3
+const IMAGE_GAP = (Dimensions.get('window').width - 40 - IMAGE_SIZE * 3) / 3
 const IMAGE_BORDER = IMAGE_SIZE / 2
 const CIRCLE_SIZE = IMAGE_SIZE + 6
 const CIRCLE_BORDER = CIRCLE_SIZE / 2
@@ -39,9 +40,17 @@ export const EditCategory = () => {
   const searchCategoryQuery = useMutation(queryKeys.searchCategory, searchCategory, {
     // 검색 api
     onSuccess(data, variables, context) {
-      console.log(data)
-      setResult(data)
-      console.log(data == '')
+      setResult(
+        data.sort((a: ICategoryDto, b: ICategoryDto) => {
+          if (a.nickName < b.nickName) {
+            return -1
+          }
+          if (a.nickName > b.nickName) {
+            return 1
+          }
+          return 0
+        }),
+      )
     },
     onError(error, variables, context) {
       showMessage({
@@ -165,8 +174,8 @@ export const EditCategory = () => {
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
       <StackHeader title="카테고리 설정" x goBack />
-      <View style={[theme.styles.wrapper, {flex: 1}]}>
-        <View style={[styles.mainCategoryContainer]}>
+      <View style={[{flex: 1}]}>
+        <View style={[theme.styles.wrapper, styles.mainCategoryContainer]}>
           <Button
             selected={singerSelected}
             label="가수"
@@ -187,9 +196,17 @@ export const EditCategory = () => {
             }}
           />
         </View>
-        <SearchStar keyword={keyword} setKeyword={setKeyword} searchKeyword={searchKeyword} />
+        <View style={[theme.styles.wrapper]}>
+          <SearchStar keyword={keyword} setKeyword={setKeyword} searchKeyword={searchKeyword} />
+        </View>
         <View style={{flex: 1}}>
-          <View style={[theme.styles.rowFlexStart, {flexWrap: 'wrap', marginBottom: 16}, result.length == 0 && {position: 'absolute', zIndex: 1}]}>
+          <View
+            style={[
+              theme.styles.wrapper,
+              theme.styles.rowFlexStart,
+              {flexWrap: 'wrap', marginBottom: 4},
+              result.length == 0 && {position: 'absolute', zIndex: 1},
+            ]}>
             {userSelectedCategories.length > 0 &&
               userSelectedCategories.map(item => (
                 <View key={item.categoryName + item.job} style={[theme.styles.rowFlexStart, {marginBottom: 8}, styles.selectedCategoryButton]}>
@@ -205,19 +222,22 @@ export const EditCategory = () => {
           ) : result.length == 0 ? (
             <EmptyResult />
           ) : (
-            <FlatList
-              data={result}
-              numColumns={3}
-              columnWrapperStyle={{justifyContent: 'space-between', marginBottom: 16}}
-              renderItem={({item, index}) => (
-                <View style={{width: CIRCLE_SIZE}}>
-                  <Pressable style={[styles.pressableView, isSelected(item) && styles.selectedPressable]} onPress={() => onPressCategory(item)}>
-                    {isSelected(item) && <CheckboxMainIcon style={styles.checkboxMain} />}
-                    <FastImage style={styles.image} source={{uri: item.imgUrl}}></FastImage>
-                  </Pressable>
-                  <Text style={styles.starName}>{item.nickName}</Text>
-                </View>
-              )}></FlatList>
+            <>
+              <FlatList
+                data={result}
+                numColumns={3}
+                contentContainerStyle={theme.styles.wrapper}
+                columnWrapperStyle={[{justifyContent: 'flex-start', marginBottom: 16}]}
+                renderItem={({item, index}) => (
+                  <View style={[{width: CIRCLE_SIZE}, index % 3 != 2 && {marginRight: IMAGE_GAP}]}>
+                    <Pressable style={[styles.pressableView, isSelected(item) && styles.selectedPressable]} onPress={() => onPressCategory(item)}>
+                      {isSelected(item) && <CheckboxMainIcon style={styles.checkboxMain} />}
+                      <FastImage style={styles.image} source={{uri: item.imgUrl}}></FastImage>
+                    </Pressable>
+                    <Text style={styles.starName}>{item.nickName}</Text>
+                  </View>
+                )}></FlatList>
+            </>
           )}
         </View>
       </View>

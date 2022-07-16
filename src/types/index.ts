@@ -175,6 +175,87 @@ export type ISearch = {
 }
 
 // ******************** backend variable names below ********************
+
+export type INoticeDto = {
+  accountIdx: number
+  nanumIdx: number
+  title: string
+  comments: string
+}
+
+export type IUnsongDto = {
+  accountIdx: number
+  company: string
+  nanumIdx: number
+  unsongMethod: '우편' | '등기'
+  unsongNumber: number
+}
+
+export type IApplyAskAnswer = {
+  accountIdx: number
+  nanumIdx: number
+  askList: string
+  answerList: string
+}
+
+// 진행한 나눔 상세 페이지
+export type IMyNanumDetailDto = {
+  applyDto: IApplyDto
+  nanumGoodsDto: INanumGoodsOrderDto[]
+}
+
+export type IApplyDto = {
+  applyAskAnswerLists: IApplyAskAnswer[]
+  nanumGoodsDtoList: INanumGoodsOrderDto[]
+  accountIdx: number
+  nanumIdx: number
+  acceptedYn: 'Y' | 'N'
+  cancelYn: 'Y' | 'N'
+  misacceptedYn: 'Y' | 'N'
+  reviewYn: 'Y' | 'N'
+  unsongYn: 'Y' | 'N'
+  acceptDate: string
+  realName: string
+  address1: number // 우편번호
+  address2: string
+  creatorId: string
+  phoneNumber: string
+  nanumMethod: 'O' | 'M'
+}
+
+// 진행한 나눔 페이지 신청자 리스트 정보
+export type IReceiverDto = {
+  nanumGoodsDto: INanumGoodsOrderDto[]
+  nanumDetailDto: INanumDetailDto[]
+}
+
+// 신청자 기본 정보
+export type INanumDetailDto = {
+  acceptedYn: 'Y' | 'N'
+  accountIdx: number
+  creatorId: string
+  goodsName: string
+  nanumIdx: number
+  realName: string
+}
+
+// 특정 사람이 신청한 굿즈 리스트
+export type INanumGoodsOrderDto = {
+  goodsIdx: number
+  accountIdx: number
+  nanumIdx: number
+  goodsName: string
+  creatorId: string
+  goodsNumber: number
+  realName: string
+}
+
+export type ICancelDto = {
+  accountIdx: number
+  nanumDeletereason: string
+  nanumIDx: number
+}
+
 export type INanumAccountFavoritesDto = {
   nanumIdx: number
   accountIdx: number
@@ -329,7 +410,6 @@ export type INanumForm = {
   secretForm: 'Y' | 'N'
   secretPwd: number | string
   favorites: number
-  favorites_yn: 'Y' | 'N'
   accountDto: {
     accountCategoryDtoList: IAccountCategoryDto[]
     accountIdx: number

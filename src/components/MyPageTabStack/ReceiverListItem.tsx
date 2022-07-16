@@ -24,13 +24,13 @@ type ReceiverListItem = {
   index: number //db나오면 수정
   checkedItems: Array<any>
   handleSingleCheck: (id: number) => void
-  receiveState: string
+  acceptedYn: 'Y' | 'N'
   receiverName: string
   products: Array<IProductInfo>
 }
 
 //개별 리스트 아이템
-export const ReceiverListItem = ({onPressViewDetail, index, checkedItems, id, handleSingleCheck, receiverName, receiveState, products}: ReceiverListItem) => {
+export const ReceiverListItem = ({onPressViewDetail, index, checkedItems, id, handleSingleCheck, receiverName, acceptedYn, products}: ReceiverListItem) => {
   return (
     <Pressable
       onPress={() => {
@@ -54,7 +54,7 @@ export const ReceiverListItem = ({onPressViewDetail, index, checkedItems, id, ha
       <View style={{alignSelf: 'stretch', justifyContent: 'space-between', flex: 1}}>
         <View style={{flexDirection: 'row', marginBottom: 8}}>
           <Text style={{fontSize: 12}}>{receiverName}</Text>
-          {receiveState == '수령완료' ? (
+          {acceptedYn == 'Y' ? (
             <View style={{flexDirection: 'row'}}>
               <Text style={{fontSize: 12}}> | </Text>
               <Text style={{fontSize: 12, color: theme.main}}>수령완료</Text>
