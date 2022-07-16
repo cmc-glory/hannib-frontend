@@ -5,53 +5,49 @@ import {useNavigation} from '@react-navigation/native'
 import Modal from 'react-native-modal'
 import moment from 'moment'
 import * as theme from '../../theme'
-import type {ISharingInfo} from '../../types'
+import type {IParticipatingSharingList, ISharingInfo} from '../../types'
 import {Tag, XIcon, StarUnfilledIcon, StarFilledIcon} from '../utils'
 
 const {width} = Dimensions.get('window')
 
 var IMAGE_SIZE = (width - theme.PADDING_SIZE * 3) / 2
 
-export const ParticipatingSharingItem = ({item}: {item: ISharingInfo}) => {
+export const ParticipatingSharingItem = ({item}: {item: IParticipatingSharingList}) => {
   // 나눔 게시글 아이템 구조분해 할당
-  const {type, title, writer, uri, isSecret, secretKey} = item
+  const {accountIdx, nanumIdx, creatorId, thumbnail, category, nanumMethod, title, createdDatetime, favorites, secretForm, secretPwd, firstDate} = item
 
   const now = moment()
-  const openDate = moment(item.openDate, 'YYYYMMDDHHmmss')
+  const openDate = moment(item.firstDate, 'YYYYMMDDHHmmss')
 
   // 이미지가 존재하면 이미지의 uri로, 없으면 기본 이미지로
-  const imageUri = uri ? uri : 'http://localhost:8081/src/assets/images/no-image.jpeg'
+  const imageUri = thumbnail ? thumbnail : 'http://localhost:8081/src/assets/images/no-image.jpeg'
   const navigation = useNavigation()
 
   const [isBefore, setIsBefore] = useState(false)
-  const [secretModalVisible, setSecretModalVisible] = useState(false)
 
   useEffect(() => {
     setIsBefore(now < openDate ? true : false)
   }, [])
 
   // 상세 페이지로 이동
-  const onPressItem = useCallback((type: 'online' | 'offline') => {
-    if (isSecret == true) {
-      setSecretModalVisible(true)
+  const onPressItem = useCallback((type: 'M' | 'O') => {
+    if (type == 'M') {
+      //메일(온라인)
+      navigation.navigate('ParticipatingSharingStackNavigator', {
+        screen: 'ParticipatingSharingOnline',
+        params: {id: item.nanumIdx},
+      })
     } else {
-      if (type == 'online') {
-        navigation.navigate('ParticipatingSharingStackNavigator', {
-          screen: 'ParticipatingSharingOnline',
-          params: {id: item.id},
-        })
-      } else {
-        navigation.navigate('ParticipatingSharingStackNavigator', {
-          screen: 'ParticipatingSharingOffline',
-          params: {id: item.id},
-        })
-      }
+      navigation.navigate('ParticipatingSharingStackNavigator', {
+        screen: 'ParticipatingSharingOffline',
+        params: {id: item.nanumIdx},
+      })
     }
   }, [])
 
   return (
     <>
-      <Pressable onPress={() => onPressItem(type)} style={[styles.container]}>
+      <Pressable onPress={() => onPressItem(nanumMethod)} style={[styles.container]}>
         {isBefore && (
           <View style={styles.overlay}>
             <Text style={[styles.overlayText, {marginBottom: 2.5}]}>{openDate.format('YYYY MM')}</Text>
@@ -65,9 +61,9 @@ export const ParticipatingSharingItem = ({item}: {item: ISharingInfo}) => {
           <FastImage style={[styles.image, {width: IMAGE_SIZE, height: IMAGE_SIZE}]} source={{uri: imageUri}}></FastImage>
         </View>
         <View style={{marginTop: 10}}>
-          <Tag label={type == 'offline' ? '오프라인' : '우편'} />
+          <Tag label={nanumMethod == 'M' ? '우편' : '오프라인'} />
           <Text style={[styles.title, {width: IMAGE_SIZE}]}>{title}</Text>
-          <Text style={[styles.writerName]}>{writer}</Text>
+          <Text style={[styles.writerName]}>{creatorId}</Text>
         </View>
       </Pressable>
     </>

@@ -10,7 +10,7 @@ import {EmptyIcon, MenuIcon, StackHeader} from '../../components/utils'
 import {HoldingSharingItem} from '../../components/MyPageTabStack'
 import * as theme from '../../theme'
 import {ISharingInfo, IHoldingSharingList} from '../../types'
-import {getMyNanumList, queryKeys} from '../../api'
+import {getHoldingNanumList, queryKeys} from '../../api'
 
 const STATUSBAR_HEIGHT = getStatusBarHeight()
 
@@ -22,7 +22,7 @@ export const HoldingSharingList = () => {
   const [list, setList] = useState<IHoldingSharingList[]>([])
   const [refreshing, setRefreshing] = useState<boolean>(false)
 
-  const {data} = useQuery([queryKeys.holdingNanumList], () => getMyNanumList(user.accountIdx), {
+  const {data} = useQuery([queryKeys.holdingNanumList], () => getHoldingNanumList(user.accountIdx), {
     onSuccess: data => {
       setRefreshing(false)
       console.log('success')

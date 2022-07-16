@@ -9,16 +9,14 @@ const apiClient = axios.create({
   },
 })
 
-// // 이메일로 회원 정보 가져오기
-// export const getAccountInfoByEmail = async (email: string) => {
-//   const {data} = await apiClient.get(`/api/account/email?email=${email}`)
-//   return data
-// }
-
 // 진행한 나눔 리스트 get
-export const getMyNanumList = async (accountIdx: number) => {
+export const getHoldingNanumList = async (accountIdx: number) => {
   const {data} = await apiClient.get(`/api/nanum/list/mynanum/send?accountIdx=${accountIdx}`)
   return data
 }
 
-//export const get
+//참여한 나눔 리스트 get
+export const getParticipatingNanumList = async (accountIdx: number) => {
+  const {data} = await apiClient.get(`/api/nanum/list/mynanum/apply?accountIdx=${accountIdx}`)
+  return data
+}
