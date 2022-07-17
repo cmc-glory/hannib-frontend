@@ -32,10 +32,8 @@ export const ParticipatingSharingOffline = () => {
   const user = useAppSelector(state => state.auth.user)
 
   // ******************** states ********************
-  const [participateState, setParticipateState] = useState<string>()
   const [detail, setDetail] = useState<IAppliedNanumDetailDto>()
   const [appliedGoodsList, setAppliedGoodsList] = useState<IApplyingGoodsDto[]>([])
-  const [nanumState, setNanumState] = useState<'배송 준비중' | '배송 시작'>('배송 준비중')
   const [refreshing, setRefreshing] = useState<boolean>(false)
 
   // ******************** react quries ********************
@@ -43,7 +41,7 @@ export const ParticipatingSharingOffline = () => {
   const nanumInfo = useQuery([queryKeys.nanumDetail, nanumIdx], () => getNanumByIndex({nanumIdx: nanumIdx, accountIdx: user.accountIdx, favoritesYn: 'N'}))
 
   useQuery(
-    [queryKeys.appliedNanum],
+    [queryKeys.appliedNanum, nanumIdx],
     () =>
       getAppliedNanumInfo({
         accountIdx: user.accountIdx,
@@ -51,8 +49,9 @@ export const ParticipatingSharingOffline = () => {
       }),
     {
       onSuccess(data) {
+        console.log(data)
+        setRefreshing(false)
         setDetail(data)
-        setNanumState(data.applyDto.unsongYn == 'Y' ? '배송 시작' : '배송 준비중')
         setAppliedGoodsList(data.applyingGoodsDto)
       },
     },
@@ -90,10 +89,6 @@ export const ParticipatingSharingOffline = () => {
   }, [nanumInfo])
 
   const onPressCancel = useCallback(() => {
-    if (nanumState == '배송 시작') {
-      Alert.alert('배송 시작 상태에선 취소할 수 없습니다.', '', [{text: '확인'}])
-      return
-    }
     Alert.alert('나눔 신청을 취소하시겠습니까?', '', [
       {
         text: '취소',
@@ -121,7 +116,8 @@ export const ParticipatingSharingOffline = () => {
   }, [nanumInfo])
 
   const onRefresh = useCallback(() => {
-    queryClient.invalidateQueries([queryKeys.appliedNanum])
+    setRefreshing(true)
+    queryClient.invalidateQueries([queryKeys.appliedNanum, nanumIdx])
   }, [])
 
   return (
@@ -145,12 +141,12 @@ export const ParticipatingSharingOffline = () => {
           <Text style={[theme.styles.bold16, {marginBottom: 16}]}>신청 내역</Text>
           <View>
             <View style={[theme.styles.rowSpaceBetween, {marginBottom: 20}]}>
-              <Text style={{color: theme.gray500}}>2022.06.30 22:01:52</Text>
+              <Text style={{color: theme.gray500}}>{detail?.applyDto?.applyDate?.slice(0, 16)}</Text>
               {/* {participateState !== 'proceeding' ? <Tag label="수령 완료"></Tag> : null} */}
             </View>
             <View style={[theme.styles.rowSpaceBetween, styles.requestInfoWrapper]}>
-              <Text style={styles.requestInfoLabel}>수령자명</Text>
-              <Text style={styles.requestInfoText}>{detail?.applyDto.realName}</Text>
+              <Text style={[styles.requestInfoLabel]}>수령자명</Text>
+              <Text style={styles.requestInfoText}>{detail?.applyDto?.creatorId}</Text>
             </View>
             <View style={[theme.styles.rowSpaceBetween, styles.requestInfoWrapper]}>
               <Text style={styles.requestInfoLabel}>주문 목록</Text>
@@ -163,33 +159,21 @@ export const ParticipatingSharingOffline = () => {
               </View>
             </View>
             <View style={[theme.styles.rowSpaceBetween, styles.requestInfoWrapper]}>
-              <Text style={styles.requestInfoLabel}>주소</Text>
-              <Text style={styles.requestInfoText}>
-                {detail?.applyDto.address1} {detail?.applyDto.address2}
-              </Text>
+              <Text style={styles.requestInfoLabel}>수령 예정일</Text>
+              <Text style={styles.requestInfoText}>{detail?.applyDto?.acceptDate?.slice(0, 16)}</Text>
             </View>
             <View style={[theme.styles.rowSpaceBetween, styles.requestInfoWrapper]}>
-              <Text style={styles.requestInfoLabel}>연락처</Text>
-              <Text style={styles.requestInfoText}>{detail?.applyDto.phoneNumber}</Text>
+              <Text style={styles.requestInfoLabel}>위치</Text>
+              <Text style={styles.requestInfoText}>{detail?.applyDto?.location}</Text>
             </View>
-            <View style={[theme.styles.rowSpaceBetween, styles.requestInfoWrapper]}>
-              <Text style={styles.requestInfoLabel}>수령 현황</Text>
-              <Text style={styles.requestInfoText}>{nanumState}</Text>
-            </View>
-            {detail?.applyDto.trackingNumber != '' && detail?.applyDto.trackingNumber != undefined && (
-              <View style={[theme.styles.rowSpaceBetween, styles.requestInfoWrapper]}>
-                <Text style={styles.requestInfoLabel}>운송장 번호</Text>
-                <Text style={styles.requestInfoText}>{detail?.applyDto.trackingNumber}</Text>
-              </View>
-            )}
           </View>
         </View>
         <View>
-          {nanumState == '배송 준비중' ? (
-            <Pressable style={[styles.buttonMedium, styles.reviewButton]} onPress={onPressWriteReview}>
-              <Text style={styles.trackingText}>후기 작성</Text>
+          {detail?.applyDto?.misacceptedYn == 'Y' ? (
+            <Pressable style={[styles.buttonLarge, styles.unacceptButton]} onPress={onPressWriteReview}>
+              <Text style={styles.unacceptText}>미수령</Text>
             </Pressable>
-          ) : (
+          ) : detail?.applyDto?.acceptedYn == 'N' ? (
             <View style={[theme.styles.rowSpaceBetween, {marginBottom: 24}]}>
               <Pressable style={[styles.buttonMedium, styles.cancelButton]} onPress={onPressCancel}>
                 <Text style={styles.cancelText}>취소하기</Text>
@@ -198,6 +182,14 @@ export const ParticipatingSharingOffline = () => {
                 <Text style={styles.trackingText}>문의하기</Text>
               </Pressable>
             </View>
+          ) : detail?.applyDto?.reviewYn == 'N' ? (
+            <Pressable style={[styles.buttonLarge, styles.reviewButton]} onPress={onPressWriteReview}>
+              <Text style={styles.trackingText}>후기 작성</Text>
+            </Pressable>
+          ) : (
+            <Pressable style={[styles.buttonLarge, styles.cancelButton]} onPress={onPressWriteReview}>
+              <Text style={styles.cancelText}>후기 작성 완료</Text>
+            </Pressable>
           )}
         </View>
 
@@ -209,14 +201,23 @@ export const ParticipatingSharingOffline = () => {
 
 const styles = StyleSheet.create({
   reviewButton: {
+    backgroundColor: theme.main50,
+    borderColor: theme.main,
+  },
+
+  unacceptButton: {
+    borderColor: theme.gray300,
+  },
+  unacceptText: {
+    color: theme.gray300,
+  },
+  buttonLarge: {
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 14,
     borderWidth: 1,
     borderRadius: 4,
     width: '100%',
-    backgroundColor: theme.main50,
-    borderColor: theme.main,
   },
   trackingText: {
     fontFamily: 'Pretendard-Bold',
@@ -258,6 +259,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: theme.gray500,
     alignSelf: 'flex-start',
+    lineHeight: 24,
   },
   requestInfoText: {
     fontSize: 16,

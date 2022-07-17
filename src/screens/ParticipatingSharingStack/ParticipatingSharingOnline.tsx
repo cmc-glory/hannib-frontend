@@ -270,6 +270,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: theme.gray500,
     alignSelf: 'flex-start',
+    lineHeight: 24,
   },
   requestInfoText: {
     fontSize: 16,

@@ -247,8 +247,10 @@ export type IApplyDto = {
   misacceptedYn: 'Y' | 'N'
   reviewYn: 'Y' | 'N'
   unsongYn: 'Y' | 'N'
-  acceptDate: string
+  acceptDate: string // 오프라인 수령 일자
+  applyDate: string // 신청 일자
   realName: string
+  location: string // 오프라인 시 수령 장소
   address1: string // 우편번호
   address2: string
   creatorId: string
@@ -593,6 +595,8 @@ export type IParticipatingSharingList = {
   secretPwd: string
   firstDate: Date //haveto 날짜 전반적으로 수정
   endYn: 'Y' | 'N'
+  nanumCancelYn: 'Y' | 'N' // 나눔자가 취소한 경우
+  applyCancelYn: 'Y' | 'N'
 }
 
 export type requestedGoods = {
