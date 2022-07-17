@@ -12,6 +12,7 @@ const BORDER_SIZE = IMAGE_SIZE / 2
 type ImagePickerProps = {
   images: Asset[]
   setImages: React.Dispatch<React.SetStateAction<Asset[]>>
+  necessary?: boolean
 }
 
 export const ImagePreview = ({
@@ -30,7 +31,7 @@ export const ImagePreview = ({
     </View>
   )
 }
-export const ImagePicker = ({images, setImages}: ImagePickerProps) => {
+export const ImagePicker = ({images, setImages, necessary = true}: ImagePickerProps) => {
   React.useEffect(() => {
     console.log('images : ', images)
   }, [images])

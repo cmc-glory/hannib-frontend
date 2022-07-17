@@ -18,40 +18,20 @@ export const ParticipatingSharingList = () => {
   const [list, setList] = useState<IParticipatingSharingList[]>([])
   const [refreshing, setRefreshing] = useState<boolean>(false)
 
-  const {data} = useQuery([queryKeys.participatingNanumList], () => getParticipatingNanumList(user.accountIdx), {
+  useQuery([queryKeys.appliedNanumList], () => getParticipatingNanumList(user.accountIdx), {
     onSuccess: data => {
       setRefreshing(false)
-      console.log('success')
-      console.log(data)
       setList(data)
     },
     onError(err) {
-      console.log('err')
       console.log(err)
     },
   })
 
-  //api 적용 전
-  // 컴포넌트가 마운트 되면 진행한 나눔 목록 가져옴
-  useEffect(() => {
-    fetch('http://localhost:8081/src/data/dummySharings.json')
-      .then(res => res.json())
-      .then(result => {
-        // setSharings(result)
-        //setSharings([])
-      })
-  }, [])
-
   // pull up refresh event가 발생하면 진행 목록 가져옴
   const onRefresh = useCallback(() => {
     setRefreshing(true)
-    fetch('http://localhost:8081/src/data/dummySharings.json')
-      .then(res => res.json())
-      .then(result => {
-        // setSharings(result)
-        //setSharings([])
-        setRefreshing(false)
-      })
+    queryClient.invalidateQueries([queryKeys.appliedNanumList])
   }, [])
 
   return (

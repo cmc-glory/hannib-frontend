@@ -176,6 +176,27 @@ export type ISearch = {
 
 // ******************** backend variable names below ********************
 
+export type ICalendarDto = {
+  applyGoodsDto: {nanumIdx: number; goodsName: string}[] // 신청 굿즈 리스트
+  calendarDto3: {acceptDate: string; location: string; nanumIdx: number; title: string}[] // 신청한 나눔 수령 일자
+
+  nanumGoodsDto: {nanumIdx: number; goodsName: string; goodsNumber: string}[] // 진행한 굿즈 리스트
+  calendarDto2: {acceptDate: string; location: string; nanumIdx: number; title: string}[] // 진행한 나눔 수령 일자
+}
+
+export type IReviewDto = {
+  reviewImgDtoList: IReviewImgDto[]
+  accountIdx: number
+  nanumIdx: number
+  comments: string
+}
+
+export type IReviewImgDto = {
+  accountIdx: number
+  nanumIdx: number
+  imgUrl: string
+}
+
 export type INoticeDto = {
   accountIdx: number
   nanumIdx: number
@@ -196,6 +217,18 @@ export type IApplyAskAnswer = {
   nanumIdx: number
   askList: string
   answerList: string
+}
+
+export type IApplyingGoodsDto = {
+  accountIdx: number
+  nanumIdx: number
+  goodsName: string
+}
+
+// 진행한 나눔 상세 페이지
+export type IAppliedNanumDetailDto = {
+  applyDto: IApplyDto
+  applyingGoodsDto: IApplyingGoodsDto[]
 }
 
 // 진행한 나눔 상세 페이지
@@ -221,6 +254,7 @@ export type IApplyDto = {
   creatorId: string
   phoneNumber: string
   nanumMethod: 'O' | 'M'
+  trackingNumber: string
 }
 
 // 진행한 나눔 페이지 신청자 리스트 정보
@@ -252,8 +286,8 @@ export type INanumGoodsOrderDto = {
 
 export type ICancelDto = {
   accountIdx: number
-  nanumDeletereason: string
-  nanumIDx: number
+  nanumDeleteReason: string
+  nanumIdx: number
 }
 
 export type INanumAccountFavoritesDto = {
@@ -318,6 +352,7 @@ export type INanumListItem = {
   favoritesYn: 'Y' | 'N' // 즐겨찾기 여부
   favorites: number // 즐겨찾기 사람 수
   accountIdx: number // 작성자의 account Idx
+  endYn: 'Y' | 'N'
 }
 
 // 모집폼 작성 시 기본 정보

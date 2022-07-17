@@ -14,6 +14,7 @@ const IMAGE_SIZE = 64
 type ImagePickerProps = {
   images: string[]
   setImages: React.Dispatch<React.SetStateAction<string[]>>
+  necessary?: boolean
 }
 
 export const ImagePreview = ({uri, onPressRemove}: {uri: string | undefined; onPressRemove: (filename: string | undefined) => void}) => {
@@ -35,7 +36,7 @@ export const ImagePreview = ({uri, onPressRemove}: {uri: string | undefined; onP
   )
 }
 
-export const ImagePicker = ({images, setImages}: ImagePickerProps) => {
+export const ImagePicker = ({images, setImages, necessary = true}: ImagePickerProps) => {
   // ******************** react query ********************
   const uploadImageQuery = useMutation(queryKeys.nanumImage, uploadNanumImage, {
     onSuccess(data) {
@@ -138,7 +139,7 @@ export const ImagePicker = ({images, setImages}: ImagePickerProps) => {
     <View style={[styles.contianer]}>
       <View style={[theme.styles.rowFlexStart]}>
         <Text style={[theme.styles.label]}>대표 이미지 등록 (최대 5개)</Text>
-        <NeccesaryField />
+        {necessary == true && <NeccesaryField />}
       </View>
 
       <View style={[styles.imageContainer]}>

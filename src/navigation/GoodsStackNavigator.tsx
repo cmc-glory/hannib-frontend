@@ -11,6 +11,7 @@ import {
   WriterProfile,
   NoticeList,
   GoodsRequestComplete,
+  GoodsRequestError,
 } from '../screens/GoodsStack'
 
 type GoodsStackNavigatorParamList = {
@@ -37,12 +38,18 @@ type GoodsStackNavigatorParamList = {
     title: string
   }
   WriterProfile: {
-    writreid: string
+    writerAccountIdx: number
   }
   NoticeList: {
     postid: string
   }
   GoodsRequestComplete: undefined
+  GoodsRequestError: {
+    nanumIdx: number
+  }
+  NanumDetailThroughWriterProfile: {
+    nanumIdx: string
+  }
 }
 
 const Stack = createStackNavigator<GoodsStackNavigatorParamList>()
@@ -68,6 +75,9 @@ export type WriteQnARouteProps = WriteQnAProps['route']
 type WriterProfileProps = NativeStackScreenProps<GoodsStackNavigatorParamList, 'WriterProfile'>
 export type WriterProfileRouteProps = WriterProfileProps['route']
 
+type GoodsRequestErrorProps = NativeStackScreenProps<GoodsStackNavigatorParamList, 'GoodsRequestError'>
+export type GoodsRequestErrorRouteProps = GoodsRequestErrorProps['route']
+
 const GoodsStackNavigator = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false, cardStyle: {backgroundColor: 'white', flex: 1}}}>
@@ -80,6 +90,8 @@ const GoodsStackNavigator = () => {
       <Stack.Screen name="WriterProfile" component={WriterProfile} />
       <Stack.Screen name="NoticeList" component={NoticeList} />
       <Stack.Screen name="GoodsRequestComplete" component={GoodsRequestComplete} />
+      <Stack.Screen name="GoodsRequestError" component={GoodsRequestError} />
+      <Stack.Screen name="NanumDetailThroughWriterProfile" component={NanumDetail} />
     </Stack.Navigator>
   )
 }

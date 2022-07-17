@@ -3,7 +3,6 @@ import {View, Pressable, ScrollView, Text, StyleSheet, Alert, ActivityIndicator,
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useQuery, useMutation} from 'react-query'
 import {showMessage} from 'react-native-flash-message'
-import {getStatusBarHeight} from 'react-native-status-bar-height'
 import moment from 'moment'
 
 import {
@@ -113,6 +112,7 @@ export const HoldingSharing = () => {
       reviewYn: 'N',
       unsongYn: 'N',
       nanumMethod: 'O',
+      trackingNumber: '',
     },
     nanumGoodsDto: [
       {

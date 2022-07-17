@@ -11,6 +11,10 @@ declare module '@env' {
 }
 declare namespace ReactNavigation {
   interface RootParamList {
+    NanumDetailThroughWriterProfile: {
+      nanumIdx: number
+    }
+    GoodsRequestError: undefined
     NanumList: undefined
     Login: undefined
     FindId: undefined
@@ -165,7 +169,7 @@ declare namespace ReactNavigation {
       title: string
     }
     WriterProfile: {
-      writerid: string
+      writerAccountIdx: number
     }
     HoldingSharingList: undefined
     ParticipatingSharingList: undefined
@@ -186,5 +190,12 @@ declare namespace ReactNavigation {
     EditCategoryStackNavigator: undefined
     EditCategoryAskAddStar: undefined
     EditCategoryAskAddStarComplete: undefined
+    WriteReview: {
+      nanumIdx: number
+      accountIdx: number
+      imageuri: string
+      category: string
+      title: string
+    }
   }
 }

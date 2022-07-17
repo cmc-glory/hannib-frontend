@@ -1,5 +1,5 @@
 import React from 'react'
-import {View, Text, StyleSheet} from 'react-native'
+import {View, Text, StyleSheet, Pressable} from 'react-native'
 import FastImage from 'react-native-fast-image'
 import {Tag} from '../utils'
 import * as theme from '../../theme'
@@ -7,10 +7,11 @@ type HoldingProjectItemProps = {
   uri: string
   tagLabel: string
   title: string
+  onPressNanum: () => void
 }
-export const HoldingProjectItem = ({uri, tagLabel, title}: HoldingProjectItemProps) => {
+export const HoldingProjectItem = ({uri, tagLabel, title, onPressNanum}: HoldingProjectItemProps) => {
   return (
-    <View style={{marginRight: 16}}>
+    <Pressable style={{marginRight: 16}} onPress={onPressNanum}>
       <View style={[styles.tag]}>
         <Tag label={tagLabel}></Tag>
       </View>
@@ -19,7 +20,7 @@ export const HoldingProjectItem = ({uri, tagLabel, title}: HoldingProjectItemPro
       <Text numberOfLines={2} style={[theme.styles.bold16, styles.projectTitle]}>
         {title}
       </Text>
-    </View>
+    </Pressable>
   )
 }
 

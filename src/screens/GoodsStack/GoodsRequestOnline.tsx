@@ -5,15 +5,13 @@ import KeyboardManager from 'react-native-keyboard-manager'
 import {useMutation, useQuery, useQueryClient} from 'react-query'
 import {useNavigation, useRoute} from '@react-navigation/native'
 
-import {StackHeader, FloatingBottomButton, NeccesaryField, SeparatorBold} from '../../components/utils'
+import {StackHeader, FloatingBottomButton, NeccesaryField, SeparatorBold, CheckboxIcon, EmptyCheckboxIcon} from '../../components/utils'
 import {FindAddress, ProductInfoOnline, MakeNewField} from '../../components/GoodsStack'
 import {IRequestFormOnline, INanumRequestRequiredDto, INanumApplyOnlineDto, INanumRequestReuiredAsk, INanumRequestGoods} from '../../types'
-import {queryKeys, getGoodsRequestInfo, getNanumRequestRequiredInfo, postNanumRequestOnlineForm} from '../../api'
+import {queryKeys, getNanumRequestRequiredInfo, postNanumRequestOnlineForm} from '../../api'
 import * as theme from '../../theme'
 import {GoodsRequestOnlineRouteProps} from '../../navigation/GoodsStackNavigator'
-import {userSelector} from '../../redux/slices'
 import {useAppSelector} from '../../hooks'
-import {showMessage} from 'react-native-flash-message'
 
 const PHONE_INPUT_WIDTH = (Dimensions.get('window').width - theme.PADDING_SIZE * 2 - 16 * 2) / 3
 
@@ -67,6 +65,7 @@ export const GoodsReqeustOnline = () => {
       third: '',
     },
   })
+  const [agreed, setAgreed] = useState<boolean>(false) // 개인정보 수집 항목 동의
 
   // ******************** react query ********************
   const data = useQuery([queryKeys.nanumRequestRequiredInfo, nanumIdx], () => getNanumRequestRequiredInfo(parseInt(nanumIdx)), {
@@ -99,28 +98,35 @@ export const GoodsReqeustOnline = () => {
     onError(error, variables, context) {
       console.log('error')
       console.log(error)
-      showMessage({
-        // 에러 안내 메세지
-        message: '나눔 신청 중 에러가 발생했습니다',
-        type: 'info',
-        animationDuration: 300,
-        duration: 1350,
-        style: {
-          backgroundColor: 'rgba(36, 36, 36, 0.9)',
-        },
-        titleStyle: {
-          fontFamily: 'Pretendard-Medium',
-        },
-        floating: true,
-      })
+      // showMessage({
+      //   // 에러 안내 메세지
+      //   message: '나눔 신청 중 에러가 발생했습니다',
+      //   type: 'info',
+      //   animationDuration: 300,
+      //   duration: 1350,
+      //   style: {
+      //     backgroundColor: 'rgba(36, 36, 36, 0.9)',
+      //   },
+      //   titleStyle: {
+      //     fontFamily: 'Pretendard-Medium',
+      //   },
+      //   floating: true,
+      // })
 
       navigation.navigate('GoodsStackNavigator', {
-        screen: 'GoodsRequestComplete',
+        screen: 'GoodsRequestError',
+        params: {
+          nanumIdx,
+        },
       })
     },
   })
 
   // ***************************** callbacks *****************************
+  const onPressAgreed = useCallback(() => {
+    setAgreed(agreed => !agreed)
+  }, [])
+
   const onPressRequest = useCallback(() => {
     if (postNanumRequestOnlineFormQuery.isLoading) {
       return
@@ -171,7 +177,8 @@ export const GoodsReqeustOnline = () => {
       requestForm.phonenumber.first == '' ||
       requestForm.phonenumber.second == '' ||
       requestForm.phonenumber.third == '' ||
-      requestForm.product.length == 0
+      requestForm.product.length == 0 ||
+      agreed == false
     ) {
       return false
     }
@@ -182,7 +189,7 @@ export const GoodsReqeustOnline = () => {
       }
     }
     return true
-  }, [requestForm, answers, info, nanumIdx])
+  }, [requestForm, answers, info, nanumIdx, agreed])
 
   const ref_input: Array<React.RefObject<TextInput>> = []
   ref_input[0] = useRef(null)
@@ -235,7 +242,7 @@ export const GoodsReqeustOnline = () => {
             <TextInput
               value={requestForm.name}
               onChange={(e: NativeSyntheticEvent<TextInputChangeEventData>) => setRequestForm({...requestForm, name: e.nativeEvent.text})}
-              style={[theme.styles.input, styles.input]}
+              style={[theme.styles.input]}
               placeholder="이름"
               placeholderTextColor={theme.gray300}
               underlineColorAndroid="transparent"
@@ -265,7 +272,7 @@ export const GoodsReqeustOnline = () => {
                   }
                   setRequestForm({...requestForm, phonenumber: {...requestForm.phonenumber, first: text}})
                 }}
-                style={[theme.styles.input, styles.input, {width: PHONE_INPUT_WIDTH}]}
+                style={[theme.styles.input, {width: PHONE_INPUT_WIDTH}]}
                 placeholder="000"
                 placeholderTextColor={theme.gray300}
                 underlineColorAndroid="transparent"
@@ -286,7 +293,7 @@ export const GoodsReqeustOnline = () => {
                   }
                   setRequestForm({...requestForm, phonenumber: {...requestForm.phonenumber, second: text}})
                 }}
-                style={[theme.styles.input, styles.input, {width: PHONE_INPUT_WIDTH}]}
+                style={[theme.styles.input, {width: PHONE_INPUT_WIDTH}]}
                 placeholder="0000"
                 placeholderTextColor={theme.gray300}
                 underlineColorAndroid="transparent"
@@ -305,7 +312,7 @@ export const GoodsReqeustOnline = () => {
                   setRequestForm({...requestForm, phonenumber: {...requestForm.phonenumber, third: text}})
                 }}
                 keyboardType="number-pad"
-                style={[theme.styles.input, styles.input, {width: PHONE_INPUT_WIDTH}]}
+                style={[theme.styles.input, {width: PHONE_INPUT_WIDTH}]}
                 placeholder="0000"
                 placeholderTextColor={theme.gray300}
                 underlineColorAndroid="transparent"
@@ -324,6 +331,19 @@ export const GoodsReqeustOnline = () => {
               setAnswers={setAnswers}
             />
           ))}
+
+          <View style={styles.spacing}>
+            <View style={[theme.styles.rowFlexStart]}>
+              {agreed ? <CheckboxIcon onPress={onPressAgreed} /> : <EmptyCheckboxIcon onPress={onPressAgreed} />}
+              <Text style={styles.label}>개인정보 수집 및 동의</Text>
+            </View>
+            <View style={styles.agreedContentView}>
+              <Text style={styles.agreedContentText}>
+                상품 주문 및 배송을 위해 입력된 개인정보를 수집합니다. 수집한 개인정보는 주문과 배송 이외의 목적으로는 사용하지 않습니다.
+              </Text>
+              <Text style={styles.agreedContentText}>개인정보의 수집 및 이용에 대한 동의를 거부할수 있으며, 이 경우 상품 주문이 어려울 수 있습니다.</Text>
+            </View>
+          </View>
         </View>
       </ScrollView>
       <FloatingBottomButton label="제출하기" enabled={isButtonEnabled()} onPress={onPressRequest} />
@@ -332,10 +352,24 @@ export const GoodsReqeustOnline = () => {
 }
 
 const styles = StyleSheet.create({
+  agreedContentText: {
+    fontSize: 12,
+    lineHeight: 16,
+    color: theme.gray700,
+  },
+  agreedContentView: {
+    marginTop: 8,
+    padding: 12,
+    backgroundColor: theme.gray50,
+  },
   spacing: {
     marginTop: 24,
   },
-  input: {},
+  label: {
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 16,
+    marginLeft: 8,
+  },
   title: {
     fontFamily: 'Pretendard-Bold',
     fontSize: 20,

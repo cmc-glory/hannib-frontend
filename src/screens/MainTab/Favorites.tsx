@@ -1,5 +1,6 @@
 import React, {useEffect, useRef, useState, useCallback} from 'react'
 import {View, Text, FlatList, ScrollView, Pressable, StyleSheet} from 'react-native'
+import {useQuery} from 'react-query'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {EmptyIcon} from '../../components/utils'
 import {useAppSelector} from '../../hooks'
@@ -7,6 +8,7 @@ import {StackHeader} from '../../components/utils'
 import {NanumListItem} from '../../components/MainTab'
 import {INanumListItem} from '../../types'
 import * as theme from '../../theme'
+import {queryKeys, getFavoritesByCategory} from '../../api'
 
 type CategoryItemProps = {
   name: string
@@ -19,7 +21,7 @@ type CategoryItemProps = {
 }
 
 const CategoryItem = ({name, id, onPressCategory, selectedCategory, currentIndex, selectedIndex, scrollRef}: CategoryItemProps) => {
-  const selected = id == selectedCategory
+  const selected = selectedIndex == currentIndex
   return (
     <Pressable
       onPress={() => onPressCategory(id, currentIndex)}
@@ -36,7 +38,7 @@ export const Favorites = () => {
   console.log(user)
 
   // ******************** states ********************
-  const [selectedCategory, setSelectedCategory] = useState<string>('0') // 선택된 카테고리의 id값 저장. (처음엔 전체의 id값)
+  const [selectedCategory, setSelectedCategory] = useState<string>('전체보기') // 선택된 카테고리의 id값 저장. (처음엔 전체의 id값)
   const [sharings, setSharings] = useState<INanumListItem[]>([]) // 나눔 리스트
   const [refreshing, setRefreshing] = useState<boolean>(false) // 새로고침 로딩 끝났는지
   const [selectedIndex, setSelectedIndex] = useState<number>(0)
@@ -48,6 +50,26 @@ export const Favorites = () => {
     scrollRef.current?.scrollToIndex({index: currentIndex})
     // 해당 id에 일치하는 나눔 리스트만 state에 저장.
   }, [])
+
+  // ******************** react quries ********************
+  useQuery(
+    [queryKeys.favorites, selectedCategory],
+    () =>
+      getFavoritesByCategory({
+        accountIdx: user.accountIdx,
+        category: selectedCategory,
+      }),
+    {
+      onSuccess(data) {
+        setSharings(data)
+      },
+      onError(err) {
+        console.log(err)
+      },
+    },
+  )
+
+  // ******************** callbacks ********************
 
   // refresh pull up 하면 서버에서 가져옴
   const onRefresh = useCallback(() => {}, [])
@@ -71,7 +93,7 @@ export const Favorites = () => {
                       name={'전체보기'}
                       currentIndex={index}
                       selectedIndex={selectedIndex}
-                      id={index.toString()}
+                      id={'전체보기' + index}
                       onPressCategory={onPressCategory}
                       selectedCategory={selectedCategory}
                       scrollRef={scrollRef}
@@ -81,7 +103,7 @@ export const Favorites = () => {
                       name={item.categoryName}
                       currentIndex={index}
                       selectedIndex={selectedIndex}
-                      id={index.toString()}
+                      id={item.categoryName + index}
                       onPressCategory={onPressCategory}
                       selectedCategory={selectedCategory}
                       scrollRef={scrollRef}

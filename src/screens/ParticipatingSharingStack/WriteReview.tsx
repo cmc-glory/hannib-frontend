@@ -2,13 +2,15 @@ import React, {useState, useCallback, useEffect, useMemo} from 'react'
 import {View, Text, TextInput, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation, useRoute} from '@react-navigation/native'
-import {Switch} from 'react-native-paper'
+import {useMutation} from 'react-query'
+import {showMessage} from 'react-native-flash-message'
+
+import {queryKeys, writeReview} from '../../api'
 import {StackHeader, SharingPreview, RoundButton} from '../../components/utils'
 import {WriteReviewPropsRouteProps} from '../../navigation/ParticipatingSharingStackNavigator'
-import {useToggle} from '../../hooks'
 import * as theme from '../../theme'
 import {ImagePicker} from '../../components/WriteGoodsStack'
-import {Asset} from 'react-native-image-picker'
+import {IReviewDto} from '../../types'
 
 const ProductItem = ({name, quantity, spacing}: {name: string; quantity: number; spacing?: boolean}) => {
   return (
@@ -23,23 +25,66 @@ const ProductItem = ({name, quantity, spacing}: {name: string; quantity: number;
 }
 
 export const WriteReview = () => {
+  // ******************** utils ********************
   const navigation = useNavigation()
   const route = useRoute<WriteReviewPropsRouteProps>()
-  const [content, setContent] = useState<string>('')
-  const [images, setImages] = useState<Asset[]>([]) // 대표 이미지
+  const {nanumIdx, accountIdx, imageuri, category, title} = useMemo(() => route.params, [])
 
-  useEffect(() => {
-    // 해당 사용자가 주문한 물건 받아오는 api
-  }, [])
+  console.log(nanumIdx, accountIdx)
+
+  // ******************** states ********************
+  const [content, setContent] = useState<string>('')
+  const [images, setImages] = useState<string[]>([]) // 대표 이미지
+
+  // ******************** react query ********************
+  const writeReviewQuery = useMutation([queryKeys.writeReview], writeReview, {
+    onSuccess(data, variables, context) {
+      // 나중에 작가 프로필 완성되면 작가 프로필로 네비게이트
+      navigation.goBack()
+
+      showMessage({
+        // 에러 안내 메세지
+        message: '후기가 등록됐습니다.',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+      })
+    },
+  })
 
   const onPressSubmit = useCallback(() => {
-    // 백으로 내용이랑 비밀 여부 post 하는 api
+    const reviewForm: IReviewDto = {
+      reviewImgDtoList:
+        images.length == 0
+          ? [
+              {
+                accountIdx,
+                nanumIdx,
+                imgUrl: '',
+              },
+            ]
+          : images.map(imgUrl => {
+              return {
+                accountIdx: accountIdx,
+                nanumIdx: nanumIdx,
+                imgUrl: imgUrl,
+              }
+            }),
+      accountIdx,
+      nanumIdx,
+      comments: content,
+    }
 
-    // 백으로 보낸 다음에 전으로 이동
-    navigation.goBack()
-  }, [content])
+    writeReviewQuery.mutate(reviewForm)
+  }, [content, images])
 
-  const {postid, userid, imageuri, category, title} = useMemo(() => route.params, [])
   return (
     <SafeAreaView style={[theme.styles.safeareaview]}>
       <StackHeader title="후기 작성" goBack />
@@ -49,7 +94,7 @@ export const WriteReview = () => {
           <ProductItem name="BTS 뷔 컨셉의 하트 키링" quantity={1} spacing />
           <ProductItem name="BTS 지민 컨셉의 스페이드 키링" quantity={1} />
         </View>
-        <ImagePicker images={images} setImages={setImages} />
+        <ImagePicker images={images} setImages={setImages} necessary={false} />
         <View style={{marginBottom: 20}}>
           <Text style={[theme.styles.label]}>내용</Text>
           <TextInput

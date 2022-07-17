@@ -1,16 +1,18 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react'
-import {View, Text, StyleSheet, Dimensions, ButtonProps, TextInput} from 'react-native'
+import {View, Text, ScrollView, StyleSheet, Dimensions, RefreshControl, TextInput, Alert, Pressable} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
-import Modal from 'react-native-modal'
+import {useQuery, useMutation} from 'react-query'
 import {CancelModal} from '../../components/MyPageStack'
 import {useNavigation, useRoute} from '@react-navigation/native'
-import {IParticipatingOnlineDetail} from '../../types'
+import {showMessage} from 'react-native-flash-message'
 
+import {IAppliedNanumDetailDto, IApplyingGoodsDto} from '../../types'
+import {ParticipatingSharingOnlineRouteProps} from '../../navigation/ParticipatingSharingStackNavigator'
 import {StackHeader, SharingPreview, GoodsListItem, Button, Tag, RoundButton, XIcon} from '../../components/utils'
 
+import {queryKeys, getNanumByIndex, getAppliedNanumInfo, cancelNanum} from '../../api'
 import * as theme from '../../theme'
-import {useToggle} from '../../hooks'
-const BUTTON_WIDTH = (Dimensions.get('window').width - theme.PADDING_SIZE * 2 - 10) / 2
+import {useToggle, useAppSelector} from '../../hooks'
 
 type ButtonsProps = {
   onPressWriteQnA: () => void
@@ -18,71 +20,122 @@ type ButtonsProps = {
   state: string
 }
 
-const Buttons = ({toggleCancelModalVisible, onPressWriteQnA, state}: ButtonsProps) => {
-  switch (state) {
-    case 'proceeding':
-      return (
-        <View style={{...theme.styles.rowSpaceBetween, width: '100%'}}>
-          <Button label="취소하기" selected={false} style={{width: BUTTON_WIDTH}} onPress={toggleCancelModalVisible} isDefault={true} />
-          <Button label="문의하기" selected={true} style={{width: BUTTON_WIDTH}} onPress={onPressWriteQnA} />
-        </View>
-      )
-    case 'completed':
-      return <Button label="후기 작성" selected={true} style={{width: '100%'}} />
-    case 'reviewFinished':
-      return <Button label="후기 작성 완료" selected={false} style={{width: '100%'}} isDefault={true} />
-  }
-}
+const BUTTON_WIDTH = (Dimensions.get('window').width - 40 - 10) / 2
 
 export const ParticipatingSharingOnline = () => {
-  const route = useRoute()
-  const [participateState, setParticipateState] = useState<string>()
-  const [detail, setDetail] = useState<IParticipatingOnlineDetail>()
+  // ******************** utils ********************
   const [cancelModalVisible, toggleCancelModalVisible] = useToggle() // 취소 모달창 띄울지
+  const route = useRoute<ParticipatingSharingOnlineRouteProps>()
+  const {nanumIdx} = route.params
   const navigation = useNavigation()
+  const user = useAppSelector(state => state.auth.user)
 
-  //list 페이지에서 보낸 id
-  const id = useMemo(() => route.params, [])
+  // ******************** states ********************
+  const [participateState, setParticipateState] = useState<string>()
+  const [detail, setDetail] = useState<IAppliedNanumDetailDto>()
+  const [appliedGoodsList, setAppliedGoodsList] = useState<IApplyingGoodsDto[]>([])
+  const [nanumState, setNanumState] = useState<'배송 준비중' | '배송 시작'>('배송 준비중')
+  const [refreshing, setRefreshing] = useState<boolean>(false)
 
-  // 컴포넌트가 마운트 되면 참여 나눔 상세 정보 가져옴
-  useEffect(() => {
-    fetch('http://localhost:8081/src/data/dummyParticipateOnlineDetail.json')
-      .then(res => res.json())
-      .then(result => {
-        setDetail(result)
+  // ******************** react quries ********************
+
+  const nanumInfo = useQuery([queryKeys.nanumDetail, nanumIdx], () => getNanumByIndex({nanumIdx: nanumIdx, accountIdx: user.accountIdx, favoritesYn: 'N'}))
+
+  useQuery(
+    [queryKeys.appliedNanum],
+    () =>
+      getAppliedNanumInfo({
+        accountIdx: user.accountIdx,
+        nanumIdx,
+      }),
+    {
+      onSuccess(data) {
+        setDetail(data)
+        setNanumState(data.applyDto.unsongYn == 'Y' ? '배송 시작' : '배송 준비중')
+        setAppliedGoodsList(data.applyingGoodsDto)
+      },
+    },
+  )
+
+  const cancelNanumQuery = useMutation([queryKeys.cancelNanum], cancelNanum, {
+    onSuccess(data, variables, context) {
+      navigation.goBack()
+      showMessage({
+        // 에러 안내 메세지
+        message: '나눔 신청 취소가 완료되었습니다.',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
       })
-  }, [])
-
-  useEffect(() => {
-    setParticipateState(detail?.state)
-  }, [detail])
+    },
+  })
 
   const onPressWriteQnA = useCallback(() => {
     navigation.navigate('WriteQnA', {
-      postid: '1', // 해당 나눔 게시글의 id
-      userid: '1', // 문의글을 남기는 사용자의 id,
-      imageuri: 'http://localhost:8081/src/assets/images/detail_image_example.png', // 썸네일 uri
-      category: 'bts', // 카테고리
-      title: 'BTS 키링 나눔', // 나눔 제목
+      nanumIdx: nanumIdx,
+      accountIdx: user.accountIdx,
+      imageuri: nanumInfo.data.thumbnail,
+      category: nanumInfo.data.category,
+      title: nanumInfo.data.title,
     })
+  }, [nanumInfo])
+
+  const onPressCancel = useCallback(() => {
+    if (nanumState == '배송 시작') {
+      Alert.alert('배송 시작 상태에선 취소할 수 없습니다.', '', [{text: '확인'}])
+      return
+    }
+    Alert.alert('나눔 신청을 취소하시겠습니까?', '', [
+      {
+        text: '확인',
+        onPress: () =>
+          cancelNanumQuery.mutate({
+            accountIdx: user.accountIdx,
+            nanumIdx: nanumIdx,
+            nanumDeleteReason: '',
+          }),
+      },
+      {
+        text: '취소',
+      },
+    ])
   }, [])
+
+  const onPressWriteReview = useCallback(() => {
+    navigation.navigate('WriteReview', {
+      nanumIdx,
+      accountIdx: user.accountIdx,
+      imageuri: nanumInfo?.data.thumbnail,
+      category: nanumInfo?.data.category,
+      title: nanumInfo?.data.title,
+    })
+  }, [nanumInfo])
 
   return (
     <SafeAreaView style={styles.rootContainer}>
       <StackHeader title="참여한 나눔" goBack />
-      <View style={[styles.container, theme.styles.wrapper]}>
-        <SharingPreview
-          uri={detail?.uri ? detail.uri : 'http://localhost:8081/src/assets/images/detail_image_example.png'}
-          category={detail?.category ? detail.category : 'BTS'}
-          title={detail?.title ? detail.title : 'BTS 키링 나눔'}
-        />
-        <View style={{marginTop: 16}}>
-          {detail?.products.map(item => (
-            <GoodsListItem key={item.id} type="participating" title={item.name} quantity={item.quantity} />
+      <ScrollView contentContainerStyle={[theme.styles.wrapper, {flex: 1}]}>
+        <SharingPreview uri={nanumInfo.data?.thumbnail} category={nanumInfo.data?.category} title={nanumInfo.data?.title} />
+        <View style={{marginVertical: 20}}>
+          {appliedGoodsList.map((item, index) => (
+            <View style={[theme.styles.rowSpaceBetween, index != appliedGoodsList.length - 1 && {marginBottom: 16}]}>
+              <Text style={{fontFamily: 'Pretendard-Medium', color: theme.gray700, fontSize: 16}}>{item.goodsName}</Text>
+              <View style={[theme.styles.rowFlexStart]}>
+                <Text style={{color: theme.gray500, marginRight: 8}}>주문 수량</Text>
+                <Text style={{color: theme.secondary}}>1</Text>
+              </View>
+            </View>
           ))}
         </View>
-        <View style={{width: '100%', height: 1, backgroundColor: theme.gray200, marginVertical: 10}} />
-        <View style={{marginVertical: 16}}>
+        <View style={{width: '100%', height: 1, backgroundColor: theme.gray200, marginBottom: 20}} />
+        <View>
           <Text style={[theme.styles.bold16, {marginBottom: 16}]}>신청 내역</Text>
           <View>
             <View style={[theme.styles.rowSpaceBetween, {marginBottom: 20}]}>
@@ -91,14 +144,14 @@ export const ParticipatingSharingOnline = () => {
             </View>
             <View style={[theme.styles.rowSpaceBetween, styles.requestInfoWrapper]}>
               <Text style={styles.requestInfoLabel}>수령자명</Text>
-              <Text style={styles.requestInfoText}>{detail?.receiverName}</Text>
+              <Text style={styles.requestInfoText}>{detail?.applyDto.realName}</Text>
             </View>
             <View style={[theme.styles.rowSpaceBetween, styles.requestInfoWrapper]}>
               <Text style={styles.requestInfoLabel}>주문 목록</Text>
               <View>
-                {detail?.products.map(item => (
-                  <Text key={item.id} style={{...styles.requestInfoText, marginBottom: 8}}>
-                    {item.name}({item.quantity}개)
+                {appliedGoodsList.map((item, index) => (
+                  <Text key={item.goodsName + index} style={{...styles.requestInfoText, marginBottom: 8}}>
+                    {item.goodsName}(1개)
                   </Text>
                 ))}
               </View>
@@ -106,36 +159,82 @@ export const ParticipatingSharingOnline = () => {
             <View style={[theme.styles.rowSpaceBetween, styles.requestInfoWrapper]}>
               <Text style={styles.requestInfoLabel}>주소</Text>
               <Text style={styles.requestInfoText}>
-                {detail?.address.roadAddress} {detail?.address.detailedAddress}
+                {detail?.applyDto.address1} {detail?.applyDto.address2}
               </Text>
             </View>
             <View style={[theme.styles.rowSpaceBetween, styles.requestInfoWrapper]}>
               <Text style={styles.requestInfoLabel}>연락처</Text>
-              <Text style={styles.requestInfoText}>
-                {detail?.phonenumber.first}-{detail?.phonenumber.second}-{detail?.phonenumber.third}
-              </Text>
+              <Text style={styles.requestInfoText}>{detail?.applyDto.phoneNumber}</Text>
             </View>
             <View style={[theme.styles.rowSpaceBetween, styles.requestInfoWrapper]}>
               <Text style={styles.requestInfoLabel}>수령 현황</Text>
-              <Text style={styles.requestInfoText}>{detail?.postState}</Text>
+              <Text style={styles.requestInfoText}>{nanumState}</Text>
             </View>
+            {detail?.applyDto.trackingNumber != '' && detail?.applyDto.trackingNumber != undefined && (
+              <View style={[theme.styles.rowSpaceBetween, styles.requestInfoWrapper]}>
+                <Text style={styles.requestInfoLabel}>운송장 번호</Text>
+                <Text style={styles.requestInfoText}>{detail?.applyDto.trackingNumber}</Text>
+              </View>
+            )}
           </View>
         </View>
-        <View style={{...theme.styles.rowSpaceBetween, width: '100%'}}>
-          <Buttons
-            toggleCancelModalVisible={toggleCancelModalVisible}
-            onPressWriteQnA={onPressWriteQnA}
-            state={participateState ? participateState : 'proceeding'}
-          />
+        <View>
+          {nanumState == '배송 준비중' ? (
+            <Pressable style={[styles.buttonMedium, styles.reviewButton]} onPress={onPressWriteReview}>
+              <Text style={styles.trackingText}>후기 작성</Text>
+            </Pressable>
+          ) : (
+            <View style={[theme.styles.rowSpaceBetween, {marginBottom: 24}]}>
+              <Pressable style={[styles.buttonMedium, styles.cancelButton]} onPress={onPressCancel}>
+                <Text style={styles.cancelText}>취소하기</Text>
+              </Pressable>
+              <Pressable style={[styles.buttonMedium, styles.trackingButton]} onPress={onPressWriteQnA}>
+                <Text style={styles.trackingText}>문의하기</Text>
+              </Pressable>
+            </View>
+          )}
         </View>
 
         <CancelModal isVisible={cancelModalVisible} toggleIsVisible={toggleCancelModalVisible} />
-      </View>
+      </ScrollView>
     </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
+  reviewButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 14,
+    borderWidth: 1,
+    borderRadius: 4,
+    width: '100%',
+    backgroundColor: theme.main50,
+    borderColor: theme.main,
+  },
+  trackingText: {
+    fontFamily: 'Pretendard-Bold',
+    color: theme.main,
+  },
+  cancelText: {
+    color: theme.gray700,
+  },
+  trackingButton: {
+    backgroundColor: theme.main50,
+    borderColor: theme.main,
+  },
+
+  cancelButton: {
+    borderColor: theme.gray500,
+  },
+  buttonMedium: {
+    width: BUTTON_WIDTH,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 14,
+    borderWidth: 1,
+    borderRadius: 4,
+  },
   rootContainer: {
     flex: 1,
     backgroundColor: theme.white,
