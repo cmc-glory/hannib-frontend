@@ -5,14 +5,14 @@ import {CommunicationWhiteIcon, RightArrowIcon} from '../utils'
 import * as theme from '../../theme'
 
 type NoticeBannerProps = {
-  postid: string
+  nanumIdx: number
 }
 
-export const NoticeBanner = ({postid}: NoticeBannerProps) => {
+export const NoticeBanner = ({nanumIdx}: NoticeBannerProps) => {
   const navigation = useNavigation()
   const onPressNotice = useCallback(() => {
     navigation.navigate('NoticeList', {
-      postid: postid,
+      nanumIdx: nanumIdx,
     })
   }, [])
   return (

@@ -150,6 +150,7 @@ export const SelectCategory = () => {
         birth: '',
         imgUrl: '',
         email: '',
+        categoryIdx: 0,
       })
       setKeyword('')
     },
@@ -194,6 +195,7 @@ export const SelectCategory = () => {
             job: category.job,
             categoryName: category.nickName,
             accountIdx: 0,
+            categoryIdx: category.categoryIdx,
           }),
         )
       }

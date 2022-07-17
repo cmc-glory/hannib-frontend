@@ -35,4 +35,5 @@ export const queryKeys = {
   writeReview: ['writeReview'],
   cancelNanumByHolder: ['cancelNanumByHolder'],
   accountInfoMypage: ['accountInfoMypage'],
+  notice: ['notice'], //공지 불러오기
 }

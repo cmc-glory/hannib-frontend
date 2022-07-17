@@ -41,7 +41,7 @@ type GoodsStackNavigatorParamList = {
     writerAccountIdx: number
   }
   NoticeList: {
-    postid: string
+    nanumIdx: number
   }
   GoodsRequestComplete: undefined
   GoodsRequestError: {
@@ -77,6 +77,9 @@ export type WriterProfileRouteProps = WriterProfileProps['route']
 
 type GoodsRequestErrorProps = NativeStackScreenProps<GoodsStackNavigatorParamList, 'GoodsRequestError'>
 export type GoodsRequestErrorRouteProps = GoodsRequestErrorProps['route']
+
+type NoticeListProps = NativeStackScreenProps<GoodsStackNavigatorParamList, 'NoticeList'>
+export type NoticeListRouteProps = NoticeListProps['route']
 
 const GoodsStackNavigator = () => {
   return (

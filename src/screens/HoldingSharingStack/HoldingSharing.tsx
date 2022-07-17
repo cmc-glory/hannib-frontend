@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useState} from 'react'
-import {View, Pressable, ScrollView, Text, StyleSheet, Alert, ActivityIndicator, Dimensions, ActivityIndicatorBase} from 'react-native'
+import {View, Pressable, ScrollView, Text, StyleSheet, Alert, ActivityIndicator, Dimensions, RefreshControl} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
-import {useQuery, useMutation} from 'react-query'
+import {useQuery, useMutation, useQueryClient} from 'react-query'
 import {showMessage} from 'react-native-flash-message'
 import moment from 'moment'
 import {Shadow} from 'react-native-shadow-2'
@@ -52,6 +52,7 @@ export const HoldingSharing = () => {
   const accountIdx = useAppSelector(state => state.auth.user.accountIdx)
   const route = useRoute<HoldingSharingRouteProps>()
   const navigation = useNavigation()
+  const queryClient = useQueryClient()
   const nanumIdx = route.params.nanumIdx
 
   // ************************** states **************************
@@ -89,6 +90,7 @@ export const HoldingSharing = () => {
   const [checkFinishedModalShow, toggleCheckFinishedModalShow] = useToggle(false)
   const [deletePressed, setDeletePressed] = useState<boolean>(false)
   const [deleteModalVisible, setDeleteModalVisible] = useState<boolean>(false)
+  const [refreshing, setRefreshing] = useState<boolean>(false)
 
   // ************************** react quries **************************
   const nanumInfo = useQuery([queryKeys.nanumDetail, nanumIdx], () => getNanumByIndex({nanumIdx: nanumIdx, accountIdx: accountIdx, favoritesYn: 'N'}), {
@@ -104,6 +106,7 @@ export const HoldingSharing = () => {
 
       // 신청한 사람 리스트가 없는 경우에는 리턴
       if (data.nanumDetailDto.length == 0) {
+        setRefreshing(false)
         return
       }
 
@@ -161,6 +164,7 @@ export const HoldingSharing = () => {
       }
       console.log(tempReceiverList)
       setReceiverInfoList(tempReceiverList)
+      setRefreshing(false) // 데이터 가공이 끝난 후 refreshing을 false로 변경
       //setReceiverInfoList(nanumDetail)
     },
   })
@@ -271,6 +275,11 @@ export const HoldingSharing = () => {
     SetIndex(newIdx)
   }, [index, receiverInfoList])
 
+  const onRefresh = useCallback(() => {
+    setRefreshing(true)
+    queryClient.invalidateQueries([queryKeys.receiverList, nanumIdx])
+  }, [])
+
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
       <StackHeader title="진행한 나눔" goBack>
@@ -302,7 +311,7 @@ export const HoldingSharing = () => {
         </Modal>
       </StackHeader>
       <DeleteModal deleteModalVisible={deleteModalVisible} setDeleteModalVisible={setDeleteModalVisible} nanumIdx={nanumIdx} />
-      <ScrollView>
+      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <ScrollView contentContainerStyle={[theme.styles.wrapper, {flex: 1}]}>
           <SharingPreview uri={nanumInfo.data?.thumbnail} category={nanumInfo.data?.category} title={nanumInfo.data?.title} />
           {/* 굿즈 정보 리스트 & 나눔 마감 버튼 */}
@@ -318,7 +327,7 @@ export const HoldingSharing = () => {
             ))}
             <Pressable
               style={[styles.endSharingBtn]}
-              onPress={() => Alert.alert('마감 처리 하시겠습니까?', '', [{text: '아니오'}, {text: '확인', onPress: () => endNanumQuery.mutate(nanumIdx)}])}>
+              onPress={() => Alert.alert('마감 처리 하시겠습니까?', '', [{text: '취소'}, {text: '확인', onPress: () => endNanumQuery.mutate(nanumIdx)}])}>
               <Text style={styles.endSharingBtnText}>나눔 마감</Text>
             </Pressable>
           </View>

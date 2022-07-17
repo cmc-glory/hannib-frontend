@@ -90,6 +90,7 @@ export const WriterProfile = () => {
         <ScrollView horizontal contentContainerStyle={[styles.holdingProjects, theme.styles.wrapper]}>
           {holdingList.data?.map((item: IHoldingSharingList, index: number) => (
             <HoldingProjectItem
+              key={item.nanumIdx}
               title={item.title}
               tagLabel={item.endYn == 'Y' ? '마감' : '모집중'}
               uri={item.thumbnail}
