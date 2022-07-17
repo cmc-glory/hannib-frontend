@@ -366,12 +366,14 @@ export type INanumDateDto = {
   nanumIdx: number
   acceptDate: string // example: 2022-07-01 12:43:15
   location: string
+  title: string
 }
 
 export type INanumGoodsDto = {
   nanumIdx: number
   goodsName: string
   goodsNumber: number
+  accountIdx: number
 }
 export type INanumImgDto = {
   nanumIdx: number

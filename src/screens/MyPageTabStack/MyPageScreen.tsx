@@ -1,14 +1,17 @@
 import React, {useState, useCallback} from 'react'
-import {View, ScrollView, Pressable, Text, StyleSheet} from 'react-native'
+import {View, ScrollView, Pressable, Text, StyleSheet, RefreshControl} from 'react-native'
 import FastImage from 'react-native-fast-image'
 import {SafeAreaView} from 'react-native'
 import {useNavigation} from '@react-navigation/native'
+import {useQueryClient, useQuery} from 'react-query'
+
+import {IAccountDto} from '../../types'
 import {LogoutModal} from '../../components/MainTab'
 import {StackHeader, BellIcon, RightArrowIcon} from '../../components/utils'
 import {useAppSelector} from '../../hooks'
 import * as theme from '../../theme'
-import {useQuery} from 'react-query'
 import {queryKeys, getAccountInfoMypage} from '../../api'
+import NoUserSvg from '../../assets/Icon/noUser.svg'
 
 type MyPageItem = {
   label: string
@@ -39,11 +42,14 @@ export const MyPageScreen = () => {
   // ******************** utils ********************
   const navigation = useNavigation()
   const user = useAppSelector(state => state.auth.user)
-  //console.log('user in mypagescreen : ', user)
+  const queryClient = useQueryClient()
+  const [userInfo, setUserInfo] = useState<IAccountDto & {applyNumber: number; nanumNumber: number}>()
+  const [refreshing, setRefreshing] = useState<boolean>(false)
 
-  const {data} = useQuery(queryKeys.accountInfo, () => getAccountInfoMypage(user.accountIdx), {
+  useQuery(queryKeys.accountInfoMypage, () => getAccountInfoMypage(user.accountIdx), {
     onSuccess(data) {
-      console.log('data : ', data)
+      setRefreshing(false)
+      setUserInfo({...data.accountDto, applyNumber: data.applyNumber, nanumNumber: data.nanumNumber})
     },
   })
 
@@ -87,25 +93,28 @@ export const MyPageScreen = () => {
     })
   }, [])
 
+  const onRefresh = useCallback(() => {
+    queryClient.invalidateQueries(queryKeys.accountInfo)
+  }, [])
+
   return (
     <SafeAreaView style={[theme.styles.safeareaview]}>
       <StackHeader title="마이페이지" goBack={false}>
         <BellIcon />
       </StackHeader>
       <LogoutModal logoutModalVisible={logoutModalVisible} setLogoutModalVisible={setLogoutModalVisible} />
-      <ScrollView bounces={false}>
+      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View style={[theme.styles.rowFlexStart, styles.profileContainer]}>
-          <FastImage
-            style={styles.profileImage}
-            source={{
-              uri:
-                data?.accountDto.accountImg == undefined || data?.accountDto.accountImg == ''
-                  ? 'http://localhost:8081/src/assets/images/noUser.png'
-                  : data?.accountDto.accountImg,
-            }}
-          />
+          {userInfo?.accountImg == undefined || userInfo?.accountImg == '' ? (
+            <View style={[styles.profileImage, styles.emptyProfileView]}>
+              <NoUserSvg width={32} height={32} />
+            </View>
+          ) : (
+            <FastImage style={styles.profileImage} source={{uri: userInfo?.accountImg}}></FastImage>
+          )}
+
           <View style={{alignSelf: 'stretch', justifyContent: 'center'}}>
-            <Text style={[theme.styles.bold20, {color: theme.gray700, marginBottom: 8}]}>{data?.accountDto.creatorId}</Text>
+            <Text style={[theme.styles.bold20, {color: theme.gray700, marginBottom: 8}]}>{userInfo?.creatorId}</Text>
 
             <Pressable style={[theme.styles.rowFlexStart]} onPress={onPressEditProfile}>
               <Text style={[{color: theme.gray500}, theme.styles.text14]}>프로필 수정</Text>
@@ -116,9 +125,9 @@ export const MyPageScreen = () => {
         <Separator />
         <View style={styles.wrapper}>
           <Text style={[theme.styles.bold16, {marginBottom: 8, marginTop: 16}]}>나눔 관리</Text>
-          <MyPageItem label="진행한 나눔" numSharing={data?.nanumNumber} onPress={onPressHoldingSharing} />
+          <MyPageItem label="진행한 나눔" numSharing={userInfo?.nanumNumber} onPress={onPressHoldingSharing} />
           <SeparatorLight />
-          <MyPageItem label="참여한 나눔" numSharing={data?.applyNumber} onPress={onPressParticipatingSharing} />
+          <MyPageItem label="참여한 나눔" numSharing={userInfo?.applyNumber} onPress={onPressParticipatingSharing} />
         </View>
         <Separator />
         <View style={styles.wrapper}>
@@ -141,6 +150,11 @@ export const MyPageScreen = () => {
 }
 
 const styles = StyleSheet.create({
+  emptyProfileView: {
+    backgroundColor: theme.gray50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   myPageItem: {
     paddingVertical: 18,
   },

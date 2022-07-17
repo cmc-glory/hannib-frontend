@@ -9,9 +9,8 @@ import {useNavigation} from '@react-navigation/native'
 import {showMessage} from 'react-native-flash-message'
 import Modal from 'react-native-modal'
 
-import {StackHeader, SelectImageIcon, BottomSheet} from '../../components/utils'
+import {StackHeader, SelectImageIcon} from '../../components/utils'
 import {queryKeys, uploadProfileImage, updateAccountInfo, getAccountInfoByIdx, checkNicknameDuplicated} from '../../api'
-import {EditProfileBottomSheetContent} from '../../components/MyPageStack'
 import {updateName, updateProfileImage} from '../../redux/slices'
 import {useAppSelector, useAppDispatch} from '../../hooks'
 import * as theme from '../../theme'
@@ -51,7 +50,9 @@ export const EditProfile = () => {
 
   const updateAccountInfoQuery = useMutation(queryKeys.accountInfo, updateAccountInfo, {
     onSuccess(data, variables, context) {
+      queryClient.invalidateQueries(queryKeys.accountInfoMypage)
       queryClient.invalidateQueries(queryKeys.accountInfo)
+
       dispatch(updateName(name))
       if (profileImage != undefined) {
         dispatch(updateProfileImage(profileImage))
@@ -207,7 +208,7 @@ export const EditProfile = () => {
           accountIdx: user.accountIdx,
           creatorId: name,
           accountCategoryDtoList: user.accountCategoryDtoList,
-          accountImg: profileImage,
+          accountImg: profileImage == undefined ? '' : profileImage,
           email: user.email,
           creatorIdDatetime: '',
         }

@@ -52,7 +52,7 @@ export const WriteNanumFormComplete = () => {
             <Text style={[theme.styles.bold20, {marginBottom: 8}]}>신청 완료</Text>
             <Text style={{color: theme.gray700, fontSize: 16}}>신청폼 작성이 완료됐습니다.</Text>
           </View>
-          <RoundButton label="나눔글로 이동" style={{alignSelf: 'stretch'}} enabled onPress={onPressButton} />
+          <RoundButton label="등록한 게시글로 이동" style={{alignSelf: 'stretch'}} enabled onPress={onPressButton} />
         </View>
       </View>
     </SafeAreaView>

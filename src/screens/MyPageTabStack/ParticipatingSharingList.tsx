@@ -20,6 +20,7 @@ export const ParticipatingSharingList = () => {
 
   useQuery([queryKeys.appliedNanumList], () => getParticipatingNanumList(user.accountIdx), {
     onSuccess: data => {
+      console.log(data)
       setRefreshing(false)
       setList(data)
     },

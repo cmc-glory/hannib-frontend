@@ -95,6 +95,7 @@ export const WriteNanumFormOnline = () => {
           nanumIdx: 0,
           acceptDate: '2022-07-01 12:43:15',
           location: '강남역 2번 출구',
+          title: title,
         },
       ], // online이므로 비워둠
       nanumGoodslist: nanumGoods.map(item => {
@@ -102,6 +103,7 @@ export const WriteNanumFormOnline = () => {
           nanumIdx: 0,
           goodsName: item.goodsName,
           goodsNumber: item.goodsNumber,
+          accountIdx: user.accountIdx,
         }
       }),
       nanumImglist: images.map(item => {
@@ -138,7 +140,7 @@ export const WriteNanumFormOnline = () => {
   }, [secretForm, nanumAsks, nanumGoods, secretPwd, user, submitted])
 
   const checkNextEnabled = useCallback(() => {
-    if (postNanumFormQuery.isLoading) {
+    if (postNanumFormQuery.isLoading || submitted == true) {
       return false
     }
 
@@ -151,7 +153,7 @@ export const WriteNanumFormOnline = () => {
     } else {
       return false
     }
-  }, [nanumGoods, postNanumFormQuery, agreed])
+  }, [nanumGoods, postNanumFormQuery, agreed, submitted])
 
   const onPressAgreed = useCallback(() => {
     setAgreed(agreed => !agreed)
