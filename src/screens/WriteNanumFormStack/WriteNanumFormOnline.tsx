@@ -16,26 +16,6 @@ import * as theme from '../../theme' // themes
 import {useToggle, useAppSelector} from '../../hooks' // hooks
 import {queryKeys, postNanumForm} from '../../api'
 
-// ***************************** ios keyboard settings *****************************
-if (Platform.OS === 'ios') {
-  KeyboardManager.setEnable(true)
-  KeyboardManager.setEnableDebugging(false)
-  KeyboardManager.setKeyboardDistanceFromTextField(10)
-  KeyboardManager.setLayoutIfNeededOnUpdate(true)
-  KeyboardManager.setEnableAutoToolbar(true)
-  KeyboardManager.setToolbarDoneBarButtonItemText('확인')
-  KeyboardManager.setToolbarManageBehaviourBy('subviews') // "subviews" | "tag" | "position"
-  KeyboardManager.setToolbarPreviousNextButtonEnable(false)
-  KeyboardManager.setToolbarTintColor('#007aff') // Only #000000 format is supported
-  KeyboardManager.setToolbarBarTintColor('#FFFFFF') // Only #000000 format is supported
-  KeyboardManager.setShouldShowToolbarPlaceholder(true)
-  KeyboardManager.setOverrideKeyboardAppearance(false)
-  KeyboardManager.setKeyboardAppearance('default') // "default" | "light" | "dark"
-  KeyboardManager.setShouldResignOnTouchOutside(true)
-  KeyboardManager.setShouldPlayInputClicks(true)
-  KeyboardManager.resignFirstResponder()
-}
-
 export const WriteNanumFormOnline = () => {
   // ******************** utils  ********************
   const navigation = useNavigation()
@@ -46,10 +26,8 @@ export const WriteNanumFormOnline = () => {
   // ******************** react queries  ********************
   const postNanumFormQuery = useMutation(queryKeys.nanumForm, postNanumForm, {
     onSuccess(data, variables, context) {
-      console.log('success')
-      console.log(data)
       queryClient.invalidateQueries([queryKeys.nanumList])
-
+      setSubmitted(true)
       const nanumIdx = data
       navigation.navigate('WriteNanumFormComplete', {
         nanumIdx: nanumIdx,
@@ -86,11 +64,12 @@ export const WriteNanumFormOnline = () => {
   const [nanumGoods, setNanumGoods] = useState<INanumGoodsInfo[]>([]) // 상품 정보 state
   const [secretPwd, setSecretPwd] = useState('')
   const [agreed, setAgreed] = useState<boolean>(false)
+  const [submitted, setSubmitted] = useState<boolean>(false)
 
   // ******************** callbacks  ********************
   const onPressNext = useCallback(() => {
-    // post api가 실행중일때 다시 post하는 거 방지
-    if (postNanumFormQuery.isLoading) {
+    // post api가 실행중일때 다시 post하는 거 방지 & 이미 제출한 건에 대하여는 재제출 X
+    if (postNanumFormQuery.isLoading || submitted == true) {
       return
     }
     const nanumForm: INanumForm = {
@@ -156,7 +135,7 @@ export const WriteNanumFormOnline = () => {
     console.log(JSON.stringify(nanumForm))
 
     postNanumFormQuery.mutate(nanumForm)
-  }, [secretForm, nanumAsks, nanumGoods, secretPwd, user])
+  }, [secretForm, nanumAsks, nanumGoods, secretPwd, user, submitted])
 
   const checkNextEnabled = useCallback(() => {
     if (postNanumFormQuery.isLoading) {

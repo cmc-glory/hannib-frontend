@@ -3,13 +3,12 @@ import {View, ScrollView, Pressable, Text, StyleSheet} from 'react-native'
 import FastImage from 'react-native-fast-image'
 import {SafeAreaView} from 'react-native'
 import {useNavigation} from '@react-navigation/native'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import {LogoutModal} from '../../components/MainTab'
 import {StackHeader, BellIcon, RightArrowIcon} from '../../components/utils'
 import {useAppSelector} from '../../hooks'
 import * as theme from '../../theme'
 import {useQuery} from 'react-query'
-import {queryKeys, getAccountInfoByIdx} from '../../api'
+import {queryKeys, getAccountInfoMypage} from '../../api'
 
 type MyPageItem = {
   label: string
@@ -29,7 +28,7 @@ const MyPageItem = ({label, numSharing, onPress}: MyPageItem) => {
     <Pressable onPress={onPress} style={[theme.styles.rowSpaceBetween, styles.myPageItem]}>
       <Text style={{fontFamily: 'Pretendard-Medium', fontSize: 16}}>{label}</Text>
       <View style={[theme.styles.rowFlexStart]}>
-        {numSharing ? <Text style={{fontFamily: 'Pretendard-Medium', fontSize: 16}}>{numSharing}개</Text> : null}
+        {numSharing != undefined ? <Text style={{fontFamily: 'Pretendard-Medium', fontSize: 16}}>{numSharing}개</Text> : null}
         <RightArrowIcon onPress={onPress} />
       </View>
     </Pressable>
@@ -42,7 +41,11 @@ export const MyPageScreen = () => {
   const user = useAppSelector(state => state.auth.user)
   //console.log('user in mypagescreen : ', user)
 
-  const {data} = useQuery(queryKeys.accountInfo, () => getAccountInfoByIdx(user.accountIdx))
+  const {data} = useQuery(queryKeys.accountInfo, () => getAccountInfoMypage(user.accountIdx), {
+    onSuccess(data) {
+      console.log('data : ', data)
+    },
+  })
 
   // ******************** states ********************
   const [logoutModalVisible, setLogoutModalVisible] = useState<boolean>(false)
@@ -95,11 +98,14 @@ export const MyPageScreen = () => {
           <FastImage
             style={styles.profileImage}
             source={{
-              uri: user.accountImg == undefined || user.accountImg == '' ? 'http://localhost:8081/src/assets/images/noUser.png' : user.accountImg,
+              uri:
+                data?.accountDto.accountImg == undefined || data?.accountDto.accountImg == ''
+                  ? 'http://localhost:8081/src/assets/images/noUser.png'
+                  : data?.accountDto.accountImg,
             }}
           />
           <View style={{alignSelf: 'stretch', justifyContent: 'center'}}>
-            <Text style={[theme.styles.bold20, {color: theme.gray700, marginBottom: 8}]}>{data?.creatorId}</Text>
+            <Text style={[theme.styles.bold20, {color: theme.gray700, marginBottom: 8}]}>{data?.accountDto.creatorId}</Text>
 
             <Pressable style={[theme.styles.rowFlexStart]} onPress={onPressEditProfile}>
               <Text style={[{color: theme.gray500}, theme.styles.text14]}>프로필 수정</Text>
@@ -110,9 +116,9 @@ export const MyPageScreen = () => {
         <Separator />
         <View style={styles.wrapper}>
           <Text style={[theme.styles.bold16, {marginBottom: 8, marginTop: 16}]}>나눔 관리</Text>
-          <MyPageItem label="진행한 나눔" numSharing={user.holdingSharingCnt} onPress={onPressHoldingSharing} />
+          <MyPageItem label="진행한 나눔" numSharing={data?.nanumNumber} onPress={onPressHoldingSharing} />
           <SeparatorLight />
-          <MyPageItem label="참여한 나눔" numSharing={user.participateSharingCnt} onPress={onPressParticipatingSharing} />
+          <MyPageItem label="참여한 나눔" numSharing={data?.applyNumber} onPress={onPressParticipatingSharing} />
         </View>
         <Separator />
         <View style={styles.wrapper}>
