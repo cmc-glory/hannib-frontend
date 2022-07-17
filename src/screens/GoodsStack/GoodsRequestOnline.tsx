@@ -51,6 +51,7 @@ export const GoodsReqeustOnline = () => {
     nanumIdx: nanumIdx.nanumIdx,
     goodsList: [],
     askList: [],
+    title: '',
   })
   const [requestForm, setRequestForm] = useState<IRequestFormOnline>({
     name: '',
@@ -143,6 +144,7 @@ export const GoodsReqeustOnline = () => {
               nanumIdx: data.data.nanumIdx,
               goodsName: item.goodsName,
               realName: requestForm.name,
+              goodsNumber: info.goodsList[index].goodsNumber,
             }
           } else return
         })
@@ -150,7 +152,7 @@ export const GoodsReqeustOnline = () => {
       accountIdx: user.accountIdx,
       nanumIdx: parseInt(data.data.nanumIdx),
       realName: requestForm.name,
-      address1: parseInt(requestForm.address.postcode),
+      address1: requestForm.address.postcode,
       address2: requestForm.address.roadAddress + ' ' + requestForm.address.detailedAddress,
       phoneNumber: requestForm.phonenumber.first + '-' + requestForm.phonenumber.second + '-' + requestForm.phonenumber.third,
     }
@@ -205,7 +207,7 @@ export const GoodsReqeustOnline = () => {
       <StackHeader title="신청하기" goBack />
       <ScrollView>
         <View style={{marginBottom: 20, marginTop: 10}}>
-          <Text style={[theme.styles.wrapper, styles.title]}>BTS 키링 나눔</Text>
+          <Text style={[theme.styles.wrapper, styles.title]}>{info.title}</Text>
           <View style={[theme.styles.wrapper]}>
             <Text style={[theme.styles.bold16]}>상품 선택</Text>
             {info.goodsList.map(item => (
