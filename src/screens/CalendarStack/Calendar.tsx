@@ -8,7 +8,7 @@ import moment from 'moment'
 import {useAppSelector} from '../../hooks'
 import {WixCalendar, CalendarItem} from '../../components/CalendarStack'
 import {StackHeader, BellIcon, SeparatorLight} from '../../components/utils'
-import {IScheduleItem, ICalendarDto, ICalendarApplyGoodsDto} from '../../types'
+import {IScheduleItem, ICalendarDto, ICalendarApplyGoodsDto, ICalendarShow, ICanlendarShowInfoList, ICalendarNanumGoodsDto} from '../../types'
 import * as theme from '../../theme'
 
 export const Calendar = () => {
@@ -18,35 +18,36 @@ export const Calendar = () => {
   const [calendars, setCalendars] = useState<ICalendarDto>()
   const today = useMemo(() => moment().format('YYYY-MM-DD'), []) // 오늘
   const [selectedDate, setSelectedDate] = useState<string>(today) // 현재 선택한 날짜
-  const [selectedSchedule, setSelectedSchedule] = useState<IScheduleItem[]>([])
+  const [selectedSchedule, setSelectedSchedule] = useState<Array<ICalendarShow>>([]) //선택한 날짜의 스케줄
   const [refreshing, setRefreshing] = useState<boolean>(false) // 새로고침 state
   const accountIdx = useAppSelector(state => state.auth.user.accountIdx)
-  const [participatingList, setParticipatingList] = useState<
-    {
-      nanumIdx: number
-      title: string
-      goodsList: string[]
-      location: string
-    }[]
-  >([])
+  const [participatingList, setParticipatingList] = useState<ICalendarShow[]>([])
+  const [holdingList, setHoldingList] = useState<ICalendarShow[]>([])
+  //const [schedulePerDay, setSchedulePerDay] = useState<Array<ICalendarShow>>([])
+  const [calendarScheduleList, setcalendarScheduleList] = useState<ICanlendarShowInfoList>({
+    participatingList: participatingList,
+    holdingList: holdingList,
+  })
 
   // ******************** react query ********************
   useQuery(queryKeys.calendar, () => getCalendarAll(accountIdx), {
     onSuccess: data => {
       setRefreshing(false)
       setCalendars(data)
-      console.log(calendars)
+      //console.log('calendars : ', calendars)
 
+      //******************** api로 오는 데이터 가공. ********************
+      //참여한 나눔 가공
       const tempParticipatingList: {
-        nanumIdx?: number
-        title?: string
-        goodsList?: string[]
-        location?: string
-        acceptDate?: string
+        nanumIdx: number
+        title: string
+        goodsList: {goodsName: string; goodsNumber?: number}[]
+        location: string
+        acceptDate: string
+        type: 'participating' | 'holding'
       }[] = []
-
       // 굿즈 정보를 nanumIdx 순서로 정렬
-      const goodsNameList: ICalendarApplyGoodsDto[] = data.applyGoodsDto.sort((a: ICalendarApplyGoodsDto, b: ICalendarApplyGoodsDto) => {
+      const applyGoodsNameList: ICalendarApplyGoodsDto[] = data.applyGoodsDto.sort((a: ICalendarApplyGoodsDto, b: ICalendarApplyGoodsDto) => {
         if (a.nanumIdx < b.nanumIdx) {
           return -1
         }
@@ -55,23 +56,81 @@ export const Calendar = () => {
         }
         return 0
       })
-
       data.calenderDto3.forEach((item: any, index: number) => {
+        if (item.location == null) return
+
         tempParticipatingList.push({
+          type: 'participating',
           nanumIdx: item.nanumIdx,
           title: item.title,
           location: item.location,
           acceptDate: item.acceptDate,
           goodsList: [],
         })
+        const lastIdx = tempParticipatingList.length - 1
 
-        for (let i = 0; i < data.applyGoodsDto.length; i++) {
-          if (data.applyGoodsDto[i].nanumIdx == item.nanumIdx) {
-            tempParticipatingList[index].goodsList?.push(data.applyGoodsDto[i].goodsName)
+        for (let i = 0; i < applyGoodsNameList.length; i++) {
+          if (applyGoodsNameList[i].nanumIdx == item.nanumIdx) {
+            tempParticipatingList[lastIdx]?.goodsList?.push({goodsName: applyGoodsNameList[i].goodsName})
           }
         }
       })
-      console.log('tempParlist : ', tempParticipatingList)
+      //console.log('tempParlist : ', tempParticipatingList)
+      setParticipatingList(tempParticipatingList)
+
+      //진행한 나눔 가공
+      const tempHoldingList: {
+        nanumIdx: number
+        title: string
+        goodsList: {
+          goodsName: string
+          goodsNumber: number
+        }[]
+        location: string
+        acceptDate: string
+        type: 'participating' | 'holding'
+      }[] = []
+      // 굿즈 정보를 nanumIdx 순서로 정렬
+      const holdingGoodsList: ICalendarNanumGoodsDto[] = data.nanumGoodsDto.sort((a: ICalendarNanumGoodsDto, b: ICalendarNanumGoodsDto) => {
+        if (a.nanumIdx < b.nanumIdx) {
+          return -1
+        }
+        if (a.nanumIdx > b.nanumIdx) {
+          return 1
+        }
+        return 0
+      })
+      data.calenderDto2.forEach((item: any, index: number) => {
+        if (item.location == null) return
+
+        tempHoldingList.push({
+          type: 'holding',
+          nanumIdx: item.nanumIdx,
+          title: item.title,
+          location: item.location,
+          acceptDate: item.acceptDate,
+          goodsList: [],
+        })
+        const lastIdx = tempHoldingList.length - 1
+
+        for (let i = 0; i < holdingGoodsList.length; i++) {
+          if (holdingGoodsList[i].nanumIdx == item.nanumIdx) {
+            tempHoldingList[lastIdx]?.goodsList?.push({
+              goodsName: holdingGoodsList[i].goodsName,
+              goodsNumber: holdingGoodsList[i].goodsNumber,
+            })
+          }
+        }
+      })
+      //console.log('tempHoldingList : ', tempHoldingList)
+      setHoldingList(tempHoldingList)
+
+      //holding 나오면 코드 추가
+      setcalendarScheduleList({
+        participatingList: participatingList,
+        holdingList: holdingList,
+      })
+      //console.log('calendarScheduleList : ', calendarScheduleList)
     },
     onError(err) {},
   })
@@ -97,19 +156,24 @@ export const Calendar = () => {
       </StackHeader>
       <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View style={{paddingHorizontal: 10}}>
-          <WixCalendar scheduleAll={calendars} setSelectedDate={setSelectedDate} />
+          <WixCalendar
+            selectedSchedule={selectedSchedule}
+            scheduleAll={calendarScheduleList}
+            setSelectedDate={setSelectedDate}
+            setSelectedSchedule={setSelectedSchedule}
+          />
         </View>
 
         <View style={{paddingHorizontal: theme.PADDING_SIZE}}>
           <SeparatorLight style={{marginVertical: 20}} />
 
-          {selectedSchedule !== undefined ? (
-            selectedSchedule.map(item => <CalendarItem key={item.sharingid} item={item} />)
-          ) : (
+          {selectedSchedule == undefined || selectedSchedule.length == 0 ? (
             <View style={[theme.styles.rowFlexStart, styles.emptyContainer]}>
               <Text style={{marginRight: 8}}>📅</Text>
-              <Text style={{fontFamily: 'Pretendard-Medium'}}>오늘은 일정이 없어요!</Text>
+              <Text style={{fontFamily: 'Pretendard-Medium'}}>일정이 없어요!</Text>
             </View>
+          ) : (
+            selectedSchedule.map(item => <CalendarItem item={item} />)
           )}
         </View>
       </ScrollView>

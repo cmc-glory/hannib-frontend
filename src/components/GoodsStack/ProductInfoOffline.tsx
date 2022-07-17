@@ -2,15 +2,15 @@ import React, {useCallback} from 'react'
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native'
 import {CheckboxIcon} from '../utils'
 import * as theme from '../../theme'
-import {INanumGoods, INanumGoodsDto, IProductInfo, IRequestFormOffline} from '../../types'
+import {INanumGoods, INanumGoodsDto, IProductInfo, IRequestFormOffline, IRequestFormOnline} from '../../types'
 
 type ProductInfoProps = {
   item: INanumGoods
   key: number
   selectedItems: any
   setSelectedItems: React.Dispatch<React.SetStateAction<any>>
-  requestForm: IRequestFormOffline
-  setRequestForm: React.Dispatch<React.SetStateAction<IRequestFormOffline>>
+  requestForm: IRequestFormOnline
+  setRequestForm: React.Dispatch<React.SetStateAction<IRequestFormOnline>>
 }
 
 export const ProductInfoOffline = ({item, selectedItems, setSelectedItems, requestForm, setRequestForm}: ProductInfoProps) => {

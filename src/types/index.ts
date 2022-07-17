@@ -13,7 +13,14 @@ export type ICalendar = {
   products: IProductInfo[]
 }
 
-export type IScheduleItem = {sharingid: string; place: string; products: IProductInfo[]; time: Date; title: string; type: 'holding' | 'participating'}
+export type IScheduleItem = {
+  sharingid: string
+  place: string
+  products: IProductInfo[]
+  time: Date
+  title: string
+  type: 'holding' | 'participating'
+}
 
 export type ISchedule = {
   time: Date | undefined
@@ -43,6 +50,8 @@ export type IRequestFormOnline = {
     third: string
   }
   name: string
+  receiveDate?: string
+  location?: string
 }
 
 export type IStar = {
@@ -175,7 +184,32 @@ export type ISearch = {
 }
 
 // ******************** backend variable names below ********************
-export type ICalendarApplyGoodsDto = {nanumIdx: number; goodsName: string}
+export type ICalendarApplyGoodsDto = {
+  nanumIdx: number
+  goodsName: string
+}
+
+export type ICalendarNanumGoodsDto = {
+  nanumIdx: number
+  goodsName: string
+  goodsNumber: number
+}
+
+//참여, 진행 각각 객체
+export type ICalendarShow = {
+  nanumIdx: number
+  title: string
+  goodsList: {goodsName: string; goodsNumber?: number}[]
+  location: string
+  acceptDate: string
+  type: 'participating' | 'holding'
+}
+
+//참여, 진행 리스트
+export type ICanlendarShowInfoList = {
+  participatingList: ICalendarShow[]
+  holdingList: ICalendarShow[]
+}
 
 export type ICalendarDto = {
   applyGoodsDto: ICalendarApplyGoodsDto[] // 신청 굿즈 리스트
@@ -389,6 +423,14 @@ export type INanumRequestRequiredDto = {
   goodsList: INanumGoods[]
   askList: INanumRequestReuiredAsk[]
   title: string
+  dateList: {
+    acceptDate: string
+    accountIdx: number
+    location: string
+    nanumIdx: number
+    title: string
+  }[]
+  nanumDto: INanum
 }
 
 export type INanumRequestReuiredAsk = {
@@ -416,7 +458,7 @@ export type INanumRequestGoods = {
   goodsName: string //삭제 필요
   //creatorId: string //삭제 필요, 필수x
   //goodsNumber: number //삭제 필요, 필수x
-  realName: string
+  realName?: string
 }
 
 //나눔 신청하기 온라인 폼 dto
@@ -432,6 +474,18 @@ export type INanumApplyOnlineDto = {
   //creatorId: string //삭제 필요
   phoneNumber: string
   title: string
+  //api에 따라 수정 필요
+}
+
+//나눔 신청하기 오프라인 폼 dto
+export type INanumApplyOfflineDto = {
+  applyAskAnswerLists: INanumRequestAnswer[]
+  nanumGoodsDtoList: INanumRequestGoods[]
+  accountIdx: number
+  nanumIdx: number
+  applyDate: string
+  title: string
+  location: string
   //api에 따라 수정 필요
 }
 

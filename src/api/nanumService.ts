@@ -1,6 +1,6 @@
 import axios from 'axios'
 import {BASE_URL} from '@env'
-import {INanumForm, INanumAccountFavoritesDto, INanumApplyOnlineDto} from '../types'
+import {INanumForm, INanumAccountFavoritesDto, INanumApplyOnlineDto, INanumApplyOfflineDto} from '../types'
 
 const apiClient = axios.create({
   baseURL: BASE_URL,
@@ -84,8 +84,14 @@ export const searchNanumByRecent = async (title: string) => {
   return data
 }
 
-//나눔 신청하기
+//나눔 신청하기 온라인
 export const postNanumRequestOnlineForm = async (requestOnlineForm: INanumApplyOnlineDto) => {
   const {data} = await apiClient.post(`api/apply/mail`, requestOnlineForm)
+  return data
+}
+
+//나눔 신청하기 오프라인
+export const postNanumRequestOfflineForm = async (requestOfflineForm: INanumApplyOfflineDto) => {
+  const {data} = await apiClient.post(`api/apply/offline`, requestOfflineForm)
   return data
 }

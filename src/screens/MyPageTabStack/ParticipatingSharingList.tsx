@@ -46,6 +46,7 @@ export const ParticipatingSharingList = () => {
       console.log(temp)
       setList(temp)
       setRefreshing(false)
+      setList(data.nanumDtoList)
     },
     onError(err) {
       console.log(err)
