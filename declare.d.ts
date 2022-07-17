@@ -181,6 +181,7 @@ declare namespace ReactNavigation {
     GoodsList: undefined
     NoticeList: {
       nanumIdx: number
+      writerAccountIdx: number
     }
     CustomerService: undefined
     EditCategory: undefined // 나눔 리스트 헤더에서 클릭했을 때

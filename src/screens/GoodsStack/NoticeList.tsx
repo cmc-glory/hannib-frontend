@@ -1,15 +1,17 @@
-import React, {useCallback} from 'react'
-import {View, Pressable, Text, StyleSheet} from 'react-native'
+import React, {useState, useCallback} from 'react'
+import {View, Pressable, Text, StyleSheet, ScrollView, RefreshControl} from 'react-native'
 import {useNavigation, useRoute} from '@react-navigation/native'
 import {SafeAreaView} from 'react-native-safe-area-context'
-import {useQuery} from 'react-query'
+import {useQuery, useQueryClient} from 'react-query'
 import moment from 'moment'
 
+import {FloatingBottomButton} from '../../components/utils'
 import {NoticeListRouteProps} from '../../navigation/GoodsStackNavigator'
 import {StackHeader} from '../../components/utils'
 import * as theme from '../../theme'
 import {queryKeys, getNotices} from '../../api'
 import {INoticeDto} from '../../types'
+import {useAppSelector} from '../../hooks'
 
 type NoticeListItemProps = {
   item: INoticeDto
@@ -33,20 +35,35 @@ const NoticeListItem = ({item}: NoticeListItemProps) => {
 }
 
 export const NoticeList = () => {
+  // ******************** utils ********************
   const navigation = useNavigation()
   const route = useRoute<NoticeListRouteProps>()
-  const nanumIdx = route.params.nanumIdx
+  const queryClient = useQueryClient()
+  const {nanumIdx, writerAccountIdx} = route.params
 
-  const {data} = useQuery(queryKeys.notice, () => getNotices(nanumIdx), {
+  // ******************** states ********************
+  const [refreshing, setRefreshing] = useState<boolean>(false)
+
+  // ******************** react queries ********************
+  const {data} = useQuery([queryKeys.notice, nanumIdx], () => getNotices(nanumIdx), {
     onSuccess(data) {
+      setRefreshing(false)
       console.log(data)
     },
   })
 
+  // ******************** callbacks ********************
+  const onRefresh = useCallback(() => {
+    setRefreshing(true)
+    queryClient.invalidateQueries([queryKeys.notice, nanumIdx])
+  }, [])
+
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
       <StackHeader title="공지사항" goBack />
-      {data != undefined && data.map((item: INoticeDto, index: number) => <NoticeListItem item={item} key={nanumIdx + index} />)}
+      <ScrollView style={{flex: 1}} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        {data != undefined && data.map((item: INoticeDto, index: number) => <NoticeListItem item={item} key={nanumIdx + index} />)}
+      </ScrollView>
     </SafeAreaView>
   )
 }

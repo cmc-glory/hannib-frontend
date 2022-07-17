@@ -5,16 +5,19 @@ import {useNavigation} from '@react-navigation/native'
 import Modal from 'react-native-modal'
 import moment from 'moment'
 import * as theme from '../../theme'
-import type {IParticipatingSharingList, ISharingInfo} from '../../types'
-import {Tag, XIcon, StarUnfilledIcon, StarFilledIcon} from '../utils'
+import type {IParticipatingSharingList} from '../../types'
+import {Tag, XIcon, StarUnfilledIcon} from '../utils'
 
 const {width} = Dimensions.get('window')
 
 var IMAGE_SIZE = (width - theme.PADDING_SIZE * 3) / 2
 
-export const ParticipatingSharingItem = ({item}: {item: IParticipatingSharingList}) => {
+type IparticipatigItem = IParticipatingSharingList & {canceled: 'Y' | 'N'; beenCanceled: 'Y' | 'N'}
+
+export const ParticipatingSharingItem = ({item}: {item: IparticipatigItem}) => {
+  console.log(item)
   // 나눔 게시글 아이템 구조분해 할당
-  const {accountIdx, nanumIdx, creatorId, thumbnail, category, nanumMethod, title, createdDatetime, favorites, secretForm, secretPwd, firstDate} = item
+  const {accountIdx, nanumIdx, creatorId, thumbnail, nanumMethod, title, beenCanceled} = item
 
   const now = moment()
   const openDate = moment(item.firstDate, 'YYYYMMDDHHmmss')
@@ -27,7 +30,7 @@ export const ParticipatingSharingItem = ({item}: {item: IParticipatingSharingLis
 
   useEffect(() => {
     setIsBefore(now < openDate ? true : false)
-  }, [])
+  }, [openDate, beenCanceled])
 
   // 상세 페이지로 이동
   const onPressItem = useCallback((type: 'M' | 'O') => {
@@ -48,12 +51,20 @@ export const ParticipatingSharingItem = ({item}: {item: IParticipatingSharingLis
   return (
     <>
       <Pressable onPress={() => onPressItem(nanumMethod)} style={[styles.container]}>
-        {isBefore && (
+        {beenCanceled == 'Y' ? (
           <View style={styles.overlay}>
-            <Text style={[styles.overlayText, {marginBottom: 2.5}]}>{openDate.format('YY/MM/DD HH:mm')}</Text>
-            <Text style={styles.overlayText}>오픈 예정</Text>
+            <Text style={[styles.overlayText, {marginBottom: 2.5}]}>진행자에 의해</Text>
+            <Text style={[styles.overlayText, {marginBottom: 2.5}]}>취소된 나눔입니다.</Text>
           </View>
+        ) : (
+          isBefore && (
+            <View style={styles.overlay}>
+              <Text style={[styles.overlayText, {marginBottom: 2.5}]}>{openDate.format('YY/MM/DD HH:mm')}</Text>
+              <Text style={styles.overlayText}>오픈 예정</Text>
+            </View>
+          )
         )}
+
         <View style={{width: IMAGE_SIZE}}>
           <View style={[styles.imageHeader, {width: IMAGE_SIZE}]}>
             <StarUnfilledIcon />

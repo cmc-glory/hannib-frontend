@@ -42,6 +42,7 @@ type GoodsStackNavigatorParamList = {
   }
   NoticeList: {
     nanumIdx: number
+    writerAccountIdx: number
   }
   GoodsRequestComplete: undefined
   GoodsRequestError: {

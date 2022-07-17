@@ -9,20 +9,43 @@ import {IParticipatingSharingList} from '../../types'
 import {useQuery, useQueryClient} from 'react-query'
 import {getParticipatingNanumList, queryKeys} from '../../api'
 
+type IparticipatigItem = IParticipatingSharingList & {canceled: 'Y' | 'N'; beenCanceled: 'Y' | 'N'}
+
 export const ParticipatingSharingList = () => {
   // ******************** utils ********************
   const user = useAppSelector(state => state.auth.user) // user.id로 이 user가 진행한 나눔 목록 불러옴
   const queryClient = useQueryClient()
 
   // ******************** states ********************
-  const [list, setList] = useState<IParticipatingSharingList[]>([])
+  const [list, setList] = useState<IparticipatigItem[]>([])
   const [refreshing, setRefreshing] = useState<boolean>(false)
 
   useQuery([queryKeys.appliedNanumList], () => getParticipatingNanumList(user.accountIdx), {
     onSuccess: data => {
       console.log(data)
+
+      var temp: IparticipatigItem[] = [] // 가공한 데이터가 저장될 임시 배열
+      const nanumDtoList = data.nanumDtoList // 참여한 나눔 정보들
+      const nanumCancelDtoList = data.nanumCancelDtoList.map((item: any) => item.nanumIdx) // 진행지에 의해 취소된 나눔의 nanumIdx 리스트
+      const applyCancelDtoList = data.applyCancelDtoList.map((item: any) => item.nanumIdx) // 사용자가 취소한 나눔의 nanumIdx 리스트
+
+      for (var i = 0; i < nanumDtoList.length; i++) {
+        const curNanumIdx = nanumDtoList[i].nanumIdx
+
+        // 현재 신청이 진행자에 의해 취소된 나눔이라면
+        if (nanumCancelDtoList.includes(curNanumIdx)) {
+          temp.push({...nanumDtoList[i], canceled: 'N', beenCanceled: 'Y'}) // 내가 취소하지는 않고, 취소 당함
+        }
+        // 신청자가 취소한 나눔이라면
+        else if (applyCancelDtoList.includes(curNanumIdx)) {
+          // 배열에 추가하지 않음
+        } else {
+          temp.push({...nanumDtoList[i], canceled: 'N', beenCanceled: 'N'}) // 내가 취소하고, 취소 당하지는 않음
+        }
+      }
+      console.log(temp)
+      setList(temp)
       setRefreshing(false)
-      setList(data)
     },
     onError(err) {
       console.log(err)

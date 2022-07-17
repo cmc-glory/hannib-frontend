@@ -210,7 +210,9 @@ export const WriteNanumFormOffline = () => {
           {agreed ? <CheckboxIcon onPress={onPressAgreed} /> : <EmptyCheckboxIcon onPress={onPressAgreed} />}
           <Text style={styles.agreedText}>개인정보를 다른 목적으로 이용하지 않겠습니다.</Text>
         </View>
+        <View style={{height: 80}}></View>
       </ScrollView>
+
       <FloatingBottomButton enabled={isButtonEnabled()} label="다음" onPress={onPressNext} />
     </SafeAreaView>
   )
