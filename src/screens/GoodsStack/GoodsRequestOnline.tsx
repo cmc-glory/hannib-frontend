@@ -161,6 +161,7 @@ export const GoodsReqeustOnline = () => {
       address1: requestForm.address.postcode,
       address2: requestForm.address.roadAddress + ' ' + requestForm.address.detailedAddress,
       phoneNumber: requestForm.phonenumber.first + '-' + requestForm.phonenumber.second + '-' + requestForm.phonenumber.third,
+      title: data.data.nanumDto.title,
     }
     console.log(JSON.stringify(requestApplyForm))
 
