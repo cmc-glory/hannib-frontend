@@ -22,8 +22,8 @@ export const getParticipatingNanumList = async (accountIdx: number) => {
   return data
 }
 
-//나눔자 취소하기
-export const postCancelNanumParticipant = async (cancelDto: IcancelDto) => {
+//나눔자가 특정 참여자 취소하기
+export const cancelNanumByHolder = async (cancelDto: IcancelDto) => {
   const {data} = await apiClient.post('/api/nanuming/cancel', cancelDto)
   return data
 }

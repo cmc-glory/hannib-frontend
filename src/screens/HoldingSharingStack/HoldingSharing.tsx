@@ -432,10 +432,20 @@ export const HoldingSharing = () => {
                         ) : (
                           //온라인 && 운송장 등록 전
                           <View style={[theme.styles.rowSpaceBetween, {marginBottom: 24}]}>
-                            <Pressable style={[styles.buttonMedium, styles.cancelButton]} onPress={toggleCancelModalShow}>
+                            <Pressable
+                              style={[styles.buttonMedium, styles.cancelButton]}
+                              onPress={() => {
+                                setParticipantAccountIdx(receiverDetail.applyDto.accountIdx)
+                                toggleCancelModalShow()
+                              }}>
                               <Text style={styles.cancelText}>취소하기</Text>
                             </Pressable>
-                            <Pressable style={[styles.buttonMedium, styles.trackingButton]} onPress={toggleAddressModalShow}>
+                            <Pressable
+                              style={[styles.buttonMedium, styles.trackingButton]}
+                              onPress={() => {
+                                setParticipantAccountIdx(receiverDetail.applyDto.accountIdx)
+                                toggleCancelModalShow()
+                              }}>
                               <Text style={styles.trackingText}>운송장 등록</Text>
                             </Pressable>
                           </View>
@@ -449,7 +459,9 @@ export const HoldingSharing = () => {
                         // 오프라인 && 수령 전
                         <View style={{marginBottom: 20}}>
                           <View style={[theme.styles.rowSpaceBetween, {marginBottom: 24}]}>
-                            <Pressable style={[styles.buttonMedium, styles.cancelButton]} onPress={toggleCancelModalShow}>
+                            <Pressable
+                              style={[styles.buttonMedium, styles.cancelButton]}
+                              onPress={() => setParticipantAccountIdx(receiverDetail.applyDto.accountIdx)}>
                               <Text style={styles.cancelText}>취소하기</Text>
                             </Pressable>
                             <Pressable
@@ -516,7 +528,7 @@ export const HoldingSharing = () => {
       </BottomSheet>
 
       {/* 모달 */}
-      <CancelModal isVisible={cancelModalShow} toggleIsVisible={toggleCancelModalShow}></CancelModal>
+      <CancelModal nanumIdx={nanumIdx} accountIdx={participantAccountIdx!} isVisible={cancelModalShow} toggleIsVisible={toggleCancelModalShow}></CancelModal>
       <AddressModal isVisible={addressModalShow} toggleIsVisible={toggleAddressModalShow}></AddressModal>
       <NotTakenModal isVisible={notTakenModalShow} toggleIsVisible={toggleNotTakenModalShow}></NotTakenModal>
       <CheckFinishedModal
