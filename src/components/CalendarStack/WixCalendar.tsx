@@ -49,7 +49,7 @@ export const WixCalendar = ({scheduleAll, setSelectedDate, setSelectedSchedule, 
           marked: true,
           dotColor: theme.secondary,
         }
-        tempMarkedDates[item.acceptDate.slice(0, 10)] = temp
+        tempMarkedDates[item.acceptDate?.slice(0, 10)] = temp
       })
       // Object.keys(scheduleAll.calenderDto3).forEach(item => {
       //   const temp = {
@@ -128,7 +128,7 @@ export const WixCalendar = ({scheduleAll, setSelectedDate, setSelectedSchedule, 
           })
 
           scheduleAll.participatingList.forEach(item => {
-            if (item.acceptDate.slice(0, 10) == day.dateString) {
+            if (item.acceptDate?.slice(0, 10) == day.dateString) {
               tempSchedulePerDay.push(item)
             }
           })

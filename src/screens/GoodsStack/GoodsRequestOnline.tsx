@@ -5,7 +5,7 @@ import KeyboardManager from 'react-native-keyboard-manager'
 import {useMutation, useQuery, useQueryClient} from 'react-query'
 import {useNavigation, useRoute} from '@react-navigation/native'
 
-import {StackHeader, RoundButton, FloatingBottomButton, NeccesaryField, SeparatorBold, CheckboxIcon, EmptyCheckboxIcon} from '../../components/utils'
+import {StackHeader, FloatingBottomButton, NeccesaryField, SeparatorBold, CheckboxIcon, EmptyCheckboxIcon} from '../../components/utils'
 import {FindAddress, ProductInfoOnline, MakeNewField} from '../../components/GoodsStack'
 import {IRequestFormOnline, INanumRequestRequiredDto, INanumApplyOnlineDto, INanumRequestReuiredAsk, INanumRequestGoods} from '../../types'
 import {queryKeys, getNanumRequestRequiredInfo, postNanumRequestOnlineForm} from '../../api'
@@ -45,12 +45,7 @@ export const GoodsReqeustOnline = () => {
   const queryClient = useQueryClient()
   // ***************************** states *****************************
   const [selectedItems, setSelectedItems] = useState<any>({}) // 선택한 상품들
-  const [info, setInfo] = useState<INanumRequestRequiredDto>({
-    nanumIdx: nanumIdx.nanumIdx,
-    goodsList: [],
-    askList: [],
-    title: '',
-  })
+  const [info, setInfo] = useState<INanumRequestRequiredDto>()
   const [requestForm, setRequestForm] = useState<IRequestFormOnline>({
     name: '',
     address: {
@@ -150,7 +145,7 @@ export const GoodsReqeustOnline = () => {
               nanumIdx: data.data.nanumIdx,
               goodsName: item.goodsName,
               realName: requestForm.name,
-              goodsNumber: info.goodsList[index].goodsNumber,
+              goodsNumber: info?.goodsList[index].goodsNumber,
             }
           } else return
         })
@@ -184,8 +179,8 @@ export const GoodsReqeustOnline = () => {
       return false
     }
     // 추가 질문 사항 중 필수 질문에 대한 input이 비어 있으면 false 리턴
-    for (var i = 0; i < info.askList.length; i++) {
-      if (info.askList[i].essential == 'Y' && answers[i] == '') {
+    for (var i = 0; i < info?.askList?.length; i++) {
+      if (info?.askList[i].essential == 'Y' && answers[i] == '') {
         return false
       }
     }
@@ -211,14 +206,14 @@ export const GoodsReqeustOnline = () => {
   }, [selectedItems])
 
   return (
-    <SafeAreaView edges={['top', 'bottom']} style={theme.styles.safeareaview}>
+    <SafeAreaView style={theme.styles.safeareaview}>
       <StackHeader title="신청하기" goBack />
       <ScrollView>
         <View style={{marginBottom: 20, marginTop: 10}}>
-          <Text style={[theme.styles.wrapper, styles.title]}>{info.title}</Text>
+          <Text style={[theme.styles.wrapper, styles.title]}>{info?.nanumDto.title}</Text>
           <View style={[theme.styles.wrapper]}>
             <Text style={[theme.styles.bold16]}>상품 선택</Text>
-            {info.goodsList.map(item => (
+            {info?.goodsList.map(item => (
               <ProductInfoOnline
                 item={item}
                 key={item.goodsIdx}
@@ -322,7 +317,7 @@ export const GoodsReqeustOnline = () => {
             </View>
           </View>
 
-          {info.askList.map((item, index) => (
+          {info?.askList.map((item, index) => (
             <MakeNewField
               key={item.askIdx}
               label={item.contents}
@@ -346,10 +341,8 @@ export const GoodsReqeustOnline = () => {
             </View>
           </View>
         </View>
-        <View style={theme.styles.wrapper}>
-          <RoundButton label="제출하기" enabled={isButtonEnabled()} onPress={onPressRequest} />
-        </View>
       </ScrollView>
+      <FloatingBottomButton label="제출하기" enabled={isButtonEnabled()} onPress={onPressRequest} />
     </SafeAreaView>
   )
 }

@@ -50,6 +50,8 @@ export type IRequestFormOnline = {
     third: string
   }
   name: string
+  receiveDate?: string
+  location?: string
 }
 
 export type IStar = {
@@ -421,6 +423,14 @@ export type INanumRequestRequiredDto = {
   goodsList: INanumGoods[]
   askList: INanumRequestReuiredAsk[]
   title: string
+  dateList: {
+    acceptDate: string
+    accountIdx: number
+    location: string
+    nanumIdx: number
+    title: string
+  }[]
+  nanumDto: INanum
 }
 
 export type INanumRequestReuiredAsk = {
@@ -448,7 +458,7 @@ export type INanumRequestGoods = {
   goodsName: string //삭제 필요
   //creatorId: string //삭제 필요, 필수x
   //goodsNumber: number //삭제 필요, 필수x
-  realName: string
+  realName?: string
 }
 
 //나눔 신청하기 온라인 폼 dto
@@ -464,6 +474,18 @@ export type INanumApplyOnlineDto = {
   //creatorId: string //삭제 필요
   phoneNumber: string
   title: string
+  //api에 따라 수정 필요
+}
+
+//나눔 신청하기 오프라인 폼 dto
+export type INanumApplyOfflineDto = {
+  applyAskAnswerLists: INanumRequestAnswer[]
+  nanumGoodsDtoList: INanumRequestGoods[]
+  accountIdx: number
+  nanumIdx: number
+  applyDate: string
+  title: string
+  location: string
   //api에 따라 수정 필요
 }
 
