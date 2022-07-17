@@ -26,7 +26,6 @@ export const EditProfile = () => {
   const queryClient = useQueryClient()
   const dispatch = useAppDispatch()
   const user = useAppSelector(state => state.auth.user)
-  console.log(user)
 
   const {data} = useQuery(queryKeys.accountInfo, () => getAccountInfoByIdx(user.accountIdx), {
     onSuccess: data => {

@@ -20,7 +20,10 @@ export const WriterProfileBanner = ({nanumIdx, writerProfileImageUri, writername
   const navigation = useNavigation()
 
   const imageUri = useMemo(
-    () => (writerProfileImageUri == '' || writerProfileImageUri == undefined ? require('../../assets/images/no_user.jpeg') : {uri: writerProfileImageUri}),
+    () =>
+      writerProfileImageUri == '' || writerProfileImageUri == undefined || writerProfileImageUri == null
+        ? require('../../assets/images/no_user.jpeg')
+        : {uri: writerProfileImageUri},
     [],
   )
 
@@ -42,7 +45,7 @@ export const WriterProfileBanner = ({nanumIdx, writerProfileImageUri, writername
 
   const onPressWriterProfile = useCallback(() => {
     navigation.navigate('WriterProfile', {
-      writerid: '111111', // 해당 나눔 게시글 작성자의 id를 넘겨줌
+      writerAccountIdx: writerAccountIdx,
     })
   }, [])
 

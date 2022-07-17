@@ -38,7 +38,7 @@ type GoodsStackNavigatorParamList = {
     title: string
   }
   WriterProfile: {
-    writreid: string
+    writerAccountIdx: number
   }
   NoticeList: {
     postid: string
@@ -46,6 +46,9 @@ type GoodsStackNavigatorParamList = {
   GoodsRequestComplete: undefined
   GoodsRequestError: {
     nanumIdx: number
+  }
+  NanumDetailThroughWriterProfile: {
+    nanumIdx: string
   }
 }
 
@@ -88,6 +91,7 @@ const GoodsStackNavigator = () => {
       <Stack.Screen name="NoticeList" component={NoticeList} />
       <Stack.Screen name="GoodsRequestComplete" component={GoodsRequestComplete} />
       <Stack.Screen name="GoodsRequestError" component={GoodsRequestError} />
+      <Stack.Screen name="NanumDetailThroughWriterProfile" component={NanumDetail} />
     </Stack.Navigator>
   )
 }

@@ -56,7 +56,7 @@ export const NanumDetail = () => {
     },
   )
 
-  const inquries = useQuery(queryKeys.inquiry, () => getInquiryByIndex(parseInt(nanumIdx)), {
+  useQuery(queryKeys.inquiry, () => getInquiryByIndex(parseInt(nanumIdx)), {
     onSuccess(data) {
       console.log('inquiry length : ', data)
       setNumInqueries(data.length)
@@ -143,9 +143,7 @@ export const NanumDetail = () => {
           })
         }}>
         <HeaderImage images={data?.nanumImglist} />
-        {data != undefined && (
-          <NanumDetailContent headerHeight={headerHeight} nanumDetail={data} numInquires={inquries.data == undefined ? 0 : inquries.data.length} />
-        )}
+        {nanumDetail != undefined && <NanumDetailContent headerHeight={headerHeight} nanumDetail={nanumDetail} numInquires={numInqueries} />}
       </ScrollView>
       <FloatingBottomButton label="신청하기" enabled onPress={onPressRequest} />
     </SafeAreaView>

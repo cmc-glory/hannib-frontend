@@ -352,6 +352,7 @@ export type INanumListItem = {
   favoritesYn: 'Y' | 'N' // 즐겨찾기 여부
   favorites: number // 즐겨찾기 사람 수
   accountIdx: number // 작성자의 account Idx
+  endYn: 'Y' | 'N'
 }
 
 // 모집폼 작성 시 기본 정보

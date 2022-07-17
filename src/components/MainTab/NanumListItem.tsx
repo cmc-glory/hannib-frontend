@@ -79,21 +79,22 @@ const SecretModal = ({secretModalVisible, setSecretModalVisible, secretPwd, nanu
 }
 
 export const NanumListItem = ({item}: {item: INanumListItem}) => {
+  // ********************* utils *********************
   // 나눔 게시글 아이템 구조분해 할당
-  const {nanumIdx, nanumMethod, title, creatorId, thumbnail, secretForm, secretPwd, favoritesYn, firstDate} = item
+  const {nanumIdx, nanumMethod, title, creatorId, thumbnail, secretForm, secretPwd, favoritesYn, firstDate, endYn} = item
   const writerAccountIdx = item.accountIdx
 
   const openDate = new Date(firstDate)
 
   // 이미지가 존재하면 이미지의 uri로, 없으면 기본 이미지로
-  const imageUri = thumbnail ? thumbnail : 'http://localhost:8081/src/assets/images/no-image.jpeg'
   const navigation = useNavigation()
 
-  const [isBefore, setIsBefore] = useState(false)
+  // ********************* states *********************
+  const [isBefore, setIsBefore] = useState(false) // 나눔 시작 예약 여부
+  const [secretModalVisible, setSecretModalVisible] = useState<boolean>(false) // 시크릿폼 모달 띄울지
+  const [isClosed, setIsClosed] = useState<boolean>(false)
 
-  const [secretModalVisible, setSecretModalVisible] = useState(false)
-
-  // ------------- react queries -------------
+  // ********************* react queries *********************
   const accountIdx = useAppSelector(state => state.auth.user.accountIdx)
   const addFavoriteQuery = useMutation(addFavorite, {
     onSuccess: () => {
@@ -133,6 +134,7 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
     },
   })
 
+  // ********************* callbacks *********************
   const onPressAddFavorite = useCallback(() => {
     if (addFavoriteQuery.isLoading || removeFavoriteQuery.isLoading) {
       return
@@ -165,6 +167,7 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
 
   useEffect(() => {
     setIsBefore(new Date() < openDate ? true : false)
+    setIsClosed(endYn == 'Y' ? true : false)
   }, [item])
 
   // 상세 페이지로 이동
@@ -194,13 +197,21 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
     <>
       <SecretModal secretModalVisible={secretModalVisible} setSecretModalVisible={setSecretModalVisible} secretPwd={secretPwd} nanumIdx={nanumIdx} />
       <Pressable onPress={onPressItem} style={[styles.container]}>
-        {isBefore && (
+        {!isClosed && isBefore && (
           <View style={{...styles.overlay}}>
             <View style={[styles.imageHeader, {width: IMAGE_SIZE}]}>
               {favoritesYn == 'Y' ? <StarFilledIcon onPress={onPressRemoveFavorite} size={24} /> : <StarUnfilledIcon onPress={onPressAddFavorite} size={24} />}
             </View>
             <Text style={[styles.overlayText, {marginBottom: 2.5}]}>{moment(openDate).format('YY/MM/DD HH:mm')}</Text>
             <Text style={styles.overlayText}>오픈 예정</Text>
+          </View>
+        )}
+        {isClosed && (
+          <View style={{...styles.overlay}}>
+            <View style={[styles.imageHeader, {width: IMAGE_SIZE}]}>
+              {favoritesYn == 'Y' ? <StarFilledIcon onPress={onPressRemoveFavorite} size={24} /> : <StarUnfilledIcon onPress={onPressAddFavorite} size={24} />}
+            </View>
+            <Text style={[styles.overlayText, {marginBottom: 2.5}]}>마감</Text>
           </View>
         )}
         <View style={{width: IMAGE_SIZE, height: IMAGE_SIZE, borderRadius: 8}}>
@@ -212,7 +223,7 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
           <FastImage
             resizeMode={FastImage.resizeMode.cover}
             style={[styles.image, {width: IMAGE_SIZE, height: IMAGE_SIZE}]}
-            source={{uri: imageUri}}></FastImage>
+            source={{uri: thumbnail}}></FastImage>
         </View>
         <View style={{marginTop: 10}}>
           <Tag label={nanumMethod == 'M' ? '우편' : '오프라인'} />
