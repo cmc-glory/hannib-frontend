@@ -51,10 +51,8 @@ export const WriteNanumFormOffline = () => {
 
   const postNanumFormQuery = useMutation(queryKeys.nanumForm, postNanumForm, {
     onSuccess(data, variables, context) {
-      console.log('success')
-      console.log(data)
       queryClient.invalidateQueries([queryKeys.nanumList])
-
+      setSubmitted(true)
       const nanumIdx = data
       navigation.navigate('WriteNanumFormComplete', {
         nanumIdx: nanumIdx,
@@ -86,12 +84,13 @@ export const WriteNanumFormOffline = () => {
   const [secretPwd, setSecretPwd] = useState('')
   const [nanumDates, setNanumDates] = useState<INanumDateInfo[]>([])
   const [agreed, setAgreed] = useState<boolean>(false)
+  const [submitted, setSubmitted] = useState<boolean>(false) // 중복 제출 방지
 
   // 처음에 화면 로드될 때 이전 페이지 작성 정보 가져옴
 
   // ***************************** callbacks *****************************
   const isButtonEnabled = useCallback(() => {
-    if (postNanumFormQuery.isLoading) {
+    if (postNanumFormQuery.isLoading || submitted == true) {
       return false
     }
     if (agreed == false) {
@@ -101,7 +100,7 @@ export const WriteNanumFormOffline = () => {
       return false
     }
     return true
-  }, [nanumDates, nanumGoods, postNanumFormQuery, agreed])
+  }, [nanumDates, nanumGoods, postNanumFormQuery, agreed, submitted])
 
   const onPressNext = useCallback(() => {
     // post api가 진행중이면 다시 시도하지 않기
@@ -130,6 +129,7 @@ export const WriteNanumFormOffline = () => {
           nanumIdx: 0,
           acceptDate: moment(item.acceptDate).format('YYYY-MM-DD HH:mm:ss'),
           location: item.location,
+          title: title,
         }
       }),
       nanumGoodslist: nanumGoods.map(item => {
@@ -137,6 +137,7 @@ export const WriteNanumFormOffline = () => {
           nanumIdx: 0,
           goodsName: item.goodsName,
           goodsNumber: item.goodsNumber,
+          accountIdx: user.accountIdx,
         }
       }),
       nanumImglist: images.map(item => {
@@ -167,10 +168,8 @@ export const WriteNanumFormOffline = () => {
       },
     }
 
-    console.log(JSON.stringify(nanumForm))
-
     postNanumFormQuery.mutate(nanumForm)
-  }, [secretForm, nanumAsks, nanumGoods, secretPwd, user])
+  }, [secretForm, nanumAsks, nanumGoods, secretPwd, user, submitted])
 
   const onPressAgreed = useCallback(() => {
     setAgreed(agreed => !agreed)

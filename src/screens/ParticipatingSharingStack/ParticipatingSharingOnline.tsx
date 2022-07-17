@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react'
 import {View, Text, ScrollView, StyleSheet, Dimensions, RefreshControl, TextInput, Alert, Pressable} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
-import {useQuery, useMutation} from 'react-query'
+import {useQuery, useMutation, useQueryClient} from 'react-query'
 import {CancelModal} from '../../components/MyPageStack'
 import {useNavigation, useRoute} from '@react-navigation/native'
 import {showMessage} from 'react-native-flash-message'
@@ -26,6 +26,7 @@ export const ParticipatingSharingOnline = () => {
   // ******************** utils ********************
   const [cancelModalVisible, toggleCancelModalVisible] = useToggle() // 취소 모달창 띄울지
   const route = useRoute<ParticipatingSharingOnlineRouteProps>()
+  const queryClient = useQueryClient()
   const {nanumIdx} = route.params
   const navigation = useNavigation()
   const user = useAppSelector(state => state.auth.user)
@@ -42,7 +43,7 @@ export const ParticipatingSharingOnline = () => {
   const nanumInfo = useQuery([queryKeys.nanumDetail, nanumIdx], () => getNanumByIndex({nanumIdx: nanumIdx, accountIdx: user.accountIdx, favoritesYn: 'N'}))
 
   useQuery(
-    [queryKeys.appliedNanum],
+    [queryKeys.appliedNanum, nanumIdx],
     () =>
       getAppliedNanumInfo({
         accountIdx: user.accountIdx,
@@ -50,6 +51,8 @@ export const ParticipatingSharingOnline = () => {
       }),
     {
       onSuccess(data) {
+        console.log('reloaded2')
+        setRefreshing(false)
         setDetail(data)
         setNanumState(data.applyDto.unsongYn == 'Y' ? '배송 시작' : '배송 준비중')
         setAppliedGoodsList(data.applyingGoodsDto)
@@ -94,6 +97,9 @@ export const ParticipatingSharingOnline = () => {
     }
     Alert.alert('나눔 신청을 취소하시겠습니까?', '', [
       {
+        text: '취소',
+      },
+      {
         text: '확인',
         onPress: () =>
           cancelNanumQuery.mutate({
@@ -101,9 +107,6 @@ export const ParticipatingSharingOnline = () => {
             nanumIdx: nanumIdx,
             nanumDeleteReason: '',
           }),
-      },
-      {
-        text: '취소',
       },
     ])
   }, [])
@@ -118,10 +121,15 @@ export const ParticipatingSharingOnline = () => {
     })
   }, [nanumInfo])
 
+  const onRefresh = useCallback(() => {
+    setRefreshing(true)
+    queryClient.invalidateQueries([queryKeys.appliedNanum, nanumIdx])
+  }, [])
+
   return (
     <SafeAreaView style={styles.rootContainer}>
       <StackHeader title="참여한 나눔" goBack />
-      <ScrollView contentContainerStyle={[theme.styles.wrapper, {flex: 1}]}>
+      <ScrollView contentContainerStyle={[theme.styles.wrapper, {flex: 1}]} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <SharingPreview uri={nanumInfo.data?.thumbnail} category={nanumInfo.data?.category} title={nanumInfo.data?.title} />
         <View style={{marginVertical: 20}}>
           {appliedGoodsList.map((item, index) => (
@@ -180,10 +188,6 @@ export const ParticipatingSharingOnline = () => {
         </View>
         <View>
           {nanumState == '배송 준비중' ? (
-            <Pressable style={[styles.buttonMedium, styles.reviewButton]} onPress={onPressWriteReview}>
-              <Text style={styles.trackingText}>후기 작성</Text>
-            </Pressable>
-          ) : (
             <View style={[theme.styles.rowSpaceBetween, {marginBottom: 24}]}>
               <Pressable style={[styles.buttonMedium, styles.cancelButton]} onPress={onPressCancel}>
                 <Text style={styles.cancelText}>취소하기</Text>
@@ -192,6 +196,14 @@ export const ParticipatingSharingOnline = () => {
                 <Text style={styles.trackingText}>문의하기</Text>
               </Pressable>
             </View>
+          ) : detail?.applyDto.reviewYn == 'Y' ? (
+            <View style={[styles.reviewButton, styles.unselectedReviewButton]}>
+              <Text style={{color: theme.gray700}}>후기 작성 완료</Text>
+            </View>
+          ) : (
+            <Pressable style={[styles.reviewButton, styles.selectedReviewButton]} onPress={onPressWriteReview}>
+              <Text style={{color: theme.main}}>후기 작성</Text>
+            </Pressable>
           )}
         </View>
 
@@ -202,6 +214,14 @@ export const ParticipatingSharingOnline = () => {
 }
 
 const styles = StyleSheet.create({
+  unselectedReviewButton: {
+    backgroundColor: theme.white,
+    borderColor: theme.gray500,
+  },
+  selectedReviewButton: {
+    backgroundColor: theme.main50,
+    borderColor: theme.main,
+  },
   reviewButton: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -209,8 +229,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 4,
     width: '100%',
-    backgroundColor: theme.main50,
-    borderColor: theme.main,
   },
   trackingText: {
     fontFamily: 'Pretendard-Bold',
@@ -252,6 +270,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: theme.gray500,
     alignSelf: 'flex-start',
+    lineHeight: 24,
   },
   requestInfoText: {
     fontSize: 16,

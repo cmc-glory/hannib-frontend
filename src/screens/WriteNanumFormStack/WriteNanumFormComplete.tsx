@@ -1,17 +1,23 @@
 import React, {useState, useMemo, useCallback} from 'react'
 import {View, Text, StyleSheet, Dimensions} from 'react-native'
-import {useNavigation} from '@react-navigation/native'
+import {useNavigation, useRoute} from '@react-navigation/native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {getStatusBarHeight} from 'react-native-status-bar-height'
 import {isIphoneX, getBottomSpace} from 'react-native-iphone-x-helper'
 import {useQueryClient} from 'react-query'
+import {StackActions} from '@react-navigation/native'
 
+import {WriteNanumFormCompleteRouteProps} from '../../navigation/WriteNanumFormStackNavigator'
 import {StackHeader, CompleteIcon, RoundButton} from '../../components/utils'
 import * as theme from '../../theme'
 
 export const WriteNanumFormComplete = () => {
   const navigation = useNavigation()
+  const route = useRoute<WriteNanumFormCompleteRouteProps>()
+  const nanumIdx = route.params.nanumIdx
   const queryClient = useQueryClient()
+  const popAction = StackActions.pop(2)
+
   const [height, setHeight] = useState<number>(0)
   const MARGIN_TOP = useMemo(() => {
     const status = getStatusBarHeight()
@@ -23,7 +29,12 @@ export const WriteNanumFormComplete = () => {
   }, [height])
 
   const onPressButton = useCallback(() => {
-    navigation.navigate('MainTabNavigator')
+    navigation.navigate('GoodsStackNavigator', {
+      screen: 'NanumDetail',
+      params: {
+        nanumIdx: nanumIdx,
+      },
+    })
     queryClient.invalidateQueries('nanumListRecent')
     queryClient.invalidateQueries('nanumListPopular')
   }, [])
@@ -41,7 +52,7 @@ export const WriteNanumFormComplete = () => {
             <Text style={[theme.styles.bold20, {marginBottom: 8}]}>신청 완료</Text>
             <Text style={{color: theme.gray700, fontSize: 16}}>신청폼 작성이 완료됐습니다.</Text>
           </View>
-          <RoundButton label="메인 페이지로 이동" style={{alignSelf: 'stretch'}} enabled onPress={onPressButton} />
+          <RoundButton label="등록한 게시글로 이동" style={{alignSelf: 'stretch'}} enabled onPress={onPressButton} />
         </View>
       </View>
     </SafeAreaView>

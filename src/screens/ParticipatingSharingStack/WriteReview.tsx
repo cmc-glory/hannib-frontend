@@ -2,7 +2,7 @@ import React, {useState, useCallback, useEffect, useMemo} from 'react'
 import {View, Text, TextInput, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation, useRoute} from '@react-navigation/native'
-import {useMutation} from 'react-query'
+import {useMutation, useQueryClient} from 'react-query'
 import {showMessage} from 'react-native-flash-message'
 
 import {queryKeys, writeReview} from '../../api'
@@ -27,6 +27,7 @@ const ProductItem = ({name, quantity, spacing}: {name: string; quantity: number;
 export const WriteReview = () => {
   // ******************** utils ********************
   const navigation = useNavigation()
+  const queryClient = useQueryClient()
   const route = useRoute<WriteReviewPropsRouteProps>()
   const {nanumIdx, accountIdx, imageuri, category, title} = useMemo(() => route.params, [])
 
@@ -39,6 +40,8 @@ export const WriteReview = () => {
   // ******************** react query ********************
   const writeReviewQuery = useMutation([queryKeys.writeReview], writeReview, {
     onSuccess(data, variables, context) {
+      queryClient.invalidateQueries([queryKeys.appliedNanum, nanumIdx])
+
       // 나중에 작가 프로필 완성되면 작가 프로필로 네비게이트
       navigation.goBack()
 

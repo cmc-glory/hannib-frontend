@@ -248,9 +248,11 @@ export type IApplyDto = {
   misacceptedYn: 'Y' | 'N'
   reviewYn: 'Y' | 'N'
   unsongYn: 'Y' | 'N'
-  acceptDate: string
+  acceptDate: string // 오프라인 수령 일자
+  applyDate: string // 신청 일자
   realName: string
-  address1: string // 우편번호
+  location: string // 오프라인 시 수령 장소
+  address1: string // 우편번호N
   address2: string
   creatorId: string
   phoneNumber: string
@@ -367,12 +369,14 @@ export type INanumDateDto = {
   nanumIdx: number
   acceptDate: string // example: 2022-07-01 12:43:15
   location: string
+  title: string
 }
 
 export type INanumGoodsDto = {
   nanumIdx: number
   goodsName: string
   goodsNumber: number
+  accountIdx: number
 }
 export type INanumImgDto = {
   nanumIdx: number
@@ -490,6 +494,7 @@ export type INanum = {
     email: string
   }
   job: '가수' | '배우'
+  applyOfflineIdx: number
 }
 
 export type INanumGoodsInfo = {
@@ -536,6 +541,7 @@ export type IAccountCategoryDto = {
   accountIdx: number
   job: '가수' | '배우'
   categoryName: string
+  categoryIdx: number
 }
 
 export type IAccountDto = {
@@ -593,6 +599,8 @@ export type IParticipatingSharingList = {
   secretPwd: string
   firstDate: Date //haveto 날짜 전반적으로 수정
   endYn: 'Y' | 'N'
+  nanumCancelYn: 'Y' | 'N' // 나눔자가 취소한 경우
+  applyCancelYn: 'Y' | 'N'
 }
 
 export type requestedGoods = {

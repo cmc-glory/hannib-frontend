@@ -131,9 +131,13 @@ declare namespace ReactNavigation {
           screen: string
           params?: any
         }
-    ParticipatingSharingOnline: undefined
+    ParticipatingSharingOnline: {
+      nanumIdx: number
+    }
 
-    ParticipatingSharingOffline: undefined
+    ParticipatingSharingOffline: {
+      nanumIdx: number
+    }
     ReportIssueStackNavigator?: {
       screen: string
       params: any

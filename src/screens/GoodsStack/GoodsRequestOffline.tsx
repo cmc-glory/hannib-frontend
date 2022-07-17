@@ -5,7 +5,16 @@ import moment from 'moment'
 import {useQuery} from 'react-query'
 import KeyboardManager from 'react-native-keyboard-manager'
 import {useNavigation, useRoute} from '@react-navigation/native'
-import {StackHeader, FloatingBottomButton, CheckboxIcon, EmptyCheckboxIcon, DownArrowIcon, SeparatorBold, NeccesaryField} from '../../components/utils'
+import {
+  StackHeader,
+  FloatingBottomButton,
+  RoundButton,
+  CheckboxIcon,
+  EmptyCheckboxIcon,
+  DownArrowIcon,
+  SeparatorBold,
+  NeccesaryField,
+} from '../../components/utils'
 import * as theme from '../../theme'
 import {useAnimatedValue, useToggle, useAnimatedStyle} from '../../hooks'
 import {INanumRequestRequiredDto, IRequestFormOffline, ISharingRequestInfo} from '../../types'
@@ -247,9 +256,10 @@ export const GoodsRequestOffline = () => {
             </View>
           </View>
         </View>
+        <View style={theme.styles.wrapper}>
+          <RoundButton label="제출하기" enabled={isButtonEnabled()} onPress={() => onPressRequest(requestForm)} />
+        </View>
       </ScrollView>
-
-      <FloatingBottomButton label="제출하기" enabled={isButtonEnabled()} onPress={() => onPressRequest(requestForm)} />
     </SafeAreaView>
   )
 }

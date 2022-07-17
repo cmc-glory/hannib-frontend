@@ -40,6 +40,7 @@ export const WriteQnA = () => {
   const postInquiryQuery = useMutation(queryKeys.inquiry, postInquiry, {
     onSuccess(data, variables, context) {
       queryClient.invalidateQueries([queryKeys.inquiry, nanumIdx])
+
       showMessage({
         message: '문의글 작성이 완료되었습니다.',
         type: 'info',

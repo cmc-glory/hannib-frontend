@@ -5,7 +5,7 @@ import KeyboardManager from 'react-native-keyboard-manager'
 import {useMutation, useQuery, useQueryClient} from 'react-query'
 import {useNavigation, useRoute} from '@react-navigation/native'
 
-import {StackHeader, FloatingBottomButton, NeccesaryField, SeparatorBold, CheckboxIcon, EmptyCheckboxIcon} from '../../components/utils'
+import {StackHeader, RoundButton, FloatingBottomButton, NeccesaryField, SeparatorBold, CheckboxIcon, EmptyCheckboxIcon} from '../../components/utils'
 import {FindAddress, ProductInfoOnline, MakeNewField} from '../../components/GoodsStack'
 import {IRequestFormOnline, INanumRequestRequiredDto, INanumApplyOnlineDto, INanumRequestReuiredAsk, INanumRequestGoods} from '../../types'
 import {queryKeys, getNanumRequestRequiredInfo, postNanumRequestOnlineForm} from '../../api'
@@ -211,7 +211,7 @@ export const GoodsReqeustOnline = () => {
   }, [selectedItems])
 
   return (
-    <SafeAreaView style={theme.styles.safeareaview}>
+    <SafeAreaView edges={['top', 'bottom']} style={theme.styles.safeareaview}>
       <StackHeader title="신청하기" goBack />
       <ScrollView>
         <View style={{marginBottom: 20, marginTop: 10}}>
@@ -346,8 +346,10 @@ export const GoodsReqeustOnline = () => {
             </View>
           </View>
         </View>
+        <View style={theme.styles.wrapper}>
+          <RoundButton label="제출하기" enabled={isButtonEnabled()} onPress={onPressRequest} />
+        </View>
       </ScrollView>
-      <FloatingBottomButton label="제출하기" enabled={isButtonEnabled()} onPress={onPressRequest} />
     </SafeAreaView>
   )
 }

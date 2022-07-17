@@ -76,3 +76,10 @@ export const updateUserSelectedCategory = async (updateCategoryDto: IUpdateCateg
   const {data} = await apiClient.put('/api/account/category', updateCategoryDto)
   return data
 }
+
+// 마이페이지에서 쓰일 accountInfo
+export const getAccountInfoMypage = async (accountIdx: number) => {
+  const {data} = await apiClient.put(`/api/account/mainpage?accountIdx=${accountIdx}`)
+
+  return data
+}

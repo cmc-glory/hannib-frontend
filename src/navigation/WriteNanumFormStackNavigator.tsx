@@ -45,6 +45,9 @@ type WriteNanumFormOnlineProps = NativeStackScreenProps<WriteNanumFormStackNavig
 export type WriteNanumFormOnlineNavigationProps = WriteNanumFormOnlineProps['navigation']
 export type WriteNanumFormOnlineRouteProps = WriteNanumFormOnlineProps['route']
 
+type WriteNanumFormCompleteProps = NativeStackScreenProps<WriteNanumFormStackNavigatorParamList, 'WriteNanumFormComplete'>
+export type WriteNanumFormCompleteRouteProps = WriteNanumFormCompleteProps['route']
+
 const Stack = createStackNavigator<WriteNanumFormStackNavigatorParamList>()
 
 const WriteNanumFormStackNavigator = () => {
