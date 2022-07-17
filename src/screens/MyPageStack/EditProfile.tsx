@@ -1,5 +1,5 @@
 import React, {useState, useCallback, useMemo} from 'react'
-import {View, Text, TextInput, Pressable, StyleSheet, ActivityIndicator, Alert} from 'react-native'
+import {View, Text, TextInput, Pressable, StyleSheet, ActivityIndicator, ActionSheetIOS, Platform} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import FastImage from 'react-native-fast-image'
 import {launchImageLibrary} from 'react-native-image-picker'
@@ -7,10 +7,11 @@ import moment from 'moment'
 import {useMutation, useQueryClient, useQuery} from 'react-query'
 import {useNavigation} from '@react-navigation/native'
 import {showMessage} from 'react-native-flash-message'
+import Modal from 'react-native-modal'
 
-import {StackHeader, SelectImageIcon} from '../../components/utils'
+import {StackHeader, SelectImageIcon, BottomSheet} from '../../components/utils'
 import {queryKeys, uploadProfileImage, updateAccountInfo, getAccountInfoByIdx, checkNicknameDuplicated} from '../../api'
-
+import {EditProfileBottomSheetContent} from '../../components/MyPageStack'
 import {updateName, updateProfileImage} from '../../redux/slices'
 import {useAppSelector, useAppDispatch} from '../../hooks'
 import * as theme from '../../theme'
@@ -101,7 +102,7 @@ export const EditProfile = () => {
   const [name, setName] = useState<string>(data?.creatorId)
   const [profileImage, setProfileImage] = useState<string | undefined>(data?.accountImg)
   const [isLoading, setIsLoading] = useState<boolean>(false)
-
+  const [modalVisible, setModalVisible] = useState<boolean>(false)
   const [duplicated, setDuplicated] = useState<boolean>(false)
 
   // ******************** callbacks ********************
@@ -185,6 +186,7 @@ export const EditProfile = () => {
             }
           })
       } else {
+        console.log('here')
         if (name && profileImage) {
           let accountDto: IAccountDto = {
             accountIdx: user.accountIdx,
@@ -200,7 +202,7 @@ export const EditProfile = () => {
     }
     // 프사만 바꿀 땐 중복 검사 없이 바로 업데이트
     else {
-      if (name && profileImage) {
+      if (name) {
         let accountDto: IAccountDto = {
           accountIdx: user.accountIdx,
           creatorId: name,
@@ -209,6 +211,7 @@ export const EditProfile = () => {
           email: user.email,
           creatorIdDatetime: '',
         }
+
         updateAccountInfoQuery.mutate(accountDto)
       }
     }
@@ -266,6 +269,30 @@ export const EditProfile = () => {
     }
   }, [])
 
+  const onPressImage = useCallback(() => {
+    if (Platform.OS == 'ios') {
+      ActionSheetIOS.showActionSheetWithOptions(
+        {
+          options: ['취소', '앨범에서 선택', '기본 이미지로 변경'],
+          cancelButtonIndex: 0,
+          userInterfaceStyle: 'light',
+          title: '프로필 사진 변경',
+        },
+        buttonIndex => {
+          if (buttonIndex === 0) {
+            // cancel action
+          } else if (buttonIndex === 1) {
+            onImageLibraryPress()
+          } else if (buttonIndex === 2) {
+            setProfileImage('')
+          }
+        },
+      )
+    } else {
+      setModalVisible(true)
+    }
+  }, [])
+
   // ********************* renderer *********************
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
@@ -281,22 +308,24 @@ export const EditProfile = () => {
       <View style={styles.container}>
         <View style={{alignSelf: 'center'}}>
           {profileImage == undefined || profileImage == '' ? (
-            <Pressable style={[styles.image, styles.selectImage]} onPress={onImageLibraryPress}>
+            <Pressable style={[styles.image, styles.selectImage]} onPress={onPressImage}>
               <NoUserSvg width={54} height={54} />
             </Pressable>
           ) : (
-            <FastImage
-              source={{uri: profileImage}}
-              style={styles.image}
-              onLoadStart={() => setIsLoading(true)}
-              onLoadEnd={() => {
-                setIsLoading(false)
-              }}>
-              <ActivityIndicator animating={uploadProfileImageQuery.isLoading || isLoading == true} />
-            </FastImage>
+            <Pressable onPress={onPressImage}>
+              <FastImage
+                source={{uri: profileImage}}
+                style={styles.image}
+                onLoadStart={() => setIsLoading(true)}
+                onLoadEnd={() => {
+                  setIsLoading(false)
+                }}>
+                <ActivityIndicator animating={uploadProfileImageQuery.isLoading || isLoading == true} />
+              </FastImage>
+            </Pressable>
           )}
 
-          <SelectImageIcon style={styles.cameraIcon} onPress={onImageLibraryPress} />
+          <SelectImageIcon style={styles.cameraIcon} onPress={onPressImage} />
           <View style={[theme.styles.rowFlexStart]}>
             <Text style={[theme.styles.text14, {marginTop: 12, marginBottom: 32, textAlign: 'center', color: theme.gray500}]}>
               이번달 수정 가능 횟수 {leftChangeNum}회
@@ -317,11 +346,53 @@ export const EditProfile = () => {
         />
         {duplicated && <Text style={[{color: theme.red, fontSize: 12, marginTop: 4}, theme.styles.text12]}>중복된 닉네임입니다.</Text>}
       </View>
+      <Modal isVisible={modalVisible} onBackdropPress={() => setModalVisible(false)} backdropOpacity={0.1} style={{margin: '10%'}}>
+        <View style={styles.modalView}>
+          <Pressable style={[styles.modalButton, {marginBottom: 20}]}>
+            <Text style={[styles.modalTitle]}>프로필 사진 변경</Text>
+          </Pressable>
+          <Pressable
+            style={[styles.modalButton, {marginBottom: 20}]}
+            onPress={() => {
+              setModalVisible(false)
+              onImageLibraryPress()
+            }}>
+            <Text style={[styles.modalText]}>갤러리에서 선택</Text>
+          </Pressable>
+          <Pressable
+            style={styles.modalButton}
+            onPress={() => {
+              setModalVisible(false)
+              setProfileImage('')
+            }}>
+            <Text style={styles.modalText}>기본 이미지로 변경</Text>
+          </Pressable>
+        </View>
+      </Modal>
     </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
+  modalTitle: {
+    color: theme.gray700,
+    fontSize: 16,
+    fontFamily: 'Pretendard-Bold',
+  },
+  modalText: {
+    color: theme.gray700,
+    fontSize: 14,
+    fontFamily: 'Pretendard-SemiBold',
+  },
+  modalButton: {
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+  },
+  modalView: {
+    backgroundColor: theme.white,
+    borderRadius: 8,
+    padding: 20,
+  },
   cameraIcon: {
     position: 'absolute',
     left: 96,

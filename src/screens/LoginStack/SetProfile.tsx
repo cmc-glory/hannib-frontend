@@ -1,11 +1,13 @@
 import React, {useState, useCallback} from 'react'
-import {View, Text, TextInput, Pressable, ActivityIndicator, StyleSheet} from 'react-native'
+import {View, Text, TextInput, Pressable, ActivityIndicator, StyleSheet, Platform, ActionSheetIOS} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation, useRoute} from '@react-navigation/native'
 import {launchImageLibrary} from 'react-native-image-picker'
 import FastImage from 'react-native-fast-image'
 import {useMutation} from 'react-query'
 import {showMessage} from 'react-native-flash-message'
+import Modal from 'react-native-modal'
+
 import {SetProfileRouteProps} from '../../navigation/LoginStackNavigator'
 import {StackHeader, SelectImageIcon, FloatingBottomButton} from '../../components/utils'
 import NoUserSvg from '../../assets/Icon/noUser.svg'
@@ -80,6 +82,8 @@ export const SetProfile = () => {
   const [name, setName] = useState<string>('') // 사용자가 입력한 닉네임.
   const [image, setImage] = useState<string>('')
   const [duplicated, setDuplicated] = useState<boolean>(false) // 이메일 중복 여부
+  const [modalVisible, setModalVisible] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   // 이미지 상관 없이 닉네임이 null이 아닐 때만
   const checkButtonEnabled = useCallback((name: string) => {
@@ -155,10 +159,10 @@ export const SetProfile = () => {
     } else if (response.assets) {
       // 이미지가 제대로 들어오면
       const fileSize = response.assets[0].fileSize
-      if (fileSize && fileSize >= 1048576) {
+      if (fileSize && fileSize >= 10485760) {
         showMessage({
           // 에러 안내 메세지
-          message: '최대 1MB까지 업로드 가능합니다',
+          message: '최대 10MB까지 업로드 가능합니다',
           type: 'info',
           animationDuration: 300,
           duration: 1350,
@@ -183,20 +187,54 @@ export const SetProfile = () => {
     }
   }, [])
 
+  const onPressImage = useCallback(() => {
+    if (Platform.OS == 'ios') {
+      ActionSheetIOS.showActionSheetWithOptions(
+        {
+          options: ['취소', '앨범에서 선택', '기본 이미지로 변경'],
+          cancelButtonIndex: 0,
+          userInterfaceStyle: 'light',
+          title: '프로필 사진 변경',
+        },
+        buttonIndex => {
+          if (buttonIndex === 0) {
+            // cancel action
+          } else if (buttonIndex === 1) {
+            onImageLibraryPress()
+          } else if (buttonIndex === 2) {
+            setImage('')
+          }
+        },
+      )
+    } else {
+      setModalVisible(true)
+    }
+  }, [])
+
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
       <StackHeader goBack title="프로필 설정" />
       <View style={styles.container}>
         <View style={{alignSelf: 'center'}}>
           {image == '' ? (
-            <Pressable style={[styles.image, styles.selectImage]} onPress={onImageLibraryPress}>
+            <Pressable style={[styles.image, styles.selectImage]} onPress={onPressImage}>
               <NoUserSvg width={54} height={54} />
               <ActivityIndicator animating={uploadImageQuery.isLoading} style={{position: 'absolute'}} />
             </Pressable>
           ) : (
-            <FastImage source={{uri: image}} style={styles.image}></FastImage>
+            <Pressable onPress={onPressImage}>
+              <FastImage
+                source={{uri: image}}
+                style={styles.image}
+                onLoadStart={() => setIsLoading(true)}
+                onLoadEnd={() => {
+                  setIsLoading(false)
+                }}>
+                <ActivityIndicator animating={uploadImageQuery.isLoading || isLoading == true} />
+              </FastImage>
+            </Pressable>
           )}
-          <SelectImageIcon style={styles.cameraIcon} onPress={onImageLibraryPress} />
+          <SelectImageIcon style={styles.cameraIcon} onPress={onPressImage} />
         </View>
 
         <Text style={theme.styles.label}>닉네임</Text>
@@ -213,11 +251,53 @@ export const SetProfile = () => {
         {duplicated && <Text style={[{color: theme.red, fontSize: 12, marginTop: 4}, theme.styles.text12]}>중복된 닉네임입니다.</Text>}
       </View>
       <FloatingBottomButton label="다음" enabled={checkButtonEnabled(name)} onPress={onPressNext} />
+      <Modal isVisible={modalVisible} onBackdropPress={() => setModalVisible(false)} backdropOpacity={0.1} style={{margin: '10%'}}>
+        <View style={styles.modalView}>
+          <Pressable style={[styles.modalButton, {marginBottom: 20}]}>
+            <Text style={[styles.modalTitle]}>프로필 사진 변경</Text>
+          </Pressable>
+          <Pressable
+            style={[styles.modalButton, {marginBottom: 20}]}
+            onPress={() => {
+              setModalVisible(false)
+              onImageLibraryPress()
+            }}>
+            <Text style={[styles.modalText]}>갤러리에서 선택</Text>
+          </Pressable>
+          <Pressable
+            style={styles.modalButton}
+            onPress={() => {
+              setModalVisible(false)
+              setImage('')
+            }}>
+            <Text style={styles.modalText}>기본 이미지로 변경</Text>
+          </Pressable>
+        </View>
+      </Modal>
     </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
+  modalTitle: {
+    color: theme.gray700,
+    fontSize: 16,
+    fontFamily: 'Pretendard-Bold',
+  },
+  modalText: {
+    color: theme.gray700,
+    fontSize: 14,
+    fontFamily: 'Pretendard-SemiBold',
+  },
+  modalButton: {
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+  },
+  modalView: {
+    backgroundColor: theme.white,
+    borderRadius: 8,
+    padding: 20,
+  },
   cameraIcon: {
     position: 'absolute',
     left: 72,
