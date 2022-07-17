@@ -604,3 +604,9 @@ export type IRequestNanumDetail = {
   applyingGoodsDto: requestedGoods[]
   applyDto: IApplyDto
 }
+
+export type IcancelDto = {
+  accountIdx: number
+  nanumDeleteReason: string
+  nanumIdx: number
+}

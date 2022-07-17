@@ -13,8 +13,8 @@ const MODAL_BUTTON_WIDTH = (Dimensions.get('window').width - theme.PADDING_SIZE 
 type AddressModal = {
   isVisible: boolean
   toggleIsVisible: () => void
-  sendMethod: string
-  setSendMethod: (mthd: string) => void
+  // sendMethod: string
+  // setSendMethod: (mthd: string) => void
 }
 
 type ButtonProps = {
@@ -38,11 +38,12 @@ const Unselected = ({label, onPress}: ButtonProps) => {
   )
 }
 
-export const AddressModal = ({isVisible, toggleIsVisible, sendMethod, setSendMethod}: AddressModal) => {
+export const AddressModal = ({isVisible, toggleIsVisible}: AddressModal) => {
   const [postComp, setPostComp] = useState<string>('')
   const [postNum, setPostNum] = useState<string>('')
   const [noPostComp, setNoPostComp] = useState<boolean>(false)
   const [noPostNum, setNoPostNum] = useState<boolean>(false)
+  const [mailMethod, setMailMethod] = useState<'우편' | '등기'>('우편')
 
   const checkButtonEnabled = useCallback((postComp: string, mailNum: string) => {
     return postComp == '' || mailNum == '' ? false : true
@@ -61,11 +62,11 @@ export const AddressModal = ({isVisible, toggleIsVisible, sendMethod, setSendMet
     setNoPostNum(false)
     setPostComp('')
     setPostNum('')
-    setSendMethod('post')
+    setMailMethod('우편')
   }, [])
 
   const onPressRegisterdMail = useCallback(() => {
-    setSendMethod('registeredMail')
+    setMailMethod('등기')
   }, [])
 
   const closeModal = () => {
@@ -75,12 +76,12 @@ export const AddressModal = ({isVisible, toggleIsVisible, sendMethod, setSendMet
     setNoPostNum(false)
     toggleIsVisible()
 
-    setSendMethod('post')
+    setMailMethod('우편')
   }
 
   useEffect(() => {
     //console.log('sendMethod : ', sendMethod)
-  }, [sendMethod, noPostComp, noPostNum])
+  }, [mailMethod, noPostComp, noPostNum])
 
   return (
     <Modal isVisible={isVisible} onBackdropPress={closeModal} backdropColor={theme.gray800} backdropOpacity={0.6}>
@@ -92,7 +93,7 @@ export const AddressModal = ({isVisible, toggleIsVisible, sendMethod, setSendMet
         <View style={{width: '100%', height: 1, marginVertical: 16, backgroundColor: theme.gray200}} />
         <View style={{marginBottom: 16}}>
           <Text style={{fontSize: 16, marginBottom: 12}}>전달 방식</Text>
-          {sendMethod == 'post' ? (
+          {mailMethod == '우편' ? (
             <View style={{...theme.styles.rowSpaceBetween, marginBottom: 16}}>
               <Selected label="우편" onPress={onPressPost} />
               <Unselected label="등기" onPress={onPressRegisterdMail} />
@@ -103,7 +104,7 @@ export const AddressModal = ({isVisible, toggleIsVisible, sendMethod, setSendMet
               <Selected label="등기" onPress={onPressRegisterdMail} />
             </View>
           )}
-          {sendMethod == 'post' ? (
+          {mailMethod == '우편' ? (
             <View style={{...theme.styles.rowFlexStart}}>
               <BouncyCheckbox size={20} fillColor={theme.secondary} style={{width: 20}} />
               <Text style={{marginLeft: 8}}>나머지도 동일하게 우편전송으로 처리</Text>
@@ -137,9 +138,9 @@ export const AddressModal = ({isVisible, toggleIsVisible, sendMethod, setSendMet
           label="확인"
           onPress={() => {
             checkTextInput()
-            sendMethod == 'registeredMail' ? (checkButtonEnabled(postComp, postNum) ? closeModal() : null) : closeModal()
+            mailMethod == '등기' ? (checkButtonEnabled(postComp, postNum) ? closeModal() : null) : closeModal()
           }}
-          enabled={sendMethod == 'registeredMail' ? checkButtonEnabled(postComp, postNum) : true}
+          enabled={mailMethod == '등기' ? checkButtonEnabled(postComp, postNum) : true}
         />
       </View>
     </Modal>

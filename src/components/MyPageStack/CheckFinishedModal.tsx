@@ -1,17 +1,53 @@
-import React from 'react'
+import React, {useCallback} from 'react'
 import {View, Text, StyleSheet} from 'react-native'
 import {RoundButton} from '../../components/utils'
 import Modal from 'react-native-modal'
 import {XIcon} from '../../components/utils'
 import * as theme from '../../theme'
 import {useToggle} from '../../hooks'
+import {postGoodsSent, queryKeys} from '../../api'
+import {useMutation} from 'react-query'
+import {showMessage} from 'react-native-flash-message'
 
 type ModalProps = {
   isVisible: boolean
   toggleIsVisible: () => void
+  accountIdx: number
+  nanumIdx: number
 }
 
-export const CheckFinishedModal = ({isVisible, toggleIsVisible}: ModalProps) => {
+export const CheckFinishedModal = ({isVisible, toggleIsVisible, accountIdx, nanumIdx}: ModalProps) => {
+  //console.log('accountIdx : ', accountIdx)
+
+  // ************************** react quries **************************
+  const postGoodsSentQuery = useMutation([queryKeys.endNanum, nanumIdx], postGoodsSent, {
+    onSuccess(data, variables, context) {
+      showMessage({
+        // 에러 안내 메세지
+        message: '전달 완료 처리되었습니다.',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+      })
+    },
+  })
+
+  const onPressOkBtn = useCallback(() => {
+    postGoodsSentQuery.mutate({
+      accountIdx: accountIdx,
+      nanumDeleteReason: '',
+      nanumIdx: nanumIdx,
+    })
+    toggleIsVisible()
+  }, [accountIdx, nanumIdx])
+
   return (
     <Modal isVisible={isVisible} onBackdropPress={toggleIsVisible} backdropColor={theme.gray800} backdropOpacity={0.6}>
       <View style={styles.shareModal}>
@@ -23,7 +59,7 @@ export const CheckFinishedModal = ({isVisible, toggleIsVisible}: ModalProps) => 
           <Text style={[theme.styles.bold20, {marginBottom: 8}]}>전달 완료 하셨나요?</Text>
           <Text style={{marginHorizontal: 24, fontSize: 16, lineHeight: 24, textAlign: 'center'}}>전달완료 처리 진행하시겠습니까?</Text>
         </View>
-        <RoundButton label="확인" onPress={toggleIsVisible} enabled />
+        <RoundButton label="확인" onPress={onPressOkBtn} enabled />
       </View>
     </Modal>
   )

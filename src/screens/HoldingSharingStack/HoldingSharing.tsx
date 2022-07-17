@@ -31,11 +31,13 @@ import {
   IRequestNanumDetail,
   INanum,
 } from '../../types'
-import {useAppSelector} from '../../hooks'
+import {useAppSelector, useToggle} from '../../hooks'
 import * as theme from '../../theme'
 import {useNavigation, useRoute} from '@react-navigation/native'
 import {HoldingSharingRouteProps} from '../../navigation/HoldingSharingStackNavigator'
 import {queryKeys, getNanumByIndex, getReceiverList, endNanum, getReceiverDetail, getParticipatingNanumList, postRequestDetail} from '../../api'
+import {AddressModal, CancelModal, CheckFinishedModal} from '../../components/MyPageStack'
+import {NotTakenModal} from '../../components/MyPageStack/NotTakenModal'
 
 const BUTTON_WIDTH = (Dimensions.get('window').width - 40 - 10) / 2
 
@@ -62,21 +64,12 @@ export const HoldingSharing = () => {
       goodsFirst: string // 첫번째 상품 이름
       selected: boolean // 체크박스 선택됐는지
     }[]
-  >([
-    {
-      acceptedYn: 'N',
-      realName: '강진실',
-      creatorId: '진실진실',
-      accountIdx: 60,
-      goodsNum: 1,
-      goodsFirst: 'test1',
-      selected: false,
-    },
-  ])
+  >([])
   const [goodsInfoList, setGoodsInfoList] = useState<INanumGoodsDto[]>([]) // 상품 정보
   const [bottomSheetModalVisible, setBottomSheetModalVisible] = useState<boolean>(false) // 수령완료, 미수령 필터 bottom sheet 띄울 지
   const [itemFilter, setItemFilter] = useState<'전체보기' | '수령완료' | '미수령'>('전체보기')
   const [index, SetIndex] = useState<number>(0) // 현재 상세보기를 하는 receiver index
+  const [participantAccountIdx, setParticipantAccountIdx] = useState<number>()
   const [receiverDetail, setReceiverDetail] = useState<IRequestNanumDetail>({
     applyDto: {
       applyAskAnswerLists: [
@@ -126,6 +119,17 @@ export const HoldingSharing = () => {
       },
     ],
   })
+
+  // <CancelModal
+  // <AddressModal
+  // <NotTakenModal
+  // <CheckFinishedModal
+  // ******* modal states *******
+  const [cancelModalShow, toggleCancelModalShow] = useToggle(false)
+  const [addressModalShow, toggleAddressModalShow] = useToggle(false)
+  //const [isUnsong, setIsUnsong] = useState<'Y'|'N'>('Y');
+  const [notTakenModalShow, toggleNotTakenModalShow] = useToggle(false)
+  const [checkFinishedModalShow, toggleCheckFinishedModalShow] = useToggle(false)
 
   // ************************** react quries **************************
   const nanumInfo = useQuery([queryKeys.nanumDetail, nanumIdx], () => getNanumByIndex({nanumIdx: nanumIdx, accountIdx: accountIdx, favoritesYn: 'N'}), {
@@ -291,7 +295,7 @@ export const HoldingSharing = () => {
       accountIdx: receiverInfoList[newIdx].accountIdx,
     })
     SetIndex(newIdx)
-  }, [index])
+  }, [index, receiverInfoList])
 
   const onPressRightArrow = useCallback(() => {
     const length = receiverInfoList.length
@@ -301,7 +305,7 @@ export const HoldingSharing = () => {
       accountIdx: receiverInfoList[newIdx].accountIdx,
     })
     SetIndex(newIdx)
-  }, [index])
+  }, [index, receiverInfoList])
 
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
@@ -311,9 +315,10 @@ export const HoldingSharing = () => {
       <ScrollView>
         <ScrollView contentContainerStyle={[theme.styles.wrapper, {flex: 1}]}>
           <SharingPreview uri={nanumInfo.data?.thumbnail} category={nanumInfo.data?.category} title={nanumInfo.data?.title} />
+          {/* 굿즈 정보 리스트 & 나눔 마감 버튼 */}
           <View style={{marginVertical: 20}}>
             {goodsInfoList.map((item, index) => (
-              <View style={[theme.styles.rowSpaceBetween, index != goodsInfoList.length - 1 && {marginBottom: 16}]}>
+              <View key={index} style={[theme.styles.rowSpaceBetween, index != goodsInfoList.length - 1 && {marginBottom: 16}]}>
                 <Text style={{fontFamily: 'Pretendard-Medium', color: theme.gray700, fontSize: 16}}>{item.goodsName}</Text>
                 <View style={[theme.styles.rowFlexStart]}>
                   <Text style={{color: theme.gray500, marginRight: 8}}>잔여 수량</Text>
@@ -323,11 +328,12 @@ export const HoldingSharing = () => {
             ))}
             <Pressable
               style={[styles.endSharingBtn]}
-              onPress={() => Alert.alert('마감 처리 하시겠습니까?', '', [{text: '확인', onPress: () => endNanumQuery.mutate(nanumIdx)}])}>
+              onPress={() => Alert.alert('마감 처리 하시겠습니까?', '', [{text: '아니오'}, {text: '확인', onPress: () => endNanumQuery.mutate(nanumIdx)}])}>
               <Text style={styles.endSharingBtnText}>나눔 마감</Text>
             </Pressable>
           </View>
           <View style={{height: 1, backgroundColor: theme.gray300, marginBottom: 20}}></View>
+          {/* 전체 선택 & 전체 보기 버튼 */}
           <View style={[theme.styles.rowSpaceBetween, {marginBottom: 20}]}>
             {isAllSelected ? (
               <Pressable onPress={onPressSelectAll}>
@@ -343,13 +349,16 @@ export const HoldingSharing = () => {
               <DownArrowIcon onPress={onPressItemFilter} />
             </Pressable>
           </View>
+
           <View style={{flex: 1}}>
             {receiverListQuery.isLoading ? (
               <ActivityIndicator />
             ) : receiverInfoList.length == 0 ? (
               <View></View>
             ) : isDetail == true ? (
+              // 참여자 정보 상세보기 DOC
               <View>
+                {/* 화살표 이동, x 버튼 */}
                 <View style={[theme.styles.rowSpaceBetween, {marginBottom: 16}]}>
                   <View style={[theme.styles.rowFlexStart]}>
                     <LeftArrowIcon onPress={onPressLeftArrow} />
@@ -378,8 +387,10 @@ export const HoldingSharing = () => {
                       <View style={[theme.styles.rowSpaceBetween, {marginBottom: 12}]}>
                         <Text style={[styles.detailLabel, {alignSelf: 'flex-start'}]}>주문 목록</Text>
                         <View>
-                          {receiverDetail.applyingGoodsDto.map(item => (
-                            <Text style={[styles.detailText, {marginBottom: 8}]}>{item.goodsName} (1개)</Text>
+                          {receiverDetail.applyingGoodsDto?.map((item, index) => (
+                            <Text key={index} style={[styles.detailText, {marginBottom: 8}]}>
+                              {item.goodsName} (1개)
+                            </Text>
                           ))}
                         </View>
                       </View>
@@ -393,43 +404,64 @@ export const HoldingSharing = () => {
                         </View>
                       ) : (
                         <View style={[theme.styles.rowSpaceBetween, {marginBottom: 12}]}>
-                          <Text style={[styles.detailLabel, {alignSelf: 'flex-start'}]}>수령일</Text>
+                          <Text style={[styles.detailLabel, {alignSelf: 'flex-start'}]}>수령 예정일</Text>
                           <View>
                             <Text style={[styles.detailText, styles.postcodeText]}>{receiverDetail.applyDto?.acceptDate?.slice(0, 16)}</Text>
                           </View>
                         </View>
                       )}
+                      {receiverDetail.applyDto?.acceptedYn == 'Y' ? (
+                        <View style={[theme.styles.rowSpaceBetween, {marginBottom: 12}]}>
+                          <Text style={[styles.detailLabel, {alignSelf: 'flex-start'}]}>최종 수령일</Text>
+                          <Text style={[styles.detailText, styles.postcodeText]}>{receiverDetail.applyDto?.acceptDate?.slice(0, 16)}</Text>
+                        </View>
+                      ) : null}
 
                       <View style={[theme.styles.rowSpaceBetween, {marginBottom: 20}]}>
                         <Text style={styles.detailLabel}>연락처</Text>
                         <Text style={styles.detailText}>{receiverDetail.applyDto?.phoneNumber}</Text>
                       </View>
-                      {receiverDetail.applyDto?.nanumMethod == 'M' ? (
+
+                      {/* 취소하기, 운송장 등록, 수령 체크 버튼 부분 */}
+                      {nanumDetailInfo?.nanumMethod == 'M' ? (
                         receiverDetail.applyDto?.unsongYn == 'Y' ? (
+                          //온라인 && 운송장 등록 완료
                           <View style={styles.unsongButton}>
                             <Text style={{color: theme.gray700}}>운송장 등록 완료</Text>
                           </View>
                         ) : (
+                          //온라인 && 운송장 등록 전
                           <View style={[theme.styles.rowSpaceBetween, {marginBottom: 24}]}>
-                            <Pressable style={[styles.buttonMedium, styles.cancelButton]}>
+                            <Pressable style={[styles.buttonMedium, styles.cancelButton]} onPress={toggleCancelModalShow}>
                               <Text style={styles.cancelText}>취소하기</Text>
                             </Pressable>
-                            <Pressable style={[styles.buttonMedium, styles.trackingButton]}>
+                            <Pressable style={[styles.buttonMedium, styles.trackingButton]} onPress={toggleAddressModalShow}>
                               <Text style={styles.trackingText}>운송장 등록</Text>
                             </Pressable>
                           </View>
                         )
+                      ) : receiverDetail.applyDto?.acceptedYn == 'Y' ? (
+                        //오프라인 && 수령 완료
+                        <View style={styles.unsongButton}>
+                          <Text style={{color: theme.gray700}}>수령 완료</Text>
+                        </View>
                       ) : (
+                        // 오프라인 && 수령 전
                         <View style={{marginBottom: 20}}>
                           <View style={[theme.styles.rowSpaceBetween, {marginBottom: 24}]}>
-                            <Pressable style={[styles.buttonMedium, styles.cancelButton]}>
+                            <Pressable style={[styles.buttonMedium, styles.cancelButton]} onPress={toggleCancelModalShow}>
                               <Text style={styles.cancelText}>취소하기</Text>
                             </Pressable>
-                            <Pressable style={[styles.buttonMedium, styles.trackingButton]}>
+                            <Pressable
+                              style={[styles.buttonMedium, styles.trackingButton]}
+                              onPress={() => {
+                                setParticipantAccountIdx(receiverDetail.applyDto.accountIdx)
+                                toggleCheckFinishedModalShow()
+                              }}>
                               <Text style={styles.trackingText}>수령 체크</Text>
                             </Pressable>
                           </View>
-                          <Pressable>
+                          <Pressable onPress={toggleNotTakenModalShow}>
                             <Text style={{color: theme.main}}>혹시 미수령인가요? </Text>
                           </Pressable>
                         </View>
@@ -439,7 +471,8 @@ export const HoldingSharing = () => {
                 </View>
               </View>
             ) : (
-              receiverInfoList.map(
+              // 전체 참여자 리스트 보기  TOC
+              receiverInfoList?.map(
                 (item, index) =>
                   (itemFilter == '전체보기' || (itemFilter == '수령완료' && item.acceptedYn == 'Y') || (itemFilter == '미수령' && item.acceptedYn == 'N')) && (
                     <View
@@ -481,6 +514,16 @@ export const HoldingSharing = () => {
       <BottomSheet modalVisible={bottomSheetModalVisible} setModalVisible={setBottomSheetModalVisible}>
         <HoldingSharingBottomSheetContent itemFilter={itemFilter} setItemFilter={setItemFilter} />
       </BottomSheet>
+
+      {/* 모달 */}
+      <CancelModal isVisible={cancelModalShow} toggleIsVisible={toggleCancelModalShow}></CancelModal>
+      <AddressModal isVisible={addressModalShow} toggleIsVisible={toggleAddressModalShow}></AddressModal>
+      <NotTakenModal isVisible={notTakenModalShow} toggleIsVisible={toggleNotTakenModalShow}></NotTakenModal>
+      <CheckFinishedModal
+        nanumIdx={nanumIdx}
+        accountIdx={participantAccountIdx!}
+        isVisible={checkFinishedModalShow}
+        toggleIsVisible={toggleCheckFinishedModalShow}></CheckFinishedModal>
     </SafeAreaView>
   )
 }
