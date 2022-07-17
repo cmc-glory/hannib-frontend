@@ -175,9 +175,10 @@ export type ISearch = {
 }
 
 // ******************** backend variable names below ********************
+export type ICalendarApplyGoodsDto = {nanumIdx: number; goodsName: string}
 
 export type ICalendarDto = {
-  applyGoodsDto: {nanumIdx: number; goodsName: string}[] // 신청 굿즈 리스트
+  applyGoodsDto: ICalendarApplyGoodsDto[] // 신청 굿즈 리스트
   calendarDto3: {acceptDate: string; location: string; nanumIdx: number; title: string}[] // 신청한 나눔 수령 일자
 
   nanumGoodsDto: {nanumIdx: number; goodsName: string; goodsNumber: string}[] // 진행한 굿즈 리스트
@@ -430,6 +431,7 @@ export type INanumApplyOnlineDto = {
   address2: string
   //creatorId: string //삭제 필요
   phoneNumber: string
+  title: string
   //api에 따라 수정 필요
 }
 
@@ -611,4 +613,10 @@ export type requestedGoods = {
 export type IRequestNanumDetail = {
   applyingGoodsDto: requestedGoods[]
   applyDto: IApplyDto
+}
+
+export type IcancelDto = {
+  accountIdx: number
+  nanumDeleteReason: string
+  nanumIdx: number
 }

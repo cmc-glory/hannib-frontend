@@ -5,13 +5,18 @@ import Modal from 'react-native-modal'
 import {DownArrowIcon, RightArrowIcon, Tag, XIcon} from '../../components/utils'
 import * as theme from '../../theme'
 import {useToggle} from '../../hooks'
+import {useMutation} from 'react-query'
+import {cancelNanumByHolder, queryKeys} from '../../api'
+import {showMessage} from 'react-native-flash-message'
 
 type ModalProps = {
   isVisible: boolean
   toggleIsVisible: () => void
+  nanumIdx: number
+  accountIdx: number //취소 당하는 유저의 accountIdx
 }
 
-export const CancelModal = ({isVisible, toggleIsVisible}: ModalProps) => {
+export const CancelModal = ({isVisible, toggleIsVisible, nanumIdx, accountIdx}: ModalProps) => {
   const [reason, setReason] = useState<string>('')
   const [noText, setNoText] = useState<boolean>(false)
 
@@ -19,21 +24,41 @@ export const CancelModal = ({isVisible, toggleIsVisible}: ModalProps) => {
     return text == '' ? false : true
   }, [])
 
-  const checkIsWritten = useCallback((text: string) => {
-    //입력칸이 비어있으면 에러 표시
-    if (text == '') {
-      setNoText(true)
-      return
-    }
-    //텍스트가 있으면 모달 닫음
-    closeModal()
-  }, [])
-
   const closeModal = () => {
     setReason('')
     setNoText(false)
     toggleIsVisible()
   }
+
+  // ************************** react quries **************************
+  const postGoodsSentQuery = useMutation([queryKeys.cancelNanumByHolder, nanumIdx], cancelNanumByHolder, {
+    onSuccess(data, variables, context) {
+      showMessage({
+        // 에러 안내 메세지
+        message: '취소가 완료 되었습니다.',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+      })
+    },
+  })
+
+  const onPressOkBtn = useCallback(() => {
+    console.log('nanaum , account ; ', nanumIdx, accountIdx)
+    postGoodsSentQuery.mutate({
+      accountIdx: accountIdx,
+      nanumDeleteReason: reason,
+      nanumIdx: nanumIdx,
+    })
+    toggleIsVisible()
+  }, [accountIdx, nanumIdx, reason])
 
   return (
     <Modal isVisible={isVisible} onBackdropPress={closeModal} backdropColor={theme.gray800} backdropOpacity={0.6}>
@@ -59,7 +84,11 @@ export const CancelModal = ({isVisible, toggleIsVisible}: ModalProps) => {
         <RoundButton
           label="확인"
           onPress={() => {
-            checkIsWritten(reason)
+            if (reason != '') {
+              onPressOkBtn()
+            } else {
+              setNoText(true)
+            }
           }}
           enabled={checkButtonEnabled(reason)}
         />

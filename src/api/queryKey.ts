@@ -33,5 +33,6 @@ export const queryKeys = {
   appliedNanum: ['appliedNanum'],
   cancelNanum: ['cancelNanum'],
   writeReview: ['writeReview'],
+  cancelNanumByHolder: ['cancelNanumByHolder'],
   accountInfoMypage: ['accountInfoMypage'],
 }

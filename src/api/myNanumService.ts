@@ -62,8 +62,8 @@ export const postTrackingNumber = async (unsongDto: IUnsongDto) => {
 }
 
 // 공지 보내기
-export const sendNotice = async (noticeDto: INoticeDto) => {
-  const {data} = await apiClient.post('/api/nanuming/notice', noticeDto)
+export const sendNotice = async (noticeDtoList: INoticeDto[]) => {
+  const {data} = await apiClient.post('/api/nanuming/notice', noticeDtoList)
   return data
 }
 
