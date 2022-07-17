@@ -42,6 +42,7 @@ export const EditProfile = () => {
     if (data.creatorIdDatetime == null || data.creatorIdDatetime == undefined) {
       return 1
     }
+    console.log('user ; ', user)
     const thisMonth = moment().format('YYYY.MM')
     const lastMonthChanged = user.creatorIdDatetime.slice(0, 7)
 

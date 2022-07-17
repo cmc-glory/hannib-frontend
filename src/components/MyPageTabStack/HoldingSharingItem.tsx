@@ -54,7 +54,7 @@ export const HoldingSharingItem = ({item}: {item: IHoldingSharingList}) => {
         <FastImage style={[styles.image, {width: IMAGE_SIZE, height: IMAGE_SIZE}]} source={{uri: imageUri}}></FastImage>
       </View>
       <View style={{marginTop: 10}}>
-        <Tag label={nanumMethod == 'M' ? '오프라인' : '우편'} />
+        <Tag label={nanumMethod == 'M' ? '우편' : '오프라인'} />
         <Text style={[styles.title, {width: IMAGE_SIZE}]}>{title}</Text>
         <Text style={[styles.writerName]}>{creatorId}</Text>
       </View>

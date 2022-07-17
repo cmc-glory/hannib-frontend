@@ -383,6 +383,7 @@ export type INanumRequestRequiredDto = {
   nanumIdx: string
   goodsList: INanumGoods[]
   askList: INanumRequestReuiredAsk[]
+  title: string
 }
 
 export type INanumRequestReuiredAsk = {
@@ -574,9 +575,10 @@ export type IHoldingSharingList = {
   firstDate: Date //haveto 날짜 전반적으로 수정
 }
 
+//haveto 수정 예정
 //참여한 나눔 리스트 get
 export type IParticipatingSharingList = {
-  accountIdx: number
+  accountIdx: number //참여한 사람 Idx가 아니라 진행한 사람(본인) 인덱스 옴
   nanumIdx: number
   creatorId: string
   thumbnail: string
@@ -588,4 +590,17 @@ export type IParticipatingSharingList = {
   secretForm: 'Y' | 'N'
   secretPwd: string
   firstDate: Date //haveto 날짜 전반적으로 수정
+  endYn: 'Y' | 'N'
+}
+
+export type requestedGoods = {
+  accountIdx: number
+  nanumIdx: number
+  goodsName: string
+}
+
+//user가 참여한 나눔의 detail(참여한 나눔 & 진행한 나눔 페이지 둘 다 쓰임)
+export type IRequestNanumDetail = {
+  applyingGoodsDto: requestedGoods[]
+  applyDto: IApplyDto
 }

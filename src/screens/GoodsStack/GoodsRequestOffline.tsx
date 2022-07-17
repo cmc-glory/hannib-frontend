@@ -46,6 +46,7 @@ export const GoodsRequestOffline = () => {
     nanumIdx: nanumIdx.nanumIdx,
     goodsList: [],
     askList: [],
+    title: '',
   })
   const [selectedItems, setSelectedItems] = useState<any>({}) // 선택한 상품들
   const [scheduleLength, setScheduleLength] = useState<number>(1)
@@ -171,7 +172,7 @@ export const GoodsRequestOffline = () => {
       <StackHeader title="신청하기" goBack />
       <ScrollView>
         <View style={{marginBottom: 20, marginTop: 10}}>
-          <Text style={[theme.styles.wrapper, styles.title]}>BTS 키링 나눔</Text>
+          <Text style={[theme.styles.wrapper, styles.title]}>{info.title}</Text>
           <View style={[theme.styles.wrapper]}>
             <Text style={[theme.styles.bold16]}>상품 선택</Text>
             {info.goodsList.map((item, index) => (

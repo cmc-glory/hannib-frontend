@@ -66,3 +66,12 @@ export const sendNotice = async (noticeDto: INoticeDto) => {
   const {data} = await apiClient.post('/api/nanuming/notice', noticeDto)
   return data
 }
+
+//신청한 나눔 디테일 (진행한 나눔에서 참여자 한명한명의 디테일 정보 보여줄때 사용)
+export const postRequestDetail = async ({accountIdx, nanumIdx}: {accountIdx: number; nanumIdx: number}) => {
+  const {data} = await apiClient.post('/api/applying/detail', {
+    accountIdx,
+    nanumIdx,
+  })
+  return data
+}

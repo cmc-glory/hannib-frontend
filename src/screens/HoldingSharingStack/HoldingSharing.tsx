@@ -20,23 +20,35 @@ import {
   Tag,
 } from '../../components/utils'
 import {HoldingSharingBottomSheetContent} from '../../components/HoldingSharingStack'
-import {INanumGoodsOrderDto, INanumDetailDto, IMyNanumDetailDto, IApplyDto} from '../../types'
+import {
+  INanumGoodsOrderDto,
+  INanumDetailDto,
+  IMyNanumDetailDto,
+  IApplyDto,
+  IParticipatingSharingList,
+  INanumGoodsDto,
+  INanumGoods,
+  IRequestNanumDetail,
+  INanum,
+} from '../../types'
 import {useAppSelector} from '../../hooks'
 import * as theme from '../../theme'
 import {useNavigation, useRoute} from '@react-navigation/native'
 import {HoldingSharingRouteProps} from '../../navigation/HoldingSharingStackNavigator'
-import {queryKeys, getNanumByIndex, getReceiverList, endNanum, getReceiverDetail} from '../../api'
+import {queryKeys, getNanumByIndex, getReceiverList, endNanum, getReceiverDetail, getParticipatingNanumList, postRequestDetail} from '../../api'
 
 const BUTTON_WIDTH = (Dimensions.get('window').width - 40 - 10) / 2
 
 export const HoldingSharing = () => {
   // ************************** utils **************************
+  const user = useAppSelector(state => state.auth.user)
   const accountIdx = useAppSelector(state => state.auth.user.accountIdx)
   const route = useRoute<HoldingSharingRouteProps>()
   const navigation = useNavigation()
   const nanumIdx = route.params.nanumIdx
 
   // ************************** states **************************
+  const [nanumDetailInfo, setNanumDetailInfo] = useState<INanum>()
   const [moreVisible, setMoreVisible] = useState<boolean>(false) //삭제하기 모달 띄울지
   const [isDetail, setIsDetail] = useState<boolean>(false) // 상세보기가 눌렸는지
   const [isAllSelected, setIsAllSelected] = useState<boolean>(false)
@@ -61,11 +73,11 @@ export const HoldingSharing = () => {
       selected: false,
     },
   ])
-  const [goodsInfoList, setGoodsInfoList] = useState<INanumGoodsOrderDto[]>([]) // 상품 정보
+  const [goodsInfoList, setGoodsInfoList] = useState<INanumGoodsDto[]>([]) // 상품 정보
   const [bottomSheetModalVisible, setBottomSheetModalVisible] = useState<boolean>(false) // 수령완료, 미수령 필터 bottom sheet 띄울 지
   const [itemFilter, setItemFilter] = useState<'전체보기' | '수령완료' | '미수령'>('전체보기')
   const [index, SetIndex] = useState<number>(0) // 현재 상세보기를 하는 receiver index
-  const [receiverDetail, setReceiverDetail] = useState<IMyNanumDetailDto>({
+  const [receiverDetail, setReceiverDetail] = useState<IRequestNanumDetail>({
     applyDto: {
       applyAskAnswerLists: [
         {
@@ -116,10 +128,16 @@ export const HoldingSharing = () => {
   })
 
   // ************************** react quries **************************
-  const nanumInfo = useQuery([queryKeys.nanumDetail, nanumIdx], () => getNanumByIndex({nanumIdx: nanumIdx, accountIdx: accountIdx, favoritesYn: 'N'}))
+  const nanumInfo = useQuery([queryKeys.nanumDetail, nanumIdx], () => getNanumByIndex({nanumIdx: nanumIdx, accountIdx: accountIdx, favoritesYn: 'N'}), {
+    onSuccess(data) {
+      setNanumDetailInfo(data)
+      console.log('nanumDetailInfo : ', data)
+      setGoodsInfoList(data.nanumGoodslist)
+    },
+  })
   const receiverListQuery = useQuery([queryKeys.receiverList, nanumIdx], () => getReceiverList(nanumIdx), {
     onSuccess(data) {
-      setGoodsInfoList(data.nanumGoodsDto)
+      console.log('data :', data)
 
       // 신청한 사람 리스트가 없는 경우에는 리턴
       if (data.nanumDetailDto.length == 0) {
@@ -146,7 +164,7 @@ export const HoldingSharing = () => {
         }
         return 0
       })
-
+      console.log(nanumDetail)
       tempReceiverList.push({
         acceptedYn: nanumDetail[0].acceptedYn,
         realName: nanumDetail[0].realName,
@@ -178,7 +196,9 @@ export const HoldingSharing = () => {
           tempReceiverList[tempReceiverList.length - 1].goodsNum += 1
         }
       }
+      console.log(tempReceiverList)
       setReceiverInfoList(tempReceiverList)
+      //setReceiverInfoList(nanumDetail)
     },
   })
   const endNanumQuery = useMutation([queryKeys.endNanum, nanumIdx], endNanum, {
@@ -199,9 +219,10 @@ export const HoldingSharing = () => {
       })
     },
   })
-  const myNanumDetailQuery = useMutation([queryKeys.myNanumDetail], getReceiverDetail, {
+  const myNanumDetailQuery = useMutation([queryKeys.requestedNanumDetail], postRequestDetail, {
     onSuccess(data, variables, context) {
       setReceiverDetail(data)
+      console.log('receiverDetail : ', data)
     },
   })
   // ************************** callbacks **************************
@@ -227,13 +248,13 @@ export const HoldingSharing = () => {
   }, [receiverInfoList])
 
   const onPressViewDetail = useCallback(
-    (index: number) => {
+    (idx: number) => {
       setIsDetail(true)
-      // myNanumDetailQuery.mutate({
-      //   nanumIdx,
-      //   accountIdx: receiverInfoList[index].accountIdx,
-      // })
-      SetIndex(index)
+      myNanumDetailQuery.mutate({
+        nanumIdx: nanumIdx,
+        accountIdx: receiverInfoList[idx].accountIdx,
+      })
+      SetIndex(idx)
     },
     [receiverInfoList],
   )
@@ -265,20 +286,20 @@ export const HoldingSharing = () => {
   const onPressLeftArrow = useCallback(() => {
     const length = receiverInfoList.length
     const newIdx = index == 0 ? length - 1 : index - 1
-    // myNanumDetailQuery.mutate({
-    //   nanumIdx,
-    //   accountIdx: receiverInfoList[newIdx].accountIdx,
-    // })
+    myNanumDetailQuery.mutate({
+      nanumIdx,
+      accountIdx: receiverInfoList[newIdx].accountIdx,
+    })
     SetIndex(newIdx)
   }, [index])
 
   const onPressRightArrow = useCallback(() => {
     const length = receiverInfoList.length
     const newIdx = (index + 1) % length
-    // myNanumDetailQuery.mutate({
-    //   nanumIdx,
-    //   accountIdx: receiverInfoList[newIdx].accountIdx,
-    // })
+    myNanumDetailQuery.mutate({
+      nanumIdx,
+      accountIdx: receiverInfoList[newIdx].accountIdx,
+    })
     SetIndex(newIdx)
   }, [index])
 
@@ -346,45 +367,45 @@ export const HoldingSharing = () => {
                     <>
                       <View style={[theme.styles.rowSpaceBetween, {marginBottom: 12}]}>
                         <Text style={[theme.styles.text14, styles.receiverDetailDate]}>{moment().format('YYYY.MM.DD HH:mm:ss')}</Text>
-                        {receiverDetail.applyDto.misacceptedYn == 'Y' && <Tag label="미수령 경고" />}
+                        {receiverDetail.applyDto?.misacceptedYn == 'Y' && <Tag label="미수령 경고" />}
                       </View>
                       <View style={[theme.styles.rowSpaceBetween, {marginBottom: 20}]}>
                         <Text style={styles.detailLabel}>수령자명</Text>
                         <Text style={styles.detailText}>
-                          {receiverDetail.applyDto.realName == null ? receiverDetail.applyDto.creatorId : receiverDetail.applyDto.realName}
+                          {receiverDetail.applyDto?.realName == null ? receiverDetail.applyDto?.creatorId : receiverDetail.applyDto?.realName}
                         </Text>
                       </View>
                       <View style={[theme.styles.rowSpaceBetween, {marginBottom: 12}]}>
                         <Text style={[styles.detailLabel, {alignSelf: 'flex-start'}]}>주문 목록</Text>
                         <View>
-                          {receiverDetail.applyDto.nanumGoodsDtoList.map(item => (
-                            <Text style={[styles.detailText, {marginBottom: 8}]}>{item.goodsName}</Text>
+                          {receiverDetail.applyingGoodsDto.map(item => (
+                            <Text style={[styles.detailText, {marginBottom: 8}]}>{item.goodsName} (1개)</Text>
                           ))}
                         </View>
                       </View>
-                      {receiverDetail.applyDto.nanumMethod == 'M' ? (
+                      {nanumDetailInfo?.nanumMethod == 'M' ? (
                         <View style={[theme.styles.rowSpaceBetween, {marginBottom: 20}]}>
                           <Text style={[styles.detailLabel, {alignSelf: 'flex-start'}]}>주소</Text>
                           <View>
-                            <Text style={[styles.detailText, styles.postcodeText]}>우) {receiverDetail.applyDto.address1}</Text>
-                            <Text style={styles.detailText}>{receiverDetail.applyDto.address2}</Text>
+                            <Text style={[styles.detailText, styles.postcodeText]}>우) {receiverDetail.applyDto?.address1}</Text>
+                            <Text style={styles.detailText}>{receiverDetail.applyDto?.address2}</Text>
                           </View>
                         </View>
                       ) : (
                         <View style={[theme.styles.rowSpaceBetween, {marginBottom: 12}]}>
                           <Text style={[styles.detailLabel, {alignSelf: 'flex-start'}]}>수령일</Text>
                           <View>
-                            <Text style={[styles.detailText, styles.postcodeText]}>{receiverDetail.applyDto.acceptDate.slice(0, 16)}</Text>
+                            <Text style={[styles.detailText, styles.postcodeText]}>{receiverDetail.applyDto?.acceptDate?.slice(0, 16)}</Text>
                           </View>
                         </View>
                       )}
 
                       <View style={[theme.styles.rowSpaceBetween, {marginBottom: 20}]}>
                         <Text style={styles.detailLabel}>연락처</Text>
-                        <Text style={styles.detailText}>{receiverDetail.applyDto.phoneNumber}</Text>
+                        <Text style={styles.detailText}>{receiverDetail.applyDto?.phoneNumber}</Text>
                       </View>
-                      {receiverDetail.applyDto.nanumMethod == 'M' ? (
-                        receiverDetail.applyDto.unsongYn == 'Y' ? (
+                      {receiverDetail.applyDto?.nanumMethod == 'M' ? (
+                        receiverDetail.applyDto?.unsongYn == 'Y' ? (
                           <View style={styles.unsongButton}>
                             <Text style={{color: theme.gray700}}>운송장 등록 완료</Text>
                           </View>
@@ -421,7 +442,9 @@ export const HoldingSharing = () => {
               receiverInfoList.map(
                 (item, index) =>
                   (itemFilter == '전체보기' || (itemFilter == '수령완료' && item.acceptedYn == 'Y') || (itemFilter == '미수령' && item.acceptedYn == 'N')) && (
-                    <View style={[theme.styles.rowFlexStart, {paddingBottom: 16, marginBottom: 16, borderBottomWidth: 1, borderBottomColor: theme.gray200}]}>
+                    <View
+                      key={item.accountIdx}
+                      style={[theme.styles.rowFlexStart, {paddingBottom: 16, marginBottom: 16, borderBottomWidth: 1, borderBottomColor: theme.gray200}]}>
                       <View style={{alignItems: 'center', marginRight: 9}}>
                         <Text style={[theme.styles.text14, {marginBottom: 2, color: theme.gray700}]}>{index + 1}</Text>
                         {item.selected ? <CheckboxIcon onPress={() => onPressCheckbox(index)} /> : <EmptyCheckboxIcon onPress={() => onPressCheckbox(index)} />}
