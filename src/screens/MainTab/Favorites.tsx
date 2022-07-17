@@ -8,23 +8,23 @@ import {StackHeader} from '../../components/utils'
 import {NanumListItem} from '../../components/MainTab'
 import {INanumListItem} from '../../types'
 import * as theme from '../../theme'
-import {queryKeys, getFavoritesByCategory} from '../../api'
+import {queryKeys, getFavoritesByCategory, getFavoritesAll} from '../../api'
 
 type CategoryItemProps = {
   name: string
-  id: string
-  onPressCategory: (id: string, index: number) => void
-  selectedCategory: string
+  categoryIdx: number
+  onPressCategory: (categoryIdx: number, index: number) => void
+  selectedCategory: number
   currentIndex: number
   selectedIndex: number
   scrollRef: React.RefObject<FlatList>
 }
 
-const CategoryItem = ({name, id, onPressCategory, selectedCategory, currentIndex, selectedIndex, scrollRef}: CategoryItemProps) => {
-  const selected = selectedIndex == currentIndex
+const CategoryItem = ({name, categoryIdx, onPressCategory, selectedCategory, currentIndex, selectedIndex, scrollRef}: CategoryItemProps) => {
+  const selected = selectedIndex == categoryIdx
   return (
     <Pressable
-      onPress={() => onPressCategory(id, currentIndex)}
+      onPress={() => onPressCategory(categoryIdx, currentIndex)}
       style={[styles.categoryButton, selected ? styles.selectedCategoryButton : styles.unselectedCategoryButton]}>
       <Text style={selected ? styles.selectedCategoryText : styles.unselectedCategoryText}>{name}</Text>
     </Pressable>
@@ -38,36 +38,39 @@ export const Favorites = () => {
   console.log(user)
 
   // ******************** states ********************
-  const [selectedCategory, setSelectedCategory] = useState<string>('전체보기') // 선택된 카테고리의 id값 저장. (처음엔 전체의 id값)
+  const [selectedCategory, setSelectedCategory] = useState<number>(0) // 선택된 카테고리의  categoryIdx값 저장
   const [sharings, setSharings] = useState<INanumListItem[]>([]) // 나눔 리스트
   const [refreshing, setRefreshing] = useState<boolean>(false) // 새로고침 로딩 끝났는지
   const [selectedIndex, setSelectedIndex] = useState<number>(0)
   const isLoggedIn = useAppSelector(state => state.auth.isLoggedIn)
 
-  const onPressCategory = useCallback((id: string, currentIndex: number) => {
-    setSelectedCategory(id)
-    setSelectedIndex(currentIndex)
+  const onPressCategory = useCallback((categoryIdx: number, currentIndex: number) => {
+    setSelectedCategory(categoryIdx)
+    setSelectedIndex(categoryIdx)
     scrollRef.current?.scrollToIndex({index: currentIndex})
     // 해당 id에 일치하는 나눔 리스트만 state에 저장.
   }, [])
 
   // ******************** react quries ********************
-  useQuery(
-    [queryKeys.favorites, selectedCategory],
-    () =>
-      getFavoritesByCategory({
-        accountIdx: user.accountIdx,
-        category: selectedCategory,
-      }),
-    {
-      onSuccess(data) {
-        setSharings(data)
-      },
-      onError(err) {
-        console.log(err)
-      },
+  useQuery([queryKeys.favorites], () => getFavoritesAll(user.accountIdx), {
+    onSuccess(data) {
+      setSharings(data)
     },
-  )
+    onError(err) {
+      console.log(err)
+    },
+    enabled: selectedCategory == 0,
+  })
+
+  useQuery([queryKeys.favorites, selectedCategory], () => getFavoritesByCategory({accountIdx: user.accountIdx, categoryIdx: selectedCategory}), {
+    onSuccess(data) {
+      setSharings(data)
+    },
+    onError(err) {
+      setSharings([])
+    },
+    enabled: selectedCategory != 0,
+  })
 
   // ******************** callbacks ********************
 
@@ -93,7 +96,7 @@ export const Favorites = () => {
                       name={'전체보기'}
                       currentIndex={index}
                       selectedIndex={selectedIndex}
-                      id={'전체보기' + index}
+                      categoryIdx={0}
                       onPressCategory={onPressCategory}
                       selectedCategory={selectedCategory}
                       scrollRef={scrollRef}
@@ -103,7 +106,7 @@ export const Favorites = () => {
                       name={item.categoryName}
                       currentIndex={index}
                       selectedIndex={selectedIndex}
-                      id={item.categoryName + index}
+                      categoryIdx={item.categoryIdx}
                       onPressCategory={onPressCategory}
                       selectedCategory={selectedCategory}
                       scrollRef={scrollRef}

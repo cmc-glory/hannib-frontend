@@ -1,65 +1,98 @@
-import React, {useCallback} from 'react'
-import {View, Pressable, Text, StyleSheet} from 'react-native'
-import {useNavigation} from '@react-navigation/native'
+import React, {useState, useCallback} from 'react'
+import {View, Pressable, Text, StyleSheet, ScrollView, RefreshControl} from 'react-native'
+import {useNavigation, useRoute} from '@react-navigation/native'
 import {SafeAreaView} from 'react-native-safe-area-context'
+import {useQuery, useQueryClient} from 'react-query'
 import moment from 'moment'
+
+import {FloatingBottomButton} from '../../components/utils'
+import {NoticeListRouteProps} from '../../navigation/GoodsStackNavigator'
 import {StackHeader} from '../../components/utils'
 import * as theme from '../../theme'
+import {queryKeys, getNotices} from '../../api'
+import {INoticeDto} from '../../types'
+import {useAppSelector} from '../../hooks'
 
 type NoticeListItemProps = {
-  onPressItem: () => void
+  item: INoticeDto
 }
 
-const NoticeListItem = ({onPressItem}: NoticeListItemProps) => {
+const NoticeListItem = ({item}: NoticeListItemProps) => {
   return (
-    <Pressable style={[styles.NotificationItemContaienr, {backgroundColor: theme.main50}]} onPress={onPressItem}>
+    <Pressable style={[styles.NotificationItemContaienr]}>
       <View style={[styles.NotificationItemHeaderView]}>
-        <Text style={[styles.NotificationItemHeaderText]}>춤추는 고양이</Text>
+        <Text style={[styles.NotificationItemHeaderText]}>{item.accountIdx}</Text>
         <Text style={[styles.NotificationItemHeaderText]}>{moment().format('YYYY.MM.DD HH:mm')}</Text>
       </View>
+      <View style={{marginBottom: 12}}>
+        <Text style={[theme.styles.bold16, {color: theme.gray800, lineHeight: 24}]}>{item.title}</Text>
+      </View>
       <View>
-        <Text style={[theme.styles.bold16, {color: theme.gray700}]}>우편 발송 공지사항</Text>
+        <Text style={styles.contentText}>{item.comments}</Text>
       </View>
     </Pressable>
   )
 }
 
 export const NoticeList = () => {
+  // ******************** utils ********************
   const navigation = useNavigation()
-  const onPressItem = useCallback(() => {
-    navigation.navigate('NotificationStackNavigator', {
-      screen: 'NotificationContent',
-      params: {
-        postid: '11111',
-      },
-    })
+  const route = useRoute<NoticeListRouteProps>()
+  const queryClient = useQueryClient()
+  const {nanumIdx, writerAccountIdx} = route.params
+
+  // ******************** states ********************
+  const [refreshing, setRefreshing] = useState<boolean>(false)
+
+  // ******************** react queries ********************
+  const {data} = useQuery([queryKeys.notice, nanumIdx], () => getNotices(nanumIdx), {
+    onSuccess(data) {
+      setRefreshing(false)
+      console.log(data)
+    },
+  })
+
+  // ******************** callbacks ********************
+  const onRefresh = useCallback(() => {
+    setRefreshing(true)
+    queryClient.invalidateQueries([queryKeys.notice, nanumIdx])
   }, [])
+
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
       <StackHeader title="공지사항" goBack />
-      <NoticeListItem onPressItem={onPressItem} />
+      <ScrollView style={{flex: 1}} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        {data != undefined && data.map((item: INoticeDto, index: number) => <NoticeListItem item={item} key={nanumIdx + index} />)}
+      </ScrollView>
     </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
+  contentText: {
+    fontSize: 14,
+    lineHeight: 20,
+    color: theme.gray700,
+  },
   NotificationItemContaienr: {
+    paddingTop: 12,
     paddingHorizontal: theme.PADDING_SIZE,
     backgroundColor: theme.white,
-    paddingVertical: theme.PADDING_SIZE,
     borderBottomWidth: 1,
-    height: 84,
     borderBottomColor: theme.gray200,
     justifyContent: 'space-between',
+    paddingBottom: 20,
   },
   NotificationItemHeaderView: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    marginBottom: 12,
   },
   NotificationItemHeaderText: {
     color: theme.gray500,
     fontSize: 12,
+    lineHeight: 16,
     fontFamily: 'Pretendard-Regular',
   },
   NotificationItemContentText: {

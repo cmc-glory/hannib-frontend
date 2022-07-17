@@ -9,8 +9,17 @@ const apiClient = axios.create({
   },
 })
 
-export const getFavoritesByCategory = async (form: {accountIdx: number; category: string}) => {
-  const {data} = await apiClient.post('/api/favorites/', form)
+export const getFavoritesAll = async (accountIdx: number) => {
+  const {data} = await apiClient.post('/api/favorites/all', {
+    accountIdx: accountIdx,
+    categoryIdx: 0,
+  })
+
+  return data
+}
+
+export const getFavoritesByCategory = async (form: {accountIdx: number; categoryIdx: number}) => {
+  const {data} = await apiClient.post('/api/favorites/category', form)
 
   return data
 }

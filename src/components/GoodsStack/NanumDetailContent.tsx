@@ -122,7 +122,7 @@ export function NanumDetailContent({headerHeight, nanumDetail, numInquires}: Con
         <SharingGoodsInfo products={nanumDetail.nanumGoodslist} />
         {nanumDetail.nanumMethod == 'O' && <SharingTimeLocation schedules={nanumDetail.nanumDatelist} />}
       </View>
-      <NoticeBanner postid="1111" />
+      <NoticeBanner nanumIdx={nanumDetail?.nanumIdx} writerAccountIdx={accountIdx} />
       <View style={{padding: theme.PADDING_SIZE, justifyContent: 'center'}}>
         <Text style={theme.styles.bold16}>상세 설명</Text>
         <View style={[styles.descriptionContainer, {minHeight: 120}]}>
@@ -137,7 +137,7 @@ export function NanumDetailContent({headerHeight, nanumDetail, numInquires}: Con
         askNum={numInquires}
       />
 
-      <View style={[styles.padding]}>{/* <RelatedSharing /> */}</View>
+      <View style={{height: 80}}>{/* <RelatedSharing /> */}</View>
     </View>
   )
 }

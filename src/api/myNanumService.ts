@@ -75,3 +75,8 @@ export const postRequestDetail = async ({accountIdx, nanumIdx}: {accountIdx: num
   })
   return data
 }
+
+export const getNotices = async (nanumIdx: number) => {
+  const {data} = await apiClient.post(`/api/nanuming/notice/nanum?nanumIdx=${nanumIdx}`)
+  return data
+}

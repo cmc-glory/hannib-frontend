@@ -5,16 +5,19 @@ import {CommunicationWhiteIcon, RightArrowIcon} from '../utils'
 import * as theme from '../../theme'
 
 type NoticeBannerProps = {
-  postid: string
+  nanumIdx: number
+  writerAccountIdx: number
 }
 
-export const NoticeBanner = ({postid}: NoticeBannerProps) => {
+export const NoticeBanner = ({nanumIdx, writerAccountIdx}: NoticeBannerProps) => {
   const navigation = useNavigation()
+
   const onPressNotice = useCallback(() => {
     navigation.navigate('NoticeList', {
-      postid: postid,
+      nanumIdx: nanumIdx,
+      writerAccountIdx: writerAccountIdx,
     })
-  }, [])
+  }, [writerAccountIdx])
   return (
     <Pressable style={[theme.styles.rowFlexStart, styles.container]}>
       <View style={{backgroundColor: theme.main, justifyContent: 'center', alignItems: 'center', width: 28, height: 28, borderRadius: 14, marginRight: 8}}>

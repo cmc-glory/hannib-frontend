@@ -49,17 +49,35 @@ export const NanumDetail = () => {
       //const {data} = useQuery(queryKeys.goodsDetail, getGoodsDetail, {
       onSuccess: data => {
         console.log('success')
-        console.log(data)
         setNanumDetail(data)
+        // 1. 내가 작성자이고 마감되지 않은 경우 -> 진행한 나눔 페이지로 이동
+        // 2. 내가 작성자이고 마감된 경우 -> 마감된 나눔입니다.
+        // 3. 내가 신청자이고 마감되지 않은 경우 -> 참여한 나눔 페이지로 이동
+        // 4. 내가 신청자이고 마감된 경우 -> 마감된 나눔입니다.
+        // 5. 작성자도, 신청자도 아니고 마감되지 않은 경우 -> 신청하기
+        // 6. 작성자도, 신청자도 아니고 마감된 경우 -> 마감되었습니다.
         const tempIsWriter = data.accountDto.accountIdx == user.accountIdx
         const tempIsApplied = data.applyOfflineIdx != 0
         setIsWriter(tempIsWriter)
         setIsApplied(tempIsApplied)
+
+        // 내가 작성자이든, 신청자이든, 누구든 상관 없이 마감된 나눔이면 마감됐다고 알려주기
+        if (data.endYn == 'Y') {
+          setButtonText('마감된 나눔입니다')
+          return
+        }
+
+        // 마감이 안 된 경우
+        // 내가 나눔 작성자인 경우
         if (tempIsWriter) {
           setButtonText('진행한 나눔 페이지로 이동')
-        } else if (tempIsApplied) {
+        }
+        // 내가 나눔 참여자인 경우
+        else if (tempIsApplied) {
           setButtonText('참여한 나눔 페이지로 이동')
-        } else {
+        }
+        // 작성자도, 참여자도 아닌 경우
+        else {
           setButtonText('신청하기')
         }
       },
@@ -162,7 +180,7 @@ export const NanumDetail = () => {
   }, [nanumDetail, isLoggedIn, isWriter, isApplied, nanumIdx])
 
   return (
-    <View style={{flex: 1, position: 'relative'}}>
+    <SafeAreaView edges={['bottom']} style={{flex: 1, position: 'relative'}}>
       {headerInvert ? (
         <View style={{position: 'absolute', width: WIDTH, height: TOP_HEIGHT, zIndex: 99, backgroundColor: 'white'}}></View>
       ) : (
@@ -200,7 +218,7 @@ export const NanumDetail = () => {
         <HeaderImage images={data?.nanumImglist} />
         {nanumDetail != undefined && <NanumDetailContent headerHeight={headerHeight} nanumDetail={nanumDetail} numInquires={numInqueries} />}
       </ScrollView>
-      <FloatingBottomButton label={buttonText} enabled onPress={onPressRequest} />
-    </View>
+      <FloatingBottomButton label={buttonText} enabled={nanumDetail?.endYn != 'Y'} onPress={onPressRequest} />
+    </SafeAreaView>
   )
 }

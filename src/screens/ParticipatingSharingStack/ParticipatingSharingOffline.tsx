@@ -170,7 +170,7 @@ export const ParticipatingSharingOffline = () => {
         </View>
         <View>
           {detail?.applyDto?.misacceptedYn == 'Y' ? (
-            <Pressable style={[styles.buttonLarge, styles.unacceptButton]} onPress={onPressWriteReview}>
+            <Pressable style={[styles.buttonLarge, styles.unacceptButton]}>
               <Text style={styles.unacceptText}>미수령</Text>
             </Pressable>
           ) : detail?.applyDto?.acceptedYn == 'N' ? (
@@ -187,7 +187,7 @@ export const ParticipatingSharingOffline = () => {
               <Text style={styles.trackingText}>후기 작성</Text>
             </Pressable>
           ) : (
-            <Pressable style={[styles.buttonLarge, styles.cancelButton]} onPress={onPressWriteReview}>
+            <Pressable style={[styles.buttonLarge, styles.cancelButton]}>
               <Text style={styles.cancelText}>후기 작성 완료</Text>
             </Pressable>
           )}
