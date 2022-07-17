@@ -1,21 +1,41 @@
-import React from 'react'
-import {View, Text, StyleSheet} from 'react-native'
+import React, {useCallback} from 'react'
+import {View, Text, StyleSheet, Pressable} from 'react-native'
 import moment from 'moment'
 import {Tag, ClockIcon, LocationIcon} from '../utils'
 import * as theme from '../../theme'
 import {ICalendarShow, IScheduleItem} from '../../types'
+import {useNavigation} from '@react-navigation/native'
 
 type CalendarItemProps = {
   item: ICalendarShow
 }
 
 export const CalendarItem = ({item}: CalendarItemProps) => {
-  const {nanumIdx, title, goodsList, location, acceptDate} = item
+  const {nanumIdx, title, goodsList, location, acceptDate, type} = item
+  const navigation = useNavigation()
+
+  const goHolding = () => {
+    navigation.navigate('HoldingSharingStackNavigator', {
+      screen: 'HoldingSharing',
+      params: {
+        nanumIdx: nanumIdx,
+      },
+    })
+  }
+
+  const goParticipate = () => {
+    navigation.navigate('ParticipatingSharingStackNavigator', {
+      screen: 'ParticipatingSharingOffline',
+      params: {
+        nanumIdx: nanumIdx,
+      },
+    })
+  }
 
   return (
-    <View style={[styles.container]}>
+    <Pressable style={[styles.container]} onPress={type == 'participating' ? goParticipate : goHolding}>
       <View style={[styles.row, {marginBottom: 10}]}>
-        <Tag label={item.type == 'participating' ? '참여' : '진행'} />
+        <Tag label={type == 'participating' ? '참여' : '진행'} />
         <View style={[styles.row]}>
           <Text style={styles.normal}>{moment(acceptDate)?.format('HH:mm')}</Text>
           <ClockIcon size={20} />
@@ -37,7 +57,7 @@ export const CalendarItem = ({item}: CalendarItemProps) => {
           ))}
         </View>
       </View>
-    </View>
+    </Pressable>
   )
 }
 
