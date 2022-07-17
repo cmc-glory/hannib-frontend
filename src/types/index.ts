@@ -495,6 +495,7 @@ export type INanum = {
   }
   job: '가수' | '배우'
   applyOfflineIdx: number
+  endYn: 'Y' | 'N'
 }
 
 export type INanumGoodsInfo = {
@@ -559,6 +560,7 @@ export type ICategoryDto = {
   birth: string // format : "1995-03-21 12:43:15"
   imgUrl: string | undefined
   email: string
+  categoryIdx: number
 }
 
 export type IUpdateCategoryDto = {
@@ -581,6 +583,7 @@ export type IHoldingSharingList = {
   secretForm: 'Y' | 'N'
   secretPwd: string
   firstDate: Date //haveto 날짜 전반적으로 수정
+  endYn: 'Y' | 'N'
 }
 
 //haveto 수정 예정

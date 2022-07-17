@@ -49,7 +49,6 @@ export const NanumDetail = () => {
       //const {data} = useQuery(queryKeys.goodsDetail, getGoodsDetail, {
       onSuccess: data => {
         console.log('success')
-        console.log(data)
         setNanumDetail(data)
         const tempIsWriter = data.accountDto.accountIdx == user.accountIdx
         const tempIsApplied = data.applyOfflineIdx != 0
@@ -59,6 +58,8 @@ export const NanumDetail = () => {
           setButtonText('진행한 나눔 페이지로 이동')
         } else if (tempIsApplied) {
           setButtonText('참여한 나눔 페이지로 이동')
+        } else if (data.endYn == 'Y') {
+          setButtonText('마감된 나눔입니다')
         } else {
           setButtonText('신청하기')
         }
@@ -162,7 +163,7 @@ export const NanumDetail = () => {
   }, [nanumDetail, isLoggedIn, isWriter, isApplied, nanumIdx])
 
   return (
-    <View style={{flex: 1, position: 'relative'}}>
+    <SafeAreaView edges={['bottom']} style={{flex: 1, position: 'relative'}}>
       {headerInvert ? (
         <View style={{position: 'absolute', width: WIDTH, height: TOP_HEIGHT, zIndex: 99, backgroundColor: 'white'}}></View>
       ) : (
@@ -200,7 +201,7 @@ export const NanumDetail = () => {
         <HeaderImage images={data?.nanumImglist} />
         {nanumDetail != undefined && <NanumDetailContent headerHeight={headerHeight} nanumDetail={nanumDetail} numInquires={numInqueries} />}
       </ScrollView>
-      <FloatingBottomButton label={buttonText} enabled onPress={onPressRequest} />
-    </View>
+      <FloatingBottomButton label={buttonText} enabled={nanumDetail?.endYn != 'Y'} onPress={onPressRequest} />
+    </SafeAreaView>
   )
 }

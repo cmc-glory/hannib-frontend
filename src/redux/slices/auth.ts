@@ -34,6 +34,7 @@ const initialState = {
         job: '가수',
         categoryName: '전체보기',
         accountIdx: 0,
+        categoryIdx: 0,
       },
     ],
     accountImg: '',

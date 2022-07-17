@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect} from 'react'
+import React, {useState, useCallback, useEffect, useReducer} from 'react'
 import {View, Text, StyleSheet, Dimensions, Pressable, FlatList, Alert} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation} from '@react-navigation/native'
@@ -35,6 +35,8 @@ export const EditCategory = () => {
   const [keyword, setKeyword] = useState<string>('')
   const [result, setResult] = useState<ICategoryDto[]>([])
   const [userSelectedCategories, setUserSelectedCategories] = useState<IAccountCategoryDto[]>(user.accountCategoryDtoList)
+
+  console.log(user.accountCategoryDtoList)
 
   // ******************** react queries  ********************
   const searchCategoryQuery = useMutation(queryKeys.searchCategory, searchCategory, {
@@ -94,6 +96,8 @@ export const EditCategory = () => {
     },
   })
   // ******************** callbacks  ********************
+
+  // 해당 키워드로 검색
   const searchKeyword = useCallback(
     (keyword: string) => {
       // 입력 값이 없을 때는 리턴
@@ -104,15 +108,16 @@ export const EditCategory = () => {
         birth: '',
         imgUrl: '',
         email: '',
+        categoryIdx: 0,
       })
       setKeyword('')
     },
     [keyword, singerSelected],
   )
 
+  // 특정 카테고리 삭제
   const onPressRemoveCategory = useCallback(
     (param: IAccountCategoryDto) => {
-      console.log('pressed')
       setUserSelectedCategories(userSelectedCategories =>
         userSelectedCategories.filter(item => {
           console.log(item, param)
@@ -130,6 +135,7 @@ export const EditCategory = () => {
     [userSelectedCategories],
   )
 
+  // 카테고리 클릭하면
   const onPressCategory = useCallback(
     (category: ICategoryDto) => {
       if (isSelected(category)) {
@@ -143,16 +149,17 @@ export const EditCategory = () => {
         temp.unshift({
           job: category.job,
           categoryName: category.nickName,
-          accountIdx: 0,
-          categoryIdx: 0,
+          accountIdx: user.accountIdx,
+          categoryIdx: category.categoryIdx,
         })
 
         setUserSelectedCategories(temp)
       }
     },
-    [userSelectedCategories],
+    [userSelectedCategories, user],
   )
 
+  // 변경된 카테고리 저장
   const onPressSave = useCallback(() => {
     if (userSelectedCategories.length == 0) {
       Alert.alert('최소 한 개의 카테고리를 선택해야 합니다.')

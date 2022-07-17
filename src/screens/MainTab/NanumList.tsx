@@ -21,7 +21,7 @@ const NanumList = () => {
   // ******************** utils ********************
   const navigation = useNavigation()
   const user = useAppSelector(state => state.auth.user)
-  console.log(user)
+  console.log('user:', user)
   const currentCategory = user.accountCategoryDtoList[0]
   const queryClient = useQueryClient()
 
@@ -36,6 +36,7 @@ const NanumList = () => {
     job: '가수',
     categoryName: '전체보기',
     accountIdx: 0,
+    categoryIdx: 0,
   }) // 현재 사용자가 선택한 카테고리.
   const [bannerInfo, setBannerInfo] = useState({
     imageUri: '',

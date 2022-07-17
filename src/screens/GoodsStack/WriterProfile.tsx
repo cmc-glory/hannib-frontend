@@ -89,7 +89,11 @@ export const WriterProfile = () => {
         <Text style={[theme.styles.bold16, {marginTop: 24}, theme.styles.wrapper]}>진행 프로젝트</Text>
         <ScrollView horizontal contentContainerStyle={[styles.holdingProjects, theme.styles.wrapper]}>
           {holdingList.data?.map((item: IHoldingSharingList, index: number) => (
-            <HoldingProjectItem title={item.title} tagLabel="모집중" uri={item.thumbnail} onPressNanum={() => onPressNanum(item.nanumIdx)}></HoldingProjectItem>
+            <HoldingProjectItem
+              title={item.title}
+              tagLabel={item.endYn == 'Y' ? '마감' : '모집중'}
+              uri={item.thumbnail}
+              onPressNanum={() => onPressNanum(item.nanumIdx)}></HoldingProjectItem>
           ))}
         </ScrollView>
         <SeparatorBold />

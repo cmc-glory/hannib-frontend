@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react'
+import React, {useState, useCallback, useRef, useEffect} from 'react'
 import {View, Text, Pressable, TextInput, StyleSheet, Dimensions} from 'react-native'
 import Modal from 'react-native-modal'
 import {XIcon} from '../utils'
@@ -23,6 +23,7 @@ export const DeleteModal = ({deleteModalVisible, setDeleteModalVisible, nanumIdx
   // ******************** utils ********************
   const navigation = useNavigation()
   const queryClient = useQueryClient()
+  const textinputRef = useRef<TextInput>(null)
 
   // ******************** states ********************
   const [deleteReason, setDeleteReason] = useState<string>('')
@@ -40,6 +41,10 @@ export const DeleteModal = ({deleteModalVisible, setDeleteModalVisible, nanumIdx
     },
   })
 
+  useEffect(() => {
+    textinputRef.current?.focus()
+  }, [textinputRef])
+
   // ******************** callbacks ********************
 
   const hideModal = useCallback(() => setDeleteModalVisible(false), [])
@@ -51,7 +56,7 @@ export const DeleteModal = ({deleteModalVisible, setDeleteModalVisible, nanumIdx
     hideModal()
   }, [nanumIdx, deleteReason])
   return (
-    <Modal isVisible={deleteModalVisible} onBackdropPress={hideModal} backdropOpacity={0.2}>
+    <Modal isVisible={deleteModalVisible} onBackdropPress={hideModal} backdropOpacity={0.2} animationInTiming={200} animationOutTiming={200}>
       <View style={styles.deleteModalContainer}>
         <View style={[theme.styles.rowSpaceBetween]}>
           <Text style={[theme.styles.bold20]}>삭제하기</Text>
@@ -61,6 +66,7 @@ export const DeleteModal = ({deleteModalVisible, setDeleteModalVisible, nanumIdx
         <View>
           <Text style={[theme.styles.label]}>삭제 사유</Text>
           <TextInput
+            ref={textinputRef}
             style={[theme.styles.input, {height: 108, paddingTop: 16}]}
             placeholder="기존 신청자들에게 전달할 사유가 있을 경우 작성해주세요."
             placeholderTextColor={theme.gray300}
