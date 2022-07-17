@@ -5,6 +5,7 @@ import {LocaleConfig} from 'react-native-calendars'
 import moment from 'moment'
 import {LeftArrowCalendarIcon, RightArrowCalendarIcon} from '../utils'
 import * as theme from '../../theme'
+import {ICalendarShow, ICanlendarShowInfoList} from '../../types'
 
 LocaleConfig.locales['kr'] = {
   monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
@@ -15,18 +16,20 @@ LocaleConfig.locales['kr'] = {
 LocaleConfig.defaultLocale = 'kr'
 
 type WixCalendarProps = {
-  scheduleAll: Object | undefined
+  scheduleAll: ICanlendarShowInfoList
   setSelectedDate: React.Dispatch<React.SetStateAction<string>>
+  setSelectedSchedule: (schedulePerDay: ICalendarShow[]) => void
+  selectedSchedule: Array<ICalendarShow>
 }
 const today = moment().format('YYYY-MM-DD')
 
-export const WixCalendar = ({scheduleAll, setSelectedDate}: WixCalendarProps) => {
+export const WixCalendar = ({scheduleAll, setSelectedDate, setSelectedSchedule, selectedSchedule}: WixCalendarProps) => {
   // ******************** states  ********************
   const [markedDates, setMarkedDates] = useState<any>()
   const [currentDate, setCurrentDate] = useState<any>()
 
   useEffect(() => {
-    console.log(scheduleAll)
+    //console.log('scheduleAll : ', scheduleAll)
     if (scheduleAll != undefined) {
       var tempMarkedDates: any = {
         // [today]: {
@@ -41,7 +44,7 @@ export const WixCalendar = ({scheduleAll, setSelectedDate}: WixCalendarProps) =>
         //   },
         // },
       }
-      scheduleAll.calenderDto3.forEach((item: any) => {
+      scheduleAll.participatingList.forEach((item: any) => {
         const temp = {
           marked: true,
           dotColor: theme.secondary,
@@ -56,7 +59,7 @@ export const WixCalendar = ({scheduleAll, setSelectedDate}: WixCalendarProps) =>
       //   tempMarkedDates[item.acceptDate] = temp
       //   //item == today ? (tempMarkedDates[item] = {...tempMarkedDates[item], temp}) : (tempMarkedDates[item] = temp)
       // })
-      // console.log('tempMarkedDates : ', tempMarkedDates)
+      //console.log('tempMarkedDates : ', tempMarkedDates)
       // console.log('today : ', today)
       setMarkedDates(tempMarkedDates)
     }
@@ -115,6 +118,24 @@ export const WixCalendar = ({scheduleAll, setSelectedDate}: WixCalendarProps) =>
               },
             })
           }
+
+          let tempSchedulePerDay: Array<ICalendarShow> = []
+
+          scheduleAll.holdingList.forEach(item => {
+            if (item.acceptDate.slice(0, 10) == day.dateString) {
+              tempSchedulePerDay.push(item)
+            }
+          })
+
+          scheduleAll.participatingList.forEach(item => {
+            if (item.acceptDate.slice(0, 10) == day.dateString) {
+              tempSchedulePerDay.push(item)
+            }
+          })
+
+          //console.log('tempSchedulePerDay : ', tempSchedulePerDay)
+          setSelectedSchedule(tempSchedulePerDay)
+          console.log('selectedSchedule  클릭한 날의 스케쥴 arr : ', selectedSchedule)
         }
       }}
       onVisibleMonthsChange={day => {

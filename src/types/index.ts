@@ -13,7 +13,14 @@ export type ICalendar = {
   products: IProductInfo[]
 }
 
-export type IScheduleItem = {sharingid: string; place: string; products: IProductInfo[]; time: Date; title: string; type: 'holding' | 'participating'}
+export type IScheduleItem = {
+  sharingid: string
+  place: string
+  products: IProductInfo[]
+  time: Date
+  title: string
+  type: 'holding' | 'participating'
+}
 
 export type ISchedule = {
   time: Date | undefined
@@ -175,7 +182,32 @@ export type ISearch = {
 }
 
 // ******************** backend variable names below ********************
-export type ICalendarApplyGoodsDto = {nanumIdx: number; goodsName: string}
+export type ICalendarApplyGoodsDto = {
+  nanumIdx: number
+  goodsName: string
+}
+
+export type ICalendarNanumGoodsDto = {
+  nanumIdx: number
+  goodsName: string
+  goodsNumber: number
+}
+
+//참여, 진행 각각 객체
+export type ICalendarShow = {
+  nanumIdx: number
+  title: string
+  goodsList: {goodsName: string; goodsNumber?: number}[]
+  location: string
+  acceptDate: string
+  type: 'participating' | 'holding'
+}
+
+//참여, 진행 리스트
+export type ICanlendarShowInfoList = {
+  participatingList: ICalendarShow[]
+  holdingList: ICalendarShow[]
+}
 
 export type ICalendarDto = {
   applyGoodsDto: ICalendarApplyGoodsDto[] // 신청 굿즈 리스트
