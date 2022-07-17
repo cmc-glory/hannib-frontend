@@ -132,7 +132,7 @@ export const GoodsReqeustOnline = () => {
           accountIdx: user.accountIdx,
           nanumIdx: data.data.nanumIdx,
           askList: item.contents,
-          aswerList: answers[index],
+          answerList: answers[index],
         }
       }),
       nanumGoodsDtoList: data.data.goodsList

@@ -28,4 +28,5 @@ export const queryKeys = {
   endNanum: ['endNanum'], // 나눔 마감
   sendNotice: ['sendNotice'], // 공지 보내기
   myNanumDetail: ['myNanumDetail'], // 진행한 나눔 상세 페이지
+  requestedNanumDetail: ['requestedNanumDetail'], //신청한 나눔 상세정보 (신청한 굿즈 리스트, 주소 등)
 }
