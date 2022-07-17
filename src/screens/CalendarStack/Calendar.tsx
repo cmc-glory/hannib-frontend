@@ -8,7 +8,7 @@ import moment from 'moment'
 import {useAppSelector} from '../../hooks'
 import {WixCalendar, CalendarItem} from '../../components/CalendarStack'
 import {StackHeader, BellIcon, SeparatorLight} from '../../components/utils'
-import {IScheduleItem, ICalendarDto} from '../../types'
+import {IScheduleItem, ICalendarDto, ICalendarApplyGoodsDto} from '../../types'
 import * as theme from '../../theme'
 
 export const Calendar = () => {
@@ -21,11 +21,57 @@ export const Calendar = () => {
   const [selectedSchedule, setSelectedSchedule] = useState<IScheduleItem[]>([])
   const [refreshing, setRefreshing] = useState<boolean>(false) // 새로고침 state
   const accountIdx = useAppSelector(state => state.auth.user.accountIdx)
+  const [participatingList, setParticipatingList] = useState<
+    {
+      nanumIdx: number
+      title: string
+      goodsList: string[]
+      location: string
+    }[]
+  >([])
 
   // ******************** react query ********************
   useQuery(queryKeys.calendar, () => getCalendarAll(accountIdx), {
     onSuccess: data => {
+      setRefreshing(false)
       setCalendars(data)
+      console.log(calendars)
+
+      const tempParticipatingList: {
+        nanumIdx?: number
+        title?: string
+        goodsList?: string[]
+        location?: string
+        acceptDate?: string
+      }[] = []
+
+      // 굿즈 정보를 nanumIdx 순서로 정렬
+      const goodsNameList: ICalendarApplyGoodsDto[] = data.applyGoodsDto.sort((a: ICalendarApplyGoodsDto, b: ICalendarApplyGoodsDto) => {
+        if (a.nanumIdx < b.nanumIdx) {
+          return -1
+        }
+        if (a.nanumIdx > b.nanumIdx) {
+          return 1
+        }
+        return 0
+      })
+
+      data.calenderDto3.forEach((item: any, index: number) => {
+        tempParticipatingList.push({
+          nanumIdx: item.nanumIdx,
+          title: item.title,
+          location: item.location,
+          acceptDate: item.acceptDate,
+          goodsList: [],
+        })
+
+        for (let i = 0; i < data.applyGoodsDto.length; i++) {
+          if (data.applyGoodsDto[i].nanumIdx == item.nanumIdx) {
+            tempParticipatingList[index].goodsList?.push(data.applyGoodsDto[i].goodsName)
+          }
+        }
+      })
+      console.log('tempParlist : ', tempParticipatingList)
     },
     onError(err) {},
   })
