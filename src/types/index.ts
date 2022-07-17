@@ -539,6 +539,7 @@ export type IAccountCategoryDto = {
   accountIdx: number
   job: '가수' | '배우'
   categoryName: string
+  categoryIdx: number
 }
 
 export type IAccountDto = {

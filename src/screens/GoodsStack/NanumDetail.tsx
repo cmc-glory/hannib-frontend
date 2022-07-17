@@ -162,7 +162,7 @@ export const NanumDetail = () => {
   }, [nanumDetail, isLoggedIn, isWriter, isApplied, nanumIdx])
 
   return (
-    <SafeAreaView edges={['bottom']} style={{flex: 1, position: 'relative'}}>
+    <View style={{flex: 1, position: 'relative'}}>
       {headerInvert ? (
         <View style={{position: 'absolute', width: WIDTH, height: TOP_HEIGHT, zIndex: 99, backgroundColor: 'white'}}></View>
       ) : (
@@ -201,6 +201,6 @@ export const NanumDetail = () => {
         {nanumDetail != undefined && <NanumDetailContent headerHeight={headerHeight} nanumDetail={nanumDetail} numInquires={numInqueries} />}
       </ScrollView>
       <FloatingBottomButton label={buttonText} enabled onPress={onPressRequest} />
-    </SafeAreaView>
+    </View>
   )
 }

@@ -144,6 +144,7 @@ export const EditCategory = () => {
           job: category.job,
           categoryName: category.nickName,
           accountIdx: 0,
+          categoryIdx: 0,
         })
 
         setUserSelectedCategories(temp)
@@ -172,7 +173,7 @@ export const EditCategory = () => {
   }, [userSelectedCategories, user.accountIdx])
 
   return (
-    <SafeAreaView style={theme.styles.safeareaview}>
+    <SafeAreaView style={theme.styles.safeareaview} edges={['top']}>
       <StackHeader title="카테고리 설정" x goBack />
       <View style={[{flex: 1}]}>
         <View style={[theme.styles.wrapper, styles.mainCategoryContainer]}>

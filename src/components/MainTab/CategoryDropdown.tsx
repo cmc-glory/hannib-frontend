@@ -133,7 +133,7 @@ export const CategoryDropdown = ({showCategoryModal, setShowCategoryModal, userC
           })}
           <CategoryItem
             userCategory={userCategory}
-            currentCategory={{categoryName: '수정하기', job: '가수', accountIdx: 0}}
+            currentCategory={{categoryName: '수정하기', job: '가수', accountIdx: 0, categoryIdx: 0}}
             borderBottom
             onPressItem={onPressEditCategory}
           />
