@@ -26,28 +26,38 @@ export const WixCalendar = ({scheduleAll, setSelectedDate}: WixCalendarProps) =>
   const [currentDate, setCurrentDate] = useState<any>()
 
   useEffect(() => {
+    console.log(scheduleAll)
     if (scheduleAll != undefined) {
       var tempMarkedDates: any = {
-        [today]: {
-          selected: true,
-          customStyles: {
-            container: {
-              backgroundColor: theme.main,
-            },
-            text: {
-              color: theme.white,
-            },
-          },
-        },
+        // [today]: {
+        //   selected: true,
+        //   customStyles: {
+        //     container: {
+        //       backgroundColor: theme.main,
+        //     },
+        //     text: {
+        //       color: theme.white,
+        //     },
+        //   },
+        // },
       }
-      Object.keys(scheduleAll).forEach(item => {
+      scheduleAll.calenderDto3.forEach((item: any) => {
         const temp = {
           marked: true,
           dotColor: theme.secondary,
         }
-        item == today ? (tempMarkedDates[item] = {...tempMarkedDates[item], temp}) : (tempMarkedDates[item] = temp)
+        tempMarkedDates[item.acceptDate.slice(0, 10)] = temp
       })
-
+      // Object.keys(scheduleAll.calenderDto3).forEach(item => {
+      //   const temp = {
+      //     marked: true,
+      //     dotColor: theme.secondary,
+      //   }
+      //   tempMarkedDates[item.acceptDate] = temp
+      //   //item == today ? (tempMarkedDates[item] = {...tempMarkedDates[item], temp}) : (tempMarkedDates[item] = temp)
+      // })
+      // console.log('tempMarkedDates : ', tempMarkedDates)
+      // console.log('today : ', today)
       setMarkedDates(tempMarkedDates)
     }
   }, [scheduleAll])
@@ -77,7 +87,8 @@ export const WixCalendar = ({scheduleAll, setSelectedDate}: WixCalendarProps) =>
         dayTextColor: theme.gray800,
         monthTextColor: theme.gray800,
         textSectionTitleColor: theme.gray800,
-        selectedDayTextColor: theme.gray800,
+        selectedDayTextColor: theme.white,
+        selectedDayBackgroundColor: theme.main,
       }}
       headerStyle={{flexDirection: 'column'}}
       style={{marginHorizontal: 0, paddingHorizontal: 0}}
@@ -93,14 +104,14 @@ export const WixCalendar = ({scheduleAll, setSelectedDate}: WixCalendarProps) =>
               [day.dateString]: {
                 ...markedDates[day.dateString],
                 selected: true,
-                selectedColor: theme.gray200,
+                selectedColor: theme.main,
               },
             })
           } else {
             setCurrentDate({
               [day.dateString]: {
                 selected: true,
-                selectedColor: theme.gray200,
+                selectedColor: theme.main,
               },
             })
           }
@@ -117,7 +128,7 @@ export const WixCalendar = ({scheduleAll, setSelectedDate}: WixCalendarProps) =>
             [day[0].dateString]: {
               ...markedDates[day[0].dateString],
               selected: true,
-              selectedColor: theme.gray200,
+              selectedColor: theme.main,
             },
           })
         }
