@@ -142,7 +142,7 @@ const NanumList = () => {
       <View style={styles.headerContainer}>
         {isLoggedIn ? (
           <Pressable style={[styles.titleContainer]} onPress={onPressSelectCategory}>
-            <Text style={styles.title}>{userCategory.categoryName}</Text>
+            <Text style={styles.title}>{userCategory?.categoryName}</Text>
             <DownArrowIcon onPress={onPressSelectCategory} />
           </Pressable>
         ) : (

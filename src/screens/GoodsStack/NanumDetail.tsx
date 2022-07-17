@@ -33,6 +33,9 @@ export const NanumDetail = () => {
   const scrollY = useAnimatedValue(0)
   const [headerInvert, setHeaderInvert] = useState(false)
   const [numInqueries, setNumInqueries] = useState<number>(0)
+  const [isWriter, setIsWriter] = useState<boolean>(false) // 나눔글 작성자인지
+  const [isApplied, setIsApplied] = useState<boolean>(false) // 신청했는지
+  const [buttonText, setButtonText] = useState<string>('')
 
   const {data} = useQuery(
     [queryKeys.nanumDetail, nanumIdx],
@@ -48,6 +51,17 @@ export const NanumDetail = () => {
         console.log('success')
         console.log(data)
         setNanumDetail(data)
+        const tempIsWriter = data.accountDto.accountIdx == user.accountIdx
+        const tempIsApplied = data.applyOfflineIdx != 0
+        setIsWriter(tempIsWriter)
+        setIsApplied(tempIsApplied)
+        if (tempIsWriter) {
+          setButtonText('진행한 나눔 페이지로 이동')
+        } else if (tempIsApplied) {
+          setButtonText('참여한 나눔 페이지로 이동')
+        } else {
+          setButtonText('신청하기')
+        }
       },
       onError(err) {
         console.log('err')
@@ -69,19 +83,60 @@ export const NanumDetail = () => {
   const onPressRequest = useCallback(() => {
     console.log('data nanumMethod : ', data?.nanumMethod)
 
+    // 로그인을 한 경우
     if (isLoggedIn) {
-      if (data?.nanumMethod == 'M') {
-        navigation.navigate('GoodsStackNavigator', {
-          screen: 'GoodsRequestOnline',
-          params: nanumIdx,
-        })
-      } else {
-        navigation.navigate('GoodsStackNavigator', {
-          screen: 'GoodsRequestOffline',
-          params: nanumIdx,
+      // 나눔글 작성자인 경우
+      if (isWriter) {
+        navigation.navigate('HoldingSharingStackNavigator', {
+          screen: 'HoldingSharing',
+          params: {
+            nanumIdx,
+          },
         })
       }
-    } else {
+      // 이미 신청한 경우
+      else if (isApplied) {
+        // 우편 나눔이면
+        console.log('already applied')
+        if (nanumDetail?.nanumMethod == 'M') {
+          console.log('우편')
+          navigation.navigate('ParticipatingSharingStackNavigator', {
+            screen: 'ParticipatingSharingOnline',
+            params: {
+              nanumIdx,
+            },
+          })
+        } else {
+          console.log('오프라인')
+
+          navigation.navigate('ParticipatingSharingStackNavigator', {
+            screen: 'ParticipatingSharingOffline',
+            params: {
+              nanumIdx,
+            },
+          })
+        }
+      }
+      // 작성자도 아니고 신청도 안한 경우
+      else {
+        // 우편 나눔이면
+        if (nanumDetail?.nanumMethod == 'M') {
+          navigation.navigate('GoodsStackNavigator', {
+            screen: 'GoodsRequestOnline',
+            params: nanumIdx,
+          })
+        }
+        // 오프라인 나눔이면
+        else {
+          navigation.navigate('GoodsStackNavigator', {
+            screen: 'GoodsRequestOffline',
+            params: nanumIdx,
+          })
+        }
+      }
+    }
+    // 로그인을 안한 경우
+    else {
       if (Platform.OS == 'ios') {
         Alert.alert('로그인 후 이용할 수 있습니다. 로그인 페이지로 이동하시겠습니까?', '', [
           {
@@ -104,7 +159,7 @@ export const NanumDetail = () => {
         ])
       }
     }
-  }, [data, isLoggedIn])
+  }, [nanumDetail, isLoggedIn, isWriter, isApplied, nanumIdx])
 
   return (
     <SafeAreaView edges={['bottom']} style={{flex: 1, position: 'relative'}}>
@@ -145,7 +200,7 @@ export const NanumDetail = () => {
         <HeaderImage images={data?.nanumImglist} />
         {nanumDetail != undefined && <NanumDetailContent headerHeight={headerHeight} nanumDetail={nanumDetail} numInquires={numInqueries} />}
       </ScrollView>
-      <FloatingBottomButton label="신청하기" enabled onPress={onPressRequest} />
+      <FloatingBottomButton label={buttonText} enabled onPress={onPressRequest} />
     </SafeAreaView>
   )
 }

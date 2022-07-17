@@ -251,7 +251,7 @@ export type IApplyDto = {
   applyDate: string // 신청 일자
   realName: string
   location: string // 오프라인 시 수령 장소
-  address1: string // 우편번호
+  address1: string // 우편번호N
   address2: string
   creatorId: string
   phoneNumber: string
@@ -492,6 +492,7 @@ export type INanum = {
     email: string
   }
   job: '가수' | '배우'
+  applyOfflineIdx: number
 }
 
 export type INanumGoodsInfo = {
