@@ -5,7 +5,7 @@ import KeyboardManager from 'react-native-keyboard-manager'
 import {useMutation, useQuery, useQueryClient} from 'react-query'
 import {useNavigation, useRoute} from '@react-navigation/native'
 
-import {StackHeader, FloatingBottomButton, NeccesaryField, SeparatorBold, CheckboxIcon, EmptyCheckboxIcon} from '../../components/utils'
+import {StackHeader, FloatingBottomButton, RoundButton, NeccesaryField, SeparatorBold, CheckboxIcon, EmptyCheckboxIcon} from '../../components/utils'
 import {FindAddress, ProductInfoOnline, MakeNewField} from '../../components/GoodsStack'
 import {IRequestFormOnline, INanumRequestRequiredDto, INanumApplyOnlineDto, INanumRequestReuiredAsk, INanumRequestGoods} from '../../types'
 import {queryKeys, getNanumRequestRequiredInfo, postNanumRequestOnlineForm} from '../../api'
@@ -69,8 +69,6 @@ export const GoodsReqeustOnline = () => {
   // ******************** react query ********************
   const data = useQuery([queryKeys.nanumRequestRequiredInfo, nanumIdx], () => getNanumRequestRequiredInfo(nanumIdx), {
     onSuccess: data => {
-      console.log('success')
-      console.log(data)
       setInfo(data)
       data.goodsList.forEach((item: any) => {
         selectedItems[item.goodsIdx] = false
@@ -88,6 +86,7 @@ export const GoodsReqeustOnline = () => {
       console.log('success')
       console.log(data)
       queryClient.invalidateQueries([queryKeys.nanumRequestOnlineForm])
+      queryClient.invalidateQueries(queryKeys.accountInfoMypage)
 
       //const nanumIdx = data
       navigation.navigate('GoodsStackNavigator', {
@@ -95,23 +94,6 @@ export const GoodsReqeustOnline = () => {
       })
     },
     onError(error, variables, context) {
-      console.log('error')
-      console.log(error)
-      // showMessage({
-      //   // 에러 안내 메세지
-      //   message: '나눔 신청 중 에러가 발생했습니다',
-      //   type: 'info',
-      //   animationDuration: 300,
-      //   duration: 1350,
-      //   style: {
-      //     backgroundColor: 'rgba(36, 36, 36, 0.9)',
-      //   },
-      //   titleStyle: {
-      //     fontFamily: 'Pretendard-Medium',
-      //   },
-      //   floating: true,
-      // })
-
       navigation.navigate('GoodsStackNavigator', {
         screen: 'GoodsRequestError',
         params: {
@@ -130,6 +112,8 @@ export const GoodsReqeustOnline = () => {
     if (postNanumRequestOnlineFormQuery.isLoading) {
       return
     }
+
+    console.log(requestForm)
 
     const requestApplyForm: INanumApplyOnlineDto = {
       applyAskAnswerLists: data.data.askList.map((item: INanumRequestReuiredAsk, index: number) => {
@@ -182,12 +166,16 @@ export const GoodsReqeustOnline = () => {
     ) {
       return false
     }
-    // 추가 질문 사항 중 필수 질문에 대한 input이 비어 있으면 false 리턴
-    for (var i = 0; i < info?.askList?.length; i++) {
-      if (info?.askList[i].essential == 'Y' && answers[i] == '') {
-        return false
+
+    if (info?.askList != undefined) {
+      // 추가 질문 사항 중 필수 질문에 대한 input이 비어 있으면 false 리턴
+      for (var i = 0; i < info?.askList?.length; i++) {
+        if (info?.askList[i].essential == 'Y' && answers[i] == '') {
+          return false
+        }
       }
     }
+
     return true
   }, [requestForm, answers, info, nanumIdx, agreed])
 
@@ -345,8 +333,10 @@ export const GoodsReqeustOnline = () => {
             </View>
           </View>
         </View>
+        <View style={theme.styles.wrapper}>
+          <RoundButton label="제출하기" enabled={isButtonEnabled()} onPress={onPressRequest} />
+        </View>
       </ScrollView>
-      <FloatingBottomButton label="제출하기" enabled={isButtonEnabled()} onPress={onPressRequest} />
     </SafeAreaView>
   )
 }

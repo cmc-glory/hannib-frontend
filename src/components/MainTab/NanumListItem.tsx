@@ -1,15 +1,12 @@
 import React, {useCallback, useEffect, useState} from 'react'
-import {View, Text, Pressable, TextInput, StyleSheet, Dimensions} from 'react-native'
+import {View, Text, Pressable, TextInput, StyleSheet, Dimensions, Platform, Alert} from 'react-native'
 import FastImage from 'react-native-fast-image'
 import {useNavigation} from '@react-navigation/native'
 import Modal from 'react-native-modal'
-import {useMutation} from 'react-query'
-import moment from 'moment'
-import {showMessage} from 'react-native-flash-message'
+import moment, {Moment} from 'moment'
 import * as theme from '../../theme'
-import type {ISharingInfo, INanumListItem} from '../../types'
-import {Tag, XIcon, StarUnfilledIcon, StarFilledIcon} from '../utils'
-import {addFavorite, removeFavorite, queryKeys} from '../../api'
+import type {INanumListItem} from '../../types'
+import {Tag, XIcon} from '../utils'
 import {useAppSelector} from '../../hooks'
 
 const {width} = Dimensions.get('window')
@@ -84,8 +81,6 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
   const {nanumIdx, nanumMethod, title, creatorId, thumbnail, secretForm, secretPwd, favoritesYn, firstDate, endYn, categoryIdx, category} = item
   const writerAccountIdx = item.accountIdx
 
-  const openDate = new Date(firstDate)
-
   // 이미지가 존재하면 이미지의 uri로, 없으면 기본 이미지로
   const navigation = useNavigation()
 
@@ -93,99 +88,28 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
   const [isBefore, setIsBefore] = useState(false) // 나눔 시작 예약 여부
   const [secretModalVisible, setSecretModalVisible] = useState<boolean>(false) // 시크릿폼 모달 띄울지
   const [isClosed, setIsClosed] = useState<boolean>(false)
+  const [openDate, setOpenDate] = useState<Moment>(moment())
 
   // ********************* react queries *********************
   const accountIdx = useAppSelector(state => state.auth.user.accountIdx)
-  const addFavoriteQuery = useMutation([queryKeys.favorites, nanumIdx], addFavorite, {
-    onSuccess: () => {
-      item.favoritesYn = 'Y' // 프론트 단에서만 즐겨찾기 여부 수정.
-      item.favorites += 1
-      showMessage({
-        // 에러 안내 메세지
-        message: '찜 목록에 추가되었습니다.',
-        type: 'info',
-        animationDuration: 300,
-        duration: 1350,
-        style: {
-          backgroundColor: 'rgba(36, 36, 36, 0.9)',
-        },
-        titleStyle: {
-          fontFamily: 'Pretendard-Medium',
-        },
-        floating: true,
-      })
-    },
-  })
-  // 찜 해제
-  const removeFavoriteQuery = useMutation([queryKeys.favorites, nanumIdx], removeFavorite, {
-    onSuccess: () => {
-      item.favoritesYn = 'N' // 프론트 단에서만 즐겨찾기 여부 수정.
-      item.favorites -= 1
-      showMessage({
-        // 에러 안내 메세지
-        message: '찜 목록에서 삭제되었습니다.',
-        type: 'info',
-        animationDuration: 300,
-        duration: 1350,
-        style: {
-          backgroundColor: 'rgba(36, 36, 36, 0.9)',
-        },
-        titleStyle: {
-          fontFamily: 'Pretendard-Medium',
-        },
-        floating: true,
-      })
-    },
-  })
-
-  // ********************* callbacks *********************
-  const onPressAddFavorite = useCallback(() => {
-    // 즐겨찾기 추가, 삭제 api가 실행되고 있을 때는 새로 요청 X
-
-    if (addFavoriteQuery.isLoading || removeFavoriteQuery.isLoading) {
-      return
-    }
-    // 즐겨찾기 버튼 클릭했을 때
-
-    console.log(categoryIdx, category)
-
-    addFavoriteQuery.mutate({
-      accountIdx: accountIdx,
-      nanumIdx: nanumIdx,
-      categoryIdx: categoryIdx,
-      category: category,
-    }) // 인자에는 query params 넣기
-  }, [item, accountIdx, nanumIdx, categoryIdx, category])
-
-  const onPressRemoveFavorite = useCallback(() => {
-    // 즐겨찾기 추가, 삭제 api가 실행되고 있을 때는 새로 요청 X
-    if (addFavoriteQuery.isLoading || removeFavoriteQuery.isLoading || item.favorites == 0) {
-      return
-    }
-    // 즐겨찾기 버튼 클릭했을 때
-    item.favoritesYn = 'N' //  프론트 단에서만 즐겨찾기 여부 수정. (invalidate query로 새로 가져오기 X)
-    item.favorites -= 1
-    removeFavoriteQuery.mutate({
-      accountIdx: accountIdx,
-      nanumIdx: nanumIdx,
-      categoryIdx: categoryIdx,
-      category: category,
-      //category: '에스파',
-    }) // 인자에는 query params 넣기
-  }, [item, accountIdx, nanumIdx, categoryIdx, category])
 
   useEffect(() => {
-    setIsBefore(new Date() < openDate ? true : false)
+    const [day, time] = firstDate.split(' ')
+    const days = day.split('.')
+
+    let tempDate = moment(`${days[0]}-${days[1]}-${days[2]} ${time}`)
+    setOpenDate(tempDate)
+
+    setIsBefore(moment() < tempDate ? true : false)
     setIsClosed(endYn == 'Y' ? true : false)
   }, [item])
 
   // 상세 페이지로 이동
   const onPressItem = useCallback(() => {
-    const now = new Date()
+    const now = moment()
 
     // 오픈 시간 전이고, 작성자가 아니라면 나눔 게시글에 들어가지 못함
     if (now < openDate && writerAccountIdx != accountIdx) {
-      setIsBefore(true)
       return // 오픈 전인 경우엔 이동 X
     }
     // 시크릿 폼이고 작성자가 아니라면
@@ -200,35 +124,24 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
         },
       })
     }
-  }, [nanumIdx, secretForm])
+  }, [])
 
   return (
     <>
       <SecretModal secretModalVisible={secretModalVisible} setSecretModalVisible={setSecretModalVisible} secretPwd={secretPwd} nanumIdx={nanumIdx} />
       <Pressable onPress={onPressItem} style={[styles.container]}>
-        {!isClosed && isBefore && (
+        {!isClosed && moment() < openDate && (
           <View style={{...styles.overlay}}>
-            <View style={[styles.imageHeader, {width: IMAGE_SIZE}]}>
-              {favoritesYn == 'Y' ? <StarFilledIcon onPress={onPressRemoveFavorite} size={24} /> : <StarUnfilledIcon onPress={onPressAddFavorite} size={24} />}
-            </View>
             <Text style={[styles.overlayText, {marginBottom: 2.5}]}>{moment(openDate).format('YY/MM/DD HH:mm')}</Text>
             <Text style={styles.overlayText}>오픈 예정</Text>
           </View>
         )}
         {isClosed && (
           <View style={{...styles.overlay}}>
-            <View style={[styles.imageHeader, {width: IMAGE_SIZE}]}>
-              {favoritesYn == 'Y' ? <StarFilledIcon onPress={onPressRemoveFavorite} size={24} /> : <StarUnfilledIcon onPress={onPressAddFavorite} size={24} />}
-            </View>
             <Text style={[styles.overlayText, {marginBottom: 2.5}]}>마감</Text>
           </View>
         )}
         <View style={{width: IMAGE_SIZE, height: IMAGE_SIZE, borderRadius: 8}}>
-          {!isBefore && (
-            <View style={[styles.imageHeader, {width: IMAGE_SIZE}]}>
-              {favoritesYn == 'Y' ? <StarFilledIcon onPress={onPressRemoveFavorite} size={24} /> : <StarUnfilledIcon onPress={onPressAddFavorite} size={24} />}
-            </View>
-          )}
           <FastImage
             resizeMode={FastImage.resizeMode.cover}
             style={[styles.image, {width: IMAGE_SIZE, height: IMAGE_SIZE}]}

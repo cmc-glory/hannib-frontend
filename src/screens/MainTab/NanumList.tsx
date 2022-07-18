@@ -1,5 +1,5 @@
 import React, {useState, useCallback, useEffect} from 'react'
-import {View, Text, ScrollView, FlatList, Pressable, StyleSheet, ActivityIndicator, Alert, Platform} from 'react-native'
+import {View, Text, ScrollView, FlatList, Pressable, StyleSheet, ActivityIndicator, Alert, Platform, RefreshControl} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation} from '@react-navigation/native'
 import {useQueryClient, useQuery} from 'react-query'
@@ -176,7 +176,10 @@ const NanumList = () => {
             //onPressLocationFilter={onPressLocationFilter}
           />
           {sharings.length == 0 ? (
-            <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
+            <ScrollView
+              contentContainerStyle={{justifyContent: 'center', alignItems: 'center', flex: 1}}
+              refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+              showsVerticalScrollIndicator={false}>
               <EmptyIcon style={{marginBottom: 32}} />
               <View>
                 <Text style={[theme.styles.bold20, {marginBottom: 8, textAlign: 'center'}]}>현재 나눔 리스트가 비어있어요.</Text>
@@ -185,7 +188,7 @@ const NanumList = () => {
                   <Text style={[{color: theme.gray700, fontSize: 16, textAlign: 'center'}, theme.styles.text16]}>보다 손쉽게 나눔을 진행해 보세요!</Text>
                 </View>
               </View>
-            </View>
+            </ScrollView>
           ) : nanumAllByFavorites.isLoading || nanumAllByRecent.isLoading || nanumByRecent.isLoading || nanumByFaavorites.isLoading ? (
             <View>
               <ActivityIndicator

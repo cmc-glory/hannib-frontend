@@ -57,8 +57,7 @@ export const SplashScreen = () => {
     onError(error, variables, context) {
       // 해당 accountIdx 없음
       // 예를 들어 아이폰, 아이패드 둘 다 에서 사용하는데 아이패드에서 탈퇴하고 아이폰에서 앱을 킨 경우
-      const response = error as Response
-      if (response.status == 500) {
+      if (error.response.status == 500) {
         console.log('here')
         removeString('accountIdx').then(res => {
           navigation.navigate('MainTabNavigator')

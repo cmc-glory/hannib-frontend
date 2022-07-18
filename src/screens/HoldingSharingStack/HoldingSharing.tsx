@@ -7,6 +7,7 @@ import moment from 'moment'
 import {Shadow} from 'react-native-shadow-2'
 import {getStatusBarHeight} from 'react-native-status-bar-height'
 import Modal from 'react-native-modal'
+import NotExistsSvg from '../../assets/Icon/NotExists.svg'
 
 import {
   StackHeader,
@@ -77,6 +78,9 @@ export const HoldingSharing = () => {
   const [index, SetIndex] = useState<number>(0) // 현재 상세보기를 하는 receiver index
   const [participantAccountIdx, setParticipantAccountIdx] = useState<number>()
   const [receiverDetail, setReceiverDetail] = useState<IRequestNanumDetail>()
+  const [accountIdxList, setAccountIdxList] = useState<number[]>([]) // 운송장 모달에 전달할 accountIdxList
+  const [currentAccountIdx, setCurrentAccountIdx] = useState<number>() // 운송장 모달에 전달할 현재 선택된 accountIdx
+  const [unsongYn, setUnsongYn] = useState<boolean>(false)
 
   // <CancelModal
   // <AddressModal
@@ -110,6 +114,8 @@ export const HoldingSharing = () => {
         return
       }
 
+      setAccountIdxList(data.nanumDetailDto.map((item: INanumDetailDto) => item.accountIdx))
+
       const tempReceiverList: {
         acceptedYn: 'Y' | 'N'
         realName: string // 실제 이름. 만약에 null이거나 빈 문자열이면 creatorId 사용
@@ -130,7 +136,6 @@ export const HoldingSharing = () => {
         }
         return 0
       })
-      console.log(nanumDetail)
       tempReceiverList.push({
         acceptedYn: nanumDetail[0].acceptedYn,
         realName: nanumDetail[0].realName,
@@ -186,8 +191,9 @@ export const HoldingSharing = () => {
       })
     },
   })
-  const myNanumDetailQuery = useMutation([queryKeys.requestedNanumDetail], postRequestDetail, {
+  const myNanumDetailQuery = useMutation([queryKeys.requestedNanumDetail], getReceiverDetail, {
     onSuccess(data, variables, context) {
+      setUnsongYn(data.applyDto.unsongYn == 'Y' ? true : false)
       setReceiverDetail(data)
       console.log('receiverDetail : ', data)
     },
@@ -222,6 +228,8 @@ export const HoldingSharing = () => {
   const onPressViewDetail = useCallback(
     (idx: number) => {
       setIsDetail(true)
+      setCurrentAccountIdx(receiverInfoList[idx].accountIdx)
+
       myNanumDetailQuery.mutate({
         nanumIdx: nanumIdx,
         accountIdx: receiverInfoList[idx].accountIdx,
@@ -278,6 +286,7 @@ export const HoldingSharing = () => {
   const onRefresh = useCallback(() => {
     setRefreshing(true)
     queryClient.invalidateQueries([queryKeys.receiverList, nanumIdx])
+    //queryClient.invalidateQueries([queryKeys.requestedNanumDetail])
   }, [])
 
   return (
@@ -311,7 +320,7 @@ export const HoldingSharing = () => {
         </Modal>
       </StackHeader>
       <DeleteModal deleteModalVisible={deleteModalVisible} setDeleteModalVisible={setDeleteModalVisible} nanumIdx={nanumIdx} />
-      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} contentContainerStyle={{flex: 1}}>
         <ScrollView contentContainerStyle={[theme.styles.wrapper, {flex: 1}]}>
           <SharingPreview uri={nanumInfo.data?.thumbnail} category={nanumInfo.data?.category} title={nanumInfo.data?.title} />
           {/* 굿즈 정보 리스트 & 나눔 마감 버튼 */}
@@ -353,7 +362,13 @@ export const HoldingSharing = () => {
             {receiverListQuery.isLoading ? (
               <ActivityIndicator />
             ) : receiverInfoList.length == 0 ? (
-              <View></View>
+              <View style={[styles.emptyResultView]}>
+                <NotExistsSvg style={{marginTop: -48}} />
+                <View style={{marginTop: 32}}>
+                  <Text style={[theme.styles.bold20, {marginBottom: 8, textAlign: 'center'}]}>아직 신청자가 없어요</Text>
+                  <Text style={{color: theme.gray700, fontSize: 16, lineHeight: 24}}>신청자가 생기면 바로 리스트로 보여드릴게요!</Text>
+                </View>
+              </View>
             ) : isDetail == true ? (
               // 참여자 정보 상세보기 DOC
               <View>
@@ -366,15 +381,16 @@ export const HoldingSharing = () => {
                     <Text style={{fontSize: 16, color: theme.gray700, lineHeight: 24}}>{receiverInfoList.length}</Text>
                     <RightArrowBoldIcon onPress={onPressRightArrow} />
                   </View>
+
                   <XIcon onPress={onPressCloseDetail} />
                 </View>
                 <View style={{flex: 1}}>
                   {myNanumDetailQuery.isLoading ? (
                     <ActivityIndicator />
                   ) : (
-                    <>
+                    <View>
                       <View style={[theme.styles.rowSpaceBetween, {marginBottom: 12}]}>
-                        <Text style={[theme.styles.text14, styles.receiverDetailDate]}>{moment().format('YYYY.MM.DD HH:mm:ss')}</Text>
+                        <Text style={[theme.styles.text14, styles.receiverDetailDate]}>{receiverDetail?.applyDto.applyDate}</Text>
                         {receiverDetail?.applyDto?.misacceptedYn == 'Y' && <Tag label="미수령 경고" />}
                       </View>
                       <View style={[theme.styles.rowSpaceBetween, {marginBottom: 20}]}>
@@ -423,7 +439,7 @@ export const HoldingSharing = () => {
 
                       {/* 취소하기, 운송장 등록, 수령 체크 버튼 부분 */}
                       {nanumDetailInfo?.nanumMethod == 'M' ? (
-                        receiverDetail?.applyDto?.unsongYn == 'Y' ? (
+                        unsongYn == true ? (
                           //온라인 && 운송장 등록 완료
                           <View style={styles.unsongButton}>
                             <Text style={{color: theme.gray700}}>운송장 등록 완료</Text>
@@ -443,7 +459,7 @@ export const HoldingSharing = () => {
                               style={[styles.buttonMedium, styles.trackingButton]}
                               onPress={() => {
                                 setParticipantAccountIdx(receiverDetail?.applyDto.accountIdx)
-                                toggleCancelModalShow()
+                                toggleAddressModalShow()
                               }}>
                               <Text style={styles.trackingText}>운송장 등록</Text>
                             </Pressable>
@@ -477,12 +493,11 @@ export const HoldingSharing = () => {
                           </Pressable>
                         </View>
                       )}
-                    </>
+                    </View>
                   )}
                 </View>
               </View>
             ) : (
-              // 전체 참여자 리스트 보기  TOC
               receiverInfoList?.map(
                 (item, index) =>
                   (itemFilter == '전체보기' || (itemFilter == '수령완료' && item.acceptedYn == 'Y') || (itemFilter == '미수령' && item.acceptedYn == 'N')) && (
@@ -532,12 +547,18 @@ export const HoldingSharing = () => {
         nanumIdx={nanumIdx}
         accountIdx={participantAccountIdx!}
         isVisible={addressModalShow}
-        toggleIsVisible={toggleAddressModalShow}></AddressModal>
+        toggleIsVisible={toggleAddressModalShow}
+        accountIdxList={accountIdxList}
+        selectedAccountIdx={currentAccountIdx!}
+        setUnsongYn={setUnsongYn}></AddressModal>
       <NotTakenModal
         nanumIdx={nanumIdx}
         accountIdx={participantAccountIdx!}
         isVisible={notTakenModalShow}
         toggleIsVisible={toggleNotTakenModalShow}></NotTakenModal>
+        accountIdxList={accountIdxList}
+        selectedAccountIdx={currentAccountIdx!}
+        setUnsongYn={setUnsongYn}></AddressModal>
       <CheckFinishedModal
         nanumIdx={nanumIdx}
         accountIdx={participantAccountIdx!}
@@ -548,6 +569,11 @@ export const HoldingSharing = () => {
 }
 
 const styles = StyleSheet.create({
+  emptyResultView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   acceptedYnText: {
     color: theme.main,
     fontSize: 12,

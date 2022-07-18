@@ -27,8 +27,13 @@ export const EditProfile = () => {
   const user = useAppSelector(state => state.auth.user)
 
   const {data} = useQuery(queryKeys.accountInfo, () => getAccountInfoByIdx(user.accountIdx), {
-    onSuccess: data => {
-      console.log('data', data)
+    onSuccess: (data: IAccountDto) => {
+      setName(data.creatorId)
+      if (data.accountImg != null && data.accountImg != undefined) {
+        setProfileImage(data.accountImg)
+      } else {
+        setProfileImage('')
+      }
     },
     onError(err) {
       console.log('err')
@@ -100,8 +105,8 @@ export const EditProfile = () => {
 
   // ******************** states ********************
 
-  const [name, setName] = useState<string>(data?.creatorId)
-  const [profileImage, setProfileImage] = useState<string | undefined>(data?.accountImg)
+  const [name, setName] = useState<string>('')
+  const [profileImage, setProfileImage] = useState<string | undefined>('')
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [modalVisible, setModalVisible] = useState<boolean>(false)
   const [duplicated, setDuplicated] = useState<boolean>(false)

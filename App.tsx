@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler'
 import React, {useEffect, useCallback} from 'react'
-import {Alert, ActivityIndicator, Linking} from 'react-native'
+import {Alert, ActivityIndicator, Linking, Platform} from 'react-native'
 import {SafeAreaProvider} from 'react-native-safe-area-context'
 import {NavigationContainer} from '@react-navigation/native'
 import messaging from '@react-native-firebase/messaging'
@@ -15,6 +15,26 @@ import {store} from './src/redux/store'
 import {Provider as ReduxProvider} from 'react-redux'
 import NetInfo from '@react-native-community/netinfo'
 import FlashMessage from 'react-native-flash-message'
+import KeyboardManager from 'react-native-keyboard-manager'
+
+if (Platform.OS === 'ios') {
+  KeyboardManager.setEnable(true)
+  KeyboardManager.setEnableDebugging(false)
+  KeyboardManager.setKeyboardDistanceFromTextField(10)
+  KeyboardManager.setLayoutIfNeededOnUpdate(true)
+  KeyboardManager.setEnableAutoToolbar(true)
+  KeyboardManager.setToolbarDoneBarButtonItemText('확인')
+  KeyboardManager.setToolbarManageBehaviourBy('subviews') // "subviews" | "tag" | "position"
+  KeyboardManager.setToolbarPreviousNextButtonEnable(false)
+  KeyboardManager.setToolbarTintColor('#007aff') // Only #000000 format is supported
+  KeyboardManager.setToolbarBarTintColor('#FFFFFF') // Only #000000 format is supported
+  KeyboardManager.setShouldShowToolbarPlaceholder(true)
+  KeyboardManager.setOverrideKeyboardAppearance(false)
+  KeyboardManager.setKeyboardAppearance('default') // "default" | "light" | "dark"
+  KeyboardManager.setShouldResignOnTouchOutside(true)
+  KeyboardManager.setShouldPlayInputClicks(true)
+  KeyboardManager.resignFirstResponder()
+}
 
 // 권한 설정이 필요한 곳에 넣으면 됨.
 // 현재는 테스트를 위해 첫 페이지에 넣음.
@@ -54,7 +74,7 @@ const App = () => {
     () =>
       NetInfo.addEventListener(state => {
         if (!state.isConnected) {
-          Alert.alert('인터넷을 확인해주세요')
+          Alert.alert('인터넷을 확인해주세요', '', [{text: '확인'}])
         }
       }),
     [],

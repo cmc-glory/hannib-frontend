@@ -17,11 +17,13 @@ type SelectCategoryBannerProps = {
   category: {
     category: string
     job: '가수' | '배우'
+    categoryIdx: number
   }
   setCategory: React.Dispatch<
     React.SetStateAction<{
       category: string
       job: '가수' | '배우'
+      categoryIdx: number
     }>
   >
   bottomSheetRef: React.RefObject<BottomSheetMethods>
@@ -47,7 +49,21 @@ export const SelectCategory = ({category, setCategory, bottomSheetRef}: SelectCa
   const searchCategoryQuery = useMutation(queryKeys.searchCategory, searchCategory, {
     // 검색 api
     onSuccess(data, variables, context) {
-      setResult(data)
+      if (data == '') {
+        setResult([])
+      } else {
+        setResult(
+          data.sort((a: ICategoryDto, b: ICategoryDto) => {
+            if (a.nickName < b.nickName) {
+              return -1
+            }
+            if (a.nickName > b.nickName) {
+              return 1
+            }
+            return 0
+          }),
+        )
+      }
     },
     onError(error, variables, context) {
       showMessage({
@@ -78,6 +94,7 @@ export const SelectCategory = ({category, setCategory, bottomSheetRef}: SelectCa
         birth: '',
         imgUrl: '',
         email: '',
+        categoryIdx: 0,
       })
       setKeyword('')
     },
@@ -94,6 +111,7 @@ export const SelectCategory = ({category, setCategory, bottomSheetRef}: SelectCa
           setCategory({
             category: '',
             job: '가수',
+            categoryIdx: 0,
           })
         } else {
           Alert.alert('카테고리는 최대 1개 선택 가능합니다.', '', [{text: '확인'}])
@@ -101,7 +119,7 @@ export const SelectCategory = ({category, setCategory, bottomSheetRef}: SelectCa
         }
       }
 
-      setCategory({category: item.nickName, job: item.job})
+      setCategory({category: item.nickName, job: item.job, categoryIdx: item.categoryIdx})
     },
     [category],
   )
@@ -110,6 +128,7 @@ export const SelectCategory = ({category, setCategory, bottomSheetRef}: SelectCa
     setCategory({
       category: '',
       job: '가수',
+      categoryIdx: 0,
     })
   }, [])
 

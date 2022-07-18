@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState, useCallback} from 'react'
 import {View, Text, FlatList, ScrollView, Pressable, StyleSheet} from 'react-native'
-import {useQuery} from 'react-query'
+import {useQuery, useQueryClient} from 'react-query'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {EmptyIcon} from '../../components/utils'
 import {useAppSelector} from '../../hooks'
@@ -34,7 +34,7 @@ export const Favorites = () => {
   // ******************** utils ********************
   const scrollRef = useRef<FlatList>(null)
   const user = useAppSelector(state => state.auth.user)
-  console.log(user)
+  const queryClient = useQueryClient()
 
   // ******************** states ********************
   const [sharings, setSharings] = useState<INanumListItem[]>([]) // 나눔 리스트
@@ -75,7 +75,9 @@ export const Favorites = () => {
   // ******************** callbacks ********************
 
   // refresh pull up 하면 서버에서 가져옴
-  const onRefresh = useCallback(() => {}, [])
+  const onRefresh = useCallback(() => {
+    queryClient.invalidateQueries([queryKeys.favorites])
+  }, [])
 
   return (
     <SafeAreaView style={[theme.styles.safeareaview]} edges={['top', 'left', 'right']}>

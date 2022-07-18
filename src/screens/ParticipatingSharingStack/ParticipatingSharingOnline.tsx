@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react'
-import {View, Text, ScrollView, StyleSheet, Dimensions, RefreshControl, TextInput, Alert, Pressable} from 'react-native'
+import {View, Text, ScrollView, StyleSheet, Dimensions, RefreshControl, Alert, Pressable} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useQuery, useMutation, useQueryClient} from 'react-query'
 import {CancelModal} from '../../components/MyPageStack'
@@ -10,21 +10,14 @@ import {IAppliedNanumDetailDto, IApplyingGoodsDto} from '../../types'
 import {ParticipatingSharingOnlineRouteProps} from '../../navigation/ParticipatingSharingStackNavigator'
 import {StackHeader, SharingPreview, GoodsListItem, Button, Tag, RoundButton, XIcon} from '../../components/utils'
 
-import {queryKeys, getNanumByIndex, getAppliedNanumInfo, cancelNanum} from '../../api'
+import {queryKeys, getNanumByIndex, getAppliedNanumInfo, cancelNanumByApplier} from '../../api'
 import * as theme from '../../theme'
 import {useToggle, useAppSelector} from '../../hooks'
-
-type ButtonsProps = {
-  onPressWriteQnA: () => void
-  toggleCancelModalVisible: () => void
-  state: string
-}
 
 const BUTTON_WIDTH = (Dimensions.get('window').width - 40 - 10) / 2
 
 export const ParticipatingSharingOnline = () => {
   // ******************** utils ********************
-  const [cancelModalVisible, toggleCancelModalVisible] = useToggle() // 취소 모달창 띄울지
   const route = useRoute<ParticipatingSharingOnlineRouteProps>()
   const queryClient = useQueryClient()
   const {nanumIdx} = route.params
@@ -32,7 +25,6 @@ export const ParticipatingSharingOnline = () => {
   const user = useAppSelector(state => state.auth.user)
 
   // ******************** states ********************
-  const [participateState, setParticipateState] = useState<string>()
   const [detail, setDetail] = useState<IAppliedNanumDetailDto>()
   const [appliedGoodsList, setAppliedGoodsList] = useState<IApplyingGoodsDto[]>([])
   const [nanumState, setNanumState] = useState<'배송 준비중' | '배송 시작'>('배송 준비중')
@@ -51,7 +43,7 @@ export const ParticipatingSharingOnline = () => {
       }),
     {
       onSuccess(data) {
-        console.log('reloaded2')
+        console.log(data)
         setRefreshing(false)
         setDetail(data)
         setNanumState(data.applyDto.unsongYn == 'Y' ? '배송 시작' : '배송 준비중')
@@ -60,8 +52,10 @@ export const ParticipatingSharingOnline = () => {
     },
   )
 
-  const cancelNanumQuery = useMutation([queryKeys.cancelNanum], cancelNanum, {
+  const cancelNanumQuery = useMutation([queryKeys.cancelNanum], cancelNanumByApplier, {
     onSuccess(data, variables, context) {
+      queryClient.invalidateQueries([queryKeys.appliedNanumList, user.accountIdx])
+      queryClient.invalidateQueries(queryKeys.accountInfoMypage)
       navigation.goBack()
       showMessage({
         // 에러 안내 메세지
@@ -133,7 +127,7 @@ export const ParticipatingSharingOnline = () => {
         <SharingPreview uri={nanumInfo.data?.thumbnail} category={nanumInfo.data?.category} title={nanumInfo.data?.title} />
         <View style={{marginVertical: 20}}>
           {appliedGoodsList.map((item, index) => (
-            <View style={[theme.styles.rowSpaceBetween, index != appliedGoodsList.length - 1 && {marginBottom: 16}]}>
+            <View style={[theme.styles.rowSpaceBetween, index != appliedGoodsList.length - 1 && {marginBottom: 16}]} key={item.goodsName + index}>
               <Text style={{fontFamily: 'Pretendard-Medium', color: theme.gray700, fontSize: 16}}>{item.goodsName}</Text>
               <View style={[theme.styles.rowFlexStart]}>
                 <Text style={{color: theme.gray500, marginRight: 8}}>주문 수량</Text>
@@ -147,7 +141,7 @@ export const ParticipatingSharingOnline = () => {
           <Text style={[theme.styles.bold16, {marginBottom: 16}]}>신청 내역</Text>
           <View>
             <View style={[theme.styles.rowSpaceBetween, {marginBottom: 20}]}>
-              <Text style={{color: theme.gray500}}>2022.06.30 22:01:52</Text>
+              <Text style={{color: theme.gray500}}>{detail?.applyDto?.applyDate?.slice(0, 16)}</Text>
               {/* {participateState !== 'proceeding' ? <Tag label="수령 완료"></Tag> : null} */}
             </View>
             <View style={[theme.styles.rowSpaceBetween, styles.requestInfoWrapper]}>
@@ -166,7 +160,7 @@ export const ParticipatingSharingOnline = () => {
             </View>
             <View style={[theme.styles.rowSpaceBetween, styles.requestInfoWrapper]}>
               <Text style={styles.requestInfoLabel}>주소</Text>
-              <Text style={styles.requestInfoText}>
+              <Text style={[styles.requestInfoText]}>
                 {detail?.applyDto.address1} {detail?.applyDto.address2}
               </Text>
             </View>
@@ -178,7 +172,7 @@ export const ParticipatingSharingOnline = () => {
               <Text style={styles.requestInfoLabel}>수령 현황</Text>
               <Text style={styles.requestInfoText}>{nanumState}</Text>
             </View>
-            {detail?.applyDto.trackingNumber != '' && detail?.applyDto.trackingNumber != undefined && (
+            {detail?.applyDto.unsongNumber != '' && detail?.applyDto.unsongNumber != undefined && (
               <View style={[theme.styles.rowSpaceBetween, styles.requestInfoWrapper]}>
                 <Text style={styles.requestInfoLabel}>운송장 번호</Text>
                 <Text style={styles.requestInfoText}>{detail?.applyDto.trackingNumber}</Text>
@@ -206,8 +200,6 @@ export const ParticipatingSharingOnline = () => {
             </Pressable>
           )}
         </View>
-
-        <CancelModal isVisible={cancelModalVisible} toggleIsVisible={toggleCancelModalVisible} />
       </ScrollView>
     </SafeAreaView>
   )

@@ -1,7 +1,9 @@
 import React, {useCallback} from 'react'
-import {View, StyleSheet, Text} from 'react-native'
+import {View, StyleSheet, Text, Platform, Alert} from 'react-native'
 import {useMutation} from 'react-query'
 import {showMessage} from 'react-native-flash-message'
+import {useNavigation} from '@react-navigation/native'
+import {useQueryClient} from 'react-query'
 
 import {Tag, StarFilledIcon, StarUnfilledIcon, LockIcon} from '../utils'
 import {NoticeBanner} from './NoticeBanner'
@@ -20,15 +22,18 @@ type ContentProps = {
 }
 
 export function NanumDetailContent({headerHeight, nanumDetail, numInquires}: ContentProps) {
+  const navigation = useNavigation()
+  const queryClient = useQueryClient()
   const accountIdx = useAppSelector(state => state.auth.user.accountIdx)
-
-  console.log(nanumDetail.firstDate)
-  console.log(nanumDetail.categoryIdx)
+  const isLoggedIn = useAppSelector(state => state.auth.isLoggedIn)
 
   const addFavoriteQuery = useMutation([queryKeys.favorites], addFavorite, {
     onSuccess: () => {
       nanumDetail.favorites_yn = 'Y' // 프론트 단에서만 즐겨찾기 여부 수정.
       nanumDetail.favorites += 1
+
+      queryClient.invalidateQueries([queryKeys.favorites])
+
       showMessage({
         // 에러 안내 메세지
         message: '찜 목록에 추가되었습니다.',
@@ -51,6 +56,8 @@ export function NanumDetailContent({headerHeight, nanumDetail, numInquires}: Con
       // 즐겨찾기 버튼 클릭했을 때
       nanumDetail.favorites_yn = 'N' //  프론트 단에서만 즐겨찾기 여부 수정. (invalidate query로 새로 가져오기 X)
       nanumDetail.favorites -= 1
+      queryClient.invalidateQueries([queryKeys.favorites])
+
       showMessage({
         // 에러 안내 메세지
         message: '찜 목록에서 삭제되었습니다.',
@@ -69,33 +76,78 @@ export function NanumDetailContent({headerHeight, nanumDetail, numInquires}: Con
   })
 
   const onPressAddFavorite = useCallback(() => {
-    if (addFavoriteQuery.isLoading || removeFavoriteQuery.isLoading) {
-      return
+    if (isLoggedIn == false) {
+      if (Platform.OS == 'ios') {
+        Alert.alert('로그인 후 이용할 수 있습니다. 로그인 페이지로 이동하시겠습니까?', '', [
+          {
+            text: '취소',
+          },
+          {
+            text: '확인',
+            onPress: () => navigation.navigate('MyPageTabStackNavigator'),
+          },
+        ])
+      } else {
+        Alert.alert('로그인 후 이용할 수 있습니다', '로그인 페이지로 이동하시겠습니까?', [
+          {
+            text: '취소',
+          },
+          {
+            text: '확인',
+            onPress: () => navigation.navigate('MyPageTabStackNavigator'),
+          },
+        ])
+      }
+    } else {
+      if (addFavoriteQuery.isLoading || removeFavoriteQuery.isLoading) {
+        return
+      }
+      // 즐겨찾기 버튼 클릭했을 때
+
+      addFavoriteQuery.mutate({
+        accountIdx: accountIdx,
+        nanumIdx: nanumDetail.nanumIdx,
+        categoryIdx: nanumDetail.categoryIdx,
+        category: nanumDetail.category,
+      }) // 인자에는 query params 넣기
     }
-    // 즐겨찾기 버튼 클릭했을 때
-
-    console.log(nanumDetail.nanumIdx)
-    console.log(nanumDetail.categoryIdx)
-
-    addFavoriteQuery.mutate({
-      accountIdx: accountIdx,
-      nanumIdx: nanumDetail.nanumIdx,
-      categoryIdx: nanumDetail.categoryIdx,
-      category: nanumDetail.category,
-    }) // 인자에는 query params 넣기
   }, [nanumDetail, accountIdx, addFavoriteQuery, removeFavoriteQuery])
 
   const onPressRemoveFavorite = useCallback(() => {
-    if (addFavoriteQuery.isLoading || removeFavoriteQuery.isLoading || nanumDetail.favorites == 0) {
-      return
-    }
+    if (isLoggedIn == false) {
+      if (Platform.OS == 'ios') {
+        Alert.alert('로그인 후 이용할 수 있습니다. 로그인 페이지로 이동하시겠습니까?', '', [
+          {
+            text: '취소',
+          },
+          {
+            text: '확인',
+            onPress: () => navigation.navigate('MyPageTabStackNavigator'),
+          },
+        ])
+      } else {
+        Alert.alert('로그인 후 이용할 수 있습니다', '로그인 페이지로 이동하시겠습니까?', [
+          {
+            text: '취소',
+          },
+          {
+            text: '확인',
+            onPress: () => navigation.navigate('MyPageTabStackNavigator'),
+          },
+        ])
+      }
+    } else {
+      if (addFavoriteQuery.isLoading || removeFavoriteQuery.isLoading || nanumDetail.favorites == 0) {
+        return
+      }
 
-    removeFavoriteQuery.mutate({
-      accountIdx: accountIdx,
-      nanumIdx: nanumDetail.nanumIdx,
-      categoryIdx: nanumDetail.categoryIdx,
-      category: nanumDetail.category,
-    }) // 인자에는 query params 넣기
+      removeFavoriteQuery.mutate({
+        accountIdx: accountIdx,
+        nanumIdx: nanumDetail.nanumIdx,
+        categoryIdx: nanumDetail.categoryIdx,
+        category: nanumDetail.category,
+      }) // 인자에는 query params 넣기
+    }
   }, [nanumDetail, accountIdx, addFavoriteQuery, removeFavoriteQuery])
 
   return (
@@ -133,7 +185,7 @@ export function NanumDetailContent({headerHeight, nanumDetail, numInquires}: Con
       <View style={{padding: theme.PADDING_SIZE, justifyContent: 'center'}}>
         <Text style={theme.styles.bold16}>상세 설명</Text>
         <View style={[styles.descriptionContainer, {minHeight: 120}]}>
-          <Text style={{fontSize: 16}}>{nanumDetail.contents}</Text>
+          <Text style={styles.contentText}>{nanumDetail.contents}</Text>
         </View>
       </View>
       <WriterProfileBanner
@@ -150,6 +202,10 @@ export function NanumDetailContent({headerHeight, nanumDetail, numInquires}: Con
 }
 
 const styles = StyleSheet.create({
+  contentText: {
+    fontSize: 16,
+    lineHeight: 24,
+  },
   descriptionContainer: {
     paddingTop: theme.PADDING_SIZE,
     //justifyContent: 'center',

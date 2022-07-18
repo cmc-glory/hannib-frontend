@@ -52,21 +52,21 @@ export const QnAListUser = () => {
       if (Platform.OS == 'ios') {
         Alert.alert('로그인 후 이용할 수 있습니다. 로그인 페이지로 이동하시겠습니까?', '', [
           {
-            text: '확인',
-            onPress: () => navigation.navigate('MyPageTabStackNavigator'),
+            text: '취소',
           },
           {
-            text: '취소',
+            text: '확인',
+            onPress: () => navigation.navigate('MyPageTabStackNavigator'),
           },
         ])
       } else {
         Alert.alert('로그인 후 이용할 수 있습니다', '로그인 페이지로 이동하시겠습니까?', [
           {
-            text: '확인',
-            onPress: () => navigation.navigate('MyPageTabStackNavigator'),
+            text: '취소',
           },
           {
-            text: '취소',
+            text: '확인',
+            onPress: () => navigation.navigate('MyPageTabStackNavigator'),
           },
         ])
       }
