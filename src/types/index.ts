@@ -383,7 +383,7 @@ export type INanumListItem = {
   nanumMethod: INanumMethod // 나눔 방식
   title: string // 제목
   creatorId: string // 작성자 닉네임
-  firstDate: Date // 나눔 시작일
+  firstDate: string // 나눔 시작일
   secretForm: 'Y' | 'N' // 시크릿폼 여부
   secretPwd?: string | number // 시크릿폼 비밀번호
   favoritesYn: 'Y' | 'N' // 즐겨찾기 여부
@@ -520,6 +520,7 @@ export type INanumForm = {
     email: string
   }
   job: '가수' | '배우'
+  categoryIdx: number
 }
 
 export type INanum = {

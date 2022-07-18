@@ -4,7 +4,7 @@ import FastImage from 'react-native-fast-image'
 import {useNavigation} from '@react-navigation/native'
 import Modal from 'react-native-modal'
 import {useMutation} from 'react-query'
-import moment from 'moment'
+import moment, {Moment} from 'moment'
 import {showMessage} from 'react-native-flash-message'
 import * as theme from '../../theme'
 import type {ISharingInfo, INanumListItem} from '../../types'
@@ -84,8 +84,6 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
   const {nanumIdx, nanumMethod, title, creatorId, thumbnail, secretForm, secretPwd, favoritesYn, firstDate, endYn, categoryIdx, category} = item
   const writerAccountIdx = item.accountIdx
 
-  const openDate = new Date(firstDate)
-
   // 이미지가 존재하면 이미지의 uri로, 없으면 기본 이미지로
   const navigation = useNavigation()
 
@@ -93,6 +91,7 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
   const [isBefore, setIsBefore] = useState(false) // 나눔 시작 예약 여부
   const [secretModalVisible, setSecretModalVisible] = useState<boolean>(false) // 시크릿폼 모달 띄울지
   const [isClosed, setIsClosed] = useState<boolean>(false)
+  const [openDate, setOpenDate] = useState<Moment>(moment())
 
   // ********************* react queries *********************
   const accountIdx = useAppSelector(state => state.auth.user.accountIdx)
@@ -147,8 +146,6 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
     }
     // 즐겨찾기 버튼 클릭했을 때
 
-    console.log(categoryIdx, category)
-
     addFavoriteQuery.mutate({
       accountIdx: accountIdx,
       nanumIdx: nanumIdx,
@@ -175,13 +172,20 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
   }, [item, accountIdx, nanumIdx, categoryIdx, category])
 
   useEffect(() => {
-    setIsBefore(new Date() < openDate ? true : false)
+    const [day, time] = firstDate.split(' ')
+    const days = day.split('.')
+    const times = time.split(':')
+
+    let tempDate = moment(`${days[0]}-${days[1]}-${days[2]} ${time}`)
+    setOpenDate(tempDate)
+
+    setIsBefore(moment() < tempDate ? true : false)
     setIsClosed(endYn == 'Y' ? true : false)
   }, [item])
 
   // 상세 페이지로 이동
   const onPressItem = useCallback(() => {
-    const now = new Date()
+    const now = moment()
 
     // 오픈 시간 전이고, 작성자가 아니라면 나눔 게시글에 들어가지 못함
     if (now < openDate && writerAccountIdx != accountIdx) {
