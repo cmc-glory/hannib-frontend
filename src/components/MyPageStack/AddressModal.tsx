@@ -1,18 +1,25 @@
 import React, {useCallback, useEffect, useState} from 'react'
 import {View, Text, StyleSheet, Dimensions, TextInput, Pressable} from 'react-native'
-import {Button, RoundButton} from '../../components/utils'
-import BouncyCheckbox from 'react-native-bouncy-checkbox'
+import {RoundButton} from '../../components/utils'
 import Modal from 'react-native-modal'
-import {XIcon} from '../../components/utils'
+import {CheckboxIcon, EmptyCheckboxIcon, XIcon} from '../../components/utils'
 import * as theme from '../../theme'
+import {useMutation, useQueryClient} from 'react-query'
+import {IUnsongDto} from '../../types'
 import Postcode from '@actbase/react-daum-postcode'
 import {noop} from 'react-query/types/core/utils'
+import {showMessage} from 'react-native-flash-message'
+import {postDeliveryInfo, queryKeys} from '../../api'
 
 const MODAL_BUTTON_WIDTH = (Dimensions.get('window').width - theme.PADDING_SIZE * 2 - 50) / 2
 
 type AddressModal = {
   isVisible: boolean
   toggleIsVisible: () => void
+  accountIdxList: number[] // 나머지도 동일하게 우편 전송으로 처리 눌렀을 때 사용할 accountIdx 리스트
+  selectedAccountIdx: number // 현재 선택된 accountIdx
+  nanumIdx: number
+  setUnsongYn: React.Dispatch<React.SetStateAction<boolean>>
   // sendMethod: string
   // setSendMethod: (mthd: string) => void
 }
@@ -38,13 +45,38 @@ const Unselected = ({label, onPress}: ButtonProps) => {
   )
 }
 
-export const AddressModal = ({isVisible, toggleIsVisible}: AddressModal) => {
+export const AddressModal = ({isVisible, toggleIsVisible, accountIdxList, selectedAccountIdx, nanumIdx, setUnsongYn}: AddressModal) => {
+  const queryClient = useQueryClient()
+  // ********************* states  *********************
   const [postComp, setPostComp] = useState<string>('')
   const [postNum, setPostNum] = useState<string>('')
   const [noPostComp, setNoPostComp] = useState<boolean>(false)
   const [noPostNum, setNoPostNum] = useState<boolean>(false)
   const [mailMethod, setMailMethod] = useState<'우편' | '등기'>('우편')
+  const [isAllSame, setIsAllSame] = useState<boolean>(false) // 나머지도 동일하게 우편 전송으로 처리
 
+  // ********************* react queries *********************
+  const postTrackingNumberQuery = useMutation([queryKeys.deliveryInfo, selectedAccountIdx], postDeliveryInfo, {
+    onSuccess(data, variables, context) {
+      setUnsongYn(true)
+      showMessage({
+        message: '배송 정보 등록이 완료되었습니다',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+      })
+      toggleIsVisible()
+    },
+  })
+
+  // ********************* callbacks *********************
   const checkButtonEnabled = useCallback((postComp: string, mailNum: string) => {
     return postComp == '' || mailNum == '' ? false : true
   }, [])
@@ -74,14 +106,48 @@ export const AddressModal = ({isVisible, toggleIsVisible}: AddressModal) => {
     setPostNum('')
     setNoPostComp(false)
     setNoPostNum(false)
+    setIsAllSame(false)
     toggleIsVisible()
 
     setMailMethod('우편')
   }
 
+  const onPressIsAllSame = useCallback(() => {
+    setIsAllSame(isAllSame => !isAllSame)
+  }, [])
+
+  const onPressSubmit = useCallback(() => {
+    // 모든 accountIdx에 대해 우편으로 처리
+    if (isAllSame == true) {
+    }
+
+    // 하나씩 배송 정보 등록
+    else {
+      if (mailMethod == '우편') {
+        const unsongDto: IUnsongDto = {
+          accountIdx: selectedAccountIdx,
+          company: '',
+          nanumIdx: nanumIdx,
+          unsongMethod: '우편',
+          unsongNumber: 0,
+        }
+        postTrackingNumberQuery.mutate(unsongDto)
+      } else {
+        const unsongDto: IUnsongDto = {
+          accountIdx: selectedAccountIdx,
+          company: postComp,
+          nanumIdx: nanumIdx,
+          unsongMethod: '등기',
+          unsongNumber: parseInt(postNum),
+        }
+        postTrackingNumberQuery.mutate(unsongDto)
+      }
+    }
+  }, [selectedAccountIdx, nanumIdx, postComp, postNum])
+
   useEffect(() => {
     //console.log('sendMethod : ', sendMethod)
-  }, [mailMethod, noPostComp, noPostNum])
+  }, [mailMethod, noPostComp, noPostNum, postComp, postNum, selectedAccountIdx, accountIdxList])
 
   return (
     <Modal isVisible={isVisible} onBackdropPress={closeModal} backdropColor={theme.gray800} backdropOpacity={0.6}>
@@ -106,7 +172,7 @@ export const AddressModal = ({isVisible, toggleIsVisible}: AddressModal) => {
           )}
           {mailMethod == '우편' ? (
             <View style={{...theme.styles.rowFlexStart}}>
-              <BouncyCheckbox size={20} fillColor={theme.secondary} style={{width: 20}} />
+              {isAllSame ? <CheckboxIcon onPress={onPressIsAllSame} /> : <EmptyCheckboxIcon onPress={onPressIsAllSame} />}
               <Text style={{marginLeft: 8}}>나머지도 동일하게 우편전송으로 처리</Text>
             </View>
           ) : (
@@ -137,8 +203,8 @@ export const AddressModal = ({isVisible, toggleIsVisible}: AddressModal) => {
         <RoundButton
           label="확인"
           onPress={() => {
-            checkTextInput()
-            mailMethod == '등기' ? (checkButtonEnabled(postComp, postNum) ? closeModal() : null) : closeModal()
+            //checkTextInput()
+            onPressSubmit()
           }}
           enabled={mailMethod == '등기' ? checkButtonEnabled(postComp, postNum) : true}
         />

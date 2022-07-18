@@ -76,7 +76,14 @@ export const postRequestDetail = async ({accountIdx, nanumIdx}: {accountIdx: num
   return data
 }
 
+// 공지 목록 get
 export const getNotices = async (nanumIdx: number) => {
   const {data} = await apiClient.post(`/api/nanuming/notice/nanum?nanumIdx=${nanumIdx}`)
+  return data
+}
+
+// 배송 정보 등록
+export const postDeliveryInfo = async (unsongDto: IUnsongDto) => {
+  const {data} = await apiClient.post('/api/nanuming/unsong', unsongDto)
   return data
 }

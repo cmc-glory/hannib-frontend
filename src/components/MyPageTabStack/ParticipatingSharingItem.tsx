@@ -33,20 +33,23 @@ export const ParticipatingSharingItem = ({item}: {item: IparticipatigItem}) => {
   }, [openDate, beenCanceled])
 
   // 상세 페이지로 이동
-  const onPressItem = useCallback((type: 'M' | 'O') => {
-    if (type == 'M') {
-      //메일(온라인)
-      navigation.navigate('ParticipatingSharingStackNavigator', {
-        screen: 'ParticipatingSharingOnline',
-        params: {nanumIdx: item.nanumIdx},
-      })
-    } else {
-      navigation.navigate('ParticipatingSharingStackNavigator', {
-        screen: 'ParticipatingSharingOffline',
-        params: {nanumIdx: item.nanumIdx},
-      })
-    }
-  }, [])
+  const onPressItem = useCallback(
+    (type: 'M' | 'O') => {
+      if (type == 'M') {
+        //메일(온라인)
+        navigation.navigate('ParticipatingSharingStackNavigator', {
+          screen: 'ParticipatingSharingOnline',
+          params: {nanumIdx: item.nanumIdx},
+        })
+      } else {
+        navigation.navigate('ParticipatingSharingStackNavigator', {
+          screen: 'ParticipatingSharingOffline',
+          params: {nanumIdx: item.nanumIdx},
+        })
+      }
+    },
+    [item],
+  )
 
   return (
     <>

@@ -77,6 +77,9 @@ export const HoldingSharing = () => {
   const [index, SetIndex] = useState<number>(0) // 현재 상세보기를 하는 receiver index
   const [participantAccountIdx, setParticipantAccountIdx] = useState<number>()
   const [receiverDetail, setReceiverDetail] = useState<IRequestNanumDetail>()
+  const [accountIdxList, setAccountIdxList] = useState<number[]>([]) // 운송장 모달에 전달할 accountIdxList
+  const [currentAccountIdx, setCurrentAccountIdx] = useState<number>() // 운송장 모달에 전달할 현재 선택된 accountIdx
+  const [unsongYn, setUnsongYn] = useState<boolean>(false)
 
   // <CancelModal
   // <AddressModal
@@ -109,6 +112,8 @@ export const HoldingSharing = () => {
         setRefreshing(false)
         return
       }
+
+      setAccountIdxList(data.nanumDetailDto.map((item: INanumDetailDto) => item.accountIdx))
 
       const tempReceiverList: {
         acceptedYn: 'Y' | 'N'
@@ -188,6 +193,7 @@ export const HoldingSharing = () => {
   })
   const myNanumDetailQuery = useMutation([queryKeys.requestedNanumDetail], postRequestDetail, {
     onSuccess(data, variables, context) {
+      setUnsongYn(data.applyDto.unsongYn == 'Y')
       setReceiverDetail(data)
       console.log('receiverDetail : ', data)
     },
@@ -222,6 +228,7 @@ export const HoldingSharing = () => {
   const onPressViewDetail = useCallback(
     (idx: number) => {
       setIsDetail(true)
+      setCurrentAccountIdx(receiverInfoList[idx].accountIdx)
       myNanumDetailQuery.mutate({
         nanumIdx: nanumIdx,
         accountIdx: receiverInfoList[idx].accountIdx,
@@ -278,6 +285,7 @@ export const HoldingSharing = () => {
   const onRefresh = useCallback(() => {
     setRefreshing(true)
     queryClient.invalidateQueries([queryKeys.receiverList, nanumIdx])
+    //queryClient.invalidateQueries([queryKeys.requestedNanumDetail])
   }, [])
 
   return (
@@ -423,7 +431,7 @@ export const HoldingSharing = () => {
 
                       {/* 취소하기, 운송장 등록, 수령 체크 버튼 부분 */}
                       {nanumDetailInfo?.nanumMethod == 'M' ? (
-                        receiverDetail?.applyDto?.unsongYn == 'Y' ? (
+                        unsongYn == true ? (
                           //온라인 && 운송장 등록 완료
                           <View style={styles.unsongButton}>
                             <Text style={{color: theme.gray700}}>운송장 등록 완료</Text>
@@ -443,7 +451,7 @@ export const HoldingSharing = () => {
                               style={[styles.buttonMedium, styles.trackingButton]}
                               onPress={() => {
                                 setParticipantAccountIdx(receiverDetail?.applyDto.accountIdx)
-                                toggleCancelModalShow()
+                                toggleAddressModalShow()
                               }}>
                               <Text style={styles.trackingText}>운송장 등록</Text>
                             </Pressable>
@@ -528,7 +536,13 @@ export const HoldingSharing = () => {
 
       {/* 모달 */}
       <CancelModal nanumIdx={nanumIdx} accountIdx={participantAccountIdx!} isVisible={cancelModalShow} toggleIsVisible={toggleCancelModalShow}></CancelModal>
-      <AddressModal isVisible={addressModalShow} toggleIsVisible={toggleAddressModalShow}></AddressModal>
+      <AddressModal
+        isVisible={addressModalShow}
+        toggleIsVisible={toggleAddressModalShow}
+        accountIdxList={accountIdxList}
+        selectedAccountIdx={currentAccountIdx!}
+        nanumIdx={nanumIdx}
+        setUnsongYn={setUnsongYn}></AddressModal>
       <NotTakenModal isVisible={notTakenModalShow} toggleIsVisible={toggleNotTakenModalShow}></NotTakenModal>
       <CheckFinishedModal
         nanumIdx={nanumIdx}

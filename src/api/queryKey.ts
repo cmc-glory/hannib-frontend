@@ -37,4 +37,5 @@ export const queryKeys = {
   cancelNanumByHolder: ['cancelNanumByHolder'],
   accountInfoMypage: ['accountInfoMypage'],
   notice: ['notice'], //공지 불러오기
+  deliveryInfo: ['deliveryInfo'], // 배송 정보 (우편, 등기-운송장번호) 등록
 }

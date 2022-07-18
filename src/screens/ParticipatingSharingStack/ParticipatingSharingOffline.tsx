@@ -10,7 +10,7 @@ import {IAppliedNanumDetailDto, IApplyingGoodsDto} from '../../types'
 import {ParticipatingSharingOnlineRouteProps} from '../../navigation/ParticipatingSharingStackNavigator'
 import {StackHeader, SharingPreview, GoodsListItem, Button, Tag, RoundButton, XIcon} from '../../components/utils'
 
-import {queryKeys, getNanumByIndex, getAppliedNanumInfo, cancelNanum} from '../../api'
+import {queryKeys, getNanumByIndex, getAppliedNanumInfo, cancelNanumByApplier} from '../../api'
 import * as theme from '../../theme'
 import {useToggle, useAppSelector} from '../../hooks'
 
@@ -57,9 +57,10 @@ export const ParticipatingSharingOffline = () => {
     },
   )
 
-  const cancelNanumQuery = useMutation([queryKeys.cancelNanum], cancelNanum, {
+  const cancelNanumQuery = useMutation([queryKeys.cancelNanum], cancelNanumByApplier, {
     onSuccess(data, variables, context) {
-      queryClient.invalidateQueries([queryKeys.appliedNanumList])
+      queryClient.invalidateQueries([queryKeys.appliedNanumList, user.accountIdx])
+      queryClient.invalidateQueries(queryKeys.accountInfoMypage)
       navigation.goBack()
       showMessage({
         // 에러 안내 메세지
