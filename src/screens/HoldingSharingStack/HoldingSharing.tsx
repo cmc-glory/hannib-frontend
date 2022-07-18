@@ -550,15 +550,9 @@ export const HoldingSharing = () => {
         toggleIsVisible={toggleAddressModalShow}
         accountIdxList={accountIdxList}
         selectedAccountIdx={currentAccountIdx!}
-        setUnsongYn={setUnsongYn}></AddressModal>
-      <NotTakenModal
-        nanumIdx={nanumIdx}
-        accountIdx={participantAccountIdx!}
-        isVisible={notTakenModalShow}
-        toggleIsVisible={toggleNotTakenModalShow}></NotTakenModal>
-        accountIdxList={accountIdxList}
-        selectedAccountIdx={currentAccountIdx!}
-        setUnsongYn={setUnsongYn}></AddressModal>
+        setUnsongYn={setUnsongYn}
+      />
+      <NotTakenModal nanumIdx={nanumIdx} accountIdx={participantAccountIdx!} isVisible={notTakenModalShow} toggleIsVisible={toggleNotTakenModalShow} />
       <CheckFinishedModal
         nanumIdx={nanumIdx}
         accountIdx={participantAccountIdx!}

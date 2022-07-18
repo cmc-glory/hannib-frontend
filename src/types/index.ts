@@ -459,7 +459,7 @@ export type INanumRequestGoods = {
   accountIdx: number
   nanumIdx: number
   goodsName: string //삭제 필요
-  //creatorId: string //삭제 필요, 필수x
+  creatorId: string //삭제 필요, 필수x
   //goodsNumber: number //삭제 필요, 필수x
   realName?: string
 }
@@ -474,7 +474,7 @@ export type INanumApplyOnlineDto = {
   realName: string
   address1: string
   address2: string
-  //creatorId: string //삭제 필요
+  creatorId: string //삭제 필요
   phoneNumber: string
   title: string
   //api에 따라 수정 필요
