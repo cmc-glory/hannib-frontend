@@ -38,7 +38,7 @@ export type IProductInfo = {
 
 export type IRequestFormOffline = {
   product: {productid: number}[]
-  receiveDate: string | Date | undefined
+  acceptDate: string | Date | undefined
 }
 
 export type IRequestFormOnline = {
@@ -50,7 +50,7 @@ export type IRequestFormOnline = {
     third: string
   }
   name: string
-  receiveDate?: string
+  acceptDate?: string
   location?: string
 }
 
@@ -483,9 +483,12 @@ export type INanumApplyOfflineDto = {
   nanumGoodsDtoList: INanumRequestGoods[]
   accountIdx: number
   nanumIdx: number
-  applyDate: string
+  // applyDate: string // 신청 일자
   title: string
   location: string
+  acceptDate: string // 수령 일자
+  creatorId: string // 신청자 닉네임
+  realName: string
   //api에 따라 수정 필요
 }
 

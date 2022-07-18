@@ -41,7 +41,7 @@ export const NanumDetail = () => {
     [queryKeys.nanumDetail, nanumIdx],
     () =>
       getNanumByIndex({
-        nanumIdx: parseInt(nanumIdx),
+        nanumIdx: nanumIdx,
         accountIdx: user.accountIdx,
         favoritesYn: 'N',
       }),
@@ -88,7 +88,7 @@ export const NanumDetail = () => {
     },
   )
 
-  useQuery(queryKeys.inquiry, () => getInquiryByIndex(parseInt(nanumIdx)), {
+  useQuery(queryKeys.inquiry, () => getInquiryByIndex(nanumIdx), {
     onSuccess(data) {
       console.log('inquiry length : ', data)
       setNumInqueries(data.length)
@@ -141,14 +141,14 @@ export const NanumDetail = () => {
         if (nanumDetail?.nanumMethod == 'M') {
           navigation.navigate('GoodsStackNavigator', {
             screen: 'GoodsRequestOnline',
-            params: nanumIdx,
+            params: {nanumIdx},
           })
         }
         // 오프라인 나눔이면
         else {
           navigation.navigate('GoodsStackNavigator', {
             screen: 'GoodsRequestOffline',
-            params: nanumIdx,
+            params: {nanumIdx},
           })
         }
       }
@@ -191,12 +191,7 @@ export const NanumDetail = () => {
       )}
 
       {data != undefined && (
-        <NanumDetailHeader
-          inverted={headerInvert}
-          userAccountIdx={user.accountIdx}
-          writerAccountIdx={data.accountIdx}
-          nanumIdx={parseInt(route.params.nanumIdx)}
-        />
+        <NanumDetailHeader inverted={headerInvert} userAccountIdx={user.accountIdx} writerAccountIdx={data.accountIdx} nanumIdx={route.params.nanumIdx} />
       )}
 
       <ScrollView

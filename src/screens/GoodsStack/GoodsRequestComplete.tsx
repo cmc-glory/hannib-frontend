@@ -4,12 +4,18 @@ import {useNavigation, useRoute} from '@react-navigation/native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {getStatusBarHeight} from 'react-native-status-bar-height'
 import {isIphoneX, getBottomSpace} from 'react-native-iphone-x-helper'
+import {useQueryClient} from 'react-query'
+import {useAppSelector} from '../../hooks'
 
 import {StackHeader, CompleteIcon, RoundButton} from '../../components/utils'
 import * as theme from '../../theme'
+import {queryKeys} from '../../api'
 
 export const GoodsRequestComplete = () => {
   const navigation = useNavigation()
+  const queryClient = useQueryClient()
+  const accountIdx = useAppSelector(state => state.auth.user.accountIdx)
+
   const [height, setHeight] = useState<number>(0)
   const MARGIN_TOP = useMemo(() => {
     const status = getStatusBarHeight()
@@ -21,10 +27,11 @@ export const GoodsRequestComplete = () => {
   }, [height])
 
   const onPressButton = useCallback(() => {
+    queryClient.invalidateQueries([queryKeys.appliedNanumList, accountIdx])
     navigation.navigate('MyPageTabStackNavigator', {
       screen: 'ParticipatingSharingList',
     })
-  }, [])
+  }, [accountIdx])
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
       <StackHeader title="신청하기" goBack />

@@ -193,7 +193,7 @@ export const ParticipatingSharingOffline = () => {
           )}
         </View>
 
-        <CancelModal isVisible={cancelModalVisible} toggleIsVisible={toggleCancelModalVisible} />
+        <CancelModal isVisible={cancelModalVisible} toggleIsVisible={toggleCancelModalVisible} nanumIdx={nanumIdx} accountIdx={user.accountIdx} />
       </ScrollView>
     </SafeAreaView>
   )

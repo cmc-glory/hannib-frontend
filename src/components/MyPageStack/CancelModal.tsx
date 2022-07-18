@@ -5,7 +5,7 @@ import Modal from 'react-native-modal'
 import {DownArrowIcon, RightArrowIcon, Tag, XIcon} from '../../components/utils'
 import * as theme from '../../theme'
 import {useToggle} from '../../hooks'
-import {useMutation} from 'react-query'
+import {useMutation, useQueryClient} from 'react-query'
 import {cancelNanumByHolder, queryKeys} from '../../api'
 import {showMessage} from 'react-native-flash-message'
 
@@ -17,6 +17,7 @@ type ModalProps = {
 }
 
 export const CancelModal = ({isVisible, toggleIsVisible, nanumIdx, accountIdx}: ModalProps) => {
+  const queryClient = useQueryClient()
   const [reason, setReason] = useState<string>('')
   const [noText, setNoText] = useState<boolean>(false)
 
@@ -33,6 +34,7 @@ export const CancelModal = ({isVisible, toggleIsVisible, nanumIdx, accountIdx}: 
   // ************************** react quries **************************
   const postGoodsSentQuery = useMutation([queryKeys.cancelNanumByHolder, nanumIdx], cancelNanumByHolder, {
     onSuccess(data, variables, context) {
+      queryClient.invalidateQueries([queryKeys.appliedNanumList, accountIdx])
       showMessage({
         // 에러 안내 메세지
         message: '취소가 완료 되었습니다.',

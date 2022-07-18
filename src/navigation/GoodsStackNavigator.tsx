@@ -16,13 +16,13 @@ import {
 
 type GoodsStackNavigatorParamList = {
   NanumDetail: {
-    nanumIdx: string
+    nanumIdx: number
   }
   GoodsRequestOffline: {
-    nanumIdx: string
+    nanumIdx: number
   }
   GoodsRequestOnline: {
-    nanumIdx: string
+    nanumIdx: number
   }
   QnAListUser: {
     nanumIdx: number

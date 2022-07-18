@@ -99,6 +99,7 @@ export const Login = () => {
       // 해당 이메일로 가입된 회원인지 확인
       getAccountInfoByEmail(user.email)
         .then(res => {
+          console.log(res)
           storeString('accountIdx', res.accountIdx.toString())
           storeString('email', res.email)
 

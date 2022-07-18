@@ -5,6 +5,7 @@ import {useMutation} from 'react-query'
 import {useNavigation, useRoute} from '@react-navigation/native'
 import {showMessage} from 'react-native-flash-message'
 
+import {INoticeDto} from '../../types'
 import {queryKeys, sendNotice} from '../../api'
 import {SendNoticeRouteProps} from '../../navigation/HoldingSharingStackNavigator'
 import {StackHeader, FloatingBottomButton} from '../../components/utils'
@@ -44,13 +45,16 @@ export const SendNotice = () => {
   console.log(route.params)
 
   const onPressSendNotice = useCallback(() => {
-    for (var i = 0; i < accountIdxList.length; i++) {
-      sendNoticeQuery.mutate({
+    let noticeDto: INoticeDto[] = accountIdxList.map(tempAccountIdx => {
+      return {
         nanumIdx,
-        accountIdx: accountIdxList[i],
+        accountIdx: tempAccountIdx,
         title,
         comments,
-      })
+      }
+    })
+    for (var i = 0; i < accountIdxList.length; i++) {
+      sendNoticeQuery.mutate(noticeDto)
     }
   }, [title, comments])
 

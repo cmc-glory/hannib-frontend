@@ -58,7 +58,9 @@ export const GoodsRequestOffline = () => {
   const [answers, setAnswers] = useState<string[]>([])
   const navigation = useNavigation()
   const route = useRoute<GoodsRequestOfflineRouteProps>()
-  const nanumIdx = useMemo(() => route.params, [])
+
+  const nanumIdx = route.params.nanumIdx
+  console.log('nanumIdx :', nanumIdx)
   const queryClient = useQueryClient()
   // ***************************** states *****************************
   const [info, setInfo] = useState<INanumRequestRequiredDto>()
@@ -77,27 +79,11 @@ export const GoodsRequestOffline = () => {
       second: '',
       third: '',
     },
-    receiveDate: '',
+    acceptDate: '',
     location: '',
   })
   const [opened, toggleOpened] = useToggle()
   const [agreed, setAgreed] = useState<boolean>(false) // 개인정보 수집 항목 동의
-
-  // ***************************** react query *****************************
-  // useQuery(queryKeys.goodsRequestInfo, getGoodsRequestInfo, {
-  //   onSuccess: data => {
-  //     setInfo(data)
-  //     setRequestForm({
-  //       ...requestForm,
-  //       receiveDate: data.schedule[0].time,
-  //     })
-  //     setScheduleLength(data.schedule ? data.schedule.length : 1)
-  //     data.goodsList.forEach((item: any) => {
-  //       selectedItems[item.id] = false
-  //     })
-  //     setAnswers(new Array(data.additionalQuestions.length).fill(''))
-  //   },
-  // })
 
   const postNanumRequestOfflineFormQuery = useMutation(queryKeys.nanumRequestOnlineForm, postNanumRequestOfflineForm, {
     onSuccess(data, variables, context) {
@@ -122,7 +108,7 @@ export const GoodsRequestOffline = () => {
     },
   })
 
-  const data = useQuery([queryKeys.nanumRequestRequiredInfo, nanumIdx], () => getNanumRequestRequiredInfo(parseInt(nanumIdx)), {
+  const data = useQuery([queryKeys.nanumRequestRequiredInfo, nanumIdx], () => getNanumRequestRequiredInfo(nanumIdx), {
     onSuccess: data => {
       console.log('success')
       console.log(data)
@@ -132,7 +118,7 @@ export const GoodsRequestOffline = () => {
       })
       setRequestForm({
         ...requestForm,
-        receiveDate: data.dateList[0].acceptDate.slice(0, 16),
+        acceptDate: data.dateList[0].acceptDate.slice(0, 16),
         location: data.dateList[0].location,
       })
       setAnswers(new Array(data.askList.length).fill(''))
@@ -144,9 +130,14 @@ export const GoodsRequestOffline = () => {
   })
 
   const onPressRequest = useCallback(() => {
+    console.log('here')
+
     if (postNanumRequestOfflineFormQuery.isLoading) {
       return
     }
+
+    console.log('here')
+
     const requestApplyForm: INanumApplyOfflineDto = {
       applyAskAnswerLists: data.data.askList?.map((item: INanumRequestReuiredAsk, index: number) => {
         return {
@@ -170,15 +161,17 @@ export const GoodsRequestOffline = () => {
         })
         .filter((n: INanumRequestGoods) => n),
       accountIdx: user.accountIdx,
-      nanumIdx: parseInt(data.data.nanumIdx),
+      nanumIdx: nanumIdx,
       title: data.data?.nanumDto.title,
-      applyDate: requestForm.receiveDate!,
+      acceptDate: requestForm.acceptDate!,
       location: requestForm.location!,
+      creatorId: user.creatorId,
+      realName: user.creatorId,
     }
-    console.log(JSON.stringify(requestApplyForm))
+    console.log('requestApplyForm : ', JSON.stringify(requestApplyForm))
 
     postNanumRequestOfflineFormQuery.mutate(requestApplyForm)
-  }, [requestForm, selectedItems, answers, data, info, agreed, nanumIdx])
+  }, [requestForm, selectedItems, answers, data, info, agreed, nanumIdx, user])
 
   // ***************************** animations *****************************
   const animatedValue = useAnimatedValue()
@@ -219,43 +212,33 @@ export const GoodsRequestOffline = () => {
   }, [opened])
 
   const onPressDate = useCallback(
-    (date: string | undefined) => {
+    (date: string | undefined, location: string) => {
       // 카테고리 선택하면, set하고 닫음
       open.start(toggleOpened)
-      setRequestForm({...requestForm, receiveDate: date})
-      //setMainCategory(mainCategory => (mainCategory == '가수' ? '배우' : '가수'))
+      setRequestForm({...requestForm, acceptDate: date, location: location})
     },
-    [opened],
+    [opened, requestForm],
   )
 
   const isButtonEnabled = useCallback(() => {
     // 기본 필수 정보 중에 하나라도 안 채워진 게 있으면 false 리턴
-    if (requestForm.receiveDate == '' || requestForm.product.length == 0 || agreed == false) {
+    if (requestForm.acceptDate == '' || requestForm.product.length == 0 || agreed == false || postNanumRequestOfflineFormQuery.isLoading) {
       return false
     }
-    // 추가 질문 사항 중 필수 질문에 대한 input이 비어 있으면 false 리턴
-    for (var i = 0; i < info?.askList?.length; i++) {
-      //console.log(info?.askList[i].essential, answers[i])
-      if (info?.askList[i].essential == 'Y' && answers[i] == '') {
-        return false
+
+    if (info?.askList != undefined) {
+      // 추가 질문 사항 중 필수 질문에 대한 input이 비어 있으면 false 리턴
+      for (var i = 0; i < info?.askList?.length; i++) {
+        //console.log(info?.askList[i].essential, answers[i])
+        if (info?.askList[i].essential == 'Y' && answers[i] == '') {
+          return false
+        }
       }
+      return true
     }
+
     return true
   }, [requestForm, answers, info, agreed])
-
-  // const onPressRequest = useCallback(
-  //   (requestForm: IRequestFormOnline) => {
-  //     console.log(answers)
-  //     console.log(requestForm)
-  //     navigation.navigate('GoodsStackNavigator', {
-  //       screen: 'GoodsRequestComplete',
-  //       params: {
-  //         nanumIdx: nanumIdx,
-  //       },
-  //     })
-  //   },
-  //   [requestForm, answers],
-  // )
 
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
@@ -297,7 +280,7 @@ export const GoodsRequestOffline = () => {
                 opened == false && styles.borderBottomRadius,
               ]}>
               <Text style={{marginLeft: 16}}>
-                {moment(requestForm.receiveDate).format('YYYY.MM.DD HH:mm')} {requestForm.location}
+                {moment(requestForm.acceptDate).format('YYYY.MM.DD HH:mm')} {requestForm.location}
               </Text>
               <Animated.View style={{...animatedArrowStyle, marginRight: 16}}>
                 <DownArrowIcon onPress={onPressOpen} />
@@ -305,11 +288,13 @@ export const GoodsRequestOffline = () => {
             </Pressable>
 
             {info?.dateList?.map((schedule, index) => (
-              <Animated.View style={[{marginTop: -1, borderColor: theme.gray300}, animatedSelectionBoxStyle, styles.borderBottomRadius]}>
+              <Animated.View
+                style={[{marginTop: -1, borderColor: theme.gray300}, animatedSelectionBoxStyle, styles.borderBottomRadius]}
+                key={schedule.acceptDate + schedule.location}>
                 <Animated.View
                   key={index}
                   style={[{...animatedSelectionInputStyle, justifyContent: 'center'}, index !== scheduleLength - 1 && styles.inputItemSeparator]}>
-                  <Pressable onPress={() => onPressDate(moment(schedule.acceptDate).format('YYYY.MM.DD HH:mm'))}>
+                  <Pressable onPress={() => onPressDate(schedule.acceptDate, schedule.location)}>
                     <Animated.Text style={{marginLeft: 16}}>
                       {moment(schedule.acceptDate).format('YYYY.MM.DD HH:mm')} {schedule.location}
                     </Animated.Text>
@@ -343,7 +328,7 @@ export const GoodsRequestOffline = () => {
           </View>
         </View>
         <View style={theme.styles.wrapper}>
-          <RoundButton label="제출하기" enabled={isButtonEnabled()} onPress={() => onPressRequest(requestForm)} />
+          <RoundButton label="제출하기" enabled={isButtonEnabled()} onPress={onPressRequest} />
         </View>
       </ScrollView>
     </SafeAreaView>

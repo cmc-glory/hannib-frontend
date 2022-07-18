@@ -20,11 +20,11 @@ export const ParticipatingSharingList = () => {
   const [list, setList] = useState<IparticipatigItem[]>([])
   const [refreshing, setRefreshing] = useState<boolean>(false)
 
-  useQuery([queryKeys.appliedNanumList], () => getParticipatingNanumList(user.accountIdx), {
+  useQuery([queryKeys.appliedNanumList, user.accountIdx], () => getParticipatingNanumList(user.accountIdx), {
     onSuccess: data => {
       console.log(data)
 
-      var temp: IparticipatigItem[] = [] // 가공한 데이터가 저장될 임시 배열
+      let temp: IparticipatigItem[] = [] // 가공한 데이터가 저장될 임시 배열
       const nanumDtoList = data.nanumDtoList // 참여한 나눔 정보들
       const nanumCancelDtoList = data.nanumCancelDtoList.map((item: any) => item.nanumIdx) // 진행지에 의해 취소된 나눔의 nanumIdx 리스트
       const applyCancelDtoList = data.applyCancelDtoList.map((item: any) => item.nanumIdx) // 사용자가 취소한 나눔의 nanumIdx 리스트
@@ -34,19 +34,24 @@ export const ParticipatingSharingList = () => {
 
         // 현재 신청이 진행자에 의해 취소된 나눔이라면
         if (nanumCancelDtoList.includes(curNanumIdx)) {
+          console.log('1')
+
           temp.push({...nanumDtoList[i], canceled: 'N', beenCanceled: 'Y'}) // 내가 취소하지는 않고, 취소 당함
         }
         // 신청자가 취소한 나눔이라면
         else if (applyCancelDtoList.includes(curNanumIdx)) {
+          console.log('2')
+
           // 배열에 추가하지 않음
         } else {
+          console.log('3')
+
           temp.push({...nanumDtoList[i], canceled: 'N', beenCanceled: 'N'}) // 내가 취소하고, 취소 당하지는 않음
         }
       }
       console.log(temp)
       setList(temp)
       setRefreshing(false)
-      setList(data.nanumDtoList)
     },
     onError(err) {
       console.log(err)
@@ -56,8 +61,8 @@ export const ParticipatingSharingList = () => {
   // pull up refresh event가 발생하면 진행 목록 가져옴
   const onRefresh = useCallback(() => {
     setRefreshing(true)
-    queryClient.invalidateQueries([queryKeys.appliedNanumList])
-  }, [])
+    queryClient.invalidateQueries([queryKeys.appliedNanumList, user.accountIdx])
+  }, [user.accountIdx])
 
   return (
     <SafeAreaView style={theme.styles.safeareaview} edges={['top', 'left', 'right']}>

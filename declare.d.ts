@@ -51,8 +51,12 @@ declare namespace ReactNavigation {
       nanumMethod: INanumMethod
       firstDate: Date
     }
-    GoodsRequestOffline: undefined
-    GoodsRequestOnline: undefined
+    GoodsRequestOffline: {
+      nanumIdx: number
+    }
+    GoodsRequestOnline: {
+      nanumIdx: number
+    }
     GoodsRequestComplete: {
       screen: string
     }
