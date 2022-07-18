@@ -5,7 +5,7 @@ import KeyboardManager from 'react-native-keyboard-manager'
 import {useMutation, useQuery, useQueryClient} from 'react-query'
 import {useNavigation, useRoute} from '@react-navigation/native'
 
-import {StackHeader, FloatingBottomButton, NeccesaryField, SeparatorBold, CheckboxIcon, EmptyCheckboxIcon} from '../../components/utils'
+import {StackHeader, FloatingBottomButton, RoundButton, NeccesaryField, SeparatorBold, CheckboxIcon, EmptyCheckboxIcon} from '../../components/utils'
 import {FindAddress, ProductInfoOnline, MakeNewField} from '../../components/GoodsStack'
 import {IRequestFormOnline, INanumRequestRequiredDto, INanumApplyOnlineDto, INanumRequestReuiredAsk, INanumRequestGoods} from '../../types'
 import {queryKeys, getNanumRequestRequiredInfo, postNanumRequestOnlineForm} from '../../api'
@@ -41,7 +41,7 @@ export const GoodsReqeustOnline = () => {
   const [answers, setAnswers] = useState<string[]>([])
   const navigation = useNavigation()
   const route = useRoute<GoodsRequestOnlineRouteProps>()
-  const nanumIdx = useMemo(() => route.params, [])
+  const nanumIdx = useMemo(() => route.params.nanumIdx, [])
   const queryClient = useQueryClient()
   // ***************************** states *****************************
   const [selectedItems, setSelectedItems] = useState<any>({}) // 선택한 상품들
@@ -63,7 +63,7 @@ export const GoodsReqeustOnline = () => {
   const [agreed, setAgreed] = useState<boolean>(false) // 개인정보 수집 항목 동의
 
   // ******************** react query ********************
-  const data = useQuery([queryKeys.nanumRequestRequiredInfo, nanumIdx], () => getNanumRequestRequiredInfo(parseInt(nanumIdx)), {
+  const data = useQuery([queryKeys.nanumRequestRequiredInfo, nanumIdx], () => getNanumRequestRequiredInfo(nanumIdx), {
     onSuccess: data => {
       console.log('success')
       console.log(data)
@@ -127,6 +127,8 @@ export const GoodsReqeustOnline = () => {
       return
     }
 
+    console.log(requestForm)
+
     const requestApplyForm: INanumApplyOnlineDto = {
       applyAskAnswerLists: data.data.askList.map((item: INanumRequestReuiredAsk, index: number) => {
         return {
@@ -178,12 +180,16 @@ export const GoodsReqeustOnline = () => {
     ) {
       return false
     }
-    // 추가 질문 사항 중 필수 질문에 대한 input이 비어 있으면 false 리턴
-    for (var i = 0; i < info?.askList?.length; i++) {
-      if (info?.askList[i].essential == 'Y' && answers[i] == '') {
-        return false
+
+    if (info?.askList != undefined) {
+      // 추가 질문 사항 중 필수 질문에 대한 input이 비어 있으면 false 리턴
+      for (var i = 0; i < info?.askList?.length; i++) {
+        if (info?.askList[i].essential == 'Y' && answers[i] == '') {
+          return false
+        }
       }
     }
+
     return true
   }, [requestForm, answers, info, nanumIdx, agreed])
 
@@ -341,8 +347,10 @@ export const GoodsReqeustOnline = () => {
             </View>
           </View>
         </View>
+        <View style={theme.styles.wrapper}>
+          <RoundButton label="제출하기" enabled={isButtonEnabled()} onPress={onPressRequest} />
+        </View>
       </ScrollView>
-      <FloatingBottomButton label="제출하기" enabled={isButtonEnabled()} onPress={onPressRequest} />
     </SafeAreaView>
   )
 }

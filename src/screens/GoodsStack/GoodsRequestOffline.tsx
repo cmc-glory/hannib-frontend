@@ -60,7 +60,6 @@ export const GoodsRequestOffline = () => {
   const route = useRoute<GoodsRequestOfflineRouteProps>()
 
   const nanumIdx = route.params.nanumIdx
-  console.log('nanumIdx :', nanumIdx)
   const queryClient = useQueryClient()
   // ***************************** states *****************************
   const [info, setInfo] = useState<INanumRequestRequiredDto>()
@@ -243,7 +242,7 @@ export const GoodsRequestOffline = () => {
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
       <StackHeader title="신청하기" goBack />
-      <ScrollView>
+      <ScrollView contentContainerStyle={{paddingBottom: 80}}>
         <View style={{marginBottom: 20, marginTop: 10}}>
           <Text style={[theme.styles.wrapper, styles.title]}>{info?.nanumDto.title}</Text>
           <View style={[theme.styles.wrapper]}>

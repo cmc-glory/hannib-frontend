@@ -133,7 +133,7 @@ export const ParticipatingSharingOnline = () => {
         <SharingPreview uri={nanumInfo.data?.thumbnail} category={nanumInfo.data?.category} title={nanumInfo.data?.title} />
         <View style={{marginVertical: 20}}>
           {appliedGoodsList.map((item, index) => (
-            <View style={[theme.styles.rowSpaceBetween, index != appliedGoodsList.length - 1 && {marginBottom: 16}]}>
+            <View style={[theme.styles.rowSpaceBetween, index != appliedGoodsList.length - 1 && {marginBottom: 16}]} key={item.goodsName + index}>
               <Text style={{fontFamily: 'Pretendard-Medium', color: theme.gray700, fontSize: 16}}>{item.goodsName}</Text>
               <View style={[theme.styles.rowFlexStart]}>
                 <Text style={{color: theme.gray500, marginRight: 8}}>주문 수량</Text>
@@ -207,7 +207,7 @@ export const ParticipatingSharingOnline = () => {
           )}
         </View>
 
-        <CancelModal isVisible={cancelModalVisible} toggleIsVisible={toggleCancelModalVisible} />
+        <CancelModal isVisible={cancelModalVisible} toggleIsVisible={toggleCancelModalVisible} nanumIdx={nanumIdx} accountIdx={user.accountIdx} />
       </ScrollView>
     </SafeAreaView>
   )

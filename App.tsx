@@ -54,7 +54,7 @@ const App = () => {
     () =>
       NetInfo.addEventListener(state => {
         if (!state.isConnected) {
-          Alert.alert('인터넷을 확인해주세요')
+          Alert.alert('인터넷을 확인해주세요', '', [{text: '확인'}])
         }
       }),
     [],

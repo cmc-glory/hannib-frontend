@@ -391,6 +391,7 @@ export type INanumListItem = {
   accountIdx: number // 작성자의 account Idx
   endYn: 'Y' | 'N'
   categoryIdx: number // 해당 나눔이 속한 카테고리의 index
+  category: string
 }
 
 // 모집폼 작성 시 기본 정보

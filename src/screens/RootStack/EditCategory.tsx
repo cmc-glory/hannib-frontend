@@ -42,17 +42,21 @@ export const EditCategory = () => {
   const searchCategoryQuery = useMutation(queryKeys.searchCategory, searchCategory, {
     // 검색 api
     onSuccess(data, variables, context) {
-      setResult(
-        data.sort((a: ICategoryDto, b: ICategoryDto) => {
-          if (a.nickName < b.nickName) {
-            return -1
-          }
-          if (a.nickName > b.nickName) {
-            return 1
-          }
-          return 0
-        }),
-      )
+      if (data == '') {
+        setResult([])
+      } else {
+        setResult(
+          data.sort((a: ICategoryDto, b: ICategoryDto) => {
+            if (a.nickName < b.nickName) {
+              return -1
+            }
+            if (a.nickName > b.nickName) {
+              return 1
+            }
+            return 0
+          }),
+        )
+      }
     },
     onError(error, variables, context) {
       showMessage({
