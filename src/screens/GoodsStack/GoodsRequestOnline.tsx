@@ -65,8 +65,6 @@ export const GoodsReqeustOnline = () => {
   // ******************** react query ********************
   const data = useQuery([queryKeys.nanumRequestRequiredInfo, nanumIdx], () => getNanumRequestRequiredInfo(nanumIdx), {
     onSuccess: data => {
-      console.log('success')
-      console.log(data)
       setInfo(data)
       data.goodsList.forEach((item: any) => {
         selectedItems[item.goodsIdx] = false
@@ -84,6 +82,7 @@ export const GoodsReqeustOnline = () => {
       console.log('success')
       console.log(data)
       queryClient.invalidateQueries([queryKeys.nanumRequestOnlineForm])
+      queryClient.invalidateQueries(queryKeys.accountInfoMypage)
 
       //const nanumIdx = data
       navigation.navigate('GoodsStackNavigator', {
@@ -91,23 +90,6 @@ export const GoodsReqeustOnline = () => {
       })
     },
     onError(error, variables, context) {
-      console.log('error')
-      console.log(error)
-      // showMessage({
-      //   // 에러 안내 메세지
-      //   message: '나눔 신청 중 에러가 발생했습니다',
-      //   type: 'info',
-      //   animationDuration: 300,
-      //   duration: 1350,
-      //   style: {
-      //     backgroundColor: 'rgba(36, 36, 36, 0.9)',
-      //   },
-      //   titleStyle: {
-      //     fontFamily: 'Pretendard-Medium',
-      //   },
-      //   floating: true,
-      // })
-
       navigation.navigate('GoodsStackNavigator', {
         screen: 'GoodsRequestError',
         params: {

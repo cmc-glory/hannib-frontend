@@ -94,7 +94,8 @@ export const MyPageScreen = () => {
   }, [])
 
   const onRefresh = useCallback(() => {
-    queryClient.invalidateQueries(queryKeys.accountInfo)
+    setRefreshing(true)
+    queryClient.invalidateQueries(queryKeys.accountInfoMypage)
   }, [])
 
   return (

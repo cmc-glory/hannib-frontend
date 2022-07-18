@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react'
-import {View, Text, Pressable, TextInput, StyleSheet, Dimensions} from 'react-native'
+import {View, Text, Pressable, TextInput, StyleSheet, Dimensions, Platform, Alert} from 'react-native'
 import FastImage from 'react-native-fast-image'
 import {useNavigation} from '@react-navigation/native'
 import Modal from 'react-native-modal'
@@ -7,7 +7,7 @@ import {useMutation} from 'react-query'
 import moment, {Moment} from 'moment'
 import {showMessage} from 'react-native-flash-message'
 import * as theme from '../../theme'
-import type {ISharingInfo, INanumListItem} from '../../types'
+import type {INanumListItem} from '../../types'
 import {Tag, XIcon, StarUnfilledIcon, StarFilledIcon} from '../utils'
 import {addFavorite, removeFavorite, queryKeys} from '../../api'
 import {useAppSelector} from '../../hooks'
@@ -95,6 +95,7 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
 
   // ********************* react queries *********************
   const accountIdx = useAppSelector(state => state.auth.user.accountIdx)
+  const isLoggedIn = useAppSelector(state => state.auth.isLoggedIn)
   const addFavoriteQuery = useMutation([queryKeys.favorites, nanumIdx], addFavorite, {
     onSuccess: () => {
       item.favoritesYn = 'Y' // 프론트 단에서만 즐겨찾기 여부 수정.
@@ -141,40 +142,87 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
   const onPressAddFavorite = useCallback(() => {
     // 즐겨찾기 추가, 삭제 api가 실행되고 있을 때는 새로 요청 X
 
-    if (addFavoriteQuery.isLoading || removeFavoriteQuery.isLoading) {
-      return
-    }
-    // 즐겨찾기 버튼 클릭했을 때
+    if (isLoggedIn == false) {
+      if (Platform.OS == 'ios') {
+        Alert.alert('로그인 후 이용할 수 있습니다. 로그인 페이지로 이동하시겠습니까?', '', [
+          {
+            text: '취소',
+          },
+          {
+            text: '확인',
+            onPress: () => navigation.navigate('MyPageTabStackNavigator'),
+          },
+        ])
+      } else {
+        Alert.alert('로그인 후 이용할 수 있습니다', '로그인 페이지로 이동하시겠습니까?', [
+          {
+            text: '취소',
+          },
+          {
+            text: '확인',
+            onPress: () => navigation.navigate('MyPageTabStackNavigator'),
+          },
+        ])
+      }
+    } else {
+      if (addFavoriteQuery.isLoading || removeFavoriteQuery.isLoading) {
+        return
+      }
+      // 즐겨찾기 버튼 클릭했을 때
 
-    addFavoriteQuery.mutate({
-      accountIdx: accountIdx,
-      nanumIdx: nanumIdx,
-      categoryIdx: categoryIdx,
-      category: category,
-    }) // 인자에는 query params 넣기
-  }, [item, accountIdx, nanumIdx, categoryIdx, category])
+      addFavoriteQuery.mutate({
+        accountIdx: accountIdx,
+        nanumIdx: nanumIdx,
+        categoryIdx: categoryIdx,
+        category: category,
+      }) // 인자에는 query params 넣기
+    }
+  }, [item, accountIdx, nanumIdx, categoryIdx, category, isLoggedIn])
 
   const onPressRemoveFavorite = useCallback(() => {
-    // 즐겨찾기 추가, 삭제 api가 실행되고 있을 때는 새로 요청 X
-    if (addFavoriteQuery.isLoading || removeFavoriteQuery.isLoading || item.favorites == 0) {
-      return
+    if (isLoggedIn == false) {
+      if (Platform.OS == 'ios') {
+        Alert.alert('로그인 후 이용할 수 있습니다. 로그인 페이지로 이동하시겠습니까?', '', [
+          {
+            text: '취소',
+          },
+          {
+            text: '확인',
+            onPress: () => navigation.navigate('MyPageTabStackNavigator'),
+          },
+        ])
+      } else {
+        Alert.alert('로그인 후 이용할 수 있습니다', '로그인 페이지로 이동하시겠습니까?', [
+          {
+            text: '취소',
+          },
+          {
+            text: '확인',
+            onPress: () => navigation.navigate('MyPageTabStackNavigator'),
+          },
+        ])
+      }
+    } else {
+      // 즐겨찾기 추가, 삭제 api가 실행되고 있을 때는 새로 요청 X
+      if (addFavoriteQuery.isLoading || removeFavoriteQuery.isLoading || item.favorites == 0) {
+        return
+      }
+      // 즐겨찾기 버튼 클릭했을 때
+      item.favoritesYn = 'N' //  프론트 단에서만 즐겨찾기 여부 수정. (invalidate query로 새로 가져오기 X)
+      item.favorites -= 1
+      removeFavoriteQuery.mutate({
+        accountIdx: accountIdx,
+        nanumIdx: nanumIdx,
+        categoryIdx: categoryIdx,
+        category: category,
+        //category: '에스파',
+      }) // 인자에는 query params 넣기
     }
-    // 즐겨찾기 버튼 클릭했을 때
-    item.favoritesYn = 'N' //  프론트 단에서만 즐겨찾기 여부 수정. (invalidate query로 새로 가져오기 X)
-    item.favorites -= 1
-    removeFavoriteQuery.mutate({
-      accountIdx: accountIdx,
-      nanumIdx: nanumIdx,
-      categoryIdx: categoryIdx,
-      category: category,
-      //category: '에스파',
-    }) // 인자에는 query params 넣기
-  }, [item, accountIdx, nanumIdx, categoryIdx, category])
+  }, [item, accountIdx, nanumIdx, categoryIdx, category, isLoggedIn])
 
   useEffect(() => {
     const [day, time] = firstDate.split(' ')
     const days = day.split('.')
-    const times = time.split(':')
 
     let tempDate = moment(`${days[0]}-${days[1]}-${days[2]} ${time}`)
     setOpenDate(tempDate)

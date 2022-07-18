@@ -30,26 +30,6 @@ import {queryKeys, getGoodsRequestInfo, getNanumRequestRequiredInfo, postNanumRe
 import {ProductInfoOffline, MakeNewField} from '../../components/GoodsStack'
 import {GoodsRequestOfflineRouteProps, GoodsRequestOnlineRouteProps} from '../../navigation/GoodsStackNavigator'
 
-// ***************************** ios keyboard settings *****************************
-if (Platform.OS === 'ios') {
-  KeyboardManager.setEnable(true)
-  KeyboardManager.setEnableDebugging(false)
-  KeyboardManager.setKeyboardDistanceFromTextField(10)
-  KeyboardManager.setLayoutIfNeededOnUpdate(true)
-  KeyboardManager.setEnableAutoToolbar(true)
-  KeyboardManager.setToolbarDoneBarButtonItemText('확인')
-  KeyboardManager.setToolbarManageBehaviourBy('subviews') // "subviews" | "tag" | "position"
-  KeyboardManager.setToolbarPreviousNextButtonEnable(false)
-  KeyboardManager.setToolbarTintColor('#007aff') // Only #000000 format is supported
-  KeyboardManager.setToolbarBarTintColor('#FFFFFF') // Only #000000 format is supported
-  KeyboardManager.setShouldShowToolbarPlaceholder(true)
-  KeyboardManager.setOverrideKeyboardAppearance(false)
-  KeyboardManager.setKeyboardAppearance('default') // "default" | "light" | "dark"
-  KeyboardManager.setShouldResignOnTouchOutside(true)
-  KeyboardManager.setShouldPlayInputClicks(true)
-  KeyboardManager.resignFirstResponder()
-}
-
 const BUTTON_SIZE = 24
 
 export const GoodsRequestOffline = () => {
@@ -86,9 +66,8 @@ export const GoodsRequestOffline = () => {
 
   const postNanumRequestOfflineFormQuery = useMutation(queryKeys.nanumRequestOnlineForm, postNanumRequestOfflineForm, {
     onSuccess(data, variables, context) {
-      console.log('success')
-      console.log(data)
       queryClient.invalidateQueries([queryKeys.nanumRequestOnlineForm])
+      queryClient.invalidateQueries(queryKeys.accountInfoMypage)
 
       navigation.navigate('GoodsStackNavigator', {
         screen: 'GoodsRequestComplete',
