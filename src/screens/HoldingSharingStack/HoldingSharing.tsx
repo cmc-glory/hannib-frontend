@@ -363,7 +363,7 @@ export const HoldingSharing = () => {
               <ActivityIndicator />
             ) : receiverInfoList.length == 0 ? (
               <View style={[styles.emptyResultView]}>
-                <NotExistsSvg style={{marginTop: -48}} />
+                <NotExistsSvg />
                 <View style={{marginTop: 32}}>
                   <Text style={[theme.styles.bold20, {marginBottom: 8, textAlign: 'center'}]}>아직 신청자가 없어요</Text>
                   <Text style={{color: theme.gray700, fontSize: 16, lineHeight: 24}}>신청자가 생기면 바로 리스트로 보여드릴게요!</Text>
@@ -371,7 +371,7 @@ export const HoldingSharing = () => {
               </View>
             ) : isDetail == true ? (
               // 참여자 정보 상세보기 DOC
-              <View>
+              <View style={{flex: 1}}>
                 {/* 화살표 이동, x 버튼 */}
                 <View style={[theme.styles.rowSpaceBetween, {marginBottom: 16}]}>
                   <View style={[theme.styles.rowFlexStart]}>
@@ -388,7 +388,7 @@ export const HoldingSharing = () => {
                   {myNanumDetailQuery.isLoading ? (
                     <ActivityIndicator />
                   ) : (
-                    <View>
+                    <>
                       <View style={[theme.styles.rowSpaceBetween, {marginBottom: 12}]}>
                         <Text style={[theme.styles.text14, styles.receiverDetailDate]}>{receiverDetail?.applyDto.applyDate}</Text>
                         {receiverDetail?.applyDto?.misacceptedYn == 'Y' && <Tag label="미수령 경고" />}
@@ -493,7 +493,7 @@ export const HoldingSharing = () => {
                           </Pressable>
                         </View>
                       )}
-                    </View>
+                    </>
                   )}
                 </View>
               </View>
@@ -556,9 +556,7 @@ export const HoldingSharing = () => {
         accountIdx={participantAccountIdx!}
         isVisible={notTakenModalShow}
         toggleIsVisible={toggleNotTakenModalShow}></NotTakenModal>
-        accountIdxList={accountIdxList}
-        selectedAccountIdx={currentAccountIdx!}
-        setUnsongYn={setUnsongYn}></AddressModal>
+
       <CheckFinishedModal
         nanumIdx={nanumIdx}
         accountIdx={participantAccountIdx!}
