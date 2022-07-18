@@ -390,6 +390,7 @@ export type INanumListItem = {
   favorites: number // 즐겨찾기 사람 수
   accountIdx: number // 작성자의 account Idx
   endYn: 'Y' | 'N'
+  categoryIdx: number // 해당 나눔이 속한 카테고리의 index
 }
 
 // 모집폼 작성 시 기본 정보
@@ -553,6 +554,7 @@ export type INanum = {
   job: '가수' | '배우'
   applyOfflineIdx: number
   endYn: 'Y' | 'N'
+  categoryIdx: number // 해당 나눔이 속한 category의 index
 }
 
 export type INanumGoodsInfo = {

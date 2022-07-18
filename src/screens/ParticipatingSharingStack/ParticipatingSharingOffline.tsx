@@ -127,7 +127,7 @@ export const ParticipatingSharingOffline = () => {
         <SharingPreview uri={nanumInfo.data?.thumbnail} category={nanumInfo.data?.category} title={nanumInfo.data?.title} />
         <View style={{marginVertical: 20}}>
           {appliedGoodsList.map((item, index) => (
-            <View style={[theme.styles.rowSpaceBetween, index != appliedGoodsList.length - 1 && {marginBottom: 16}]}>
+            <View style={[theme.styles.rowSpaceBetween, index != appliedGoodsList.length - 1 && {marginBottom: 16}]} key={item.goodsName + index}>
               <Text style={{fontFamily: 'Pretendard-Medium', color: theme.gray700, fontSize: 16}}>{item.goodsName}</Text>
               <View style={[theme.styles.rowFlexStart]}>
                 <Text style={{color: theme.gray500, marginRight: 8}}>주문 수량</Text>
@@ -152,7 +152,7 @@ export const ParticipatingSharingOffline = () => {
               <Text style={styles.requestInfoLabel}>주문 목록</Text>
               <View>
                 {appliedGoodsList.map((item, index) => (
-                  <Text key={item.goodsName + index} style={{...styles.requestInfoText, marginBottom: 8}}>
+                  <Text key={item.goodsName + index} style={[styles.requestInfoText, index != appliedGoodsList.length - 1 && {marginBottom: 8}]}>
                     {item.goodsName}(1개)
                   </Text>
                 ))}

@@ -9,7 +9,7 @@ import {showMessage} from 'react-native-flash-message'
 import * as theme from '../../theme'
 import type {ISharingInfo, INanumListItem} from '../../types'
 import {Tag, XIcon, StarUnfilledIcon, StarFilledIcon} from '../utils'
-import {addFavorite, removeFavorite} from '../../api'
+import {addFavorite, removeFavorite, queryKeys} from '../../api'
 import {useAppSelector} from '../../hooks'
 
 const {width} = Dimensions.get('window')
@@ -81,7 +81,7 @@ const SecretModal = ({secretModalVisible, setSecretModalVisible, secretPwd, nanu
 export const NanumListItem = ({item}: {item: INanumListItem}) => {
   // ********************* utils *********************
   // 나눔 게시글 아이템 구조분해 할당
-  const {nanumIdx, nanumMethod, title, creatorId, thumbnail, secretForm, secretPwd, favoritesYn, firstDate, endYn} = item
+  const {nanumIdx, nanumMethod, title, creatorId, thumbnail, secretForm, secretPwd, favoritesYn, firstDate, endYn, categoryIdx, category} = item
   const writerAccountIdx = item.accountIdx
 
   const openDate = new Date(firstDate)
@@ -96,8 +96,10 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
 
   // ********************* react queries *********************
   const accountIdx = useAppSelector(state => state.auth.user.accountIdx)
-  const addFavoriteQuery = useMutation(addFavorite, {
+  const addFavoriteQuery = useMutation([queryKeys.favorites, nanumIdx], addFavorite, {
     onSuccess: () => {
+      item.favoritesYn = 'Y' // 프론트 단에서만 즐겨찾기 여부 수정.
+      item.favorites += 1
       showMessage({
         // 에러 안내 메세지
         message: '찜 목록에 추가되었습니다.',
@@ -115,8 +117,10 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
     },
   })
   // 찜 해제
-  const removeFavoriteQuery = useMutation(removeFavorite, {
+  const removeFavoriteQuery = useMutation([queryKeys.favorites, nanumIdx], removeFavorite, {
     onSuccess: () => {
+      item.favoritesYn = 'N' // 프론트 단에서만 즐겨찾기 여부 수정.
+      item.favorites -= 1
       showMessage({
         // 에러 안내 메세지
         message: '찜 목록에서 삭제되었습니다.',
@@ -136,21 +140,25 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
 
   // ********************* callbacks *********************
   const onPressAddFavorite = useCallback(() => {
+    // 즐겨찾기 추가, 삭제 api가 실행되고 있을 때는 새로 요청 X
+
     if (addFavoriteQuery.isLoading || removeFavoriteQuery.isLoading) {
       return
     }
     // 즐겨찾기 버튼 클릭했을 때
-    item.favoritesYn = 'Y' // 프론트 단에서만 즐겨찾기 여부 수정.
-    item.favorites += 1
+
+    console.log(categoryIdx, category)
+
     addFavoriteQuery.mutate({
       accountIdx: accountIdx,
-      nanumIdx: item.nanumIdx,
-      category: item.category,
-      //category: '에스파',
+      nanumIdx: nanumIdx,
+      categoryIdx: categoryIdx,
+      category: category,
     }) // 인자에는 query params 넣기
-  }, [item, accountIdx, addFavoriteQuery, removeFavoriteQuery])
+  }, [item, accountIdx, nanumIdx, categoryIdx, category])
 
   const onPressRemoveFavorite = useCallback(() => {
+    // 즐겨찾기 추가, 삭제 api가 실행되고 있을 때는 새로 요청 X
     if (addFavoriteQuery.isLoading || removeFavoriteQuery.isLoading || item.favorites == 0) {
       return
     }
@@ -159,11 +167,12 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
     item.favorites -= 1
     removeFavoriteQuery.mutate({
       accountIdx: accountIdx,
-      nanumIdx: item.nanumIdx,
-      category: item.category,
+      nanumIdx: nanumIdx,
+      categoryIdx: categoryIdx,
+      category: category,
       //category: '에스파',
     }) // 인자에는 query params 넣기
-  }, [item, accountIdx, addFavoriteQuery, removeFavoriteQuery])
+  }, [item, accountIdx, nanumIdx, categoryIdx, category])
 
   useEffect(() => {
     setIsBefore(new Date() < openDate ? true : false)

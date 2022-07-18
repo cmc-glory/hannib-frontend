@@ -1,18 +1,15 @@
 import React, {useCallback} from 'react'
-import {View, StyleSheet, Text, Dimensions} from 'react-native'
-import moment from 'moment'
+import {View, StyleSheet, Text} from 'react-native'
 import {useMutation} from 'react-query'
 import {showMessage} from 'react-native-flash-message'
 
 import {Tag, StarFilledIcon, StarUnfilledIcon, LockIcon} from '../utils'
 import {NoticeBanner} from './NoticeBanner'
-import {RelatedSharing} from './RelatedSharing'
-import {GoodsContentDetail} from './GoodsContentDetail'
 import {SharingTimeLocation} from './SharingTimeLocation'
 import {WriterProfileBanner} from './WriterProfileBanner'
 import {SharingGoodsInfo} from './SharingGoodsInfo'
 import {INanum} from '../../types'
-import {addFavorite, removeFavorite} from '../../api'
+import {addFavorite, removeFavorite, queryKeys} from '../../api'
 import {useAppSelector} from '../../hooks'
 import * as theme from '../../theme'
 
@@ -26,9 +23,12 @@ export function NanumDetailContent({headerHeight, nanumDetail, numInquires}: Con
   const accountIdx = useAppSelector(state => state.auth.user.accountIdx)
 
   console.log(nanumDetail.firstDate)
+  console.log(nanumDetail.categoryIdx)
 
-  const addFavoriteQuery = useMutation(addFavorite, {
+  const addFavoriteQuery = useMutation([queryKeys.favorites], addFavorite, {
     onSuccess: () => {
+      nanumDetail.favorites_yn = 'Y' // 프론트 단에서만 즐겨찾기 여부 수정.
+      nanumDetail.favorites += 1
       showMessage({
         // 에러 안내 메세지
         message: '찜 목록에 추가되었습니다.',
@@ -46,8 +46,11 @@ export function NanumDetailContent({headerHeight, nanumDetail, numInquires}: Con
     },
   })
   // 찜 해제
-  const removeFavoriteQuery = useMutation(removeFavorite, {
+  const removeFavoriteQuery = useMutation([queryKeys.favorites], removeFavorite, {
     onSuccess: () => {
+      // 즐겨찾기 버튼 클릭했을 때
+      nanumDetail.favorites_yn = 'N' //  프론트 단에서만 즐겨찾기 여부 수정. (invalidate query로 새로 가져오기 X)
+      nanumDetail.favorites -= 1
       showMessage({
         // 에러 안내 메세지
         message: '찜 목록에서 삭제되었습니다.',
@@ -70,11 +73,15 @@ export function NanumDetailContent({headerHeight, nanumDetail, numInquires}: Con
       return
     }
     // 즐겨찾기 버튼 클릭했을 때
-    nanumDetail.favorites_yn = 'Y' // 프론트 단에서만 즐겨찾기 여부 수정.
-    nanumDetail.favorites += 1
+
+    console.log(nanumDetail.nanumIdx)
+    console.log(nanumDetail.categoryIdx)
+
     addFavoriteQuery.mutate({
       accountIdx: accountIdx,
       nanumIdx: nanumDetail.nanumIdx,
+      categoryIdx: nanumDetail.categoryIdx,
+      category: nanumDetail.category,
     }) // 인자에는 query params 넣기
   }, [nanumDetail, accountIdx, addFavoriteQuery, removeFavoriteQuery])
 
@@ -82,12 +89,12 @@ export function NanumDetailContent({headerHeight, nanumDetail, numInquires}: Con
     if (addFavoriteQuery.isLoading || removeFavoriteQuery.isLoading || nanumDetail.favorites == 0) {
       return
     }
-    // 즐겨찾기 버튼 클릭했을 때
-    nanumDetail.favorites_yn = 'N' //  프론트 단에서만 즐겨찾기 여부 수정. (invalidate query로 새로 가져오기 X)
-    nanumDetail.favorites -= 1
+
     removeFavoriteQuery.mutate({
       accountIdx: accountIdx,
       nanumIdx: nanumDetail.nanumIdx,
+      categoryIdx: nanumDetail.categoryIdx,
+      category: nanumDetail.category,
     }) // 인자에는 query params 넣기
   }, [nanumDetail, accountIdx, addFavoriteQuery, removeFavoriteQuery])
 
