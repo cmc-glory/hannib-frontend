@@ -126,6 +126,7 @@ export const WriteNanumFormOffline = () => {
             }),
       nanumDatelist: nanumDates.map(item => {
         return {
+          accountIdx: user.accountIdx,
           nanumIdx: 0,
           acceptDate: moment(item.acceptDate).format('YYYY-MM-DD HH:mm:ss'),
           location: item.location,
