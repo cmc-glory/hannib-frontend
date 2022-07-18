@@ -358,7 +358,7 @@ export const HoldingSharing = () => {
             </Pressable>
           </View>
 
-          <View style={{flex: 1}}>
+          <View style={{flex: 1, marginBottom: 80}}>
             {receiverListQuery.isLoading ? (
               <ActivityIndicator />
             ) : receiverInfoList.length == 0 ? (
@@ -544,13 +544,21 @@ export const HoldingSharing = () => {
       {/* 모달 */}
       <CancelModal nanumIdx={nanumIdx} accountIdx={participantAccountIdx!} isVisible={cancelModalShow} toggleIsVisible={toggleCancelModalShow}></CancelModal>
       <AddressModal
+        nanumIdx={nanumIdx}
+        accountIdx={participantAccountIdx!}
         isVisible={addressModalShow}
         toggleIsVisible={toggleAddressModalShow}
         accountIdxList={accountIdxList}
         selectedAccountIdx={currentAccountIdx!}
-        nanumIdx={nanumIdx}
         setUnsongYn={setUnsongYn}></AddressModal>
-      <NotTakenModal isVisible={notTakenModalShow} toggleIsVisible={toggleNotTakenModalShow}></NotTakenModal>
+      <NotTakenModal
+        nanumIdx={nanumIdx}
+        accountIdx={participantAccountIdx!}
+        isVisible={notTakenModalShow}
+        toggleIsVisible={toggleNotTakenModalShow}></NotTakenModal>
+        accountIdxList={accountIdxList}
+        selectedAccountIdx={currentAccountIdx!}
+        setUnsongYn={setUnsongYn}></AddressModal>
       <CheckFinishedModal
         nanumIdx={nanumIdx}
         accountIdx={participantAccountIdx!}

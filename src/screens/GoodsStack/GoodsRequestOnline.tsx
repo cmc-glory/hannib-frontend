@@ -41,7 +41,11 @@ export const GoodsReqeustOnline = () => {
   const [answers, setAnswers] = useState<string[]>([])
   const navigation = useNavigation()
   const route = useRoute<GoodsRequestOnlineRouteProps>()
-  const nanumIdx = useMemo(() => route.params.nanumIdx, [])
+  //const nanumIdx = useMemo(() => route.params, [])
+  const {nanumIdx} = useMemo(() => {
+    return route.params
+  }, [])
+  //console.log(nanumIdx)
   const queryClient = useQueryClient()
   // ***************************** states *****************************
   const [selectedItems, setSelectedItems] = useState<any>({}) // 선택한 상품들

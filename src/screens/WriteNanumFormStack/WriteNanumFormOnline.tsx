@@ -92,6 +92,7 @@ export const WriteNanumFormOnline = () => {
 
       nanumDatelist: [
         {
+          accountIdx: user.accountIdx,
           nanumIdx: 0,
           acceptDate: '2022-07-01 12:43:15',
           location: '강남역 2번 출구',

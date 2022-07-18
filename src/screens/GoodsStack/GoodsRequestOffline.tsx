@@ -39,7 +39,11 @@ export const GoodsRequestOffline = () => {
   const navigation = useNavigation()
   const route = useRoute<GoodsRequestOfflineRouteProps>()
 
-  const nanumIdx = route.params.nanumIdx
+  //const nanumIdx = route.params.nanumIdx
+  const {nanumIdx} = useMemo(() => {
+    return route.params
+  }, [])
+  console.log('nanumIdx :', nanumIdx)
   const queryClient = useQueryClient()
   // ***************************** states *****************************
   const [info, setInfo] = useState<INanumRequestRequiredDto>()

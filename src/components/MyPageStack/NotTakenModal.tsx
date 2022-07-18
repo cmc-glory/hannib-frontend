@@ -8,6 +8,8 @@ import * as theme from '../../theme'
 type ModalProps = {
   isVisible: boolean
   toggleIsVisible: () => void
+  accountIdx: number
+  nanumIdx: number
 }
 
 export const NotTakenModal = ({isVisible, toggleIsVisible}: ModalProps) => {

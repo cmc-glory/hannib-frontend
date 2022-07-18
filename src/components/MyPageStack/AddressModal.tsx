@@ -22,6 +22,8 @@ type AddressModal = {
   setUnsongYn: React.Dispatch<React.SetStateAction<boolean>>
   // sendMethod: string
   // setSendMethod: (mthd: string) => void
+  accountIdx: number
+  nanumIdx: number
 }
 
 type ButtonProps = {
