@@ -193,7 +193,8 @@ export const HoldingSharing = () => {
   })
   const myNanumDetailQuery = useMutation([queryKeys.requestedNanumDetail], postRequestDetail, {
     onSuccess(data, variables, context) {
-      setUnsongYn(data.applyDto.unsongYn == 'Y')
+      console.log(data)
+      setUnsongYn(data.applyDto.unsongYn == 'Y' ? true : false)
       setReceiverDetail(data)
       console.log('receiverDetail : ', data)
     },
@@ -229,6 +230,9 @@ export const HoldingSharing = () => {
     (idx: number) => {
       setIsDetail(true)
       setCurrentAccountIdx(receiverInfoList[idx].accountIdx)
+
+      console.log(nanumIdx, receiverInfoList[idx].accountIdx)
+
       myNanumDetailQuery.mutate({
         nanumIdx: nanumIdx,
         accountIdx: receiverInfoList[idx].accountIdx,

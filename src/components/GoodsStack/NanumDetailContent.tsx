@@ -3,6 +3,7 @@ import {View, StyleSheet, Text, Platform, Alert} from 'react-native'
 import {useMutation} from 'react-query'
 import {showMessage} from 'react-native-flash-message'
 import {useNavigation} from '@react-navigation/native'
+import {useQueryClient} from 'react-query'
 
 import {Tag, StarFilledIcon, StarUnfilledIcon, LockIcon} from '../utils'
 import {NoticeBanner} from './NoticeBanner'
@@ -22,6 +23,7 @@ type ContentProps = {
 
 export function NanumDetailContent({headerHeight, nanumDetail, numInquires}: ContentProps) {
   const navigation = useNavigation()
+  const queryClient = useQueryClient()
   const accountIdx = useAppSelector(state => state.auth.user.accountIdx)
   const isLoggedIn = useAppSelector(state => state.auth.isLoggedIn)
 
@@ -29,6 +31,9 @@ export function NanumDetailContent({headerHeight, nanumDetail, numInquires}: Con
     onSuccess: () => {
       nanumDetail.favorites_yn = 'Y' // 프론트 단에서만 즐겨찾기 여부 수정.
       nanumDetail.favorites += 1
+
+      queryClient.invalidateQueries([queryKeys.favorites])
+
       showMessage({
         // 에러 안내 메세지
         message: '찜 목록에 추가되었습니다.',
@@ -51,6 +56,8 @@ export function NanumDetailContent({headerHeight, nanumDetail, numInquires}: Con
       // 즐겨찾기 버튼 클릭했을 때
       nanumDetail.favorites_yn = 'N' //  프론트 단에서만 즐겨찾기 여부 수정. (invalidate query로 새로 가져오기 X)
       nanumDetail.favorites -= 1
+      queryClient.invalidateQueries([queryKeys.favorites])
+
       showMessage({
         // 에러 안내 메세지
         message: '찜 목록에서 삭제되었습니다.',
@@ -178,7 +185,7 @@ export function NanumDetailContent({headerHeight, nanumDetail, numInquires}: Con
       <View style={{padding: theme.PADDING_SIZE, justifyContent: 'center'}}>
         <Text style={theme.styles.bold16}>상세 설명</Text>
         <View style={[styles.descriptionContainer, {minHeight: 120}]}>
-          <Text style={{fontSize: 16}}>{nanumDetail.contents}</Text>
+          <Text style={styles.contentText}>{nanumDetail.contents}</Text>
         </View>
       </View>
       <WriterProfileBanner
@@ -195,6 +202,10 @@ export function NanumDetailContent({headerHeight, nanumDetail, numInquires}: Con
 }
 
 const styles = StyleSheet.create({
+  contentText: {
+    fontSize: 16,
+    lineHeight: 24,
+  },
   descriptionContainer: {
     paddingTop: theme.PADDING_SIZE,
     //justifyContent: 'center',

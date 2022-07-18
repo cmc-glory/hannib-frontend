@@ -3,13 +3,10 @@ import {View, Text, Pressable, TextInput, StyleSheet, Dimensions, Platform, Aler
 import FastImage from 'react-native-fast-image'
 import {useNavigation} from '@react-navigation/native'
 import Modal from 'react-native-modal'
-import {useMutation} from 'react-query'
 import moment, {Moment} from 'moment'
-import {showMessage} from 'react-native-flash-message'
 import * as theme from '../../theme'
 import type {INanumListItem} from '../../types'
-import {Tag, XIcon, StarUnfilledIcon, StarFilledIcon} from '../utils'
-import {addFavorite, removeFavorite, queryKeys} from '../../api'
+import {Tag, XIcon} from '../utils'
 import {useAppSelector} from '../../hooks'
 
 const {width} = Dimensions.get('window')
@@ -95,130 +92,6 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
 
   // ********************* react queries *********************
   const accountIdx = useAppSelector(state => state.auth.user.accountIdx)
-  const isLoggedIn = useAppSelector(state => state.auth.isLoggedIn)
-  const addFavoriteQuery = useMutation([queryKeys.favorites, nanumIdx], addFavorite, {
-    onSuccess: () => {
-      item.favoritesYn = 'Y' // 프론트 단에서만 즐겨찾기 여부 수정.
-      item.favorites += 1
-      showMessage({
-        // 에러 안내 메세지
-        message: '찜 목록에 추가되었습니다.',
-        type: 'info',
-        animationDuration: 300,
-        duration: 1350,
-        style: {
-          backgroundColor: 'rgba(36, 36, 36, 0.9)',
-        },
-        titleStyle: {
-          fontFamily: 'Pretendard-Medium',
-        },
-        floating: true,
-      })
-    },
-  })
-  // 찜 해제
-  const removeFavoriteQuery = useMutation([queryKeys.favorites, nanumIdx], removeFavorite, {
-    onSuccess: () => {
-      item.favoritesYn = 'N' // 프론트 단에서만 즐겨찾기 여부 수정.
-      item.favorites -= 1
-      showMessage({
-        // 에러 안내 메세지
-        message: '찜 목록에서 삭제되었습니다.',
-        type: 'info',
-        animationDuration: 300,
-        duration: 1350,
-        style: {
-          backgroundColor: 'rgba(36, 36, 36, 0.9)',
-        },
-        titleStyle: {
-          fontFamily: 'Pretendard-Medium',
-        },
-        floating: true,
-      })
-    },
-  })
-
-  // ********************* callbacks *********************
-  const onPressAddFavorite = useCallback(() => {
-    // 즐겨찾기 추가, 삭제 api가 실행되고 있을 때는 새로 요청 X
-
-    if (isLoggedIn == false) {
-      if (Platform.OS == 'ios') {
-        Alert.alert('로그인 후 이용할 수 있습니다. 로그인 페이지로 이동하시겠습니까?', '', [
-          {
-            text: '취소',
-          },
-          {
-            text: '확인',
-            onPress: () => navigation.navigate('MyPageTabStackNavigator'),
-          },
-        ])
-      } else {
-        Alert.alert('로그인 후 이용할 수 있습니다', '로그인 페이지로 이동하시겠습니까?', [
-          {
-            text: '취소',
-          },
-          {
-            text: '확인',
-            onPress: () => navigation.navigate('MyPageTabStackNavigator'),
-          },
-        ])
-      }
-    } else {
-      if (addFavoriteQuery.isLoading || removeFavoriteQuery.isLoading) {
-        return
-      }
-      // 즐겨찾기 버튼 클릭했을 때
-
-      addFavoriteQuery.mutate({
-        accountIdx: accountIdx,
-        nanumIdx: nanumIdx,
-        categoryIdx: categoryIdx,
-        category: category,
-      }) // 인자에는 query params 넣기
-    }
-  }, [item, accountIdx, nanumIdx, categoryIdx, category, isLoggedIn])
-
-  const onPressRemoveFavorite = useCallback(() => {
-    if (isLoggedIn == false) {
-      if (Platform.OS == 'ios') {
-        Alert.alert('로그인 후 이용할 수 있습니다. 로그인 페이지로 이동하시겠습니까?', '', [
-          {
-            text: '취소',
-          },
-          {
-            text: '확인',
-            onPress: () => navigation.navigate('MyPageTabStackNavigator'),
-          },
-        ])
-      } else {
-        Alert.alert('로그인 후 이용할 수 있습니다', '로그인 페이지로 이동하시겠습니까?', [
-          {
-            text: '취소',
-          },
-          {
-            text: '확인',
-            onPress: () => navigation.navigate('MyPageTabStackNavigator'),
-          },
-        ])
-      }
-    } else {
-      // 즐겨찾기 추가, 삭제 api가 실행되고 있을 때는 새로 요청 X
-      if (addFavoriteQuery.isLoading || removeFavoriteQuery.isLoading || item.favorites == 0) {
-        return
-      }
-      // 즐겨찾기 버튼 클릭했을 때
-      item.favoritesYn = 'N' //  프론트 단에서만 즐겨찾기 여부 수정. (invalidate query로 새로 가져오기 X)
-      item.favorites -= 1
-      removeFavoriteQuery.mutate({
-        accountIdx: accountIdx,
-        nanumIdx: nanumIdx,
-        categoryIdx: categoryIdx,
-        category: category,
-        //category: '에스파',
-      }) // 인자에는 query params 넣기
-    }
-  }, [item, accountIdx, nanumIdx, categoryIdx, category, isLoggedIn])
 
   useEffect(() => {
     const [day, time] = firstDate.split(' ')
@@ -237,7 +110,6 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
 
     // 오픈 시간 전이고, 작성자가 아니라면 나눔 게시글에 들어가지 못함
     if (now < openDate && writerAccountIdx != accountIdx) {
-      setIsBefore(true)
       return // 오픈 전인 경우엔 이동 X
     }
     // 시크릿 폼이고 작성자가 아니라면
@@ -252,35 +124,24 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
         },
       })
     }
-  }, [nanumIdx, secretForm])
+  }, [])
 
   return (
     <>
       <SecretModal secretModalVisible={secretModalVisible} setSecretModalVisible={setSecretModalVisible} secretPwd={secretPwd} nanumIdx={nanumIdx} />
       <Pressable onPress={onPressItem} style={[styles.container]}>
-        {!isClosed && isBefore && (
+        {!isClosed && moment() < openDate && (
           <View style={{...styles.overlay}}>
-            <View style={[styles.imageHeader, {width: IMAGE_SIZE}]}>
-              {favoritesYn == 'Y' ? <StarFilledIcon onPress={onPressRemoveFavorite} size={24} /> : <StarUnfilledIcon onPress={onPressAddFavorite} size={24} />}
-            </View>
             <Text style={[styles.overlayText, {marginBottom: 2.5}]}>{moment(openDate).format('YY/MM/DD HH:mm')}</Text>
             <Text style={styles.overlayText}>오픈 예정</Text>
           </View>
         )}
         {isClosed && (
           <View style={{...styles.overlay}}>
-            <View style={[styles.imageHeader, {width: IMAGE_SIZE}]}>
-              {favoritesYn == 'Y' ? <StarFilledIcon onPress={onPressRemoveFavorite} size={24} /> : <StarUnfilledIcon onPress={onPressAddFavorite} size={24} />}
-            </View>
             <Text style={[styles.overlayText, {marginBottom: 2.5}]}>마감</Text>
           </View>
         )}
         <View style={{width: IMAGE_SIZE, height: IMAGE_SIZE, borderRadius: 8}}>
-          {!isBefore && (
-            <View style={[styles.imageHeader, {width: IMAGE_SIZE}]}>
-              {favoritesYn == 'Y' ? <StarFilledIcon onPress={onPressRemoveFavorite} size={24} /> : <StarUnfilledIcon onPress={onPressAddFavorite} size={24} />}
-            </View>
-          )}
           <FastImage
             resizeMode={FastImage.resizeMode.cover}
             style={[styles.image, {width: IMAGE_SIZE, height: IMAGE_SIZE}]}
