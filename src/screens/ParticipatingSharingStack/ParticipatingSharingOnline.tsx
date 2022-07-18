@@ -14,12 +14,6 @@ import {queryKeys, getNanumByIndex, getAppliedNanumInfo, cancelNanumByApplier} f
 import * as theme from '../../theme'
 import {useToggle, useAppSelector} from '../../hooks'
 
-type ButtonsProps = {
-  onPressWriteQnA: () => void
-  toggleCancelModalVisible: () => void
-  state: string
-}
-
 const BUTTON_WIDTH = (Dimensions.get('window').width - 40 - 10) / 2
 
 export const ParticipatingSharingOnline = () => {
@@ -49,7 +43,7 @@ export const ParticipatingSharingOnline = () => {
       }),
     {
       onSuccess(data) {
-        console.log('reloaded2')
+        console.log(data)
         setRefreshing(false)
         setDetail(data)
         setNanumState(data.applyDto.unsongYn == 'Y' ? '배송 시작' : '배송 준비중')
@@ -178,7 +172,7 @@ export const ParticipatingSharingOnline = () => {
               <Text style={styles.requestInfoLabel}>수령 현황</Text>
               <Text style={styles.requestInfoText}>{nanumState}</Text>
             </View>
-            {detail?.applyDto.trackingNumber != '' && detail?.applyDto.trackingNumber != undefined && (
+            {detail?.applyDto.unsongNumber != '' && detail?.applyDto.unsongNumber != undefined && (
               <View style={[theme.styles.rowSpaceBetween, styles.requestInfoWrapper]}>
                 <Text style={styles.requestInfoLabel}>운송장 번호</Text>
                 <Text style={styles.requestInfoText}>{detail?.applyDto.trackingNumber}</Text>

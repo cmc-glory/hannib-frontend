@@ -13,6 +13,7 @@ type WriteNanumFormStackNavigatorParamList = {
     category: {
       category: string
       job: '가수' | '배우'
+      categoryIdx: number
     }
     title: string
     contents: string
@@ -24,6 +25,7 @@ type WriteNanumFormStackNavigatorParamList = {
     category: {
       category: string
       job: '가수' | '배우'
+      categoryIdx: number
     }
     title: string
     contents: string

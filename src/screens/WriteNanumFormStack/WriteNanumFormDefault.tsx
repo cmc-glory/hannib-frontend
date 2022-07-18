@@ -51,7 +51,7 @@ export const WriteNanumFormDefault = () => {
   // ***************************** states *****************************
   const [categoryModalOpened, setCategoryModalOpened] = useState<boolean>(false)
   const [images, setImages] = useState<string[]>([]) // 대표 이미지
-  const [category, setCategory] = useState<{category: string; job: '가수' | '배우'}>({category: '', job: '가수'}) // 카테고리
+  const [category, setCategory] = useState<{category: string; job: '가수' | '배우'; categoryIdx: number}>({category: '', job: '가수', categoryIdx: 0}) // 카테고리
   const [title, setTitle] = useState<string>('') // 제목
   const [contents, setContents] = useState<string>('') // 내용
   const [nanumMethod, setNanumMethod] = useState<INanumMethod>('M') // 나눔 방식

@@ -291,7 +291,7 @@ export type IApplyDto = {
   creatorId: string
   phoneNumber: string
   nanumMethod: 'O' | 'M'
-  trackingNumber: string
+  unsongNumber: string
 }
 
 // 진행한 나눔 페이지 신청자 리스트 정보

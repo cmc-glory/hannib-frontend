@@ -14,6 +14,8 @@ import {getNanumByRecent, getNanumByPopularity, getNanumAllByFavorites, queryKey
 import moment from 'moment'
 moment.locale('ko')
 
+import {removeString} from '../../hooks'
+
 const NanumList = () => {
   // ******************** check login ********************
   const isLoggedIn = useAppSelector(state => state.auth.isLoggedIn)

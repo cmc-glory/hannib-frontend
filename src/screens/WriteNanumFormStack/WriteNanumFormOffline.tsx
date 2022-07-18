@@ -166,6 +166,7 @@ export const WriteNanumFormOffline = () => {
         email: user.email,
         accountImg: user.accountImg,
       },
+      categoryIdx: category.categoryIdx,
     }
 
     postNanumFormQuery.mutate(nanumForm)

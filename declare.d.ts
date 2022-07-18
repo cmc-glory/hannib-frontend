@@ -34,6 +34,7 @@ declare namespace ReactNavigation {
       category: {
         category: string
         job: '가수' | '배우'
+        categoryIdx: number
       }
       title: string
       contents: string
@@ -45,6 +46,7 @@ declare namespace ReactNavigation {
       category: {
         category: string
         job: '가수' | '배우'
+        categoryIdx: number
       }
       title: string
       contents: string

@@ -132,6 +132,7 @@ export const WriteNanumFormOnline = () => {
       },
       favorites: 0,
       job: category.job,
+      categoryIdx: category.categoryIdx,
     }
 
     console.log(JSON.stringify(nanumForm))
