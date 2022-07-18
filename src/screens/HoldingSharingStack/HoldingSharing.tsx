@@ -191,9 +191,8 @@ export const HoldingSharing = () => {
       })
     },
   })
-  const myNanumDetailQuery = useMutation([queryKeys.requestedNanumDetail], postRequestDetail, {
+  const myNanumDetailQuery = useMutation([queryKeys.requestedNanumDetail], getReceiverDetail, {
     onSuccess(data, variables, context) {
-      console.log(data)
       setUnsongYn(data.applyDto.unsongYn == 'Y' ? true : false)
       setReceiverDetail(data)
       console.log('receiverDetail : ', data)
@@ -230,8 +229,6 @@ export const HoldingSharing = () => {
     (idx: number) => {
       setIsDetail(true)
       setCurrentAccountIdx(receiverInfoList[idx].accountIdx)
-
-      console.log(nanumIdx, receiverInfoList[idx].accountIdx)
 
       myNanumDetailQuery.mutate({
         nanumIdx: nanumIdx,
@@ -384,15 +381,16 @@ export const HoldingSharing = () => {
                     <Text style={{fontSize: 16, color: theme.gray700, lineHeight: 24}}>{receiverInfoList.length}</Text>
                     <RightArrowBoldIcon onPress={onPressRightArrow} />
                   </View>
+
                   <XIcon onPress={onPressCloseDetail} />
                 </View>
                 <View style={{flex: 1}}>
                   {myNanumDetailQuery.isLoading ? (
                     <ActivityIndicator />
                   ) : (
-                    <>
+                    <View>
                       <View style={[theme.styles.rowSpaceBetween, {marginBottom: 12}]}>
-                        <Text style={[theme.styles.text14, styles.receiverDetailDate]}>{moment().format('YYYY.MM.DD HH:mm:ss')}</Text>
+                        <Text style={[theme.styles.text14, styles.receiverDetailDate]}>{receiverDetail?.applyDto.applyDate}</Text>
                         {receiverDetail?.applyDto?.misacceptedYn == 'Y' && <Tag label="미수령 경고" />}
                       </View>
                       <View style={[theme.styles.rowSpaceBetween, {marginBottom: 20}]}>
@@ -495,7 +493,7 @@ export const HoldingSharing = () => {
                           </Pressable>
                         </View>
                       )}
-                    </>
+                    </View>
                   )}
                 </View>
               </View>
