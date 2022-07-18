@@ -70,17 +70,21 @@ export const SelectCategory = () => {
   const searchCategoryQuery = useMutation(queryKeys.searchCategory, searchCategory, {
     // 검색 api
     onSuccess(data, variables, context) {
-      setResult(
-        data.sort((a: ICategoryDto, b: ICategoryDto) => {
-          if (a.nickName < b.nickName) {
-            return -1
-          }
-          if (a.nickName > b.nickName) {
-            return 1
-          }
-          return 0
-        }),
-      )
+      if (data == '') {
+        setResult([])
+      } else {
+        setResult(
+          data.sort((a: ICategoryDto, b: ICategoryDto) => {
+            if (a.nickName < b.nickName) {
+              return -1
+            }
+            if (a.nickName > b.nickName) {
+              return 1
+            }
+            return 0
+          }),
+        )
+      }
     },
     onError(error, variables, context) {
       showMessage({
@@ -203,6 +207,8 @@ export const SelectCategory = () => {
     [userSelectedCategories],
   )
 
+  console.log(userSelectedCategories)
+
   // 해당 카테고리를 선택한 카테고리 리스트에서 제거
   const onPressRemoveCategory = useCallback((param: IAccountCategoryDto) => {
     setUserSelectedCategories(userSelectedCategories =>
@@ -216,8 +222,8 @@ export const SelectCategory = () => {
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
       <StackHeader title="카테고리" />
-      <View style={[theme.styles.wrapper, {flex: 1}]}>
-        <View style={[styles.mainCategoryContainer]}>
+      <View style={[{flex: 1}]}>
+        <View style={[styles.mainCategoryContainer, theme.styles.wrapper]}>
           <Button
             selected={singerSelected}
             label="가수"
@@ -238,9 +244,17 @@ export const SelectCategory = () => {
           />
         </View>
 
-        <SearchStar keyword={keyword} setKeyword={setKeyword} searchKeyword={searchKeyword} />
-        <View style={{flex: 1}}>
-          <View style={[theme.styles.rowFlexStart, {flexWrap: 'wrap', marginBottom: 16}, result.length == 0 && {position: 'absolute', top: 0}]}>
+        <View style={[theme.styles.wrapper]}>
+          <SearchStar keyword={keyword} setKeyword={setKeyword} searchKeyword={searchKeyword} />
+        </View>
+        <View style={[{flex: 1}]}>
+          <View
+            style={[
+              theme.styles.rowFlexStart,
+              theme.styles.wrapper,
+              {flexWrap: 'wrap', marginBottom: 16},
+              result.length == 0 && {position: 'absolute', top: 0},
+            ]}>
             {userSelectedCategories.length > 0 &&
               userSelectedCategories.map(item => (
                 <View key={item.categoryName + item.job} style={[theme.styles.rowFlexStart, {marginBottom: 8}, styles.selectedCategoryButton]}>
@@ -259,7 +273,7 @@ export const SelectCategory = () => {
             <FlatList
               data={result}
               numColumns={3}
-              columnWrapperStyle={{justifyContent: 'flex-start', marginBottom: 16}}
+              columnWrapperStyle={[{justifyContent: 'flex-start', marginBottom: 16}, theme.styles.wrapper]}
               renderItem={({item, index}) => (
                 <View style={[{width: CIRCLE_SIZE}, index % 3 != 2 && {marginRight: IMAGE_GAP}]}>
                   <Pressable style={[styles.pressableView, isSelected(item) && styles.selectedPressable]} onPress={() => onPressCategory(item)}>

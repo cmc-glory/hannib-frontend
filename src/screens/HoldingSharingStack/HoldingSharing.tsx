@@ -7,6 +7,7 @@ import moment from 'moment'
 import {Shadow} from 'react-native-shadow-2'
 import {getStatusBarHeight} from 'react-native-status-bar-height'
 import Modal from 'react-native-modal'
+import NotExistsSvg from '../../assets/Icon/NotExists.svg'
 
 import {
   StackHeader,
@@ -135,7 +136,6 @@ export const HoldingSharing = () => {
         }
         return 0
       })
-      console.log(nanumDetail)
       tempReceiverList.push({
         acceptedYn: nanumDetail[0].acceptedYn,
         realName: nanumDetail[0].realName,
@@ -319,7 +319,7 @@ export const HoldingSharing = () => {
         </Modal>
       </StackHeader>
       <DeleteModal deleteModalVisible={deleteModalVisible} setDeleteModalVisible={setDeleteModalVisible} nanumIdx={nanumIdx} />
-      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} contentContainerStyle={{flex: 1}}>
         <ScrollView contentContainerStyle={[theme.styles.wrapper, {flex: 1}]}>
           <SharingPreview uri={nanumInfo.data?.thumbnail} category={nanumInfo.data?.category} title={nanumInfo.data?.title} />
           {/* 굿즈 정보 리스트 & 나눔 마감 버튼 */}
@@ -361,7 +361,13 @@ export const HoldingSharing = () => {
             {receiverListQuery.isLoading ? (
               <ActivityIndicator />
             ) : receiverInfoList.length == 0 ? (
-              <View></View>
+              <View style={[styles.emptyResultView]}>
+                <NotExistsSvg style={{marginTop: -48}} />
+                <View style={{marginTop: 32}}>
+                  <Text style={[theme.styles.bold20, {marginBottom: 8, textAlign: 'center'}]}>아직 신청자가 없어요</Text>
+                  <Text style={{color: theme.gray700, fontSize: 16, lineHeight: 24}}>신청자가 생기면 바로 리스트로 보여드릴게요!</Text>
+                </View>
+              </View>
             ) : isDetail == true ? (
               // 참여자 정보 상세보기 DOC
               <View>
@@ -490,7 +496,6 @@ export const HoldingSharing = () => {
                 </View>
               </View>
             ) : (
-              // 전체 참여자 리스트 보기  TOC
               receiverInfoList?.map(
                 (item, index) =>
                   (itemFilter == '전체보기' || (itemFilter == '수령완료' && item.acceptedYn == 'Y') || (itemFilter == '미수령' && item.acceptedYn == 'N')) && (
@@ -554,6 +559,11 @@ export const HoldingSharing = () => {
 }
 
 const styles = StyleSheet.create({
+  emptyResultView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   acceptedYnText: {
     color: theme.main,
     fontSize: 12,
