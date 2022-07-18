@@ -13,7 +13,7 @@ type CalendarItemProps = {
 export const CalendarItem = ({item}: CalendarItemProps) => {
   const {nanumIdx, title, goodsList, location, acceptDate, type} = item
   const navigation = useNavigation()
-
+  console.log('item in calendar item : ', item)
   const goHolding = () => {
     navigation.navigate('HoldingSharingStackNavigator', {
       screen: 'HoldingSharing',
