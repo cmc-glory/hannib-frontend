@@ -41,7 +41,11 @@ export const GoodsReqeustOnline = () => {
   const [answers, setAnswers] = useState<string[]>([])
   const navigation = useNavigation()
   const route = useRoute<GoodsRequestOnlineRouteProps>()
-  const nanumIdx = useMemo(() => route.params, [])
+  //const nanumIdx = useMemo(() => route.params, [])
+  const {nanumIdx} = useMemo(() => {
+    return route.params
+  }, [])
+  //console.log(nanumIdx)
   const queryClient = useQueryClient()
   // ***************************** states *****************************
   const [selectedItems, setSelectedItems] = useState<any>({}) // 선택한 상품들
@@ -63,7 +67,7 @@ export const GoodsReqeustOnline = () => {
   const [agreed, setAgreed] = useState<boolean>(false) // 개인정보 수집 항목 동의
 
   // ******************** react query ********************
-  const data = useQuery([queryKeys.nanumRequestRequiredInfo, nanumIdx], () => getNanumRequestRequiredInfo(parseInt(nanumIdx)), {
+  const data = useQuery([queryKeys.nanumRequestRequiredInfo, nanumIdx], () => getNanumRequestRequiredInfo(nanumIdx), {
     onSuccess: data => {
       console.log('success')
       console.log(data)

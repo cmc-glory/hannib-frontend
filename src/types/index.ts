@@ -401,6 +401,7 @@ export type INanumAskDto = {
 }
 
 export type INanumDateDto = {
+  accountIdx: number
   nanumIdx: number
   acceptDate: string // example: 2022-07-01 12:43:15
   location: string

@@ -15,6 +15,8 @@ type AddressModal = {
   toggleIsVisible: () => void
   // sendMethod: string
   // setSendMethod: (mthd: string) => void
+  accountIdx: number
+  nanumIdx: number
 }
 
 type ButtonProps = {
