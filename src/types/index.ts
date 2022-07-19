@@ -461,7 +461,7 @@ export type INanumRequestGoods = {
   accountIdx: number
   nanumIdx: number
   goodsName: string //삭제 필요
-  //creatorId: string //삭제 필요, 필수x
+  creatorId: string //삭제 필요, 필수x
   //goodsNumber: number //삭제 필요, 필수x
   realName?: string
 }

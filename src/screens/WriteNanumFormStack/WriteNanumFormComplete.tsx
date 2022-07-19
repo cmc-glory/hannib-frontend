@@ -29,6 +29,7 @@ export const WriteNanumFormComplete = () => {
   }, [height])
 
   const onPressButton = useCallback(() => {
+    navigation.navigate('NanumList')
     navigation.navigate('GoodsStackNavigator', {
       screen: 'NanumDetail',
       params: {
@@ -49,8 +50,9 @@ export const WriteNanumFormComplete = () => {
           }}>
           <CompleteIcon />
           <View style={{marginVertical: 32, alignItems: 'center'}}>
-            <Text style={[theme.styles.bold20, {marginBottom: 8}]}>신청 완료</Text>
-            <Text style={{color: theme.gray700, fontSize: 16}}>신청폼 작성이 완료됐습니다.</Text>
+            <Text style={[theme.styles.bold20, {marginBottom: 8}]}>모집폼 등록 완료</Text>
+            <Text style={{color: theme.gray700, fontSize: 16}}>모집글 등록이 완료됐습니다.</Text>
+            <Text style={{color: theme.gray700, fontSize: 16}}>모집글이 잘 등록 됐는지 확인해보세요!</Text>
           </View>
           <RoundButton label="등록한 게시글로 이동" style={{alignSelf: 'stretch'}} enabled onPress={onPressButton} />
         </View>

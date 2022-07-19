@@ -28,6 +28,7 @@ export const GoodsRequestComplete = () => {
 
   const onPressButton = useCallback(() => {
     queryClient.invalidateQueries([queryKeys.appliedNanumList, accountIdx])
+    navigation.navigate('NanumList')
     navigation.navigate('MyPageTabStackNavigator', {
       screen: 'ParticipatingSharingList',
     })

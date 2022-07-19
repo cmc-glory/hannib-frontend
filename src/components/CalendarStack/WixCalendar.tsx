@@ -31,35 +31,22 @@ export const WixCalendar = ({scheduleAll, setSelectedDate, setSelectedSchedule, 
   useEffect(() => {
     //console.log('scheduleAll : ', scheduleAll)
     if (scheduleAll != undefined) {
-      var tempMarkedDates: any = {
-        // [today]: {
-        //   selected: true,
-        //   customStyles: {
-        //     container: {
-        //       backgroundColor: theme.main,
-        //     },
-        //     text: {
-        //       color: theme.white,
-        //     },
-        //   },
-        // },
-      }
+      var tempMarkedDates: any = {}
       scheduleAll.participatingList.forEach((item: any) => {
         const temp = {
           marked: true,
           dotColor: theme.secondary,
         }
-        tempMarkedDates[item.acceptDate?.slice(0, 10)] = temp
+        tempMarkedDates[moment(item.acceptDate).format('YYYY-MM-DD')] = temp
       })
-      // Object.keys(scheduleAll.calenderDto3).forEach(item => {
-      //   const temp = {
-      //     marked: true,
-      //     dotColor: theme.secondary,
-      //   }
-      //   tempMarkedDates[item.acceptDate] = temp
-      //   //item == today ? (tempMarkedDates[item] = {...tempMarkedDates[item], temp}) : (tempMarkedDates[item] = temp)
-      // })
-      //console.log('tempMarkedDates : ', tempMarkedDates)
+      scheduleAll.holdingList.forEach((item: any) => {
+        const temp = {
+          marked: true,
+          dotColor: theme.secondary,
+        }
+        tempMarkedDates[moment(item.acceptDate).format('YYYY-MM-DD')] = temp
+      })
+      console.log('tempMarkedDates : ', tempMarkedDates)
       // console.log('today : ', today)
       setMarkedDates(tempMarkedDates)
     }
@@ -119,16 +106,17 @@ export const WixCalendar = ({scheduleAll, setSelectedDate, setSelectedSchedule, 
             })
           }
 
+          // selectedschedule 가공
           let tempSchedulePerDay: Array<ICalendarShow> = []
 
           scheduleAll.holdingList.forEach(item => {
-            if (item.acceptDate.slice(0, 10) == day.dateString) {
+            if (moment(item.acceptDate).format('YYYY-MM-DD') == day.dateString) {
               tempSchedulePerDay.push(item)
             }
           })
 
           scheduleAll.participatingList.forEach(item => {
-            if (item.acceptDate?.slice(0, 10) == day.dateString) {
+            if (moment(item.acceptDate).format('YYYY-MM-DD') == day.dateString) {
               tempSchedulePerDay.push(item)
             }
           })

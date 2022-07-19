@@ -15,6 +15,7 @@ export const Calendar = () => {
   // ******************** utils ********************
   const queryClient = useQueryClient()
   // ******************** states ********************
+  const user = useAppSelector(state => state.auth.user)
   const [calendars, setCalendars] = useState<ICalendarDto>()
   const today = useMemo(() => moment().format('YYYY-MM-DD'), []) // 오늘
   const [selectedDate, setSelectedDate] = useState<string>(today) // 현재 선택한 날짜
@@ -30,11 +31,12 @@ export const Calendar = () => {
   })
 
   // ******************** react query ********************
-  useQuery(queryKeys.calendar, () => getCalendarAll(accountIdx), {
+  useQuery([queryKeys.calendar], () => getCalendarAll(accountIdx), {
     onSuccess: data => {
+      console.log(accountIdx)
       setRefreshing(false)
       setCalendars(data)
-      //console.log('calendars : ', calendars)
+      console.log('calendars : ', calendars)
 
       //******************** api로 오는 데이터 가공. ********************
       //참여한 나눔 가공
@@ -130,7 +132,7 @@ export const Calendar = () => {
         participatingList: participatingList,
         holdingList: holdingList,
       })
-      //console.log('calendarScheduleList : ', calendarScheduleList)
+      console.log('calendarScheduleList 가공 완료된 데이터 : ', calendarScheduleList)
     },
     onError(err) {},
   })
@@ -140,7 +142,7 @@ export const Calendar = () => {
   const onRefresh = useCallback(() => {
     // 새로고침침 pull up이 일어났을 때
     setRefreshing(true)
-    queryClient.invalidateQueries(queryKeys.calendar)
+    queryClient.invalidateQueries([queryKeys.calendar])
   }, [])
 
   // useEffect(() => {
@@ -173,7 +175,7 @@ export const Calendar = () => {
               <Text style={{fontFamily: 'Pretendard-Medium'}}>일정이 없어요!</Text>
             </View>
           ) : (
-            selectedSchedule.map(item => <CalendarItem item={item} />)
+            selectedSchedule.map(item => <CalendarItem key={item.nanumIdx} item={item} />)
           )}
         </View>
       </ScrollView>
