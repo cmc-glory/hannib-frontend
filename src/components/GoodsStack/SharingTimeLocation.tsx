@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     color: theme.gray700,
-    lineHieght: 24,
+    lineHeight: 24,
   },
   dot: {
     width: 4,
