@@ -6,9 +6,9 @@ import {CancelModal} from '../../components/MyPageStack'
 import {useNavigation, useRoute} from '@react-navigation/native'
 import {showMessage} from 'react-native-flash-message'
 
-import {IAppliedNanumDetailDto, IApplyingGoodsDto} from '../../types'
+import {IAppliedNanumDetailDto, IApplyingGoodsDto, ICancelDto} from '../../types'
 import {ParticipatingSharingOnlineRouteProps} from '../../navigation/ParticipatingSharingStackNavigator'
-import {StackHeader, SharingPreview, GoodsListItem, Button, Tag, RoundButton, XIcon} from '../../components/utils'
+import {StackHeader, SharingPreview} from '../../components/utils'
 
 import {queryKeys, getNanumByIndex, getAppliedNanumInfo, cancelNanumByApplier} from '../../api'
 import * as theme from '../../theme'
@@ -77,6 +77,9 @@ export const ParticipatingSharingOffline = () => {
         floating: true,
       })
     },
+    onError(error, variables, context) {
+      console.log(error)
+    },
   })
 
   const onPressWriteQnA = useCallback(() => {
@@ -96,15 +99,19 @@ export const ParticipatingSharingOffline = () => {
       },
       {
         text: '확인',
-        onPress: () =>
-          cancelNanumQuery.mutate({
+        onPress: () => {
+          const form: ICancelDto = {
             accountIdx: user.accountIdx,
             nanumIdx: nanumIdx,
             nanumDeleteReason: '',
-          }),
+            nanumGoodsDtoList: detail?.nanumGoodsDto!,
+          }
+          console.log(JSON.stringify(form))
+          cancelNanumQuery.mutate(form)
+        },
       },
     ])
-  }, [])
+  }, [detail])
 
   const onPressWriteReview = useCallback(() => {
     navigation.navigate('WriteReview', {

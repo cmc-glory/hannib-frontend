@@ -100,10 +100,11 @@ export const ParticipatingSharingOnline = () => {
             accountIdx: user.accountIdx,
             nanumIdx: nanumIdx,
             nanumDeleteReason: '',
+            nanumGoodsDtoList: detail?.nanumGoodsDto!,
           }),
       },
     ])
-  }, [])
+  }, [detail])
 
   const onPressWriteReview = useCallback(() => {
     navigation.navigate('WriteReview', {
@@ -173,10 +174,14 @@ export const ParticipatingSharingOnline = () => {
               <Text style={styles.requestInfoLabel}>수령 현황</Text>
               <Text style={styles.requestInfoText}>{nanumState}</Text>
             </View>
-            {detail?.unsongNumber != null && (
+            {detail?.unsongNumber.unsongNumber != null && (
               <View style={[theme.styles.rowSpaceBetween, styles.requestInfoWrapper]}>
                 <Text style={styles.requestInfoLabel}>운송장 번호</Text>
-                <Text style={styles.requestInfoText}>{detail?.company}</Text>
+                <View style={[theme.styles.rowFlexStart]}>
+                  <Text style={[styles.requestInfoText, {marginRight: 4}]}>{detail?.unsongNumber.company}</Text>
+
+                  <Text style={styles.requestInfoText}>{detail?.unsongNumber.unsongNumber}</Text>
+                </View>
               </View>
             )}
           </View>

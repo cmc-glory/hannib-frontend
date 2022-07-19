@@ -9,7 +9,7 @@ import {IUnsongDto} from '../../types'
 import Postcode from '@actbase/react-daum-postcode'
 import {noop} from 'react-query/types/core/utils'
 import {showMessage} from 'react-native-flash-message'
-import {postDeliveryInfo, queryKeys} from '../../api'
+import {postDeliveryInfo, queryKeys, postMailAll} from '../../api'
 
 const MODAL_BUTTON_WIDTH = (Dimensions.get('window').width - theme.PADDING_SIZE * 2 - 50) / 2
 
@@ -77,6 +77,26 @@ export const AddressModal = ({isVisible, toggleIsVisible, accountIdxList, select
     },
   })
 
+  const postMailAllQuery = useMutation([queryKeys.deliveryInfo], postMailAll, {
+    onSuccess(data, variables, context) {
+      setUnsongYn(true)
+      showMessage({
+        message: '배송 정보 등록이 완료되었습니다',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+      })
+      toggleIsVisible()
+    },
+  })
+
   // ********************* callbacks *********************
   const checkButtonEnabled = useCallback((postComp: string, mailNum: string) => {
     return postComp == '' || mailNum == '' ? false : true
@@ -120,6 +140,16 @@ export const AddressModal = ({isVisible, toggleIsVisible, accountIdxList, select
   const onPressSubmit = useCallback(() => {
     // 모든 accountIdx에 대해 우편으로 처리
     if (isAllSame == true) {
+      const unsongDto: IUnsongDto[] = accountIdxList.map(item => {
+        return {
+          accountIdx: item,
+          company: '',
+          nanumIdx: nanumIdx,
+          unsongMethod: '우편',
+          unsongNumber: 0,
+        }
+      })
+      postMailAllQuery.mutate(unsongDto)
     }
 
     // 하나씩 배송 정보 등록
@@ -144,7 +174,7 @@ export const AddressModal = ({isVisible, toggleIsVisible, accountIdxList, select
         postTrackingNumberQuery.mutate(unsongDto)
       }
     }
-  }, [selectedAccountIdx, nanumIdx, postComp, postNum])
+  }, [selectedAccountIdx, isAllSame, accountIdxList, nanumIdx, postComp, postNum])
 
   useEffect(() => {
     //console.log('sendMethod : ', sendMethod)
@@ -172,10 +202,7 @@ export const AddressModal = ({isVisible, toggleIsVisible, accountIdxList, select
             </View>
           )}
           {mailMethod == '우편' ? (
-            <View style={{...theme.styles.rowFlexStart}}>
-              {isAllSame ? <CheckboxIcon onPress={onPressIsAllSame} /> : <EmptyCheckboxIcon onPress={onPressIsAllSame} />}
-              <Text style={{marginLeft: 8}}>나머지도 동일하게 우편전송으로 처리</Text>
-            </View>
+            <View style={{...theme.styles.rowFlexStart}}></View>
           ) : (
             <View>
               <TextInput

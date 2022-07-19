@@ -39,7 +39,7 @@ import {useAppSelector, useToggle} from '../../hooks'
 import * as theme from '../../theme'
 import {useNavigation, useRoute} from '@react-navigation/native'
 import {HoldingSharingRouteProps} from '../../navigation/HoldingSharingStackNavigator'
-import {queryKeys, getNanumByIndex, getReceiverList, endNanum, getReceiverDetail, getParticipatingNanumList, postRequestDetail} from '../../api'
+import {queryKeys, getNanumByIndex, getReceiverList, endNanum, cancelReceiver, getReceiverDetail, getParticipatingNanumList, postRequestDetail} from '../../api'
 import {AddressModal, CancelModal, CheckFinishedModal} from '../../components/MyPageStack'
 import {NotTakenModal} from '../../components/MyPageStack/NotTakenModal'
 import {DeleteModal} from '../../components/GoodsStack/DeleteModal'
@@ -99,6 +99,7 @@ export const HoldingSharing = () => {
   const [misAcceptedNumber, setMisAcceptedNumber] = useState<number>(0)
 
   // ************************** react quries **************************
+
   const nanumInfo = useQuery([queryKeys.nanumDetail, nanumIdx], () => getNanumByIndex({nanumIdx: nanumIdx, accountIdx: accountIdx, favoritesYn: 'N'}), {
     onSuccess(data) {
       setNanumDetailInfo(data)
@@ -195,6 +196,7 @@ export const HoldingSharing = () => {
   })
   const myNanumDetailQuery = useMutation([queryKeys.requestedNanumDetail], postRequestDetail, {
     onSuccess(data, variables, context) {
+      console.log(data)
       setUnsongYn(data.applyDto.unsongYn == 'Y' ? true : false)
       setReceiverDetail(data)
       setMisAcceptedNumber(data.misAcceptedNumber)
@@ -485,7 +487,10 @@ export const HoldingSharing = () => {
                         <View style={[theme.styles.rowSpaceBetween, {marginBottom: 24}]}>
                           <Pressable
                             style={[styles.buttonMedium, styles.cancelButton]}
-                            onPress={() => setParticipantAccountIdx(receiverDetail?.applyDto.accountIdx)}>
+                            onPress={() => {
+                              setParticipantAccountIdx(receiverDetail?.applyDto.accountIdx)
+                              toggleCancelModalShow()
+                            }}>
                             <Text style={styles.cancelText}>취소하기</Text>
                           </Pressable>
                           <Pressable
@@ -554,7 +559,12 @@ export const HoldingSharing = () => {
       </BottomSheet>
 
       {/* 모달 */}
-      <CancelModal nanumIdx={nanumIdx} accountIdx={participantAccountIdx!} isVisible={cancelModalShow} toggleIsVisible={toggleCancelModalShow}></CancelModal>
+      <CancelModal
+        nanumIdx={nanumIdx}
+        accountIdx={participantAccountIdx!}
+        isVisible={cancelModalShow}
+        toggleIsVisible={toggleCancelModalShow}
+        nanumGoodsDtoList={receiverDetail?.nanumGoodsDto}></CancelModal>
       <AddressModal
         nanumIdx={nanumIdx}
         accountIdx={participantAccountIdx!}

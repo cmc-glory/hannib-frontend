@@ -96,3 +96,8 @@ export const postDeliveryInfo = async (unsongDto: IUnsongDto) => {
   const {data} = await apiClient.post('/api/nanuming/unsong', unsongDto)
   return data
 }
+
+export const postMailAll = async (unsongDto: IUnsongDto[]) => {
+  const {data} = await apiClient.post('/api/nanuming/allmail', unsongDto)
+  return data
+}
