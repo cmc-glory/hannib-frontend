@@ -18,7 +18,6 @@ type AddressModal = {
   toggleIsVisible: () => void
   accountIdxList: number[] // 나머지도 동일하게 우편 전송으로 처리 눌렀을 때 사용할 accountIdx 리스트
   selectedAccountIdx: number // 현재 선택된 accountIdx
-  nanumIdx: number
   setUnsongYn: React.Dispatch<React.SetStateAction<boolean>>
   // sendMethod: string
   // setSendMethod: (mthd: string) => void
