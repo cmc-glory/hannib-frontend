@@ -131,6 +131,9 @@ export const SelectTimeLocation = ({nanumDates, setNanumDates}: SelectTimeLocati
         onConfirm={handleConfirm}
         onCancel={hideDatePicker}
         display={Platform.OS == 'ios' ? 'inline' : 'default'}
+        confirmTextIOS="확인"
+        cancelTextIOS="취소"
+        minimumDate={new Date()}
       />
 
       <View style={[theme.styles.rowSpaceBetween]}>

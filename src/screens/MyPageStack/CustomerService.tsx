@@ -12,7 +12,7 @@ export const CustomerService = () => {
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
       <StackHeader title="문의하기" goBack />
-      <ScrollView style={[styles.container]}>
+      <ScrollView style={[styles.container]} contentContainerStyle={{paddingBottom: 80}}>
         <View style={[styles.emailContainer]}>
           <Text style={{fontSize: 16}}>문의 이메일 : hannip.manager@gmail.com</Text>
         </View>

@@ -42,6 +42,9 @@ export const BookSharingDate = ({isOpenDateBooked, toggleOpenDate, firstDate, se
         onConfirm={handleConfirm}
         onCancel={hideDatePicker}
         display={Platform.OS == 'ios' ? 'inline' : 'default'}
+        confirmTextIOS="확인"
+        cancelTextIOS="취소"
+        minimumDate={new Date()}
       />
       <View style={[theme.styles.rowSpaceBetween, {marginBottom: 10}]}>
         <Text style={[{fontFamily: 'Pretendard-Medium', fontSize: 16}]}>나눔 시작일 예약</Text>

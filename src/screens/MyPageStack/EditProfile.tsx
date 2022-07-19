@@ -334,7 +334,7 @@ export const EditProfile = () => {
           <SelectImageIcon style={styles.cameraIcon} onPress={onPressImage} />
           <View style={[theme.styles.rowFlexStart]}>
             <Text style={[theme.styles.text14, {marginTop: 12, marginBottom: 32, textAlign: 'center', color: theme.gray500}]}>
-              이번달 수정 가능 횟수 {leftChangeNum}회
+              이번달 닉네임 수정 가능 횟수 {leftChangeNum}회
             </Text>
           </View>
         </View>
