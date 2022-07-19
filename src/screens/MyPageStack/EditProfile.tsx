@@ -180,6 +180,7 @@ export const EditProfile = () => {
                   email: user.email,
                   creatorIdDatetime: '',
                 }
+
                 updateAccountInfoQuery.mutate(accountDto)
               }
             } else {
@@ -202,6 +203,9 @@ export const EditProfile = () => {
             email: user.email,
             creatorIdDatetime: '',
           }
+
+          console.log(JSON.stringify(accountDto))
+
           updateAccountInfoQuery.mutate(accountDto)
         }
       }
@@ -217,6 +221,8 @@ export const EditProfile = () => {
           email: user.email,
           creatorIdDatetime: '',
         }
+
+        console.log(JSON.stringify(accountDto))
 
         updateAccountInfoQuery.mutate(accountDto)
       }

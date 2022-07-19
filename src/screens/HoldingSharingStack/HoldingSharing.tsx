@@ -61,6 +61,7 @@ export const HoldingSharing = () => {
   const [moreVisible, setMoreVisible] = useState<boolean>(false) //삭제하기 모달 띄울지
   const [isDetail, setIsDetail] = useState<boolean>(false) // 상세보기가 눌렸는지
   const [isAllSelected, setIsAllSelected] = useState<boolean>(false)
+  const [isClosed, setIsClosed] = useState<boolean>(false)
   const [receiverInfoList, setReceiverInfoList] = useState<
     {
       acceptedYn: 'Y' | 'N'
@@ -95,6 +96,7 @@ export const HoldingSharing = () => {
   const [deletePressed, setDeletePressed] = useState<boolean>(false)
   const [deleteModalVisible, setDeleteModalVisible] = useState<boolean>(false)
   const [refreshing, setRefreshing] = useState<boolean>(false)
+  const [misAcceptedNumber, setMisAcceptedNumber] = useState<number>(0)
 
   // ************************** react quries **************************
   const nanumInfo = useQuery([queryKeys.nanumDetail, nanumIdx], () => getNanumByIndex({nanumIdx: nanumIdx, accountIdx: accountIdx, favoritesYn: 'N'}), {
@@ -106,7 +108,7 @@ export const HoldingSharing = () => {
   })
   const receiverListQuery = useQuery([queryKeys.receiverList, nanumIdx], () => getReceiverList(nanumIdx), {
     onSuccess(data) {
-      console.log('data :', data)
+      setIsClosed(data.nanumGoodsDto[0].endYn == 'Y' ? true : false)
 
       // 신청한 사람 리스트가 없는 경우에는 리턴
       if (data.nanumDetailDto.length == 0) {
@@ -195,7 +197,7 @@ export const HoldingSharing = () => {
     onSuccess(data, variables, context) {
       setUnsongYn(data.applyDto.unsongYn == 'Y' ? true : false)
       setReceiverDetail(data)
-      console.log('receiverDetail : ', data)
+      setMisAcceptedNumber(data.misAcceptedNumber)
     },
   })
   // ************************** callbacks **************************
@@ -289,6 +291,10 @@ export const HoldingSharing = () => {
     //queryClient.invalidateQueries([queryKeys.requestedNanumDetail])
   }, [])
 
+  const onPressClose = useCallback(() => {
+    Alert.alert('마감 처리 하시겠습니까?', '', [{text: '취소'}, {text: '확인', onPress: () => endNanumQuery.mutate(nanumIdx)}])
+  }, [nanumIdx])
+
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
       <StackHeader title="진행한 나눔" goBack>
@@ -333,12 +339,15 @@ export const HoldingSharing = () => {
               </View>
             </View>
           ))}
-          {}
-          <Pressable
-            style={[styles.endSharingBtn]}
-            onPress={() => Alert.alert('마감 처리 하시겠습니까?', '', [{text: '취소'}, {text: '확인', onPress: () => endNanumQuery.mutate(nanumIdx)}])}>
-            <Text style={styles.endSharingBtnText}>나눔 마감</Text>
-          </Pressable>
+          {isClosed == true ? (
+            <Pressable style={[styles.closeNanumButton, styles.closeNanumButtonTrue]}>
+              <Text style={styles.endSharingBtnText2}>마감된 나눔입니다</Text>
+            </Pressable>
+          ) : (
+            <Pressable style={[styles.closeNanumButton, styles.closeNanumButtonFalse]} onPress={onPressClose}>
+              <Text style={styles.endSharingBtnText}>나눔 마감</Text>
+            </Pressable>
+          )}
         </View>
         <View style={{height: 1, backgroundColor: theme.gray300, marginBottom: 20}}></View>
         {/* 전체 선택 & 전체 보기 버튼 */}
@@ -391,7 +400,7 @@ export const HoldingSharing = () => {
                   <>
                     <View style={[theme.styles.rowSpaceBetween, {marginBottom: 12}]}>
                       <Text style={[theme.styles.text14, styles.receiverDetailDate]}>{receiverDetail?.applyDto.applyDate}</Text>
-                      {receiverDetail?.applyDto?.misacceptedYn == 'Y' && <Tag label="미수령 경고" />}
+                      {misAcceptedNumber > 0 && <Tag label={`미수령 ${misAcceptedNumber}회`} />}
                     </View>
                     <View style={[theme.styles.rowSpaceBetween, {marginBottom: 20}]}>
                       <Text style={styles.detailLabel}>수령자명</Text>
@@ -572,6 +581,22 @@ export const HoldingSharing = () => {
 }
 
 const styles = StyleSheet.create({
+  closeNanumButtonFalse: {
+    backgroundColor: theme.white,
+    borderColor: theme.main,
+  },
+  closeNanumButtonTrue: {
+    backgroundColor: theme.white,
+    borderColor: theme.gray500,
+  },
+  closeNanumButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 14,
+    borderRadius: 24,
+    borderWidth: 1,
+    marginTop: 20,
+  },
   emptyResultView: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -633,19 +658,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     zIndex: 1,
   },
-  endSharingBtn: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: 14,
-    backgroundColor: theme.white,
-    borderRadius: 24,
-    borderColor: theme.main,
-    borderWidth: 1,
-    marginTop: 20,
-  },
+
   endSharingBtnText: {
     color: theme.main,
     fontFamily: 'Pretendard-Bold',
     fontSize: 16,
+    lineHeight: 24,
+  },
+  endSharingBtnText2: {
+    color: theme.gray500,
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 16,
+    lineHeight: 24,
   },
 })

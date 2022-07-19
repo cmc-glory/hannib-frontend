@@ -45,7 +45,6 @@ const TimeLocationItem = ({item, onPressRemove}: TimeLocationItemProps) => {
 
 export const SelectTimeLocation = ({nanumDates, setNanumDates}: SelectTimeLocationProps) => {
   // ******************** states ********************
-  const [isAllSamePlace, setIsAllSamePlace] = useState<boolean>() // 모두 같은 장소
   const [info, setInfo] = useState<INanumDateInfo>({
     // 사용자가 입력한 위치, 시간 정보
     id: '',
@@ -96,32 +95,9 @@ export const SelectTimeLocation = ({nanumDates, setNanumDates}: SelectTimeLocati
       const temp = nanumDates.filter(item => item.id !== id)
 
       setNanumDates(temp)
-
-      // 수령일 정보가 없는 경우엔 "모두 같은 장소" 옵션도 초기화
-      if (temp.length == 0) {
-        setIsAllSamePlace(false)
-      }
     },
     [nanumDates],
   )
-
-  const onPressAllSamePlace = useCallback(() => {
-    const temp = isAllSamePlace
-    setIsAllSamePlace(!temp)
-    if (temp == false) {
-      setNanumDates(
-        nanumDates.map(item => {
-          return {...item, location: info.location}
-        }),
-      )
-    } else {
-      setNanumDates(
-        nanumDates.map(item => {
-          return {...item, place: ''}
-        }),
-      )
-    }
-  }, [info, nanumDates, isAllSamePlace])
 
   return (
     <View>
@@ -140,15 +116,6 @@ export const SelectTimeLocation = ({nanumDates, setNanumDates}: SelectTimeLocati
         <View style={[theme.styles.rowFlexStart]}>
           <Text style={[theme.styles.label]}>수령일 선택</Text>
           <NeccesaryField />
-        </View>
-
-        <View style={[theme.styles.rowFlexStart, {marginBottom: 10}]}>
-          {isAllSamePlace ? (
-            <CheckboxIcon onPress={onPressAllSamePlace} style={{marginRight: 8}} />
-          ) : (
-            <Pressable style={styles.unchecked} onPress={onPressAllSamePlace} />
-          )}
-          <Text>모두 동일 장소</Text>
         </View>
       </View>
 

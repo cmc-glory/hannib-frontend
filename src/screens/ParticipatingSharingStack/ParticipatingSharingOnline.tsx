@@ -176,9 +176,7 @@ export const ParticipatingSharingOnline = () => {
             {detail?.unsongNumber != null && (
               <View style={[theme.styles.rowSpaceBetween, styles.requestInfoWrapper]}>
                 <Text style={styles.requestInfoLabel}>운송장 번호</Text>
-                <Text style={styles.requestInfoText}>
-                  {detail?.company} {detail?.unsongNumber}
-                </Text>
+                <Text style={styles.requestInfoText}>{detail?.company}</Text>
               </View>
             )}
           </View>
