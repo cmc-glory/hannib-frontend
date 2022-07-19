@@ -10,7 +10,7 @@ import * as theme from '../../theme'
 import {IReview} from '../../types'
 
 type ReviewItemProps = {
-  item: IReview
+  item: any
   opened: boolean
   index: number
   onPressReview: (index: number) => void
@@ -18,8 +18,10 @@ type ReviewItemProps = {
 export const ReviewItem = ({item, opened, index, onPressReview}: ReviewItemProps) => {
   const [showImageView, setShowImageView] = useState<boolean>(false) // image view를 띄울지
 
+  //console.log(item)
+
   const [imageIndex, setImageIndex] = useState<number>(0) // imageView 에서 띄울 이미지의 index
-  const {writer, date, product, content, images} = item
+  const {accountIdx, date, creatorId, createdDatetime, comments, images} = item
 
   const onPressImage = useCallback((index: number) => {
     setImageIndex(index)
@@ -28,7 +30,7 @@ export const ReviewItem = ({item, opened, index, onPressReview}: ReviewItemProps
 
   const imageViewAssets = useMemo(() => {
     if (images) {
-      return images?.map(url => {
+      return images?.map((url: string) => {
         return {uri: url}
       })
     } else {
@@ -36,21 +38,6 @@ export const ReviewItem = ({item, opened, index, onPressReview}: ReviewItemProps
     }
   }, [])
 
-  const BuyedList = useMemo(() => {
-    if (product.length == 1) {
-      return () => <Text style={[styles.buyedListText, {marginBottom: 6}]}>{product[0].name} 구매</Text>
-    } else {
-      if (opened) {
-        return () => <View></View>
-      } else {
-        return () => (
-          <Text style={[styles.buyedListText, {marginBottom: 6}]}>
-            {product[0].name} 외 {product.length - 1}개 구매
-          </Text>
-        )
-      }
-    }
-  }, [])
   return (
     <>
       {imageViewAssets.length > 0 && (
@@ -67,15 +54,14 @@ export const ReviewItem = ({item, opened, index, onPressReview}: ReviewItemProps
       <View style={[{paddingVertical: 10}, opened && {backgroundColor: theme.gray50}]}>
         <Pressable onPress={() => onPressReview(index)} style={[theme.styles.wrapper]}>
           <View style={[theme.styles.rowSpaceBetween, {marginVertical: 6}]}>
-            <Text style={{fontSize: 12}}>{writer}</Text>
-            <Text style={{fontSize: 12, color: theme.gray700}}>{moment(date).format('YYYY.MM.DD')}</Text>
+            <Text style={{fontSize: 12}}>{creatorId}</Text>
+            <Text style={{fontSize: 12, color: theme.gray700}}>{createdDatetime.slice(0, 10)}</Text>
           </View>
           <View style={[theme.styles.rowSpaceBetween]}>
             <View style={{flex: 1, alignSelf: 'flex-start'}}>
-              <BuyedList />
               {!opened && (
                 <Text numberOfLines={1} style={{flexWrap: 'wrap'}}>
-                  {content}
+                  {comments}
                 </Text>
               )}
             </View>
@@ -84,10 +70,10 @@ export const ReviewItem = ({item, opened, index, onPressReview}: ReviewItemProps
         </Pressable>
         {opened && (
           <Pressable style={[theme.styles.wrapper]} onPress={() => onPressReview(index)}>
-            <Text style={{marginBottom: 8}}>{content}</Text>
+            <Text style={{marginBottom: 8}}>{comments}</Text>
             {images && (
               <ScrollView horizontal contentContainerStyle={{paddingVertical: 6}} scrollEnabled={images.length >= 3} showsHorizontalScrollIndicator={false}>
-                {images.map((image, index) => (
+                {images.map((image: string, index: any) => (
                   <Pressable key={image + index.toString()} onPress={() => onPressImage(index)}>
                     <FastImage source={{uri: image}} style={[styles.reviewImage]}></FastImage>
                   </Pressable>

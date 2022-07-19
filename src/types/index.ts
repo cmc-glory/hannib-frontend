@@ -224,6 +224,7 @@ export type IReviewDto = {
   accountIdx: number
   nanumIdx: number
   comments: string
+  createdDatetime: string
 }
 
 export type IReviewImgDto = {
@@ -270,6 +271,15 @@ export type IAppliedNanumDetailDto = {
     unsongNumber: number | null // 해당 나눔의 운송장 번호
     company: string // 택배 회사
   }
+  nanumGoodsDto: {
+    accountIdx: null | number
+    creatorId: null | string
+    endYn: 'Y' | 'N'
+    goodsIdx: number
+    nanumIdx: number
+    nanumMethod: null | 'M' | 'O'
+    realName: null | string
+  }[]
 }
 
 // 진행한 나눔 상세 페이지
@@ -331,7 +341,15 @@ export type ICancelDto = {
   accountIdx: number
   nanumDeleteReason: string
   nanumIdx: number
-  nanumGoodsDtoList: INanumGoodsDto[]
+  nanumGoodsDtoList: {
+    accountIdx: null | number
+    creatorId: null | string
+    endYn: 'Y' | 'N'
+    goodsIdx: number
+    nanumIdx: number
+    nanumMethod: null | 'M' | 'O'
+    realName: null | string
+  }[]
 }
 
 export type INanumAccountFavoritesDto = {

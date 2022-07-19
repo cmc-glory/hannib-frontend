@@ -2,15 +2,17 @@ import React, {useEffect, useState} from 'react'
 import {View, Text, StyleSheet, Alert, Linking, Platform} from 'react-native'
 import {useNavigation} from '@react-navigation/native'
 import {useMutation} from 'react-query'
-import {URL, URLSearchParams} from 'react-native-url-polyfill'
+import {URLSearchParams} from 'react-native-url-polyfill'
 import KeyboardManager from 'react-native-keyboard-manager'
+import LinearGradient from 'react-native-linear-gradient'
 
 import * as theme from '../../theme'
 import {getString, removeString} from '../../hooks'
 import {storeAccessToken, login} from '../../redux/slices'
-import {queryKeys, getAccountInfoByIdx} from '../../api'
+import {getAccountInfoByIdx} from '../../api'
 import {useAppDispatch} from '../../hooks'
 import {removeListener} from '@reduxjs/toolkit'
+import {LogoWhiteIcon} from '../../components/utils'
 
 if (Platform.OS === 'ios') {
   KeyboardManager.setEnable(true)
@@ -34,8 +36,6 @@ if (Platform.OS === 'ios') {
 export const SplashScreen = () => {
   const dispatch = useAppDispatch()
   const navigation = useNavigation()
-  // const prefix = 'hannip://hannip/goods/idx='
-  // const url = new URL(prefix);
 
   const getAccountInfoQuery = useMutation('init', getAccountInfoByIdx, {
     onSuccess(data, variables, context) {
@@ -80,12 +80,10 @@ export const SplashScreen = () => {
           //} else {
           //dispatch(storeAccessToken(accessToken!)) // redux에 accesss
           // accessToken으로 id, email, 카테고리 저장
-          console.log(accountIdx)
           getAccountInfoQuery.mutate(parseInt(accountIdx))
           dispatch(storeAccessToken('1111'))
           //storeAccessToken(accessToken!)
           // qna list 받아오기
-
           //}
         })
       }
@@ -136,13 +134,30 @@ export const SplashScreen = () => {
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.appname}>한입</Text>
-    </View>
+    <LinearGradient
+      start={{x: 1, y: 0}}
+      end={{x: 0, y: 1}}
+      colors={['rgba(141, 91, 255, 1)', 'rgba(255, 173, 193, 1)', 'rgba(255, 255, 255,1)']}
+      style={styles.container}>
+      <LogoWhiteIcon size={82} />
+      <Text style={styles.logoText}>Hannip</Text>
+    </LinearGradient>
   )
 }
 
 const styles = StyleSheet.create({
+  logoText: {
+    fontFamily: 'Lexend-Bold',
+    color: theme.white,
+    fontSize: 32,
+    lineHeight: 40,
+    marginTop: 17,
+  },
+  title: {
+    marginTop: 30,
+    marginBottom: 60,
+    color: theme.white,
+  },
   container: {
     flex: 1,
     justifyContent: 'center',

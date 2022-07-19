@@ -1,28 +1,33 @@
-import React, {useEffect, useState, useCallback} from 'react'
-import {View, ScrollView, Text, StyleSheet, Alert} from 'react-native'
+import React, {useState, useCallback} from 'react'
+import {View, ScrollView, Text, StyleSheet, Alert, RefreshControl} from 'react-native'
 import FastImage from 'react-native-fast-image'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation, useRoute} from '@react-navigation/native'
-import {useQuery, useQueryClient} from 'react-query'
+import {useMutation, useQuery, useQueryClient} from 'react-query'
 
 import {WriterProfileRouteProps} from '../../navigation/GoodsStackNavigator'
-import {StackHeader, MenuIcon, SeparatorBold} from '../../components/utils'
-import {HoldingProjectItem, ReviewItem, BlockUserModal} from '../../components/GoodsStack'
-import {queryKeys, getAccountInfoByIdx, getHoldingNanumList} from '../../api'
-import {IHoldingSharingList} from '../../types'
+import {StackHeader, SeparatorBold} from '../../components/utils'
+import {HoldingProjectItem} from '../../components/GoodsStack'
+import {queryKeys, getAccountInfoByIdx, getHoldingNanumList, deleteReview, getReviews, getNanumByIndex} from '../../api'
+import {IHoldingSharingList, IReviewDto} from '../../types'
 import * as theme from '../../theme'
 import NoUserSvg from '../../assets/Icon/noUser.svg'
+import {useAppSelector} from '../../hooks'
+import {ReviewItem} from '../../components/GoodsStack'
 
 export const WriterProfile = () => {
   // ******************** utils  ********************
   const navigation = useNavigation()
   const queryClient = useQueryClient()
   const route = useRoute<WriterProfileRouteProps>()
-  const {writerAccountIdx} = route.params
+  const {writerAccountIdx, nanumIdx} = route.params
+  const {accountIdx, creatorId} = useAppSelector(state => state.auth.user)
 
   // ******************** states  ********************
   const [isOpened, setIsOpened] = useState<boolean[]>([]) // index번째의 후기가 열렸는지 판단하는 state
   const [writerProfileImg, setwriterProfileImg] = useState<string | null | undefined>('')
+  const [reviews, setReviews] = useState<any>([])
+  const [refreshing, setRefreshing] = useState<boolean>(false)
 
   // ******************** callbacks  ********************
   const onPressReview = useCallback((index: number) => {
@@ -33,6 +38,11 @@ export const WriterProfile = () => {
     navigation.navigate('NanumDetailThroughWriterProfile', {
       nanumIdx: nanumIdx,
     })
+  }, [])
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true)
+    queryClient.invalidateQueries([queryKeys.review])
   }, [])
 
   // ******************** react queries  ********************
@@ -52,28 +62,81 @@ export const WriterProfile = () => {
 
   const holdingList = useQuery([queryKeys.holdingNanumList], () => getHoldingNanumList(writerAccountIdx))
 
-  // useEffect(() => {
-  //   // 해당 작가의 진행 프로젝트, 진행 프로젝트에 대한 모든 후기를 불러옴
-  //   // 진행 프로젝트에서 불러올 것 : 프로젝트 id(클릭하면 상세 페이지로 이동할 수 있게), 썸네일 이미지 uri, 모집중, 마감 등의 상태
-  //   // 후기에서 불러올 것 : 작성자, 작성 날짜, 구매 목록, 내용, 이미지
-  //   // qna list 받아오기
-  //   fetch('http://localhost:8081/src/data/dummyReviews.json', {
-  //     method: 'get',
-  //   })
-  //     .then(res => res.json())
-  //     .then(result => {
-  //       setIsOpened(new Array(result.length).fill(false))
-  //       setReviews(result)
-  //     })
+  useQuery(
+    [queryKeys.review],
+    () =>
+      getReviews({
+        accountIdx: writerAccountIdx,
+        nanumIdx: nanumIdx,
+        reviewImgDtoList: [
+          {
+            accountIdx: writerAccountIdx,
+            nanumIdx: nanumIdx,
+            imgUrl: '',
+          },
+        ],
+        createdDatetime: '',
+        comments: '',
+        creatorId: creatorId,
+      }),
+    {
+      onSuccess(data) {
+        setIsOpened(new Array(data.reviewDtoList.length).fill(false))
+        if (data.reviewDtoList == 0) {
+          setReviews([])
+        } else {
+          const tempList = []
 
-  //   // redux에서 사용자 id를 가져오고 writer인지를 체크.
-  //   // setIsOwner(true)
-  // }, [])
+          for (var i = 0; i < data.reviewDtoList.length; i++) {
+            const temp = data.reviewDtoList[i]
+            const curNanumIdx = data.reviewDtoList[i].nanumIdx
+            for (var j = 0; j < data.reviewImgDtoList.length; j++) {
+              if (data.reviewImgDtoList[j].nanumIdx == curNanumIdx) {
+                if (temp.images == undefined) {
+                  temp.images = [data.reviewImgDtoList[j].imgUrl]
+                } else {
+                  temp.images.push(data.reviewImgDtoList[j].imgUrl)
+                }
+              }
+            }
+            tempList.push(temp)
+          }
+          setReviews(tempList)
+        }
+        setRefreshing(false)
+      },
+    },
+  )
+
+  const deleteReviewQuery = useMutation([queryKeys.review], deleteReview, {
+    onSuccess(data, variables, context) {
+      queryClient.invalidateQueries([queryKeys.review])
+    },
+  })
+
+  const onPressDelete = useCallback(() => {
+    const reviewDto: IReviewDto = {
+      reviewImgDtoList: [
+        {
+          accountIdx: writerAccountIdx,
+          nanumIdx: nanumIdx,
+          imgUrl: '',
+        },
+      ],
+      accountIdx: accountIdx,
+      nanumIdx: nanumIdx,
+      comments: '',
+      createdDatetime: '',
+      creatorId: creatorId,
+    }
+
+    deleteReviewQuery.mutate(reviewDto)
+  }, [accountIdx])
 
   return (
     <SafeAreaView style={[theme.styles.safeareaview]}>
       <StackHeader title="작가 프로필" goBack></StackHeader>
-      <ScrollView>
+      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View style={[theme.styles.rowFlexStart, styles.writerProfileContainer, theme.styles.wrapper]}>
           {writerProfileImg == null || writerProfileImg == undefined || writerProfileImg == '' ? (
             <View style={[styles.profileImage, {justifyContent: 'center', alignItems: 'center', backgroundColor: theme.gray50}]}>
@@ -104,9 +167,9 @@ export const WriterProfile = () => {
             <Text style={[theme.styles.bold16]}>후기</Text>
             <Text style={{fontSize: 12, color: theme.gray700}}>전체후기 0개</Text>
           </View>
-          {/* {reviews.map((review, index) => (
+          {reviews.map((review: any, index: number) => (
             <ReviewItem item={review} index={index} opened={isOpened[index]} onPressReview={onPressReview} key={review.id} />
-          ))} */}
+          ))}
         </View>
       </ScrollView>
     </SafeAreaView>

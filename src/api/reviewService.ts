@@ -13,3 +13,13 @@ export const writeReview = async (reviewDto: IReviewDto) => {
   const {data} = await apiClient.post('/api/applying/review', reviewDto)
   return data
 }
+
+export const deleteReview = async (reviewDto: IReviewDto) => {
+  const {data} = await apiClient.post('/api/applying/review/cancel', reviewDto)
+  return data
+}
+
+export const getReviews = async (reviewDto: IReviewDto) => {
+  const {data} = await apiClient.post('/api/applying/review/select', reviewDto)
+  return data
+}
