@@ -20,8 +20,8 @@ const NoticeListItem = ({item}: NoticeListItemProps) => {
   return (
     <Pressable style={[styles.NotificationItemContaienr]}>
       <View style={[styles.NotificationItemHeaderView]}>
-        <Text style={[styles.NotificationItemHeaderText]}>{item.accountIdx}</Text>
-        <Text style={[styles.NotificationItemHeaderText]}>{moment().format('YYYY.MM.DD HH:mm')}</Text>
+        <Text style={[styles.NotificationItemHeaderText]}>{item.creatorId}</Text>
+        <Text style={[styles.NotificationItemHeaderText]}>{item.createdDate.slice(0, 16)}</Text>
       </View>
       <View style={{marginBottom: 12}}>
         <Text style={[theme.styles.bold16, {color: theme.gray800, lineHeight: 24}]}>{item.title}</Text>

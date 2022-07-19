@@ -6,7 +6,7 @@ import {DownArrowIcon, RightArrowIcon, Tag, XIcon} from '../../components/utils'
 import * as theme from '../../theme'
 import {useToggle} from '../../hooks'
 import {useMutation, useQueryClient} from 'react-query'
-import {cancelNanumByHolder, queryKeys} from '../../api'
+import {cancelNanumByHolder, queryKeys, cancelReceiver} from '../../api'
 import {showMessage} from 'react-native-flash-message'
 
 type ModalProps = {
@@ -14,9 +14,10 @@ type ModalProps = {
   toggleIsVisible: () => void
   nanumIdx: number
   accountIdx: number //취소 당하는 유저의 accountIdx
+  nanumGoodsDtoList: any
 }
 
-export const CancelModal = ({isVisible, toggleIsVisible, nanumIdx, accountIdx}: ModalProps) => {
+export const CancelModal = ({isVisible, toggleIsVisible, nanumIdx, accountIdx, nanumGoodsDtoList}: ModalProps) => {
   const queryClient = useQueryClient()
   const [reason, setReason] = useState<string>('')
   const [noText, setNoText] = useState<boolean>(false)
@@ -32,9 +33,12 @@ export const CancelModal = ({isVisible, toggleIsVisible, nanumIdx, accountIdx}: 
   }
 
   // ************************** react quries **************************
-  const postGoodsSentQuery = useMutation([queryKeys.cancelNanumByHolder, nanumIdx], cancelNanumByHolder, {
+  const postGoodsSentQuery = useMutation([queryKeys.cancelNanumByHolder, nanumIdx], cancelReceiver, {
     onSuccess(data, variables, context) {
-      queryClient.invalidateQueries([queryKeys.appliedNanumList, accountIdx])
+      // queryClient.invalidateQueries([queryKeys.appliedNanumList, accountIdx])
+      queryClient.invalidateQueries([queryKeys.holdingNanumList])
+      queryClient.invalidateQueries([queryKeys.receiverList, nanumIdx])
+
       showMessage({
         // 에러 안내 메세지
         message: '취소가 완료 되었습니다.',
@@ -53,14 +57,14 @@ export const CancelModal = ({isVisible, toggleIsVisible, nanumIdx, accountIdx}: 
   })
 
   const onPressOkBtn = useCallback(() => {
-    console.log('nanaum , account ; ', nanumIdx, accountIdx)
     postGoodsSentQuery.mutate({
       accountIdx: accountIdx,
       nanumDeleteReason: reason,
       nanumIdx: nanumIdx,
+      nanumGoodsDtoList: nanumGoodsDtoList,
     })
     toggleIsVisible()
-  }, [accountIdx, nanumIdx, reason])
+  }, [accountIdx, nanumIdx, reason, nanumGoodsDtoList])
 
   return (
     <Modal isVisible={isVisible} onBackdropPress={closeModal} backdropColor={theme.gray800} backdropOpacity={0.6}>

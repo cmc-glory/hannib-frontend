@@ -44,8 +44,6 @@ export const SendNotice = () => {
     },
   })
 
-  console.log(route.params)
-
   const onPressSendNotice = useCallback(() => {
     let noticeDto: INoticeDto[] = accountIdxList.map(tempAccountIdx => {
       return {
@@ -57,6 +55,9 @@ export const SendNotice = () => {
         creatorId: creatorId,
       }
     })
+
+    console.log(JSON.stringify(noticeDto))
+
     sendNoticeQuery.mutate(noticeDto)
     // for (var i = 0; i < accountIdxList.length; i++) {
     //   sendNoticeQuery.mutate(noticeDto)
