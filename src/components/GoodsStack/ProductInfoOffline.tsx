@@ -29,7 +29,11 @@ export const ProductInfoOffline = ({item, selectedItems, setSelectedItems, reque
   }, [selectedItems, requestForm])
   return (
     <View style={[theme.styles.rowFlexStart, {marginTop: 16}]}>
-      {selected ? <CheckboxIcon onPress={onPressCheckbox} style={{marginRight: 8}} /> : <TouchableOpacity onPress={onPressCheckbox} style={styles.checkbox} />}
+      {selected ? (
+        <CheckboxIcon onPress={onPressCheckbox} style={{marginRight: 8}} />
+      ) : (
+        <TouchableOpacity onPress={onPressCheckbox} style={styles.checkbox} disabled={item.goodsNumber == 0 ? true : false} />
+      )}
       <Text style={[styles.itemName]}>{item.goodsName}</Text>
       <View style={[theme.styles.rowFlexStart]}>
         <Text style={{marginRight: 5, color: theme.gray500}}>잔여 수량</Text>
