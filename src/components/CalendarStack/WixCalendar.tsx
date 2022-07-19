@@ -37,14 +37,14 @@ export const WixCalendar = ({scheduleAll, setSelectedDate, setSelectedSchedule, 
           marked: true,
           dotColor: theme.secondary,
         }
-        tempMarkedDates[moment(item.acceptDate).format('YYYY-MM-DD')] = temp
+        tempMarkedDates[moment(item.acceptDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')] = temp
       })
       scheduleAll.holdingList.forEach((item: any) => {
         const temp = {
           marked: true,
           dotColor: theme.secondary,
         }
-        tempMarkedDates[moment(item.acceptDate).format('YYYY-MM-DD')] = temp
+        tempMarkedDates[moment(item.acceptDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')] = temp
       })
       console.log('tempMarkedDates : ', tempMarkedDates)
       // console.log('today : ', today)
@@ -110,13 +110,13 @@ export const WixCalendar = ({scheduleAll, setSelectedDate, setSelectedSchedule, 
           let tempSchedulePerDay: Array<ICalendarShow> = []
 
           scheduleAll.holdingList.forEach(item => {
-            if (moment(item.acceptDate).format('YYYY-MM-DD') == day.dateString) {
+            if (moment(item.acceptDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD') == day.dateString) {
               tempSchedulePerDay.push(item)
             }
           })
 
           scheduleAll.participatingList.forEach(item => {
-            if (moment(item.acceptDate).format('YYYY-MM-DD') == day.dateString) {
+            if (moment(item.acceptDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD') == day.dateString) {
               tempSchedulePerDay.push(item)
             }
           })
