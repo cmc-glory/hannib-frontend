@@ -12,9 +12,10 @@ type StackHeaderParams = {
   dropdown?: boolean
   children?: React.ReactNode | React.ReactNode[] // 오른쪽에 띄울 아이콘
   x?: boolean
+  customGoBack?: () => void //뒤로가기 버튼 커스텀
 }
 
-export const StackHeader = ({title, onPressTitle, dropdown = false, x, goBack = false, children}: StackHeaderParams) => {
+export const StackHeader = ({title, onPressTitle, dropdown = false, x, goBack = false, children, customGoBack}: StackHeaderParams) => {
   const navigation = useNavigation()
   const onPressGoback = useCallback(() => {
     navigation.goBack()
@@ -26,7 +27,7 @@ export const StackHeader = ({title, onPressTitle, dropdown = false, x, goBack = 
         (x == true ? (
           <XIcon onPress={onPressGoback} style={{marginRight: 10}} />
         ) : (
-          <LeftArrowIcon onPress={onPressGoback} style={{marginRight: 10}} />
+          <LeftArrowIcon onPress={customGoBack == undefined ? onPressGoback : customGoBack} style={{marginRight: 10}} />
           // <Pressable onPress={onPressGoback} style={{marginRight: 10}}>
           //   <Icon uri="http://localhost:8081/src/assets/Icon/Left arrow.png" />
           // </Pressable>

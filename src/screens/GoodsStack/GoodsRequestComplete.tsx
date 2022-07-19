@@ -1,4 +1,4 @@
-import React, {useState, useMemo, useCallback} from 'react'
+import React, {useState, useMemo, useCallback, useEffect} from 'react'
 import {View, Text, StyleSheet, Dimensions} from 'react-native'
 import {useNavigation, useRoute} from '@react-navigation/native'
 import {SafeAreaView} from 'react-native-safe-area-context'
@@ -33,9 +33,23 @@ export const GoodsRequestComplete = () => {
       screen: 'ParticipatingSharingList',
     })
   }, [accountIdx])
+
+  const goBackToNanumList = () => {
+    queryClient.invalidateQueries([queryKeys.appliedNanumList, accountIdx])
+    navigation.navigate('NanumList')
+  }
+
+  //신청하기 완료 화면에서 뒤로가기 버튼 클릭 시 신청폼으로 다시 이동 못하게
+  useEffect(() => {
+    navigation.addListener('beforeRemove', e => {
+      e.preventDefault()
+      goBackToNanumList()
+    })
+  }, [navigation])
+
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
-      <StackHeader title="신청하기" goBack />
+      <StackHeader title="신청하기" goBack customGoBack={goBackToNanumList} />
 
       <View style={{paddingHorizontal: theme.PADDING_SIZE}}>
         <View
