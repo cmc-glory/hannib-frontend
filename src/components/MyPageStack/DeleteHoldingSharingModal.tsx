@@ -14,6 +14,7 @@ type ModalProps = {
   toggleIsVisible: () => void
 }
 
+//사용 안하는 파일
 export const DeleteHoldingSharingModal = ({isVisible, toggleIsVisible}: ModalProps) => {
   return (
     <Modal isVisible={isVisible} onBackdropPress={toggleIsVisible} backdropColor={theme.gray800} backdropOpacity={0.6}>

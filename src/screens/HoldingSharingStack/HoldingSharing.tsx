@@ -43,6 +43,7 @@ import {queryKeys, getNanumByIndex, getReceiverList, endNanum, cancelReceiver, g
 import {AddressModal, CancelModal, CheckFinishedModal} from '../../components/MyPageStack'
 import {NotTakenModal} from '../../components/MyPageStack/NotTakenModal'
 import {DeleteModal} from '../../components/GoodsStack/DeleteModal'
+import {red} from '../../theme'
 
 const BUTTON_WIDTH = (Dimensions.get('window').width - 40 - 10) / 2
 const STATUSBAR_HEIGHT = getStatusBarHeight()
@@ -196,7 +197,8 @@ export const HoldingSharing = () => {
   })
   const myNanumDetailQuery = useMutation([queryKeys.requestedNanumDetail], postRequestDetail, {
     onSuccess(data, variables, context) {
-      console.log(data)
+      setRefreshing(false)
+
       setUnsongYn(data.applyDto.unsongYn == 'Y' ? true : false)
       setReceiverDetail(data)
       setMisAcceptedNumber(data.misAcceptedNumber)
@@ -216,7 +218,7 @@ export const HoldingSharing = () => {
   const onPressDelete = useCallback(() => {
     setDeletePressed(true)
     setMoreVisible(false)
-  }, [])
+  }, [receiverInfoList])
 
   const onPressSendNotice = useCallback(() => {
     navigation.navigate('SendNotice', {
@@ -231,8 +233,11 @@ export const HoldingSharing = () => {
 
   const onPressViewDetail = useCallback(
     (idx: number) => {
+      console.log('idx in func : ', idx)
+      console.log('index 전체 리스트 인덱스 : ', index)
+      console.log('receiverInfoList : ', receiverInfoList)
       setIsDetail(true)
-      setCurrentAccountIdx(receiverInfoList[idx].accountIdx)
+      setCurrentAccountIdx(receiverInfoList[idx]?.accountIdx)
 
       myNanumDetailQuery.mutate({
         nanumIdx: nanumIdx,
@@ -289,6 +294,7 @@ export const HoldingSharing = () => {
 
   const onRefresh = useCallback(() => {
     setRefreshing(true)
+    onPressViewDetail(index)
     queryClient.invalidateQueries([queryKeys.receiverList, nanumIdx])
     //queryClient.invalidateQueries([queryKeys.requestedNanumDetail])
   }, [])
@@ -327,7 +333,7 @@ export const HoldingSharing = () => {
           </Shadow>
         </Modal>
       </StackHeader>
-      <DeleteModal deleteModalVisible={deleteModalVisible} setDeleteModalVisible={setDeleteModalVisible} nanumIdx={nanumIdx} />
+
       <ScrollView contentContainerStyle={[theme.styles.wrapper]} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <SharingPreview uri={nanumInfo.data?.thumbnail} category={nanumInfo.data?.category} title={nanumInfo.data?.title} />
         {/* 굿즈 정보 리스트 & 나눔 마감 버튼 */}
@@ -443,10 +449,13 @@ export const HoldingSharing = () => {
                       </View>
                     ) : null}
 
-                    <View style={[theme.styles.rowSpaceBetween, {marginBottom: 20}]}>
-                      <Text style={styles.detailLabel}>연락처</Text>
-                      <Text style={styles.detailText}>{receiverDetail?.applyDto?.phoneNumber}</Text>
-                    </View>
+                    {/* 연락처 (온라인인 경우에만 연락처 보여줌) */}
+                    {nanumDetailInfo?.nanumMethod == 'M' ? (
+                      <View style={[theme.styles.rowSpaceBetween, {marginBottom: 20}]}>
+                        <Text style={styles.detailLabel}>연락처</Text>
+                        <Text style={styles.detailText}>{receiverDetail?.applyDto?.phoneNumber}</Text>
+                      </View>
+                    ) : null}
 
                     {/* 취소하기, 운송장 등록, 수령 체크 버튼 부분 */}
                     {nanumDetailInfo?.nanumMethod == 'M' ? (
@@ -455,8 +464,13 @@ export const HoldingSharing = () => {
                         <View style={styles.unsongButton}>
                           <Text style={{color: theme.gray700}}>운송장 등록 완료</Text>
                         </View>
+                      ) : //온라인 && 운송장 등록 전 && 나눔 진행자가 취소
+                      receiverDetail?.applyDto?.nanumCancelYn == 'Y' ? (
+                        <View style={styles.unsongButton}>
+                          <Text style={{color: theme.gray700}}>취소 완료</Text>
+                        </View>
                       ) : (
-                        //온라인 && 운송장 등록 전
+                        //온라인 && 운송장 등록 전 && 취소 안됨
                         <View style={[theme.styles.rowSpaceBetween, {marginBottom: 24}]}>
                           <Pressable
                             style={[styles.buttonMedium, styles.cancelButton]}
@@ -481,30 +495,44 @@ export const HoldingSharing = () => {
                       <View style={styles.unsongButton}>
                         <Text style={{color: theme.gray700}}>수령 완료</Text>
                       </View>
-                    ) : (
-                      // 오프라인 && 수령 전
-                      <View style={{marginBottom: 20}}>
-                        <View style={[theme.styles.rowSpaceBetween, {marginBottom: 24}]}>
+                    ) : // 오프라인 && 수령 전
+                    receiverDetail?.applyDto?.misacceptedYn == 'N' ? (
+                      // 오프라인 수령전 진행자가 취소
+                      receiverDetail?.applyDto?.nanumCancelYn == 'Y' ? (
+                        <View style={styles.unsongButton}>
+                          <Text style={{color: theme.gray700}}>취소 완료</Text>
+                        </View>
+                      ) : (
+                        <View style={{marginBottom: 20}}>
+                          <View style={[theme.styles.rowSpaceBetween, {marginBottom: 24}]}>
+                            <Pressable
+                              style={[styles.buttonMedium, styles.cancelButton]}
+                              onPress={() => setParticipantAccountIdx(receiverDetail?.applyDto.accountIdx)}>
+                              <Text style={styles.cancelText}>취소하기</Text>
+                            </Pressable>
+                            <Pressable
+                              style={[styles.buttonMedium, styles.trackingButton]}
+                              onPress={() => {
+                                setParticipantAccountIdx(receiverDetail?.applyDto.accountIdx)
+                                toggleCheckFinishedModalShow()
+                              }}>
+                              <Text style={styles.trackingText}>수령 체크</Text>
+                            </Pressable>
+                          </View>
+
                           <Pressable
-                            style={[styles.buttonMedium, styles.cancelButton]}
                             onPress={() => {
                               setParticipantAccountIdx(receiverDetail?.applyDto.accountIdx)
-                              toggleCancelModalShow()
+                              toggleNotTakenModalShow()
                             }}>
-                            <Text style={styles.cancelText}>취소하기</Text>
-                          </Pressable>
-                          <Pressable
-                            style={[styles.buttonMedium, styles.trackingButton]}
-                            onPress={() => {
-                              setParticipantAccountIdx(receiverDetail?.applyDto.accountIdx)
-                              toggleCheckFinishedModalShow()
-                            }}>
-                            <Text style={styles.trackingText}>수령 체크</Text>
+                            <Text style={{color: theme.main}}>혹시 미수령인가요? </Text>
                           </Pressable>
                         </View>
-                        <Pressable onPress={toggleNotTakenModalShow}>
-                          <Text style={{color: theme.main}}>혹시 미수령인가요? </Text>
-                        </Pressable>
+                      )
+                    ) : (
+                      // 오프라인 && 미수령
+                      <View style={[styles.unsongButton, {borderColor: red}]}>
+                        <Text style={{color: theme.red}}>미수령</Text>
                       </View>
                     )}
                   </>
@@ -559,12 +587,17 @@ export const HoldingSharing = () => {
       </BottomSheet>
 
       {/* 모달 */}
+
+      <DeleteModal deleteModalVisible={deleteModalVisible} setDeleteModalVisible={setDeleteModalVisible} nanumIdx={nanumIdx} />
+      {/* 취소하기 */}
+
       <CancelModal
         nanumIdx={nanumIdx}
         accountIdx={participantAccountIdx!}
         isVisible={cancelModalShow}
         toggleIsVisible={toggleCancelModalShow}
         nanumGoodsDtoList={receiverDetail?.nanumGoodsDto}></CancelModal>
+
       <AddressModal
         nanumIdx={nanumIdx}
         accountIdx={participantAccountIdx!}
@@ -573,19 +606,22 @@ export const HoldingSharing = () => {
         accountIdxList={accountIdxList}
         selectedAccountIdx={currentAccountIdx!}
         setUnsongYn={setUnsongYn}
+        setRefresh={setRefreshing}
       />
-
+      {/* 미수령 체크 */}
       <NotTakenModal
         nanumIdx={nanumIdx}
         accountIdx={participantAccountIdx!}
         isVisible={notTakenModalShow}
-        toggleIsVisible={toggleNotTakenModalShow}></NotTakenModal>
-
+        toggleIsVisible={toggleNotTakenModalShow}
+        setRefresh={setRefreshing}></NotTakenModal>
+      {/* 수령 체크  api 완료*/}
       <CheckFinishedModal
         nanumIdx={nanumIdx}
         accountIdx={participantAccountIdx!}
         isVisible={checkFinishedModalShow}
-        toggleIsVisible={toggleCheckFinishedModalShow}></CheckFinishedModal>
+        toggleIsVisible={toggleCheckFinishedModalShow}
+        setRefresh={setRefreshing}></CheckFinishedModal>
     </SafeAreaView>
   )
 }
