@@ -34,6 +34,12 @@ export const postGoodsSent = async (cancelDto: IcancelDto) => {
   return data
 }
 
+//수령체크 및 전달완료하기 (변수명만 cancelDto로 같고 api는 잘 작동)
+export const checkNotTaken = async (numberDto: {accountIdx: number; nanumIdx: number}) => {
+  const {data} = await apiClient.post('/api/nanuming/misaccepted', numberDto)
+  return data
+}
+
 //나눔 공지 보내기
 // export const sendNotice = async (noticeDtoList: INoticeDto[]) => {
 //   const {data} = await apiClient.post('/api/nanuming/notice', noticeDtoList)

@@ -14,14 +14,16 @@ type ModalProps = {
   toggleIsVisible: () => void
   accountIdx: number
   nanumIdx: number
+  setRefresh: (bool: boolean) => void
 }
 
-export const CheckFinishedModal = ({isVisible, toggleIsVisible, accountIdx, nanumIdx}: ModalProps) => {
+export const CheckFinishedModal = ({isVisible, toggleIsVisible, accountIdx, nanumIdx, setRefresh}: ModalProps) => {
   //console.log('accountIdx : ', accountIdx)
 
   // ************************** react quries **************************
   const postGoodsSentQuery = useMutation([queryKeys.endNanum, nanumIdx], postGoodsSent, {
     onSuccess(data, variables, context) {
+      setRefresh(true)
       showMessage({
         // 에러 안내 메세지
         message: '전달 완료 처리되었습니다.',
