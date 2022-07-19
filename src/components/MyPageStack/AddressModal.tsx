@@ -23,6 +23,7 @@ type AddressModal = {
   // setSendMethod: (mthd: string) => void
   accountIdx: number
   nanumIdx: number
+  setRefresh: (bool: boolean) => void
 }
 
 type ButtonProps = {
@@ -46,7 +47,7 @@ const Unselected = ({label, onPress}: ButtonProps) => {
   )
 }
 
-export const AddressModal = ({isVisible, toggleIsVisible, accountIdxList, selectedAccountIdx, nanumIdx, setUnsongYn}: AddressModal) => {
+export const AddressModal = ({isVisible, toggleIsVisible, accountIdxList, selectedAccountIdx, nanumIdx, setUnsongYn, setRefresh}: AddressModal) => {
   const queryClient = useQueryClient()
   // ********************* states  *********************
   const [postComp, setPostComp] = useState<string>('')
@@ -74,6 +75,7 @@ export const AddressModal = ({isVisible, toggleIsVisible, accountIdxList, select
         floating: true,
       })
       toggleIsVisible()
+      setRefresh(true)
     },
   })
 

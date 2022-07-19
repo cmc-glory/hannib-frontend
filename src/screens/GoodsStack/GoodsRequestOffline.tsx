@@ -118,8 +118,6 @@ export const GoodsRequestOffline = () => {
       return
     }
 
-    console.log('here')
-
     const requestApplyForm: INanumApplyOfflineDto = {
       applyAskAnswerLists: data.data.askList?.map((item: INanumRequestReuiredAsk, index: number) => {
         return {

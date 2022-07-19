@@ -110,13 +110,7 @@ export const WriteNanumFormOffline = () => {
     const nanumForm: INanumForm = {
       nanumAskList:
         nanumAsks.length == 0
-          ? [
-              {
-                nanumIdx: 0,
-                contents: '트위터 아이디',
-                essential: 'Y',
-              },
-            ]
+          ? []
           : nanumAsks.map(item => {
               return {
                 nanumIdx: 0,

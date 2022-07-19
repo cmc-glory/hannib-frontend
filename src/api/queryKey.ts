@@ -33,6 +33,7 @@ export const queryKeys = {
   favorites: ['favorites'], // 찜
   appliedNanum: ['appliedNanum'],
   cancelNanum: ['cancelNanum'],
+  checkNotTaken: ['checkNotTaken'],
   writeReview: ['writeReview'],
   cancelNanumByHolder: ['cancelNanumByHolder'],
   accountInfoMypage: ['accountInfoMypage'],

@@ -286,6 +286,7 @@ export type IApplyDto = {
   misacceptedYn: 'Y' | 'N'
   reviewYn: 'Y' | 'N'
   unsongYn: 'Y' | 'N'
+  nanumCancelYn?: 'Y' | 'N' //진행자가 해당 참여자 취소했는지
   acceptDate: string // 오프라인 수령 일자
   applyDate: string // 신청 일자
   realName: string
