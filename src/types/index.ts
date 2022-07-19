@@ -270,6 +270,7 @@ export type IAppliedNanumDetailDto = {
     unsongNumber: number | null // 해당 나눔의 운송장 번호
     company: string // 택배 회사
   }
+  nanumGoodsDto: INanumGoodsDto[]
 }
 
 // 진행한 나눔 상세 페이지
