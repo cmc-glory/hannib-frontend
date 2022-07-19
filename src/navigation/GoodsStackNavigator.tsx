@@ -39,6 +39,7 @@ type GoodsStackNavigatorParamList = {
   }
   WriterProfile: {
     writerAccountIdx: number
+    nanumIdx: number
   }
   NoticeList: {
     nanumIdx: number

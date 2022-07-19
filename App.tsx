@@ -16,6 +16,7 @@ import {Provider as ReduxProvider} from 'react-redux'
 import NetInfo from '@react-native-community/netinfo'
 import FlashMessage from 'react-native-flash-message'
 import KeyboardManager from 'react-native-keyboard-manager'
+import SplashScreen from 'react-native-splash-screen'
 
 if (Platform.OS === 'ios') {
   KeyboardManager.setEnable(true)
@@ -94,6 +95,7 @@ const App = () => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage))
     })
+    SplashScreen.hide()
 
     // 알림 허용 설정 요청
     requestUserPermission()
