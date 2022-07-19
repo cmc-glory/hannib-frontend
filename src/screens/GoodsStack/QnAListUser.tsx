@@ -11,7 +11,7 @@ import * as theme from '../../theme'
 import {IInquiryNanumDto} from '../../types'
 import {useAppSelector} from '../../hooks'
 import {EmptyIcon} from '../../components/utils'
-import {queryKeys, getNanumByIndex, getInquiryByIndex} from '../../api'
+import {queryKeys, getNanumByIndex, getInquiryByIndex, getAppliedNanumInfo} from '../../api'
 
 export const QnAListUser = () => {
   // ******************** utils ********************
@@ -24,8 +24,6 @@ export const QnAListUser = () => {
   const queryClient = useQueryClient()
 
   const {nanumIdx} = useMemo(() => route.params, [])
-
-  console.log('nanumIdx : ', nanumIdx)
 
   // ******************** states ********************
   const [refreshing, setRefreshing] = useState<boolean>(false)

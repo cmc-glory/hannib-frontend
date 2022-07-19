@@ -237,6 +237,8 @@ export type INoticeDto = {
   nanumIdx: number
   title: string
   comments: string
+  createdDate: string
+  creatorId: string
 }
 
 export type IUnsongDto = {

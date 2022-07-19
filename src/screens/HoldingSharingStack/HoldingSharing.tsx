@@ -333,6 +333,7 @@ export const HoldingSharing = () => {
               </View>
             </View>
           ))}
+          {}
           <Pressable
             style={[styles.endSharingBtn]}
             onPress={() => Alert.alert('마감 처리 하시겠습니까?', '', [{text: '취소'}, {text: '확인', onPress: () => endNanumQuery.mutate(nanumIdx)}])}>
@@ -560,7 +561,7 @@ export const HoldingSharing = () => {
         accountIdx={participantAccountIdx!}
         isVisible={notTakenModalShow}
         toggleIsVisible={toggleNotTakenModalShow}></NotTakenModal>
-        
+
       <CheckFinishedModal
         nanumIdx={nanumIdx}
         accountIdx={participantAccountIdx!}

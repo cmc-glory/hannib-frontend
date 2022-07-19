@@ -43,13 +43,18 @@ export const MyPageScreen = () => {
   const navigation = useNavigation()
   const user = useAppSelector(state => state.auth.user)
   const queryClient = useQueryClient()
-  const [userInfo, setUserInfo] = useState<IAccountDto & {applyNumber: number; nanumNumber: number}>()
+  const [userInfo, setUserInfo] = useState<IAccountDto>()
+  const [applyNumber, setApplyNumber] = useState<number>(0)
+  const [nanumNumber, setNanumNumber] = useState<number>(0)
   const [refreshing, setRefreshing] = useState<boolean>(false)
 
   useQuery(queryKeys.accountInfoMypage, () => getAccountInfoMypage(user.accountIdx), {
     onSuccess(data) {
+      console.log('reloaded')
       setRefreshing(false)
-      setUserInfo({...data.accountDto, applyNumber: data.applyNumber, nanumNumber: data.nanumNumber})
+      setUserInfo({...data.accountDto})
+      setApplyNumber(data.applyNumber)
+      setNanumNumber(data.nanumNumber)
     },
   })
 
@@ -126,9 +131,9 @@ export const MyPageScreen = () => {
         <Separator />
         <View style={styles.wrapper}>
           <Text style={[theme.styles.bold16, {marginBottom: 8, marginTop: 16}]}>나눔 관리</Text>
-          <MyPageItem label="진행한 나눔" numSharing={userInfo?.nanumNumber} onPress={onPressHoldingSharing} />
+          <MyPageItem label="진행한 나눔" numSharing={nanumNumber} onPress={onPressHoldingSharing} />
           <SeparatorLight />
-          <MyPageItem label="참여한 나눔" numSharing={userInfo?.applyNumber} onPress={onPressParticipatingSharing} />
+          <MyPageItem label="참여한 나눔" numSharing={applyNumber} onPress={onPressParticipatingSharing} />
         </View>
         <Separator />
         <View style={styles.wrapper}>

@@ -22,6 +22,7 @@ type AddressModal = {
   // sendMethod: string
   // setSendMethod: (mthd: string) => void
   accountIdx: number
+  nanumIdx: number
 }
 
 type ButtonProps = {
@@ -188,6 +189,7 @@ export const AddressModal = ({isVisible, toggleIsVisible, accountIdxList, select
                 autoCorrect={false}></TextInput>
               {noPostComp && <Text style={styles.noInputErrorText}>택배사를 입력해주세요.</Text>}
               <TextInput
+                keyboardType="numeric"
                 placeholder="운송장 번호"
                 value={postNum}
                 onChangeText={text => {

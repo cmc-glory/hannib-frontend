@@ -21,10 +21,10 @@ const SharingTimeLocationItem = ({schedule, scheduleNum, index}: SharingTimeLoca
     <View style={[theme.styles.rowSpaceBetween, {marginLeft: 8}, scheduleNum != index && {marginBottom: 12}]}>
       <View style={[theme.styles.rowFlexStart]}>
         <View style={styles.dot} />
-        <Text style={{fontSize: 16, color: theme.gray700}}>{moment(schedule.acceptDate).format('YY.MM.DD HH:mm')}</Text>
+        <Text style={[styles.text]}>{moment(schedule.acceptDate).format('YY.MM.DD HH:mm')}</Text>
       </View>
       <View style={[theme.styles.rowFlexStart]}>
-        <Text style={{fontSize: 16, marginRight: 8, color: theme.gray700}}>{schedule.location}</Text>
+        <Text style={[styles.text, {marginRight: 8}]}>{schedule.location}</Text>
         <Location20Svg />
       </View>
     </View>
@@ -44,6 +44,11 @@ export const SharingTimeLocation = ({schedules}: SharingTimeLocationProps) => {
 }
 
 const styles = StyleSheet.create({
+  text: {
+    fontSize: 16,
+    color: theme.gray700,
+    lineHieght: 24,
+  },
   dot: {
     width: 4,
     height: 4,

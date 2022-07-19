@@ -1,17 +1,17 @@
-import React, {useState, useCallback, useEffect, useMemo} from 'react'
-import {View, Text, TextInput, StyleSheet, ActivityIndicator} from 'react-native'
+import React, {useState, useMemo} from 'react'
+import {View, ScrollView, Text, TextInput, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation, useRoute} from '@react-navigation/native'
 import {Switch} from 'react-native-paper'
-import {useMutation, useQueryClient} from 'react-query'
+import {useMutation, useQueryClient, useQuery} from 'react-query'
 import {showMessage} from 'react-native-flash-message'
 
-import {queryKeys, postInquiry} from '../../api'
+import {queryKeys, postInquiry, getAppliedNanumInfo} from '../../api'
 import {StackHeader, SharingPreview, RoundButton} from '../../components/utils'
 import {WriteQnARouteProps} from '../../navigation/GoodsStackNavigator'
 import {useToggle, useAppSelector} from '../../hooks'
 import * as theme from '../../theme'
-import {IInquiryNanumDto, IQuestionNanumDto} from '../../types'
+import {IInquiryNanumDto, IApplyingGoodsDto} from '../../types'
 
 const ProductItem = ({name, quantity, spacing}: {name: string; quantity: number; spacing?: boolean}) => {
   return (
@@ -34,9 +34,25 @@ export const WriteQnA = () => {
   const {nanumIdx, accountIdx, imageuri, category, title} = useMemo(() => route.params, [])
   const creatorId = useAppSelector(state => state.auth.user.creatorId)
 
-  console.log('nanumIdx : ', nanumIdx, 'accountIdx : ', accountIdx)
+  // ******************** states ********************
 
-  // ******************** react queries********************
+  const [appliedGoodsList, setAppliedGoodsList] = useState<IApplyingGoodsDto[]>([])
+
+  // ******************** react queries ********************
+  useQuery(
+    [queryKeys.appliedNanum, nanumIdx],
+    () =>
+      getAppliedNanumInfo({
+        accountIdx: accountIdx,
+        nanumIdx,
+      }),
+    {
+      onSuccess(data) {
+        setAppliedGoodsList(data.applyingGoodsDto)
+      },
+    },
+  )
+
   const postInquiryQuery = useMutation(queryKeys.inquiry, postInquiry, {
     onSuccess(data, variables, context) {
       queryClient.invalidateQueries([queryKeys.inquiry, nanumIdx])
@@ -65,10 +81,6 @@ export const WriteQnA = () => {
   const [comments, setComments] = useState<string>('')
   const [isSecret, toggleSecret] = useToggle()
 
-  useEffect(() => {
-    // 해당 사용자가 주문한 물건 받아오는 api
-  }, [])
-
   // ******************** callbacks ********************
   const onPressSubmit = () => {
     if (postInquiryQuery.isLoading) {
@@ -96,11 +108,12 @@ export const WriteQnA = () => {
   return (
     <SafeAreaView style={[theme.styles.safeareaview]}>
       <StackHeader title="문의하기" goBack />
-      <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.container}>
         <SharingPreview uri={imageuri} category={category} title={title} />
         <View style={{marginVertical: 20}}>
-          <ProductItem name="BTS 뷔 컨셉의 하트 키링" quantity={1} spacing />
-          <ProductItem name="BTS 지민 컨셉의 스페이드 키링" quantity={1} />
+          {appliedGoodsList.map((goods, index) => (
+            <ProductItem name={goods.goodsName} key={goods.goodsName + index} quantity={1} spacing={index != appliedGoodsList.length - 1} />
+          ))}
         </View>
         <View style={{marginBottom: 20}}>
           <Text style={[theme.styles.label]}>문의 내용</Text>
@@ -119,15 +132,19 @@ export const WriteQnA = () => {
           <Text style={{fontSize: 16, fontFamily: 'Pretendard-Medium'}}>비밀글</Text>
           <Switch value={isSecret} onValueChange={toggleSecret} color={theme.secondary} />
         </View>
-        <RoundButton label="등록" style={{marginTop: 24}} enabled={comments != ''} onPress={onPressSubmit} />
-      </View>
+        <View style={styles.buttonView}>
+          <RoundButton label="등록" enabled={comments != ''} onPress={onPressSubmit} loading={postInquiryQuery.isLoading} />
+        </View>
+      </ScrollView>
     </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
+  buttonView: {
+    marginTop: 24,
+  },
   container: {
     paddingHorizontal: theme.PADDING_SIZE,
-    flex: 1,
   },
 })

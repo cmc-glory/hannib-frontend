@@ -1,17 +1,16 @@
 import React, {useState, useCallback} from 'react'
-import {View, Pressable, Text, StyleSheet, ScrollView, RefreshControl} from 'react-native'
+import {View, Pressable, Text, StyleSheet, ScrollView, FlatList, RefreshControl} from 'react-native'
 import {useNavigation, useRoute} from '@react-navigation/native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useQuery, useQueryClient} from 'react-query'
 import moment from 'moment'
 
-import {FloatingBottomButton} from '../../components/utils'
 import {NoticeListRouteProps} from '../../navigation/GoodsStackNavigator'
 import {StackHeader} from '../../components/utils'
 import * as theme from '../../theme'
 import {queryKeys, getNotices} from '../../api'
+import NotExistsSvg from '../../assets/Icon/NotExists.svg'
 import {INoticeDto} from '../../types'
-import {useAppSelector} from '../../hooks'
 
 type NoticeListItemProps = {
   item: INoticeDto
@@ -61,14 +60,34 @@ export const NoticeList = () => {
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
       <StackHeader title="공지사항" goBack />
-      <ScrollView style={{flex: 1}} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        {data != undefined && data.map((item: INoticeDto, index: number) => <NoticeListItem item={item} key={nanumIdx + index} />)}
-      </ScrollView>
+      {data == undefined || data.length == 0 ? (
+        <ScrollView contentContainerStyle={styles.scrollViewContainer} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+          <NotExistsSvg />
+          <View style={styles.emptyResultView}>
+            <Text style={[theme.styles.bold20, {marginBottom: 8}]}>등록된 공지가 없습니다.</Text>
+          </View>
+        </ScrollView>
+      ) : (
+        <FlatList
+          data={data}
+          renderItem={({item, index}) => <NoticeListItem item={item} key={nanumIdx + index} />}
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+        />
+      )}
     </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
+  emptyResultView: {
+    marginTop: 32,
+  },
+  scrollViewContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   contentText: {
     fontSize: 14,
     lineHeight: 20,

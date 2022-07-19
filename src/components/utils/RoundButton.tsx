@@ -1,5 +1,5 @@
 import React from 'react'
-import {Pressable, Text, StyleSheet, Platform} from 'react-native'
+import {Pressable, Text, StyleSheet, ActivityIndicator} from 'react-native'
 import * as theme from '../../theme'
 
 type RoundButtonProps = {
@@ -7,12 +7,15 @@ type RoundButtonProps = {
   onPress?: () => void
   enabled?: boolean
   style?: any
+  loading?: boolean
 }
 
-export const RoundButton = ({label, onPress, style, enabled = false}: RoundButtonProps) => {
+export const RoundButton = ({label, onPress, style, enabled = false, loading = false}: RoundButtonProps) => {
   return (
-    <Pressable onPress={enabled ? onPress : undefined} style={[style, styles.container, enabled ? theme.styles.button : theme.styles.disabledButton]}>
-      <Text style={styles.label}>{label}</Text>
+    <Pressable
+      onPress={enabled && loading == false ? onPress : undefined}
+      style={[style, styles.container, enabled ? theme.styles.button : theme.styles.disabledButton]}>
+      {loading ? <ActivityIndicator /> : <Text style={styles.label}>{label}</Text>}
     </Pressable>
   )
 }

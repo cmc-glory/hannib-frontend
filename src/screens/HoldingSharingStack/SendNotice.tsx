@@ -5,6 +5,7 @@ import {useMutation} from 'react-query'
 import {useNavigation, useRoute} from '@react-navigation/native'
 import {showMessage} from 'react-native-flash-message'
 
+import {useAppSelector} from '../../hooks'
 import {INoticeDto} from '../../types'
 import {queryKeys, sendNotice} from '../../api'
 import {SendNoticeRouteProps} from '../../navigation/HoldingSharingStackNavigator'
@@ -17,6 +18,7 @@ export const SendNotice = () => {
   const route = useRoute<SendNoticeRouteProps>()
   const nanumIdx = route.params.nanumIdx
   const accountIdxList = route.params.accountIdxList
+  const creatorId: string = useAppSelector(state => state.auth.user.creatorId)
 
   // ******************** utils ********************
   const [title, setTitle] = useState<string>('')
@@ -51,12 +53,15 @@ export const SendNotice = () => {
         accountIdx: tempAccountIdx,
         title,
         comments,
+        createdDate: '',
+        creatorId: creatorId,
       }
     })
-    for (var i = 0; i < accountIdxList.length; i++) {
-      sendNoticeQuery.mutate(noticeDto)
-    }
-  }, [title, comments])
+    sendNoticeQuery.mutate(noticeDto)
+    // for (var i = 0; i < accountIdxList.length; i++) {
+    //   sendNoticeQuery.mutate(noticeDto)
+    // }
+  }, [title, comments, creatorId, accountIdxList])
 
   const checkButtonEnabled = useCallback(() => {
     // 둘다 빈 문자열이 아닐 때만 공지 보낼 수 있음
@@ -97,6 +102,7 @@ export const SendNotice = () => {
 const styles = StyleSheet.create({
   textinput: {
     color: theme.gray800,
+    lineHeight: 20,
   },
   rootContainer: {
     flex: 1,
