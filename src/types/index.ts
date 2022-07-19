@@ -264,6 +264,8 @@ export type IApplyingGoodsDto = {
 export type IAppliedNanumDetailDto = {
   applyDto: IApplyDto
   applyingGoodsDto: IApplyingGoodsDto[]
+  unsongNumber: number | null // 해당 나눔의 운송장 번호
+  company: string // 택배 회사
 }
 
 // 진행한 나눔 상세 페이지
@@ -474,7 +476,7 @@ export type INanumApplyOnlineDto = {
   realName: string
   address1: string
   address2: string
-  //creatorId: string //삭제 필요
+  creatorId: string //삭제 필요
   phoneNumber: string
   title: string
   //api에 따라 수정 필요

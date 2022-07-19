@@ -138,6 +138,7 @@ export const GoodsRequestOffline = () => {
               nanumIdx: data.data.nanumIdx,
               goodsName: item.goodsName,
               goodsNumber: info?.goodsList[index].goodsNumber,
+              creatorId: user.creatorId,
             }
           } else return
         })

@@ -11,7 +11,7 @@ type RoundButtonProps = {
 
 export const RoundButton = ({label, onPress, style, enabled = false}: RoundButtonProps) => {
   return (
-    <Pressable onPress={onPress} style={[style, styles.container, enabled ? theme.styles.button : theme.styles.disabledButton]}>
+    <Pressable onPress={enabled ? onPress : undefined} style={[style, styles.container, enabled ? theme.styles.button : theme.styles.disabledButton]}>
       <Text style={styles.label}>{label}</Text>
     </Pressable>
   )

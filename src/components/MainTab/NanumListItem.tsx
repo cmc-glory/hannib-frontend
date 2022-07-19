@@ -124,7 +124,7 @@ export const NanumListItem = ({item}: {item: INanumListItem}) => {
         },
       })
     }
-  }, [])
+  }, [nanumIdx])
 
   return (
     <>

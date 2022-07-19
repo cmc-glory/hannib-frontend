@@ -124,7 +124,7 @@ export const ParticipatingSharingOffline = () => {
   return (
     <SafeAreaView style={styles.rootContainer}>
       <StackHeader title="참여한 나눔" goBack />
-      <ScrollView contentContainerStyle={[theme.styles.wrapper, {flex: 1}]} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+      <ScrollView contentContainerStyle={[theme.styles.wrapper]} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <SharingPreview uri={nanumInfo.data?.thumbnail} category={nanumInfo.data?.category} title={nanumInfo.data?.title} />
         <View style={{marginVertical: 20}}>
           {appliedGoodsList.map((item, index) => (

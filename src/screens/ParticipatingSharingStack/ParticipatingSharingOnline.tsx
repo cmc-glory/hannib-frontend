@@ -123,7 +123,7 @@ export const ParticipatingSharingOnline = () => {
   return (
     <SafeAreaView style={styles.rootContainer}>
       <StackHeader title="참여한 나눔" goBack />
-      <ScrollView contentContainerStyle={[theme.styles.wrapper, {flex: 1}]} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+      <ScrollView contentContainerStyle={[theme.styles.wrapper]} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <SharingPreview uri={nanumInfo.data?.thumbnail} category={nanumInfo.data?.category} title={nanumInfo.data?.title} />
         <View style={{marginVertical: 20}}>
           {appliedGoodsList.map((item, index) => (
@@ -160,9 +160,10 @@ export const ParticipatingSharingOnline = () => {
             </View>
             <View style={[theme.styles.rowSpaceBetween, styles.requestInfoWrapper]}>
               <Text style={styles.requestInfoLabel}>주소</Text>
-              <Text style={[styles.requestInfoText]}>
-                {detail?.applyDto.address1} {detail?.applyDto.address2}
-              </Text>
+              <View>
+                <Text style={[styles.detailText, styles.postcodeText]}>우) {detail?.applyDto?.address1}</Text>
+                <Text style={styles.detailText}>{detail?.applyDto?.address2}</Text>
+              </View>
             </View>
             <View style={[theme.styles.rowSpaceBetween, styles.requestInfoWrapper]}>
               <Text style={styles.requestInfoLabel}>연락처</Text>
@@ -172,10 +173,12 @@ export const ParticipatingSharingOnline = () => {
               <Text style={styles.requestInfoLabel}>수령 현황</Text>
               <Text style={styles.requestInfoText}>{nanumState}</Text>
             </View>
-            {detail?.applyDto.unsongNumber != '' && detail?.applyDto.unsongNumber != undefined && (
+            {detail?.unsongNumber != null && (
               <View style={[theme.styles.rowSpaceBetween, styles.requestInfoWrapper]}>
                 <Text style={styles.requestInfoLabel}>운송장 번호</Text>
-                <Text style={styles.requestInfoText}>{detail?.applyDto.trackingNumber}</Text>
+                <Text style={styles.requestInfoText}>
+                  {detail?.company} {detail?.unsongNumber}
+                </Text>
               </View>
             )}
           </View>
@@ -206,6 +209,14 @@ export const ParticipatingSharingOnline = () => {
 }
 
 const styles = StyleSheet.create({
+  postcodeText: {
+    marginBottom: 8,
+    textAlign: 'right',
+  },
+  detailText: {
+    fontSize: 16,
+    color: theme.gray700,
+  },
   unselectedReviewButton: {
     backgroundColor: theme.white,
     borderColor: theme.gray500,

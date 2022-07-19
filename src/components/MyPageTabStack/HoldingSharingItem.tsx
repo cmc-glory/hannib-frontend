@@ -48,9 +48,6 @@ export const HoldingSharingItem = ({item}: {item: IHoldingSharingList}) => {
         </View>
       )}
       <View style={{width: IMAGE_SIZE}}>
-        <View style={[styles.imageHeader, {width: IMAGE_SIZE}]}>
-          <StarUnfilledIcon />
-        </View>
         <FastImage style={[styles.image, {width: IMAGE_SIZE, height: IMAGE_SIZE}]} source={{uri: imageUri}}></FastImage>
       </View>
       <View style={{marginTop: 10}}>

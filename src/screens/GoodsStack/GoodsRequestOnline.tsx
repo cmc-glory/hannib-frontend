@@ -113,8 +113,6 @@ export const GoodsReqeustOnline = () => {
       return
     }
 
-    console.log(requestForm)
-
     const requestApplyForm: INanumApplyOnlineDto = {
       applyAskAnswerLists: data.data.askList.map((item: INanumRequestReuiredAsk, index: number) => {
         return {
@@ -124,16 +122,16 @@ export const GoodsReqeustOnline = () => {
           answerList: answers[index],
         }
       }),
-      nanumGoodsDtoList: data.data.goodsList
-        .map((item: INanumRequestGoods, index: number) => {
+      nanumGoodsDtoList: data.data?.goodsList
+        ?.map((item: INanumRequestGoods, index: number) => {
           if (selectedItems[item.goodsIdx] == true && item != null) {
             return {
               goodsIdx: item.goodsIdx,
               accountIdx: user.accountIdx,
               nanumIdx: data.data.nanumIdx,
               goodsName: item.goodsName,
-              realName: requestForm.name,
               goodsNumber: info?.goodsList[index].goodsNumber,
+              creatorId: user.creatorId,
             }
           } else return
         })
@@ -145,11 +143,12 @@ export const GoodsReqeustOnline = () => {
       address2: requestForm.address.roadAddress + ' ' + requestForm.address.detailedAddress,
       phoneNumber: requestForm.phonenumber.first + '-' + requestForm.phonenumber.second + '-' + requestForm.phonenumber.third,
       title: data.data.nanumDto.title,
+      creatorId: user.creatorId,
     }
     console.log(JSON.stringify(requestApplyForm))
 
     postNanumRequestOnlineFormQuery.mutate(requestApplyForm)
-  }, [requestForm, selectedItems, answers, data])
+  }, [requestForm, selectedItems, answers, data, user])
 
   const isButtonEnabled = useCallback(() => {
     // 기본 필수 정보 중에 하나라도 안 채워진 게 있으면 false 리턴

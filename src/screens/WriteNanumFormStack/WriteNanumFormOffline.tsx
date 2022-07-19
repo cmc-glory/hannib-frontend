@@ -110,13 +110,7 @@ export const WriteNanumFormOffline = () => {
     const nanumForm: INanumForm = {
       nanumAskList:
         nanumAsks.length == 0
-          ? [
-              {
-                nanumIdx: 0,
-                contents: '트위터 아이디',
-                essential: 'Y',
-              },
-            ]
+          ? []
           : nanumAsks.map(item => {
               return {
                 nanumIdx: 0,
@@ -157,7 +151,7 @@ export const WriteNanumFormOffline = () => {
       nanumMethod: 'O', // M : Mail(우편), O : Offline(오프라인)
       firstDate: moment(firstDate).format('YYYY-MM-DD HH:mm:ss'), // example: 2022-07-01 12:43:15
       secretForm: secretForm ? 'Y' : 'N',
-      secretPwd: secretPwd == '' ? 1234 : parseInt(secretPwd),
+      secretPwd: secretPwd,
       favorites: 0,
       job: category.job,
       accountDto: {
