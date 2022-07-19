@@ -174,7 +174,7 @@ export const ParticipatingSharingOnline = () => {
               <Text style={styles.requestInfoLabel}>수령 현황</Text>
               <Text style={styles.requestInfoText}>{nanumState}</Text>
             </View>
-            {detail?.unsongNumber.unsongNumber != null && (
+            {detail?.unsongNumber?.unsongNumber != null && (
               <View style={[theme.styles.rowSpaceBetween, styles.requestInfoWrapper]}>
                 <Text style={styles.requestInfoLabel}>운송장 번호</Text>
                 <View style={[theme.styles.rowFlexStart]}>

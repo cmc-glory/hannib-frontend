@@ -202,6 +202,7 @@ export const HoldingSharing = () => {
       setUnsongYn(data.applyDto.unsongYn == 'Y' ? true : false)
       setReceiverDetail(data)
       setMisAcceptedNumber(data.misAcceptedNumber)
+      console.log('receiverDetail : ', receiverDetail)
     },
   })
   // ************************** callbacks **************************
@@ -233,9 +234,10 @@ export const HoldingSharing = () => {
 
   const onPressViewDetail = useCallback(
     (idx: number) => {
-      console.log('idx in func : ', idx)
-      console.log('index 전체 리스트 인덱스 : ', index)
-      console.log('receiverInfoList : ', receiverInfoList)
+      // console.log('idx in func : ', idx)
+      // console.log('index 전체 리스트 인덱스 : ', index)
+      // console.log('receiverInfoList : ', receiverInfoList)
+      // console.log('isDetail : ', isDetail)
       setIsDetail(true)
       setCurrentAccountIdx(receiverInfoList[idx]?.accountIdx)
 
@@ -243,9 +245,10 @@ export const HoldingSharing = () => {
         nanumIdx: nanumIdx,
         accountIdx: receiverInfoList[idx].accountIdx,
       })
+
       SetIndex(idx)
     },
-    [receiverInfoList],
+    [receiverInfoList, isDetail, index],
   )
 
   const onPressCloseDetail = useCallback(() => {
@@ -294,10 +297,13 @@ export const HoldingSharing = () => {
 
   const onRefresh = useCallback(() => {
     setRefreshing(true)
-    onPressViewDetail(index)
+    if (isDetail) {
+      onPressViewDetail(index)
+    }
+
     queryClient.invalidateQueries([queryKeys.receiverList, nanumIdx])
     //queryClient.invalidateQueries([queryKeys.requestedNanumDetail])
-  }, [])
+  }, [index])
 
   const onPressClose = useCallback(() => {
     Alert.alert('마감 처리 하시겠습니까?', '', [{text: '취소'}, {text: '확인', onPress: () => endNanumQuery.mutate(nanumIdx)}])
@@ -507,7 +513,10 @@ export const HoldingSharing = () => {
                           <View style={[theme.styles.rowSpaceBetween, {marginBottom: 24}]}>
                             <Pressable
                               style={[styles.buttonMedium, styles.cancelButton]}
-                              onPress={() => setParticipantAccountIdx(receiverDetail?.applyDto.accountIdx)}>
+                              onPress={() => {
+                                setParticipantAccountIdx(receiverDetail?.applyDto.accountIdx)
+                                toggleCancelModalShow()
+                              }}>
                               <Text style={styles.cancelText}>취소하기</Text>
                             </Pressable>
                             <Pressable

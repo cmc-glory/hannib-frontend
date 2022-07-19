@@ -31,7 +31,7 @@ export const Calendar = () => {
   })
 
   // ******************** react query ********************
-  useQuery([queryKeys.calendar], () => getCalendarAll(accountIdx), {
+  useQuery([queryKeys.calendar, accountIdx], () => getCalendarAll(accountIdx), {
     onSuccess: data => {
       console.log(accountIdx)
       setRefreshing(false)
