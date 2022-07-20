@@ -46,6 +46,7 @@ export const WriterProfileBanner = ({nanumIdx, writerProfileImageUri, writername
   const onPressWriterProfile = useCallback(() => {
     navigation.navigate('WriterProfile', {
       writerAccountIdx: writerAccountIdx,
+      nanumIdx: nanumIdx,
     })
   }, [])
 

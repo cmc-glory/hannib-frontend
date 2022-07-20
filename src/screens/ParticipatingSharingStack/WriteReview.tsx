@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect, useMemo} from 'react'
+import React, {useState, useCallback, useMemo} from 'react'
 import {View, Text, TextInput, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation, useRoute} from '@react-navigation/native'
@@ -11,6 +11,7 @@ import {WriteReviewPropsRouteProps} from '../../navigation/ParticipatingSharingS
 import * as theme from '../../theme'
 import {ImagePicker} from '../../components/WriteGoodsStack'
 import {IReviewDto} from '../../types'
+import {useAppSelector} from '../../hooks'
 
 const ProductItem = ({name, quantity, spacing}: {name: string; quantity: number; spacing?: boolean}) => {
   return (
@@ -30,16 +31,17 @@ export const WriteReview = () => {
   const queryClient = useQueryClient()
   const route = useRoute<WriteReviewPropsRouteProps>()
   const {nanumIdx, accountIdx, imageuri, category, title} = useMemo(() => route.params, [])
-
-  console.log(nanumIdx, accountIdx)
+  const creatorId = useAppSelector(state => state.auth.user.creatorId)
 
   // ******************** states ********************
   const [content, setContent] = useState<string>('')
   const [images, setImages] = useState<string[]>([]) // 대표 이미지
+  const [refreshing, setRefreshing] = useState<boolean>(false)
 
   // ******************** react query ********************
   const writeReviewQuery = useMutation([queryKeys.writeReview], writeReview, {
     onSuccess(data, variables, context) {
+      setRefreshing(false)
       queryClient.invalidateQueries([queryKeys.appliedNanum, nanumIdx])
 
       // 나중에 작가 프로필 완성되면 작가 프로필로 네비게이트
@@ -83,10 +85,17 @@ export const WriteReview = () => {
       accountIdx,
       nanumIdx,
       comments: content,
+      creatorId: creatorId,
+      createdDatetime: '',
     }
 
     writeReviewQuery.mutate(reviewForm)
   }, [content, images])
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true)
+    queryClient.invalidateQueries([queryKeys.writeReview])
+  }, [])
 
   return (
     <SafeAreaView style={[theme.styles.safeareaview]}>

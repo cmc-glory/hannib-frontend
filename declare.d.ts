@@ -180,6 +180,7 @@ declare namespace ReactNavigation {
     }
     WriterProfile: {
       writerAccountIdx: number
+      nanumIdx: number
     }
     HoldingSharingList: undefined
     ParticipatingSharingList: undefined
