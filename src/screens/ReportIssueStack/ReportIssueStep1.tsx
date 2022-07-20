@@ -113,6 +113,7 @@ export const ReportIssueStep1 = () => {
           onChangeText={setReasonEtc}
           editable={selectedIssue == '기타 문제'}
         />
+        <Text style={[styles.termsText, {marginTop: 10}]}>※ 신고가 누적되면 내부 검토 후 글이 자동 삭제될 수 있습니다.</Text>
         <RoundButton label="선택" enabled style={{marginTop: 24}} onPress={onPressSelect} />
       </View>
     </SafeAreaView>
@@ -151,5 +152,11 @@ const styles = StyleSheet.create({
     height: 12,
     borderRadius: 24,
     backgroundColor: theme.secondary,
+  },
+  termsText: {
+    fontSize: 14,
+    fontFamily: 'Pretendard',
+    color: theme.gray500,
+    lineHeight: 16,
   },
 })
