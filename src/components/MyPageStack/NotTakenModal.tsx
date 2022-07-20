@@ -13,16 +13,16 @@ type ModalProps = {
   toggleIsVisible: () => void
   accountIdx: number
   nanumIdx: number
-  setRefresh: (bool: boolean) => void
+  onRefresh: () => void
 }
 
-export const NotTakenModal = ({isVisible, toggleIsVisible, accountIdx, nanumIdx, setRefresh}: ModalProps) => {
+export const NotTakenModal = ({isVisible, toggleIsVisible, accountIdx, nanumIdx, onRefresh}: ModalProps) => {
   //console.log('participantAccountIdx : ', accountIdx)
 
   // ************************** react quries **************************
   const checkNotTakenQuery = useMutation([queryKeys.endNanum, nanumIdx], checkNotTaken, {
     onSuccess(data, variables, context) {
-      setRefresh(true)
+      onRefresh()
       showMessage({
         // 에러 안내 메세지
         message: '미수령 처리가 완료되었습니다.',
