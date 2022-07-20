@@ -9,6 +9,7 @@ import * as theme from '../../theme'
 import {IInquiryNanumDto, IInquiryAnswerDto} from '../../types'
 import {LockIcon} from '../utils'
 import {queryKeys, answerInquiry} from '../../api'
+import {gray500} from '../../theme'
 
 type QnAListCreatorItemProps = {
   item: IInquiryNanumDto
@@ -278,13 +279,19 @@ export const QnAListCreatorItem = ({item, accountIdx, nanumIdx, inquiryIdx}: QnA
           {writeAnswerPressed ? (
             <View>
               <TextInput
-                placeholder="답변 내용 입력"
+                placeholder={`부적절한 답변 등록 시 비 노출 또는 무통보 삭제될 수 있습니다.\n- 비방/욕설/명예회손에 해당되는 게시물\n- 개인정보를 포함한 오프라인 만남 유도 내용`}
                 placeholderTextColor={theme.gray300}
                 textAlignVertical="top"
                 multiline
                 style={[theme.styles.input, {paddingTop: 16, height: 100}]}
                 value={content}
                 onChangeText={setContent}></TextInput>
+              <View style={{marginTop: 20}}>
+                <Text style={styles.termsText}>부적절한 답변 등록 시 비 노출 또는 무통보 삭제될 수 있습니다.</Text>
+                <Text style={styles.termsText}>-비방/욕설/명예회손에 해당되는 게시물</Text>
+                <Text style={styles.termsText}>- 개인정보를 포함한 오프라인 만남 유도 내용</Text>
+              </View>
+
               <Pressable style={styles.submitAnswerButton} onPress={onPressSubmitAnswer}>
                 <Text style={{fontSize: 16, color: theme.white}}>등록하기</Text>
               </Pressable>
@@ -360,5 +367,11 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  termsText: {
+    fontSize: 12,
+    fontFamily: 'Pretendard',
+    color: gray500,
+    lineHeight: 16,
   },
 })
