@@ -15,9 +15,10 @@ type ModalProps = {
   nanumIdx: number
   accountIdx: number //취소 당하는 유저의 accountIdx
   nanumGoodsDtoList: any
+  onRefresh: () => void
 }
 
-export const CancelModal = ({isVisible, toggleIsVisible, nanumIdx, accountIdx, nanumGoodsDtoList}: ModalProps) => {
+export const CancelModal = ({isVisible, toggleIsVisible, nanumIdx, accountIdx, nanumGoodsDtoList, onRefresh}: ModalProps) => {
   const queryClient = useQueryClient()
   const [reason, setReason] = useState<string>('')
   const [noText, setNoText] = useState<boolean>(false)
@@ -38,7 +39,7 @@ export const CancelModal = ({isVisible, toggleIsVisible, nanumIdx, accountIdx, n
       // queryClient.invalidateQueries([queryKeys.appliedNanumList, accountIdx])
       queryClient.invalidateQueries([queryKeys.holdingNanumList])
       queryClient.invalidateQueries([queryKeys.receiverList, nanumIdx])
-
+      onRefresh()
       showMessage({
         // 에러 안내 메세지
         message: '취소가 완료 되었습니다.',

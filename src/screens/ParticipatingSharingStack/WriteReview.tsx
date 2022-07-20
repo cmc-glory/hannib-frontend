@@ -102,10 +102,11 @@ export const WriteReview = () => {
       <StackHeader title="후기 작성" goBack />
       <View style={styles.container}>
         <SharingPreview uri={imageuri} category={category} title={title} />
-        <View style={{marginVertical: 20}}>
+        {/* <View style={{marginVertical: 20}}>
           <ProductItem name="BTS 뷔 컨셉의 하트 키링" quantity={1} spacing />
           <ProductItem name="BTS 지민 컨셉의 스페이드 키링" quantity={1} />
-        </View>
+        </View> */}
+        <View style={{marginVertical: 10}} />
         <ImagePicker images={images} setImages={setImages} necessary={false} />
         <View style={{marginBottom: 20}}>
           <Text style={[theme.styles.label]}>내용</Text>
@@ -119,6 +120,12 @@ export const WriteReview = () => {
             value={content}
             onChangeText={setContent}
           />
+          <View style={{marginTop: 24}}>
+            <Text style={[styles.termsText]}>부적절한 게시물 등록 시 비 노출 또는 무통보 삭제될 수 있습니다.</Text>
+            <Text style={[styles.termsText]}>- 비방/욕설/명예훼손에 해당되는 게시물</Text>
+            <Text style={[styles.termsText]}>- 저작권에 위배된 작품</Text>
+            <Text style={[styles.termsText]}>- 개인정보를 포함한 오프라인 만남 유도 내용</Text>
+          </View>
         </View>
         <RoundButton label="작성완료" style={{marginTop: 24}} enabled={content != ''} onPress={onPressSubmit} />
       </View>
@@ -130,5 +137,11 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: theme.PADDING_SIZE,
     flex: 1,
+  },
+  termsText: {
+    fontSize: 12,
+    fontFamily: 'Pretendard',
+    color: theme.gray500,
+    lineHeight: 16,
   },
 })

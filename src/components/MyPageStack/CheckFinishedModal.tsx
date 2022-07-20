@@ -6,7 +6,7 @@ import {XIcon} from '../../components/utils'
 import * as theme from '../../theme'
 import {useToggle} from '../../hooks'
 import {postGoodsSent, queryKeys} from '../../api'
-import {useMutation} from 'react-query'
+import {useMutation, useQueryClient} from 'react-query'
 import {showMessage} from 'react-native-flash-message'
 
 type ModalProps = {
@@ -14,16 +14,18 @@ type ModalProps = {
   toggleIsVisible: () => void
   accountIdx: number
   nanumIdx: number
-  setRefresh: (bool: boolean) => void
+  onRefresh: () => void
 }
 
-export const CheckFinishedModal = ({isVisible, toggleIsVisible, accountIdx, nanumIdx, setRefresh}: ModalProps) => {
+export const CheckFinishedModal = ({isVisible, toggleIsVisible, accountIdx, nanumIdx, onRefresh}: ModalProps) => {
   //console.log('accountIdx : ', accountIdx)
-
+  const queryClient = useQueryClient()
   // ************************** react quries **************************
   const postGoodsSentQuery = useMutation([queryKeys.endNanum, nanumIdx], postGoodsSent, {
     onSuccess(data, variables, context) {
-      setRefresh(true)
+      onRefresh()
+      queryClient.invalidateQueries([queryKeys.holdingNanumList])
+      queryClient.invalidateQueries([queryKeys.receiverList, nanumIdx])
       showMessage({
         // 에러 안내 메세지
         message: '전달 완료 처리되었습니다.',

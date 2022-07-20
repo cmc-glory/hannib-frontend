@@ -1,5 +1,5 @@
 import React, {useState, useCallback} from 'react'
-import {View, Text, TextInput, Pressable, ActivityIndicator, StyleSheet, Platform, ActionSheetIOS} from 'react-native'
+import {View, Text, TextInput, Pressable, ActivityIndicator, StyleSheet, Platform, ActionSheetIOS, TouchableOpacity, Linking, Dimensions} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation, useRoute} from '@react-navigation/native'
 import {launchImageLibrary} from 'react-native-image-picker'
@@ -9,17 +9,22 @@ import {showMessage} from 'react-native-flash-message'
 import Modal from 'react-native-modal'
 
 import {SetProfileRouteProps} from '../../navigation/LoginStackNavigator'
-import {StackHeader, SelectImageIcon, FloatingBottomButton} from '../../components/utils'
+import {StackHeader, SelectImageIcon, FloatingBottomButton, CheckboxIcon, DownArrowIcon, RightArrowIcon} from '../../components/utils'
 import NoUserSvg from '../../assets/Icon/noUser.svg'
 import * as theme from '../../theme'
 import {queryKeys, uploadProfileImage, checkNicknameDuplicated} from '../../api'
+import {gray700, PADDING_SIZE} from '../../theme'
 
 const regex = /^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|]+$/
+const WIDTH = Dimensions.get('window').width
 
 export const SetProfile = () => {
   // ****************** utils  ******************
   const navigation = useNavigation()
   const route = useRoute<SetProfileRouteProps>()
+
+  const [essentialSelected, setEssentialSelected] = useState<boolean>(false)
+  const [optionalSelected, setOptionalSelected] = useState<boolean>(false)
 
   // ****************** react queris  ******************
   const uploadImageQuery = useMutation(queryKeys.nanumImage, uploadProfileImage, {
@@ -86,9 +91,12 @@ export const SetProfile = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
   // 이미지 상관 없이 닉네임이 null이 아닐 때만
-  const checkButtonEnabled = useCallback((name: string) => {
-    return name == '' ? false : true
-  }, [])
+  const checkButtonEnabled = useCallback(
+    (name: string) => {
+      return name != '' && essentialSelected == true ? true : false
+    },
+    [essentialSelected],
+  )
 
   const onPressNext = useCallback(() => {
     // 닉네임 길이 validation
@@ -211,6 +219,27 @@ export const SetProfile = () => {
     }
   }, [])
 
+  // const onPressCheckbox = useCallback(() => {
+  //   // 선택된 상태면 제거
+  //   if (selected) {
+  //     const temp = requestForm.product.filter(productItem => productItem.productid != item.goodsIdx)
+  //     setRequestForm({...requestForm, product: temp})
+  //   } else {
+  //     const temp = requestForm.product.concat({productid: item.goodsIdx})
+  //     setRequestForm({...requestForm, product: temp})
+  //   }
+  // }, [optionalSelected, essentialSelected])
+
+  const clickOpenEssential = useCallback(() => {
+    console.log('open')
+    Linking.openURL('https://nutritious-silk-3f4.notion.site/0e1bdcc9b30d4907806f374b52fe2823')
+  }, [])
+
+  const clickOpenOptional = useCallback(() => {
+    console.log('open')
+    Linking.openURL('https://nutritious-silk-3f4.notion.site/0e1bdcc9b30d4907806f374b52fe2823')
+  }, [])
+
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
       <StackHeader goBack title="프로필 설정" />
@@ -249,7 +278,37 @@ export const SetProfile = () => {
           }}
         />
         {duplicated && <Text style={[{color: theme.red, fontSize: 12, marginTop: 4}, theme.styles.text12]}>중복된 닉네임입니다.</Text>}
+        <View style={{marginTop: 32}}>
+          <Text style={{fontWeight: '700', fontSize: 16}}>이용약관 동의</Text>
+
+          <View style={[theme.styles.rowFlexStart, {marginTop: 16}]}>
+            {essentialSelected ? (
+              <CheckboxIcon onPress={() => setEssentialSelected(false)} style={{marginRight: 8}} />
+            ) : (
+              <TouchableOpacity onPress={() => setEssentialSelected(true)} style={styles.checkbox} />
+            )}
+
+            <Pressable style={[theme.styles.rowSpaceBetween, {width: WIDTH - theme.PADDING_SIZE * 2 - 24}]} onPress={clickOpenEssential}>
+              <Text style={{color: gray700, fontSize: 16}}>(필수) 서비스 이용약관 </Text>
+              <RightArrowIcon />
+            </Pressable>
+          </View>
+
+          <View style={[theme.styles.rowFlexStart, {marginTop: 16}]}>
+            {optionalSelected ? (
+              <CheckboxIcon onPress={() => setOptionalSelected(false)} style={{marginRight: 8}} />
+            ) : (
+              <TouchableOpacity onPress={() => setOptionalSelected(true)} style={styles.checkbox} />
+            )}
+
+            <Pressable style={[theme.styles.rowSpaceBetween, {width: WIDTH - theme.PADDING_SIZE * 2 - 24}]} onPress={clickOpenEssential}>
+              <Text style={{color: gray700, fontSize: 16}}>(선택) 마켓팅 수신 동의 </Text>
+              <RightArrowIcon />
+            </Pressable>
+          </View>
+        </View>
       </View>
+
       <FloatingBottomButton label="다음" enabled={checkButtonEnabled(name)} onPress={onPressNext} />
       <Modal isVisible={modalVisible} onBackdropPress={() => setModalVisible(false)} backdropOpacity={0.1} style={{margin: '10%'}}>
         <View style={styles.modalView}>
@@ -317,5 +376,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: theme.PADDING_SIZE,
+  },
+  checkbox: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: theme.gray300,
+    marginRight: 8,
   },
 })
