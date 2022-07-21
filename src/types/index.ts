@@ -675,6 +675,7 @@ export type IBlockedUserDto = {
   accountIdxBlocked: number // 차단된 사용자 accountIdx
   creatorId: string // 차단된 사용자 닉네임
   accountImg: string | null // 차단된 사용자 프로필 url
+  checked: boolean
 }
 
 //진행한 나눔 리스트 get

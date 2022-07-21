@@ -89,6 +89,8 @@ export const WriteReview = () => {
       createdDatetime: '',
     }
 
+    console.log(JSON.stringify(reviewForm))
+
     writeReviewQuery.mutate(reviewForm)
   }, [content, images, writerAccountIdx])
 

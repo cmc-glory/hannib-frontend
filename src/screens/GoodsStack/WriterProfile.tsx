@@ -49,7 +49,7 @@ export const WriterProfile = () => {
     queryClient.invalidateQueries([queryKeys.review, writerAccountIdx])
   }, [])
 
-  const onPressMenuIcon = useCallback(() => {
+  const onPressMenuIcon = () => {
     if (Platform.OS == 'ios') {
       ActionSheetIOS.showActionSheetWithOptions(
         {
@@ -69,7 +69,7 @@ export const WriterProfile = () => {
     } else {
       setModalVisible(true)
     }
-  }, [])
+  }
 
   // ******************** react queries  ********************
   const writerInfo = useQuery([queryKeys.accountInfo, writerAccountIdx], () => getAccountInfoByIdx(writerAccountIdx), {
@@ -150,7 +150,7 @@ export const WriterProfile = () => {
         },
         floating: true,
       })
-
+      queryClient.invalidateQueries([queryKeys.nanumList])
       navigation.navigate('MainTabNavigator')
     },
     onError(error, variables, context) {
@@ -179,13 +179,13 @@ export const WriterProfile = () => {
     const blockDto: IBlockDto = {
       accountIdxBlock: accountIdx,
       accountIdxBlocked: writerAccountIdx,
-      accountImg: writerInfo.data.accoungImg,
+      accountImg: writerInfo.data.accountImg,
       creatorId: writerInfo.data.creatorId,
     }
     console.log(JSON.stringify(blockDto))
 
     blockUserQuery.mutate([blockDto])
-  }, [writerInfo])
+  }, [writerInfo, accountIdx])
 
   return (
     <SafeAreaView style={[theme.styles.safeareaview]}>
@@ -237,6 +237,7 @@ export const WriterProfile = () => {
             style={[styles.modalButton, {marginBottom: 20}]}
             onPress={() => {
               setModalVisible(false)
+              onPressBlock()
             }}>
             <Text style={[styles.modalText]}>이 사용자 차단하기</Text>
           </Pressable>

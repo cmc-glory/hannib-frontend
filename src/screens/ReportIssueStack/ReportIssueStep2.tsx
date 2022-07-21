@@ -2,7 +2,7 @@ import React, {useCallback} from 'react'
 import {View, Text, Pressable, StyleSheet} from 'react-native'
 import {useNavigation, useRoute} from '@react-navigation/native'
 import {SafeAreaView} from 'react-native-safe-area-context'
-import {useMutation} from 'react-query'
+import {useMutation, useQuery, useQueryClient} from 'react-query'
 import {showMessage} from 'react-native-flash-message'
 
 import {StackHeader, RoundButton} from '../../components/utils'
@@ -17,9 +17,12 @@ export const ReportIssueStep2 = () => {
   const navigation = useNavigation()
   const route = useRoute<ReportIssueStep2RouteProp>()
   const {writerName, writerAccountIdx, nanumIdx, accountImg} = route.params
+  const queryClient = useQueryClient()
 
   const blockUserQuery = useMutation(queryKeys.block, blockUser, {
     onSuccess(data, variables, context) {
+      queryClient.invalidateQueries([queryKeys.nanumList])
+
       navigation.navigate('ReportIssueStep3', {
         writerName,
         writerAccountIdx,

@@ -17,8 +17,8 @@ export const blockUser = async (blockDtos: IBlockDto[]) => {
 }
 
 // 차단 해제
-export const unblockUser = async (unblockedUsers: {accountIdxBlocked: number}[]) => {
-  const {data} = await apiClient.delete('/api/block', {data: unblockedUsers})
+export const unblockUser = async (unblockedUsers: {accountIdxBlocked: number; accountIdxBlock: number}) => {
+  const {data} = await apiClient.delete('/api/block/delete', {data: unblockedUsers})
 
   return data
 }

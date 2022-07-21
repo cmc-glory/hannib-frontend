@@ -8,7 +8,7 @@ import 'moment/locale/ko'
 import * as theme from '../../theme'
 import {DownArrowIcon, BellIcon, MagnifierIcon, BottomSheet, FloatingButtonIcon, EmptyIcon} from '../../components/utils'
 import {NanumListFilterTab, NanumListItem, GoodsListBottomSheetContent, Banner, CategoryDropdown} from '../../components/MainTab'
-import {INanumMethod, INanumListItem, IAccountCategoryDto} from '../../types'
+import {INanumMethod, INanumListItem, IAccountCategoryDto, INanum} from '../../types'
 import {useAppSelector} from '../../hooks'
 import {getNanumByRecent, getNanumByPopularity, getNanumAllByFavorites, queryKeys, getNanumAllByRecent} from '../../api'
 import moment from 'moment'
@@ -52,7 +52,7 @@ const NanumList = () => {
   const nanumAllByRecent = useQuery([queryKeys.nanumList], getNanumAllByRecent, {
     onSuccess(data) {
       setRefreshing(false)
-      setSharings(data)
+      setSharings(data.filter((item: INanumListItem) => item.block == 'N'))
     },
     enabled: isLoggedIn == false && itemFilter == '최신순', // 로그인 하지 않았을 때 전체 보기
   })
@@ -60,7 +60,7 @@ const NanumList = () => {
   const nanumAllByFavorites = useQuery([queryKeys.nanumList], getNanumAllByFavorites, {
     onSuccess(data) {
       setRefreshing(false)
-      setSharings(data)
+      setSharings(data.filter((item: INanumListItem) => item.block == 'N'))
     },
     enabled: isLoggedIn == false && itemFilter == '인기순', // 로그인 하지 않았을 때 전체 보기
   })
@@ -71,7 +71,7 @@ const NanumList = () => {
     {
       onSuccess: data => {
         setRefreshing(false) // 새로고침중이면 로딩 종료
-        setSharings(data)
+        setSharings(data.filter((item: INanumListItem) => item.block == 'N'))
 
         if (nanumMethodFilter !== '전체') {
           // 현재 오프라인, 온라인 필터가 설정된 경우엔 보여질 아이템 재설정
@@ -89,7 +89,7 @@ const NanumList = () => {
     {
       onSuccess(data) {
         setRefreshing(false) // 새로고침중이면 로딩 종료
-        setSharings(data)
+        setSharings(data.filter((item: INanumListItem) => item.block == 'N'))
       },
       onError(err) {
         console.log(err)

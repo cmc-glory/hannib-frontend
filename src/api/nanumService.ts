@@ -93,14 +93,14 @@ export const removeFavorite = async ({
 }
 
 // 검색 인기순
-export const searchNanumByFavorites = async (title: string) => {
-  const {data} = await apiClient.post(`api/nanum/list/favorites?title=${title}`)
+export const searchNanumByFavorites = async ({title, accountIdx}: {title: string; accountIdx: number}) => {
+  const {data} = await apiClient.get(`api/nanum/list/favorites?title=${title}&accountIdx=${accountIdx}`)
   return data
 }
 
 // 검색 최신순
-export const searchNanumByRecent = async (title: string) => {
-  const {data} = await apiClient.post(`api/nanum/list/recent?title=${title}`)
+export const searchNanumByRecent = async ({title, accountIdx}: {title: string; accountIdx: number}) => {
+  const {data} = await apiClient.get(`api/nanum/list/recent?title=${title}&accountIdx=${accountIdx}`)
   return data
 }
 

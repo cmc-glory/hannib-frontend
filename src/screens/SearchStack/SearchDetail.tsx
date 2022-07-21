@@ -3,13 +3,13 @@ import {View, Text, FlatList, TextInput, StyleSheet} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation, useRoute} from '@react-navigation/native'
 import {useMutation} from 'react-query'
-import {showMessage} from 'react-native-flash-message'
-import {StackActions} from '@react-navigation/native'
+
+import {useAppSelector} from '../../hooks'
 import {BottomSheet} from '../../components/utils'
 import {INanumMethod, INanumListItem} from '../../types'
 import {queryKeys, searchNanumByFavorites, searchNanumByRecent} from '../../api'
 import {SearchDetailRouteProps} from '../../navigation/SearchStackNavigator'
-import {MagnifierIcon, EmptyIcon, LeftArrowIcon, StackHeader} from '../../components/utils'
+import {MagnifierIcon, EmptyIcon, StackHeader} from '../../components/utils'
 import * as theme from '../../theme'
 import {NanumListItem, NanumListFilterTab, GoodsListBottomSheetContent} from '../../components/MainTab'
 import {storeArray, getArray, removeArray} from '../../hooks'
@@ -18,6 +18,8 @@ export const SearchDetail = () => {
   // ********************* utils *********************
   const navigation = useNavigation()
   const route = useRoute<SearchDetailRouteProps>()
+  const {isLoggedIn} = useAppSelector(state => state.auth)
+  const accountIdx = isLoggedIn == false ? 0 : useAppSelector(state => state.auth.user.accountIdx)
 
   // ********************* states *********************
   const [nanums, setNanums] = useState<INanumListItem[]>([]) // 검색 결과
@@ -30,13 +32,16 @@ export const SearchDetail = () => {
   // ********************* react queries *********************
   const searchNanumByFavoritesQuery = useMutation([queryKeys.search], searchNanumByFavorites, {
     onSuccess(data, variables, context) {
-      setNanums(data)
+      console.log(data)
+      setNanums(data.filter((item: INanumListItem) => item.block == 'N'))
     },
   })
 
   const searchNanumByRecentQuery = useMutation([queryKeys.search], searchNanumByRecent, {
     onSuccess(data, variables, context) {
-      setNanums(data)
+      console.log(data)
+
+      setNanums(data.filter((item: INanumListItem) => item.block == 'N'))
     },
   })
 
@@ -49,11 +54,11 @@ export const SearchDetail = () => {
 
   useEffect(() => {
     if (itemFilter == '인기순') {
-      searchNanumByFavoritesQuery.mutate(keyword)
+      searchNanumByFavoritesQuery.mutate({title: keyword, accountIdx})
     } else {
-      searchNanumByRecentQuery.mutate(keyword)
+      searchNanumByRecentQuery.mutate({title: keyword, accountIdx})
     }
-  }, [itemFilter])
+  }, [itemFilter, accountIdx])
 
   // ********************* callbacks *********************
 
@@ -83,11 +88,11 @@ export const SearchDetail = () => {
     storeArray('recentSearch', temp)
     setKeyword('')
     if (itemFilter == '인기순') {
-      searchNanumByFavoritesQuery.mutate(tempKeyword)
+      searchNanumByFavoritesQuery.mutate({title: tempKeyword, accountIdx})
     } else {
-      searchNanumByRecentQuery.mutate(tempKeyword)
+      searchNanumByRecentQuery.mutate({title: tempKeyword, accountIdx})
     }
-  }, [keyword])
+  }, [keyword, accountIdx])
 
   return (
     <SafeAreaView style={theme.styles.safeareaview}>
