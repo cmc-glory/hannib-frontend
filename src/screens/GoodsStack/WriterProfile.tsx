@@ -5,12 +5,13 @@ import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation, useRoute} from '@react-navigation/native'
 import {useMutation, useQuery, useQueryClient} from 'react-query'
 import Modal from 'react-native-modal'
+import {showMessage} from 'react-native-flash-message'
 
 import {WriterProfileRouteProps} from '../../navigation/GoodsStackNavigator'
 import {StackHeader, SeparatorBold} from '../../components/utils'
 import {HoldingProjectItem} from '../../components/GoodsStack'
-import {queryKeys, getAccountInfoByIdx, getHoldingNanumList, deleteReview, getReviews, getNanumByIndex} from '../../api'
-import {IHoldingSharingList, IReviewDto} from '../../types'
+import {queryKeys, getAccountInfoByIdx, getHoldingNanumList, blockUser, getReviews} from '../../api'
+import {IHoldingSharingList, IBlockDto} from '../../types'
 import * as theme from '../../theme'
 import NoUserSvg from '../../assets/Icon/noUser.svg'
 import {useAppSelector} from '../../hooks'
@@ -61,6 +62,7 @@ export const WriterProfile = () => {
           if (buttonIndex === 0) {
             // cancel action
           } else if (buttonIndex === 1) {
+            onPressBlock()
           }
         },
       )
@@ -132,30 +134,58 @@ export const WriterProfile = () => {
     },
   )
 
-  const deleteReviewQuery = useMutation([queryKeys.review], deleteReview, {
+  const blockUserQuery = useMutation(queryKeys.block, blockUser, {
     onSuccess(data, variables, context) {
-      queryClient.invalidateQueries([queryKeys.review])
+      showMessage({
+        // 에러 안내 메세지
+        message: '차단이 완료되었습니다.',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+      })
+
+      navigation.navigate('MainTabNavigator')
+    },
+    onError(error, variables, context) {
+      showMessage({
+        // 에러 안내 메세지
+        message: '차단하기 중 에러가 발생했습니다.',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+      })
     },
   })
 
-  const onPressDelete = useCallback(() => {
-    const reviewDto: IReviewDto = {
-      reviewImgDtoList: [
-        {
-          accountIdx: writerAccountIdx,
-          nanumIdx: nanumIdx,
-          imgUrl: '',
-        },
-      ],
-      accountIdx: accountIdx,
-      nanumIdx: nanumIdx,
-      comments: '',
-      createdDatetime: '',
-      creatorId: creatorId,
+  const onPressBlock = useCallback(() => {
+    if (writerInfo.data == undefined || blockUserQuery.isLoading) {
+      return
     }
 
-    deleteReviewQuery.mutate(reviewDto)
-  }, [accountIdx])
+    const blockDto: IBlockDto = {
+      accountIdxBlock: accountIdx,
+      accountIdxBlocked: writerAccountIdx,
+      accountImg: writerInfo.data.accoungImg,
+      creatorId: writerInfo.data.creatorId,
+    }
+    console.log(JSON.stringify(blockDto))
+
+    blockUserQuery.mutate([blockDto])
+  }, [writerInfo])
 
   return (
     <SafeAreaView style={[theme.styles.safeareaview]}>
