@@ -65,19 +65,27 @@ export const EditProfile = () => {
       navigation.goBack()
     },
     onError(error, variables, context) {
-      showMessage({
-        message: '회원 정보 업데이트 중 에러가 발생했습니다',
-        type: 'info',
-        animationDuration: 300,
-        duration: 1350,
-        style: {
-          backgroundColor: 'rgba(36, 36, 36, 0.9)',
-        },
-        titleStyle: {
-          fontFamily: 'Pretendard-Medium',
-        },
-        floating: true,
-      })
+      //   showMessage({
+      //     message: '회원 정보 업데이트 중 에러가 발생했습니다',
+      //     type: 'info',
+      //     animationDuration: 300,
+      //     duration: 1350,
+      //     style: {
+      //       backgroundColor: 'rgba(36, 36, 36, 0.9)',
+      //     },
+      //     titleStyle: {
+      //       fontFamily: 'Pretendard-Medium',
+      //     },
+      //     floating: true,
+      //   })
+      queryClient.invalidateQueries(queryKeys.accountInfoMypage)
+      queryClient.invalidateQueries(queryKeys.accountInfo)
+
+      dispatch(updateName(name))
+      if (profileImage != undefined) {
+        dispatch(updateProfileImage(profileImage))
+      }
+      navigation.goBack()
     },
   })
   const uploadProfileImageQuery = useMutation(queryKeys.profileImage, uploadProfileImage, {
@@ -87,6 +95,7 @@ export const EditProfile = () => {
     },
     onError(error, variables, context) {
       console.log(error)
+
       showMessage({
         message: '프로필 이미지 업로드 중 에러가 발생했습니다',
         type: 'info',

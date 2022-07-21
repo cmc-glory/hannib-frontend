@@ -17,6 +17,7 @@ import NetInfo from '@react-native-community/netinfo'
 import FlashMessage from 'react-native-flash-message'
 import KeyboardManager from 'react-native-keyboard-manager'
 import SplashScreen from 'react-native-splash-screen'
+import CodePush from 'react-native-code-push'
 
 if (Platform.OS === 'ios') {
   KeyboardManager.setEnable(true)
@@ -117,5 +118,15 @@ const App = () => {
     </QueryClientProvider>
   )
 }
+const codePushOptions = {
+  checkFrequency: CodePush.CheckFrequency.ON_APP_START,
+  updateDialog: {
+    title: '...',
+    optionalUpdateMessage: '...',
+    optionalInstallButtonLabel: '업데이트',
+    optionalIgnoreButtonLabel: '아니요.',
+  },
+  installMode: CodePush.InstallMode.IMMEDIATE,
+}
 
-export default App
+export default CodePush(codePushOptions)(App)

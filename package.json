@@ -50,6 +50,7 @@
     "react-native-bouncy-checkbox": "^2.1.10",
     "react-native-calendars": "^1.1284.0",
     "react-native-calendars-ts": "^1.23.2",
+    "react-native-code-push": "^7.0.4",
     "react-native-collapsible-tab-view": "^4.5.2",
     "react-native-date-picker": "^4.2.2",
     "react-native-dotenv": "^3.3.1",
