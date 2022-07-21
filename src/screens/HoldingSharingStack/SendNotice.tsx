@@ -88,11 +88,16 @@ export const SendNotice = () => {
           <TextInput
             value={comments}
             onChangeText={setComments}
-            style={[theme.styles.input, styles.textinput, {height: 330, textAlignVertical: 'top', paddingTop: 20}]}
+            style={[theme.styles.input, styles.textinput, {height: 240, textAlignVertical: 'top', paddingTop: 20}]}
             placeholder="내용 입력"
             placeholderTextColor={theme.gray200}
             multiline
           />
+        </View>
+        <View style={styles.spacing}>
+          <Text style={styles.termText}>부적절한 공지 등록 시 비 노출 또는 무통보 삭제될 수 있습니다.</Text>
+          <Text style={styles.termText}>- 비방/욕설/명예훼손에 해당되는 게시물</Text>
+          <Text style={styles.termText}>- 개인정보를 포함한 내용</Text>
         </View>
       </View>
       <FloatingBottomButton label="등록" enabled={checkButtonEnabled()} onPress={onPressSendNotice} />
@@ -101,6 +106,14 @@ export const SendNotice = () => {
 }
 
 const styles = StyleSheet.create({
+  termText: {
+    fontSize: 12,
+    lineHeight: 16,
+    color: theme.gray500,
+  },
+  spacing: {
+    marginTop: 24,
+  },
   textinput: {
     color: theme.gray800,
     lineHeight: 20,

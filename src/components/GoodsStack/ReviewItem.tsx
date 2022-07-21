@@ -1,13 +1,15 @@
 import React, {useState, useCallback, useMemo} from 'react'
 import {View, Text, Pressable, ScrollView, StyleSheet} from 'react-native'
 import ImageView from 'react-native-image-viewing'
-import moment from 'moment'
 import FastImage from 'react-native-fast-image'
+import {useMutation, useQueryClient} from 'react-query'
+import {showMessage} from 'react-native-flash-message'
 
 import type {ImageSource} from 'react-native-image-viewing/dist/@types'
-
+import {useAppSelector} from '../../hooks'
 import * as theme from '../../theme'
-import {IReview} from '../../types'
+import {queryKeys, deleteReview} from '../../api'
+import {IReviewDto, IReviewDeleteDto} from '../../types'
 
 type ReviewItemProps = {
   item: any
@@ -17,11 +19,10 @@ type ReviewItemProps = {
 }
 export const ReviewItem = ({item, opened, index, onPressReview}: ReviewItemProps) => {
   const [showImageView, setShowImageView] = useState<boolean>(false) // image view를 띄울지
-
-  //console.log(item)
-
+  const currentCreatorId = useAppSelector(state => state.auth.user.creatorId)
+  const queryClient = useQueryClient()
   const [imageIndex, setImageIndex] = useState<number>(0) // imageView 에서 띄울 이미지의 index
-  const {accountIdx, date, creatorId, createdDatetime, comments, images} = item
+  const {accountIdx, date, creatorId, createdDatetime, comments, images, nanumIdx} = item
 
   const onPressImage = useCallback((index: number) => {
     setImageIndex(index)
@@ -37,6 +38,37 @@ export const ReviewItem = ({item, opened, index, onPressReview}: ReviewItemProps
       return []
     }
   }, [])
+
+  const deleteReviewQuery = useMutation([queryKeys.review], deleteReview, {
+    onSuccess(data, variables, context) {
+      queryClient.invalidateQueries([queryKeys.review])
+      showMessage({
+        message: '후기 삭제가 완료되었습니다.',
+        type: 'info',
+        animationDuration: 300,
+        duration: 1350,
+        style: {
+          backgroundColor: 'rgba(36, 36, 36, 0.9)',
+        },
+        titleStyle: {
+          fontFamily: 'Pretendard-Medium',
+        },
+        floating: true,
+      })
+    },
+  })
+
+  const onPressDelete = useCallback(() => {
+    if (deleteReviewQuery.isLoading) {
+      return
+    }
+    const reviewDto: IReviewDeleteDto = {
+      nanumIdx: nanumIdx,
+      creatorId: creatorId,
+    }
+
+    deleteReviewQuery.mutate(reviewDto)
+  }, [accountIdx, deleteReviewQuery])
 
   return (
     <>
@@ -55,7 +87,14 @@ export const ReviewItem = ({item, opened, index, onPressReview}: ReviewItemProps
         <Pressable onPress={() => onPressReview(index)} style={[theme.styles.wrapper]}>
           <View style={[theme.styles.rowSpaceBetween, {marginVertical: 6}]}>
             <Text style={{fontSize: 12}}>{creatorId}</Text>
-            <Text style={{fontSize: 12, color: theme.gray700}}>{createdDatetime.slice(0, 10)}</Text>
+            <View style={[theme.styles.rowFlexStart]}>
+              <Text style={{fontSize: 12, color: theme.gray700}}>{createdDatetime.slice(0, 10)}</Text>
+              {currentCreatorId == creatorId && (
+                <Pressable onPress={onPressDelete}>
+                  <Text style={styles.deleteText}>삭제</Text>
+                </Pressable>
+              )}
+            </View>
           </View>
           <View style={[theme.styles.rowSpaceBetween]}>
             <View style={{flex: 1, alignSelf: 'flex-start'}}>
@@ -89,6 +128,12 @@ export const ReviewItem = ({item, opened, index, onPressReview}: ReviewItemProps
 }
 
 const styles = StyleSheet.create({
+  deleteText: {
+    marginLeft: 8,
+    fontSize: 12,
+    lineHeight: 16,
+    color: theme.gray700,
+  },
   buyedListText: {
     color: theme.gray500,
   },

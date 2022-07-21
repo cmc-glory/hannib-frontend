@@ -74,7 +74,6 @@ export const AddressModal = ({isVisible, toggleIsVisible, accountIdxList, select
         },
         floating: true,
       })
-      onRefresh()
       toggleIsVisible()
     },
   })
@@ -140,6 +139,9 @@ export const AddressModal = ({isVisible, toggleIsVisible, accountIdxList, select
   }, [])
 
   const onPressSubmit = useCallback(() => {
+    if (postMailAllQuery.isLoading) {
+      return
+    }
     // 모든 accountIdx에 대해 우편으로 처리
     if (isAllSame == true) {
       const unsongDto: IUnsongDto[] = accountIdxList.map(item => {
@@ -176,7 +178,7 @@ export const AddressModal = ({isVisible, toggleIsVisible, accountIdxList, select
         postTrackingNumberQuery.mutate(unsongDto)
       }
     }
-  }, [selectedAccountIdx, isAllSame, accountIdxList, nanumIdx, postComp, postNum])
+  }, [selectedAccountIdx, isAllSame, accountIdxList, nanumIdx, postComp, postNum, postMailAllQuery])
 
   useEffect(() => {
     //console.log('sendMethod : ', sendMethod)

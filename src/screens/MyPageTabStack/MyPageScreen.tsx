@@ -98,6 +98,12 @@ export const MyPageScreen = () => {
     })
   }, [])
 
+  const onPressBlockedUsers = useCallback(() => {
+    navigation.navigate('MyPageStackNavigator', {
+      screen: 'blockedUsers',
+    })
+  }, [])
+
   const onRefresh = useCallback(() => {
     setRefreshing(true)
     queryClient.invalidateQueries(queryKeys.accountInfoMypage)
@@ -142,6 +148,8 @@ export const MyPageScreen = () => {
           <SeparatorLight />
 
           <MyPageItem label="고객센터 문의" onPress={onPressCustomerService} />
+          <SeparatorLight />
+          <MyPageItem label="차단계정 관리" onPress={onPressBlockedUsers} />
         </View>
         <Separator />
         <View style={[styles.wrapper]}>

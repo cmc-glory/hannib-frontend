@@ -1,6 +1,6 @@
 import axios from 'axios'
 import {BASE_URL} from '@env'
-import {IReviewDto} from '../types'
+import {IReviewDto, IReviewDeleteDto, IReview} from '../types'
 
 const apiClient = axios.create({
   baseURL: BASE_URL,
@@ -14,7 +14,7 @@ export const writeReview = async (reviewDto: IReviewDto) => {
   return data
 }
 
-export const deleteReview = async (reviewDto: IReviewDto) => {
+export const deleteReview = async (reviewDto: IReviewDeleteDto) => {
   const {data} = await apiClient.post('/api/applying/review/cancel', reviewDto)
   return data
 }

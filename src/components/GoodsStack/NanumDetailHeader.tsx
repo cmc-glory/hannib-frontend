@@ -34,6 +34,8 @@ type NanumDetailHeaderProps = {
   userAccountIdx: number
   writerAccountIdx: number
   nanumIdx: number
+  writerName: string
+  accountImg: string
 }
 
 const ShareModal = ({shareVisible, toggleShareVisible, shareUrl}: ShareModalProps) => {
@@ -116,7 +118,7 @@ const MenuModal = ({moreVisible, setMoreVisible, onPressReportIssue, isWriter, s
   )
 }
 
-export const NanumDetailHeader = ({inverted, userAccountIdx, writerAccountIdx, nanumIdx}: NanumDetailHeaderProps) => {
+export const NanumDetailHeader = ({inverted, userAccountIdx, writerAccountIdx, nanumIdx, writerName, accountImg}: NanumDetailHeaderProps) => {
   // ********************
   const navigation = useNavigation()
   const [shareVisible, toggleShareVisible] = useToggle() // 공유 모달창 띄울지
@@ -137,9 +139,12 @@ export const NanumDetailHeader = ({inverted, userAccountIdx, writerAccountIdx, n
       screen: 'ReportIssueStep1',
       params: {
         nanumIdx: nanumIdx,
+        writerAccountIdx: writerAccountIdx,
+        writerName: writerName,
+        accountImg: accountImg,
       },
     })
-  }, [nanumIdx])
+  }, [nanumIdx, writerAccountIdx, writerName, accountImg])
 
   return (
     <View style={[styles.container]}>

@@ -178,7 +178,7 @@ export const SelectCategory = ({category, setCategory, bottomSheetRef}: SelectCa
               <Text style={theme.styles.bold20}>관심 있는 스타를 검색해 보세요!</Text>
             </View>
           ) : result.length == 0 ? (
-            <View style={[theme.styles.wrapper, {flex: 1}]}>
+            <View style={[{flex: 1, justifyContent: 'center', marginTop: -68}]}>
               <EmptyResult />
             </View>
           ) : (
@@ -202,7 +202,7 @@ export const SelectCategory = ({category, setCategory, bottomSheetRef}: SelectCa
         </View>
       </View>
 
-      <View style={[iphoneX && {marginBottom: BOTTOM_SPACE}]}>
+      <View>
         <FloatingBottomButton label="선택 완료" enabled={true} onPress={onPressComplete} />
       </View>
     </View>

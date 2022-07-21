@@ -237,7 +237,7 @@ export const SetProfile = () => {
 
   const clickOpenOptional = useCallback(() => {
     console.log('open')
-    Linking.openURL('https://nutritious-silk-3f4.notion.site/0e1bdcc9b30d4907806f374b52fe2823')
+    Linking.openURL('https://nutritious-silk-3f4.notion.site/eca2ade0702b46e884bfb9cf75fa3061')
   }, [])
 
   return (
@@ -290,7 +290,7 @@ export const SetProfile = () => {
 
             <Pressable style={[theme.styles.rowSpaceBetween, {width: WIDTH - theme.PADDING_SIZE * 2 - 24}]} onPress={clickOpenEssential}>
               <Text style={{color: gray700, fontSize: 16}}>(필수) 서비스 이용약관 </Text>
-              <RightArrowIcon />
+              <RightArrowIcon onPress={clickOpenEssential} />
             </Pressable>
           </View>
 
@@ -301,9 +301,9 @@ export const SetProfile = () => {
               <TouchableOpacity onPress={() => setOptionalSelected(true)} style={styles.checkbox} />
             )}
 
-            <Pressable style={[theme.styles.rowSpaceBetween, {width: WIDTH - theme.PADDING_SIZE * 2 - 24}]} onPress={clickOpenEssential}>
-              <Text style={{color: gray700, fontSize: 16}}>(선택) 마켓팅 수신 동의 </Text>
-              <RightArrowIcon />
+            <Pressable style={[theme.styles.rowSpaceBetween, {width: WIDTH - theme.PADDING_SIZE * 2 - 24}]} onPress={clickOpenOptional}>
+              <Text style={{color: gray700, fontSize: 16}}>(선택) 마켓팅 수신 동의</Text>
+              <RightArrowIcon onPress={clickOpenOptional} />
             </Pressable>
           </View>
         </View>

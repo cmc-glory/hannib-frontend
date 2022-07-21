@@ -198,7 +198,12 @@ export const EditProfile = () => {
           let accountDto: IAccountDto = {
             accountIdx: user.accountIdx,
             creatorId: name,
-            accountCategoryDtoList: user.accountCategoryDtoList,
+            accountCategoryDtoList: user.accountCategoryDtoList.map(item => {
+              return {
+                ...item,
+                accountIdx: user.accountIdx,
+              }
+            }),
             accountImg: profileImage,
             email: user.email,
             creatorIdDatetime: '',

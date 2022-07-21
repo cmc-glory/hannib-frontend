@@ -11,8 +11,23 @@ const ios = Platform.OS == 'ios'
 type ReportIssueStackNavigatorParamList = {
   ReportIssueStep1: {
     nanumIdx: number
+    writerName: string
+    writerAccountIdx: number
+    creatorId: string
+    accountImg: string
   }
-  ReportIssueStep2: undefined
+  ReportIssueStep2: {
+    nanumIdx: number
+    writerName: string
+    writerAccountIdx: number
+    creatorId: string
+    accountImg: string
+  }
+  ReportIssueStep3: {
+    nanumIdx: number
+    writerName: string
+    writerAccountIdx: number
+  }
 }
 
 type Props1 = NativeStackScreenProps<ReportIssueStackNavigatorParamList, 'ReportIssueStep1'>
@@ -23,16 +38,16 @@ type Props2 = NativeStackScreenProps<ReportIssueStackNavigatorParamList, 'Report
 export type ReportIssueStep2NavigationProp = Props2['navigation']
 export type ReportIssueStep2RouteProp = Props2['route']
 
-// type Props3 = NativeStackScreenProps<ReportIssueStackNavigatorParamList, 'ReportIssueStep3'>
-// export type ReportIssueStep3NavigationProp = Props3['navigation']
-// export type ReportIssueStep3RouteProp = Props3['route']
+type Props3 = NativeStackScreenProps<ReportIssueStackNavigatorParamList, 'ReportIssueStep3'>
+export type ReportIssueStep3NavigationProp = Props3['navigation']
+export type ReportIssueStep3RouteProp = Props3['route']
 
 const ReportIssueStackNavigator = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false, cardStyle: {backgroundColor: 'white'}}}>
       <Stack.Screen name="ReportIssueStep1" component={ReportIssueStep1} options={{cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS}} />
       <Stack.Screen name="ReportIssueStep2" component={ReportIssueStep2} options={{cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS}} />
-      {/* <Stack.Screen name="ReportIssueStep3" component={ReportIssueStep3} options={{cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS}} /> */}
+      <Stack.Screen name="ReportIssueStep3" component={ReportIssueStep3} options={{cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS}} />
     </Stack.Navigator>
   )
 }

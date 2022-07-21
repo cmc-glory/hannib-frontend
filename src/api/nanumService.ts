@@ -23,14 +23,14 @@ export const getNanumAllByFavorites = async () => {
 }
 
 // 카테고리가 있을 때 최신순으로 가져 오기
-export const getNanumByRecent = async (category: string) => {
-  const {data} = await apiClient.get(`/api/nanum/list/login1?category=${category}`)
+export const getNanumByRecent = async ({category, accountIdx}: {category: string; accountIdx: number}) => {
+  const {data} = await apiClient.get(`/api/nanum/list/login1?category=${category}&accountIdx=${accountIdx}`)
   return data
 }
 
 // 키테고리가 있을 때 인기순으로 가져 오기
-export const getNanumByPopularity = async (category: string) => {
-  const {data} = await apiClient.get(`/api/nanum/list/login2?category=${category}`)
+export const getNanumByPopularity = async ({category, accountIdx}: {category: string; accountIdx: number}) => {
+  const {data} = await apiClient.get(`/api/nanum/list/login2?category=${category}&accountIdx=${accountIdx}`)
   return data
 }
 

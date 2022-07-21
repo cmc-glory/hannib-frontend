@@ -34,18 +34,12 @@ export const ParticipatingSharingList = () => {
 
         // 현재 신청이 진행자에 의해 취소된 나눔이라면
         if (nanumCancelDtoList.includes(curNanumIdx)) {
-          console.log('1')
-
           temp.push({...nanumDtoList[i], canceled: 'N', beenCanceled: 'Y'}) // 내가 취소하지는 않고, 취소 당함
         }
         // 신청자가 취소한 나눔이라면
         else if (applyCancelDtoList.includes(curNanumIdx)) {
-          console.log('2')
-
           // 배열에 추가하지 않음
         } else {
-          console.log('3')
-
           temp.push({...nanumDtoList[i], canceled: 'N', beenCanceled: 'N'}) // 내가 취소하고, 취소 당하지는 않음
         }
       }

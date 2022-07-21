@@ -65,30 +65,38 @@ const NanumList = () => {
     enabled: isLoggedIn == false && itemFilter == '인기순', // 로그인 하지 않았을 때 전체 보기
   })
 
-  const nanumByRecent = useQuery([queryKeys.nanumList, userCategory], () => getNanumByRecent(userCategory.categoryName), {
-    onSuccess: data => {
-      setRefreshing(false) // 새로고침중이면 로딩 종료
-      setSharings(data)
+  const nanumByRecent = useQuery(
+    [queryKeys.nanumList, userCategory],
+    () => getNanumByRecent({category: userCategory.categoryName, accountIdx: user.accountIdx}),
+    {
+      onSuccess: data => {
+        setRefreshing(false) // 새로고침중이면 로딩 종료
+        setSharings(data)
 
-      if (nanumMethodFilter !== '전체') {
-        // 현재 오프라인, 온라인 필터가 설정된 경우엔 보여질 아이템 재설정
-        //onPressLocationFilter(nanumMethodFilter)
-      }
+        if (nanumMethodFilter !== '전체') {
+          // 현재 오프라인, 온라인 필터가 설정된 경우엔 보여질 아이템 재설정
+          //onPressLocationFilter(nanumMethodFilter)
+        }
+      },
+      enabled: isLoggedIn == true && itemFilter == '최신순', // 필터가 최신순으로 설정됐을 때만
     },
-    enabled: isLoggedIn == true && itemFilter == '최신순', // 필터가 최신순으로 설정됐을 때만
-  })
+  )
 
   // 카테고리가 설정 됐을 때 인기순
-  const nanumByFaavorites = useQuery([queryKeys.nanumList, userCategory], () => getNanumByPopularity(userCategory.categoryName), {
-    onSuccess(data) {
-      setRefreshing(false) // 새로고침중이면 로딩 종료
-      setSharings(data)
+  const nanumByFaavorites = useQuery(
+    [queryKeys.nanumList, userCategory],
+    () => getNanumByPopularity({category: userCategory.categoryName, accountIdx: user.accountIdx}),
+    {
+      onSuccess(data) {
+        setRefreshing(false) // 새로고침중이면 로딩 종료
+        setSharings(data)
+      },
+      onError(err) {
+        console.log(err)
+      },
+      enabled: isLoggedIn == true && itemFilter == '인기순',
     },
-    onError(err) {
-      console.log(err)
-    },
-    enabled: isLoggedIn == true && itemFilter == '인기순',
-  })
+  )
   // 카테고리가 설정 됐을 때 최신순
 
   // ******************** callbacks ********************

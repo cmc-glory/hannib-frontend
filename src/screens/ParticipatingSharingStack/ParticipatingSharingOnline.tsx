@@ -20,7 +20,7 @@ export const ParticipatingSharingOnline = () => {
   // ******************** utils ********************
   const route = useRoute<ParticipatingSharingOnlineRouteProps>()
   const queryClient = useQueryClient()
-  const {nanumIdx} = route.params
+  const {nanumIdx, writerAccountIdx} = route.params
   const navigation = useNavigation()
   const user = useAppSelector(state => state.auth.user)
 
@@ -113,6 +113,7 @@ export const ParticipatingSharingOnline = () => {
       imageuri: nanumInfo?.data.thumbnail,
       category: nanumInfo?.data.category,
       title: nanumInfo?.data.title,
+      writerAccountIdx: writerAccountIdx,
     })
   }, [nanumInfo])
 

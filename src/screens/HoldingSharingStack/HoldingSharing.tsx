@@ -414,7 +414,7 @@ export const HoldingSharing = () => {
                   <>
                     <View style={[theme.styles.rowSpaceBetween, {marginBottom: 12}]}>
                       <Text style={[theme.styles.text14, styles.receiverDetailDate]}>{receiverDetail?.applyDto.applyDate}</Text>
-                      {misAcceptedNumber > 0 && <Tag label={`미수령 ${misAcceptedNumber}회`} />}
+                      <Tag label={`미수령 ${misAcceptedNumber}회`} />
                     </View>
                     <View style={[theme.styles.rowSpaceBetween, {marginBottom: 20}]}>
                       <Text style={styles.detailLabel}>수령자명</Text>

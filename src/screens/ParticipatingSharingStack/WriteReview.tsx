@@ -30,7 +30,7 @@ export const WriteReview = () => {
   const navigation = useNavigation()
   const queryClient = useQueryClient()
   const route = useRoute<WriteReviewPropsRouteProps>()
-  const {nanumIdx, accountIdx, imageuri, category, title} = useMemo(() => route.params, [])
+  const {nanumIdx, accountIdx, imageuri, category, title, writerAccountIdx} = useMemo(() => route.params, [])
   const creatorId = useAppSelector(state => state.auth.user.creatorId)
 
   // ******************** states ********************
@@ -82,15 +82,15 @@ export const WriteReview = () => {
                 imgUrl: imgUrl,
               }
             }),
-      accountIdx,
+      accountIdx: writerAccountIdx, // accountIdx는 해당 나눔 진행자의 accountIdx
       nanumIdx,
       comments: content,
-      creatorId: creatorId,
+      creatorId: creatorId, // creatorId는 후기를 작성하는 사람의 creatorId
       createdDatetime: '',
     }
 
     writeReviewQuery.mutate(reviewForm)
-  }, [content, images])
+  }, [content, images, writerAccountIdx])
 
   const onRefresh = useCallback(() => {
     setRefreshing(true)

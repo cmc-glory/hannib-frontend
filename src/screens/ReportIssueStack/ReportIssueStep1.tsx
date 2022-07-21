@@ -64,14 +64,23 @@ export const ReportIssueStep1 = () => {
   // ******************** utils ********************
   const navigation = useNavigation()
   const route = useRoute<ReportIssueStep1RouteProp>()
+  const {writerAccountIdx, writerName, nanumIdx, accountImg} = route.params
   // ******************** states ********************
   const [selectedIssue, setSelectedIssue] = useState<string>('관심없는 콘텐츠')
   const [reasonEtc, setReasonEtc] = useState<string>('')
 
+  console.log('writerName : ', writerName)
+  console.log('accountImage : ', accountImg)
+
   // ******************** react quries ********************
   const reportQuery = useMutation(queryKeys.report, report, {
     onSuccess(data, variables, context) {
-      navigation.navigate('ReportIssueStep2')
+      navigation.navigate('ReportIssueStep2', {
+        writerAccountIdx,
+        writerName,
+        nanumIdx,
+        accountImg,
+      })
     },
     onError(error, variables, context) {
       showMessage({
@@ -154,7 +163,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.secondary,
   },
   termsText: {
-    fontSize: 14,
+    fontSize: 13,
     fontFamily: 'Pretendard',
     color: theme.gray500,
     lineHeight: 16,

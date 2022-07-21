@@ -9,7 +9,7 @@ import * as theme from '../../theme'
 export const ReportIssueStep3 = () => {
   const navigation = useNavigation()
   const route = useRoute<ReportIssueStep3RouteProp>()
-  const {userName} = route.params
+  const {writerName} = route.params
 
   const onPressComplete = useCallback(() => {
     navigation.navigate('MainTabNavigator')
@@ -19,9 +19,9 @@ export const ReportIssueStep3 = () => {
     <SafeAreaView style={[styles.rootContainer]}>
       <StackHeader title="문제 신고하기" goBack x />
       <View style={[theme.styles.wrapper, styles.container]}>
-        <Text style={[theme.styles.bold20, {marginTop: 12, marginBottom: 24}]}>{userName}님을 차단했습니다</Text>
-        {/* <Text style={{fontSize: 16, color: theme.gray700}}>신고해주셔서 감사합니다. </Text> */}
-        <Text style={{fontSize: 16, color: theme.gray700}}>차단된 계정은 마이페이지에서 관리가 가능합니다.</Text>
+        <Text style={[theme.styles.bold20, {marginTop: 12, marginBottom: 24}]}>{writerName}님을 차단했습니다</Text>
+        <Text style={{fontSize: 16, lineHeight: 24, color: theme.gray700}}>신고해주셔서 감사합니다. </Text>
+        <Text style={{fontSize: 16, lineHeight: 24, color: theme.gray700}}>차단된 계정은 마이페이지에서 관리가 가능합니다.</Text>
         <RoundButton label="완료" enabled style={{marginTop: 24}} onPress={onPressComplete} />
       </View>
     </SafeAreaView>

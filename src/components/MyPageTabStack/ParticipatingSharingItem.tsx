@@ -39,12 +39,12 @@ export const ParticipatingSharingItem = ({item}: {item: IparticipatigItem}) => {
         //메일(온라인)
         navigation.navigate('ParticipatingSharingStackNavigator', {
           screen: 'ParticipatingSharingOnline',
-          params: {nanumIdx: item.nanumIdx},
+          params: {nanumIdx: item.nanumIdx, writerAccountIdx: accountIdx},
         })
       } else {
         navigation.navigate('ParticipatingSharingStackNavigator', {
           screen: 'ParticipatingSharingOffline',
-          params: {nanumIdx: item.nanumIdx},
+          params: {nanumIdx: item.nanumIdx, writerAccountIdx: accountIdx},
         })
       }
     },

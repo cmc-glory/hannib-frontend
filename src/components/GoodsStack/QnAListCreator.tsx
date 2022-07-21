@@ -279,7 +279,7 @@ export const QnAListCreatorItem = ({item, accountIdx, nanumIdx, inquiryIdx}: QnA
           {writeAnswerPressed ? (
             <View>
               <TextInput
-                placeholder={`부적절한 답변 등록 시 비 노출 또는 무통보 삭제될 수 있습니다.\n- 비방/욕설/명예회손에 해당되는 게시물\n- 개인정보를 포함한 오프라인 만남 유도 내용`}
+                placeholder={`답변을 입력해 주세요.`}
                 placeholderTextColor={theme.gray300}
                 textAlignVertical="top"
                 multiline

@@ -206,6 +206,12 @@ export const WriteNanumFormOffline = () => {
           {agreed ? <CheckboxIcon onPress={onPressAgreed} /> : <EmptyCheckboxIcon onPress={onPressAgreed} />}
           <Text style={styles.agreedText}>개인정보를 다른 목적으로 이용하지 않겠습니다.</Text>
         </View>
+        <View style={[theme.styles.wrapper, styles.spacing]}>
+          <Text style={styles.termText}>부적절한 게시물 등록 시 비 노출 또는 무통보 삭제될 수 있습니다.</Text>
+          <Text style={styles.termText}>- 비방/욕설/명예훼손에 해당되는 게시물</Text>
+          <Text style={styles.termText}>- 저작권에 위배된 작품</Text>
+          <Text style={styles.termText}>- 개인정보를 포함한 오프라인 만남 유도 내용</Text>
+        </View>
         <View style={{height: 80}}></View>
       </ScrollView>
 
@@ -215,6 +221,12 @@ export const WriteNanumFormOffline = () => {
 }
 
 const styles = StyleSheet.create({
+  termText: {
+    fontSize: 12,
+    lineHeight: 16,
+    color: theme.gray500,
+    marginBottom: 2,
+  },
   agreedText: {
     fontFamily: 'Pretendard-Medium',
     fontSize: 16,

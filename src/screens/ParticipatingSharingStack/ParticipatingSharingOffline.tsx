@@ -27,7 +27,7 @@ export const ParticipatingSharingOffline = () => {
   const [cancelModalVisible, toggleCancelModalVisible] = useToggle() // 취소 모달창 띄울지
   const route = useRoute<ParticipatingSharingOnlineRouteProps>()
   const queryClient = useQueryClient()
-  const {nanumIdx} = route.params
+  const {nanumIdx, writerAccountIdx} = route.params
   const navigation = useNavigation()
   const user = useAppSelector(state => state.auth.user)
 
@@ -120,6 +120,7 @@ export const ParticipatingSharingOffline = () => {
       imageuri: nanumInfo?.data.thumbnail,
       category: nanumInfo?.data.category,
       title: nanumInfo?.data.title,
+      writerAccountIdx: writerAccountIdx,
     })
   }, [nanumInfo])
 

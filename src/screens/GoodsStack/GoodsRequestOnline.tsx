@@ -85,13 +85,23 @@ export const GoodsReqeustOnline = () => {
     onSuccess(data, variables, context) {
       console.log('success')
       console.log(data)
+
       queryClient.invalidateQueries([queryKeys.nanumRequestOnlineForm])
       queryClient.invalidateQueries(queryKeys.accountInfoMypage)
 
-      //const nanumIdx = data
-      navigation.navigate('GoodsStackNavigator', {
-        screen: 'GoodsRequestComplete',
-      })
+      if (data == '정상적으로 신청됨') {
+        //const nanumIdx = data
+        navigation.navigate('GoodsStackNavigator', {
+          screen: 'GoodsRequestComplete',
+        })
+      } else {
+        navigation.navigate('GoodsStackNavigator', {
+          screen: 'GoodsRequestError',
+          params: {
+            nanumIdx,
+          },
+        })
+      }
     },
     onError(error, variables, context) {
       navigation.navigate('GoodsStackNavigator', {

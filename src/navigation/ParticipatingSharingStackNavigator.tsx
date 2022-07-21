@@ -6,9 +6,11 @@ import type {NativeStackScreenProps} from '@react-navigation/native-stack'
 type ParticipatingSharingStackNavigatorParamList = {
   ParticipatingSharingOnline: {
     nanumIdx: number
+    writerAccountIdx: number
   }
   ParticipatingSharingOffline: {
     nanumIdx: number
+    writerAccountIdx: number
   }
   WriteQnA: {
     nanumIdx: number
@@ -20,6 +22,7 @@ type ParticipatingSharingStackNavigatorParamList = {
     imageuri: string
     category: string
     title: string
+    writerAccountIdx: number
   }
 }
 

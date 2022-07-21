@@ -49,6 +49,7 @@ export const NanumDetail = () => {
       //const {data} = useQuery(queryKeys.goodsDetail, getGoodsDetail, {
       onSuccess: data => {
         console.log('success')
+        console.log(data)
         setNanumDetail(data)
         // 1. 내가 작성자이고 마감되지 않은 경우 -> 진행한 나눔 페이지로 이동
         // 2. 내가 작성자이고 마감된 경우 -> 마감된 나눔입니다.
@@ -60,6 +61,8 @@ export const NanumDetail = () => {
         const tempIsApplied = data.applyOfflineIdx != 0
         setIsWriter(tempIsWriter)
         setIsApplied(tempIsApplied)
+
+        console.log('creatorId', data.creatorId)
 
         // 내가 작성자이든, 신청자이든, 누구든 상관 없이 마감된 나눔이면 마감됐다고 알려주기
         if (data.endYn == 'Y') {
@@ -191,7 +194,14 @@ export const NanumDetail = () => {
       )}
 
       {data != undefined && (
-        <NanumDetailHeader inverted={headerInvert} userAccountIdx={user.accountIdx} writerAccountIdx={data.accountIdx} nanumIdx={route.params.nanumIdx} />
+        <NanumDetailHeader
+          inverted={headerInvert}
+          userAccountIdx={user.accountIdx}
+          writerAccountIdx={data.accountIdx}
+          nanumIdx={route.params.nanumIdx}
+          writerName={data.creatorId}
+          accountImg={data.accountDto.accountImg}
+        />
       )}
 
       <ScrollView

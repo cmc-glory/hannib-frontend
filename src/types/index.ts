@@ -225,6 +225,12 @@ export type IReviewDto = {
   nanumIdx: number
   comments: string
   createdDatetime: string
+  creatorId: string
+}
+
+export type IReviewDeleteDto = {
+  nanumIdx: number
+  creatorId: string
 }
 
 export type IReviewImgDto = {
@@ -298,7 +304,6 @@ export type IApplyDto = {
   misacceptedYn: 'Y' | 'N'
   reviewYn: 'Y' | 'N'
   unsongYn: 'Y' | 'N'
-  nanumCancelYn?: 'Y' | 'N' //진행자가 해당 참여자 취소했는지
   acceptDate: string // 오프라인 수령 일자
   applyDate: string // 신청 일자
   realName: string
@@ -418,6 +423,7 @@ export type INanumListItem = {
   endYn: 'Y' | 'N'
   categoryIdx: number // 해당 나눔이 속한 카테고리의 index
   category: string
+  block: 'Y' | 'N'
 }
 
 // 모집폼 작성 시 기본 정보
@@ -657,6 +663,20 @@ export type IUpdateCategoryDto = {
 }
 
 // *************** 마이페이지 ***************
+export type IBlockDto = {
+  accountIdxBlock: number // 내 accountIdx
+  accountIdxBlocked: number // 차단 당하는 사람의 accountIdx
+  creatorId: string // 차단된 사용자 닉네임
+  accountImg: string | null // 차단된 사용자 프로필 url
+}
+
+export type IBlockedUserDto = {
+  accountIdxBlock: number // 내 accountIdx
+  accountIdxBlocked: number // 차단된 사용자 accountIdx
+  creatorId: string // 차단된 사용자 닉네임
+  accountImg: string | null // 차단된 사용자 프로필 url
+}
+
 //진행한 나눔 리스트 get
 export type IHoldingSharingList = {
   accountIdx: number

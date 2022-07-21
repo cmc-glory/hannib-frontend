@@ -139,10 +139,12 @@ declare namespace ReactNavigation {
         }
     ParticipatingSharingOnline: {
       nanumIdx: number
+      writerAccountIdx: number
     }
 
     ParticipatingSharingOffline: {
       nanumIdx: number
+      writerAccountIdx: number
     }
     ReportIssueStackNavigator?: {
       screen: string
@@ -150,9 +152,26 @@ declare namespace ReactNavigation {
     }
     ReportIssueStep1: {
       nanumIdx: number
+      writerName: string
+      writerAccountIdx: number
+      accountImg: string
     }
-    ReportIssueStep2: undefined
-    AskAddStar: undefined
+    ReportIssueStep2: {
+      nanumIdx: number
+      writerName: string
+      writerAccountIdx: number
+      accountImg: string
+    }
+    ReportIssueStep3: {
+      nanumIdx: number
+      writerName: string
+      writerAccountIdx: number
+    }
+    AskAddStar: {
+      nanumIdx: number
+      writerName: string
+      writerAccountIdx: number
+    }
     AskAddStarComplete: undefined
     BlockedUsers: undefined
     MyPageStackNavigator:
@@ -208,6 +227,7 @@ declare namespace ReactNavigation {
       imageuri: string
       category: string
       title: string
+      writerAccountIdx: number
     }
   }
 }
