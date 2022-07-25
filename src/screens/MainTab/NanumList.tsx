@@ -25,8 +25,6 @@ const NanumList = () => {
   const currentCategory = user.accountCategoryDtoList[0]
   const queryClient = useQueryClient()
 
-  navigation.navigate('LoginStackNavigator', {screen: 'SetProfile'})
-
   // ******************** states ********************
   const [sharings, setSharings] = useState<INanumListItem[]>([]) // 나눔 게시글들
   const [refreshing, setRefreshing] = useState<boolean>(false) // 새로고침 state
