@@ -7,6 +7,7 @@
 #import <React/RCTRootView.h>
 #import <React/RCTLinkingManager.h>
 #import "RNSplashScreen.h"
+#import <CodePush/CodePush.h>
 
 #import <React/RCTAppSetupUtils.h>
 #import <RNKakaoLogins.h>

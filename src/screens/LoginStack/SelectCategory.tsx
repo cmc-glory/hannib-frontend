@@ -163,6 +163,9 @@ export const SelectCategory = () => {
 
   // 회원 가입 버튼 클릭 시
   const onPressSignUp = useCallback(() => {
+    if (postSignUpQuery.isLoading) {
+      return
+    }
     const signUpForm: IAccountDto = {
       accountCategoryDtoList: userSelectedCategories,
       accountIdx: 0,
@@ -174,7 +177,7 @@ export const SelectCategory = () => {
     console.log(JSON.stringify(signUpForm))
     // 회원 가입 post api 호출
     postSignUpQuery.mutate(signUpForm)
-  }, [userSelectedCategories])
+  }, [userSelectedCategories, postSignUpQuery])
 
   // 해당 카테고리가 선택됐는지
   const isSelected = useCallback(
@@ -286,7 +289,11 @@ export const SelectCategory = () => {
           )}
         </View>
       </View>
-      <FloatingBottomButton label="선택 완료" enabled={userSelectedCategories.length != 0 && signUpSuccess == false} onPress={onPressSignUp} />
+      <FloatingBottomButton
+        label="선택 완료"
+        enabled={userSelectedCategories.length != 0 && signUpSuccess == false && postSignUpQuery.isLoading == false}
+        onPress={onPressSignUp}
+      />
     </SafeAreaView>
   )
 }
