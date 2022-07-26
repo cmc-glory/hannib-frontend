@@ -37,7 +37,7 @@ export const CalendarItem = ({item}: CalendarItemProps) => {
       <View style={[styles.row, {marginBottom: 10}]}>
         <Tag label={type == 'participating' ? '참여' : '진행'} />
         <View style={[styles.row]}>
-          <Text style={styles.normal}>{moment(acceptDate)?.format('HH:mm')}</Text>
+          <Text style={styles.normal}>{moment(acceptDate, 'YYYYMMDDHHmmss')?.format('HH:mm')}</Text>
           <ClockIcon size={20} />
         </View>
       </View>
