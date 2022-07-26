@@ -623,14 +623,14 @@ export const HoldingSharing = () => {
         accountIdx={participantAccountIdx!}
         isVisible={notTakenModalShow}
         toggleIsVisible={toggleNotTakenModalShow}
-        setRefresh={setRefreshing}></NotTakenModal>
+        onRefresh={onRefresh}></NotTakenModal>
       {/* 수령 체크  api 완료*/}
       <CheckFinishedModal
         nanumIdx={nanumIdx}
         accountIdx={participantAccountIdx!}
         isVisible={checkFinishedModalShow}
         toggleIsVisible={toggleCheckFinishedModalShow}
-        setRefresh={setRefreshing}></CheckFinishedModal>
+        onRefresh={onRefresh}></CheckFinishedModal>
     </SafeAreaView>
   )
 }
