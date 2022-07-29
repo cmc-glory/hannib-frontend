@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {View, Text, Pressable, StyleSheet, Platform} from 'react-native'
 import FastImage from 'react-native-fast-image'
 import {useNavigation} from '@react-navigation/native'
@@ -39,6 +39,7 @@ const LoginButton = ({label, source, onPress, style, textStyle}: LoginButtonProp
 export const Login = () => {
   const navigation = useNavigation()
   const dispatch = useAppDispatch()
+  const [errLog, setErrLog] = useState<any>('error : ')
 
   const signInWithKakao = async (): Promise<void> => {
     //console.log('clicked')
@@ -71,7 +72,8 @@ export const Login = () => {
           }
         })
     } catch (err) {
-      console.log(err)
+      console.log('err : ', err)
+      setErrLog(err.toString())
       showMessage({
         message: '카카오 로그인 중 에러가 발생했습니다',
         type: 'info',
@@ -120,7 +122,8 @@ export const Login = () => {
           }
         })
     } catch (err) {
-      console.log(err)
+      console.log('err : ', err.toString())
+      setErrLog(err.toString())
       showMessage({
         message: '구글 로그인 중 에러가 발생했습니다',
         type: 'info',
@@ -218,6 +221,7 @@ export const Login = () => {
         <View style={{marginTop: -32}}>
           <Text style={{marginBottom: 8}}>아직 회원이 아니신가요?</Text>
           <Text style={[theme.styles.bold20, {marginBottom: 48}]}>SNS 간편 로그인 후 사용해보세요!</Text>
+          <Text style={[theme.styles.bold16, {marginBottom: 48}]}>{errLog}</Text>
           <View style={[styles.loginButtonContainer]}>
             <LoginButton
               label="Kakao로 로그인"

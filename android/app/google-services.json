@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "10776992039-9815dag8m8bab4lpfiancd65lbokghd4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hannib",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
           "client_id": "10776992039-a2u306icmbug1iivc4p3nekco3055rjf.apps.googleusercontent.com",
           "client_type": 3
         }
