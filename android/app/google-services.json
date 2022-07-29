@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "10776992039-b2ksogo562himplsvv0thckofrv23clv.apps.googleusercontent.com",
+          "client_type": 3,
+          "android_info": {
+            "package_name": "com.hannib",
+            "certificate_hash": "c6ce1ea6ac28d629cef7e9f021cc4843be0720df"
+          }
+        },
+        {
           "client_id": "10776992039-a2u306icmbug1iivc4p3nekco3055rjf.apps.googleusercontent.com",
           "client_type": 3
         }
