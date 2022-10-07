@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "10776992039-4nl3v3cit7p4o1r4bndcue40uoa98mi9.apps.googleusercontent.com",
+          "client_type": 3,
+          "android_info": {
+            "package_name": "com.hannib",
+            "certificate_hash": "8e1ebf26d92bcb633923eca3c6afc27e762836d5"
+          }
+        },
+        {
           "client_id": "10776992039-9815dag8m8bab4lpfiancd65lbokghd4.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -23,7 +31,7 @@
         },
         {
           "client_id": "10776992039-b2ksogo562himplsvv0thckofrv23clv.apps.googleusercontent.com",
-          "client_type": 3,
+          "client_type": 1,
           "android_info": {
             "package_name": "com.hannib",
             "certificate_hash": "c6ce1ea6ac28d629cef7e9f021cc4843be0720df"

@@ -221,7 +221,7 @@ export const Login = () => {
         <View style={{marginTop: -32}}>
           <Text style={{marginBottom: 8}}>아직 회원이 아니신가요?</Text>
           <Text style={[theme.styles.bold20, {marginBottom: 48}]}>SNS 간편 로그인 후 사용해보세요!</Text>
-          <Text style={[theme.styles.bold16, {marginBottom: 48}]}>{errLog}</Text>
+          {/* <Text style={[theme.styles.bold16, {marginBottom: 48}]}>{errLog}</Text> */}
           <View style={[styles.loginButtonContainer]}>
             <LoginButton
               label="Kakao로 로그인"
